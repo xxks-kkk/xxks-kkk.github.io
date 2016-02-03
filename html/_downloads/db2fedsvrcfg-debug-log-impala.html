@@ -1,0 +1,187 @@
+<html xmlns:tomboy="http://beatniksoftware.com/tomboy" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns:link="http://beatniksoftware.com/tomboy/link"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>db2fedsvrcfg debug log-Impala</title><style type="text/css">
+	body {  }
+	h1 { font-size: xx-large;
+     	     font-weight: bold;
+     	     border-bottom: 1px solid black; }
+	div.note {
+		   position: relative;
+		   display: block;
+		   padding: 5pt;
+		   margin: 5pt; 
+		   white-space: -moz-pre-wrap; /* Mozilla */
+ 	      	   white-space: -pre-wrap;     /* Opera 4 - 6 */
+ 	      	   white-space: -o-pre-wrap;   /* Opera 7 */
+ 	      	   white-space: pre-wrap;      /* CSS3 */
+ 	      	   word-wrap: break-word;      /* IE 5.5+ */ }
+	</style></head><body><div class="note" id="db2fedsvrcfg debug log-Impala"><a name="db2fedsvrcfg%20debug%20log-impala"></a><h1>db2fedsvrcfg debug log-Impala</h1>
+temp_iidev28_db2_v105fp6r_hzyhzy
+
+home/iidev20/sqllib/int/TOP/test/fvt/standalone/SQLQG_REQUESTS_IO_BLOCK_BUF_MAX
+
+
+[quickstart.cloudera:21000] &gt; create external table IITEST1
+(
+IT1C1 INT,
+IT1C2 INT,
+IT1C3 char(1),
+IT1C4 char(3),
+IT1C5 char(10),
+IT1C6 varchar(10),
+IT1C7 char(100)
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+LOCATION '/user/cloudera/sample_data/IITEST4';
+
+<a style="color:#3465A4" href="/opt/oemclient/odbc71/64/locale/en_US/LC_MESSAGES/odbc.po">/opt/oemclient/odbc71/64/locale/en_US/LC_MESSAGES/odbc.po</a>
+
+1. export COPTS="-g -qfullpath"
+2. bld
+3.
+<a style="color:#3465A4" href="http://stackoverflow.com/questions/6121094/how-do-i-run-a-program-with-commandline-args-using-gdb-within-a-bash-script">http://stackoverflow.com/questions/6121094/how-do-i-run-a-program-with-commandline-args-using-gdb-within-a-bash-script</a>
+gdb --args executablename arg1 arg2 arg3
+
+gdb -args db2fedsvrcfg -s SERVER1 -m <a style="color:#3465A4" href="/opt/oemclient/odbc71/64/lib/libodbc.so">/opt/oemclient/odbc71/64/lib/libodbc.so</a> -dsn Impala_test1 -u cloudera -p cloudera -noprep
+
+
+4.
+Note: you have to check out those file before debugging
+
+break db2odbct.C:273
+break db2odbct_analyze.C:108
+break db2odbct2.C:668
+break db2odbct_statement.C:1179
+break db2odbct_operation.C:138
+break db2odbct_statement.C:1243
+
+*check duplicate statement in "NULL_IN_SELECT"
+break db2odbct_statement.C: 536
+forget "break;"
+
+*check "DB2_LIKE_MATCH_SCALAR_SQ" doesn't generate SQL statement
+break db2odbct_statement.C: 536 if m_option_id == 81
+ 
+11/27: TODO
+
+*fix memory corruption (code page conversion error for "%", which implies the LIKE clause cannot contain "%" symbol)
+break db2odbct_statement.C: 536
+break db2odbct_connection.C: 834
+
+(gdb) break db2odbct_statement.C: 536
+(gdb) commands
+Type commands for breakpoint(s) 3, one per line.
+End with a line saying just "end".
+&gt;silent
+&gt;printf "m_option_id: %d\n", m_option_id
+&gt;cont
+&gt;end
+
+break db2odbct_statement.C: 1188 if m_option_id == 65
+
+
+----------------------------------------------------------
+m_option_id: 81   ERROR
+
+* Impala works but set to "N" &lt;- need revisit
+<ul><li dir="ltr">OB_ITEM_EXPR      </li></ul>
+		option id : 20   logic: 2
+<ul><li dir="ltr">LIKE_MATCH_EXPR</li></ul>
+		option id: 62   logic: 2
+break db2odbct_analyze.C:366 if option_id == 62
+
+cause: ``optimized_value`` is not updated to ``a_option`` in logic 2 of ``db2odbct_analyze.C``
+
+added: ``a_option-&gt;set_option_value((const char*) optimized_value);``
+
+1118       // Display an ALTER SERVER statement for each server option.
+1119       fprintf(output, MSG_ALTER_STMT, params.svrname,
+1120               option-&gt;get_option_name(), option-&gt;get_option_value());
+
+12/01: TODO
+<ul><li dir="ltr">Add "impala" argument option [done]
+</li><li dir="ltr">change internal code structure for the upcoming hive
+</li><li dir="ltr">Add hive testing queries</li></ul>
+
+LIKE_MATCH_COL should be set to "N", if optimized. [done]
+
+CHAR_BLANKPADDED_COMPARISON should be set to "N"
+
+option id: 4
+
+ 65     SQLQG_CHAR_BLANKPADDED_COMPARISON_SERVER_OPTION,
+ 66     "SELECT IT1C1 FROM %s WHERE IT1C4 = 'F  '"
+
+
+db2fedsvrcfg -s SERVER1 -m <a style="color:#3465A4" href="/opt/oemclient/odbc71/64/lib/libodbc.so">/opt/oemclient/odbc71/64/lib/libodbc.so</a> -dsn Impala_test1 -u cloudera -p cloudera -noprep -impala
+
+12/02/15 TODO:
+
+<ul><li dir="ltr">use "-impala" and not use "-impala" the result is different but both can run successfully.</li></ul>
+
+- "-impala" option is not enforced when using it without "-noprep". The tool can still run and terminate by failure of CREATE TABLE
+
+<ul><li dir="ltr">wrap up impala</li></ul>
+-----------------------------------------------
+
+- Add hive testing queries
+
+
+Other useful commands
+<b><span style="background:yellow">backtrace</span></b>
+- produces a stack trace of the function calls that lead to a seg fault (should remind you of Java exceptions)
+<b><span style="background:yellow">where</span></b>
+- same as backtrace ; you can think of this version as working even when you’re still in the middle of the program
+<b><span style="background:yellow">info breakpoints</span></b>
+- shows information about all declared breakpoints
+<b><span style="background:yellow">delete</span></b>
+<ul><li dir="ltr">deletes a specified breakpoint</li></ul>
+
+Log GDB's output:
+<b><span style="background:yellow">set logging file log.txt
+set logging on</span></b>
+
+Redirect program's output to a file:
+<b><span style="background:yellow">rum myprog &gt; log.txt</span></b>
+
+
+
+
+Ignore options:
+
+Impala doesn't support UPDATE statement
+
+DB2_OB_ITEM_EXPR
+DB2_GB_MULTI_DISTINCT
+DB2_GB_ITEM_SCALAR_SQ
+DB2_SELECT_SCALAR_SQ
+DB2_NESTED_TAB_EXPR_W_FETCH_N_ROWS
+DB2_RECURSION
+DB2_SQ_W_SOP
+DB2_SQ_W_FETCH_N_ROWS
+DB2_EXCEPT_ALL
+DB2_EXCEPT_DISTINCT
+DB2_INTERSECT_ALL
+DB2_INTERSECT_DISTINCT
+DB2_COLFUNC_SCALAR_SQ
+DB2_LIKE_MATCH_EXPR
+DB2_LIKE_MATCH_COL
+DB2_LIKE_ESCAPE_EXPR
+DB2_LIKE_ESCAPE_SCALAR_SQ
+DB2_INLIST_LHS_SCALAR_SQ
+DB2_FETCH_N_ROWS
+DB2_LIKE_MATCH_SCALAR_SQ
+
+logger-&gt;info((const char*)TString("%s", Tuning_Utilities::get_db2_message(MSG_OPTION_NAME, 1, option-&gt;get_option_name())));
+
+Incorrect code page conversion for "%": 
+
+??However, this error seems limited to certain test server options, because, for instance, LIKE_MATCH_EXPR contains "%" but it is converted perfectly.
+
+<b>LIKE_ESCAPE_EXPR</b>
+
+ SELECT IT1C3 FROM IITEST1 WHERE IT1C3 LIKE '\\_\\\\ 6.953356E-310SCAPE CONCAT\201<b>
+
+LIKE_MATCH_SCALAR_SQ
+
+</b>SELECT IT1C1 FROM IITEST1 WHERE (SELECT CONCAT(IT1C3,IT1C4) FROM IITEST1) LIKE '0X0.07FFFF\221<b>
+</b>
+</div></body></html>

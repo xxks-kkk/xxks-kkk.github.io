@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Useful Linux Cmds &mdash; Zeyuan&#39;s IBM Docs</title>
+    
+    <link rel="stylesheet" href="../../../_static/traditional.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Zeyuan&#39;s IBM Docs" href="../../../index.html" />
+    <link rel="up" title="Linux Related" href="linux.html" />
+    <link rel="next" title="Tex on RHEL/Linux" href="tex.html" />
+    <link rel="prev" title="Configure RHEL" href="config_RHEL.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tex.html" title="Tex on RHEL/Linux"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="config_RHEL.html" title="Configure RHEL"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Zeyuan&#39;s IBM Docs</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../notes.html" >Notes</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="linux.html" accesskey="U">Linux Related</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="useful-linux-cmds">
+<span id="linux-cmd-rst"></span><h1>Useful Linux Cmds<a class="headerlink" href="#useful-linux-cmds" title="Permalink to this headline">¶</a></h1>
+<p>Last Update: February 03, 2016</p>
+<div class="section" id="linux-commands">
+<h2>Linux Commands<a class="headerlink" href="#linux-commands" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>cat line X (i.e. <code class="docutils literal"><span class="pre">46</span></code>) to line Y (i.e. <code class="docutils literal"><span class="pre">396</span></code>) on a file (i.e. <code class="docutils literal"><span class="pre">db2odbct_statement.h</span></code>)</li>
+</ul>
+<div class="highlight-shell"><div class="highlight"><pre>awk <span class="s1">&#39;NR&lt;=396 &amp;&amp; NR &gt;=46&#39;</span> db2odbct_statement.h &gt; <span class="nv">$HOME</span>/hive_server_opts.txt
+</pre></div>
+</div>
+<p><a class="reference external" href="https://unix.stackexchange.com/questions/47407/cat-line-x-to-line-y-on-a-huge-file">ref1</a></p>
+<ul class="simple">
+<li>terminate telnet session</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&quot;ctrl&quot;</span> <span class="s">&quot;]&quot;</span>
+<span class="s">&quot;enter&quot;</span>
+<span class="n">telnet</span><span class="o">&gt;</span> <span class="n">quit</span> <span class="p">(</span><span class="n">enter</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://stackoverflow.com/questions/11681683/cant-close-a-scpitelnet-session-with-echo-when-i-use-it-in-a-script">ref2</a></p>
+<ul class="simple">
+<li>sort the files in a directory by modification date</li>
+</ul>
+<div class="highlight-shell"><div class="highlight"><pre>ls -lrt
+</pre></div>
+</div>
+<ul class="simple">
+<li>find certain files from /root</li>
+</ul>
+<div class="highlight-shell"><div class="highlight"><pre>find / -name version.h
+</pre></div>
+</div>
+<ul class="simple">
+<li>cd back into the directory where I come from</li>
+</ul>
+<div class="highlight-shell"><div class="highlight"><pre><span class="nb">cd</span> -
+</pre></div>
+</div>
+<ul class="simple">
+<li>tar a directory</li>
+</ul>
+<div class="highlight-shell"><div class="highlight"><pre>tar -cf vmblock.tar vmblock-only
+</pre></div>
+</div>
+<ul class="simple">
+<li>untar a directory</li>
+</ul>
+<div class="highlight-shell"><div class="highlight"><pre>tar -xvf vmblock.tar
+</pre></div>
+</div>
+<ul class="simple">
+<li>recursively remove all the files under certain directory (force)</li>
+</ul>
+<div class="highlight-shell"><div class="highlight"><pre>rm -rf <span class="o">[</span>dirname<span class="o">]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>list all network interface</li>
+</ul>
+<div class="highlight-shell"><div class="highlight"><pre>ifconfig -a
+</pre></div>
+</div>
+<ul class="simple">
+<li>Enter text mode in RHEL</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&quot;ctrl&quot;</span> <span class="o">+</span> <span class="s">&quot;Alt&quot;</span> <span class="o">+</span> <span class="s">&quot;F5&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Exit text mode in RHEL (aka back to GUI mode in RHEL)</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&quot;ctrl&quot;</span> <span class="o">+</span> <span class="s">&quot;Alt&quot;</span> <span class="o">+</span> <span class="s">&quot;F1&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Bring up VNC menu</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&quot;F8&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Check memory info</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">cat</span> <span class="o">/</span><span class="n">proc</span><span class="o">/</span><span class="n">meminfo</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Create a symboli link</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="p">[</span><span class="n">symbol</span><span class="p">]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>view pdf on RHEL</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>evince [pdf file]
+</pre></div>
+</div>
+<ul class="simple">
+<li>compile tex to pdf</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>pdflatex [tex file]
+</pre></div>
+</div>
+<ul class="simple">
+<li>quickly find the function get called in terminal</li>
+</ul>
+<p>For example, I want to find out where <code class="docutils literal"><span class="pre">NZ_Attributes</span></code> in &#8220;sqlqg_netezza_attributes.C&#8221; get called under
+&#8220;/vbs/engn/sqqg_odbc&#8221; directory. I can <code class="docutils literal"><span class="pre">cd</span> <span class="pre">/vbs/engn/sqqg_odbc</span></code> and do</p>
+<div class="highlight-python"><div class="highlight"><pre>$ grep &quot;NZ_Attributes&quot; ./*
+Binary file ./libdb2STrcodbcU.a matches
+./libdb2STrcodbcU.esym:_ZN13NZ_AttributesC1EP14UnfencedServerPi
+./libdb2STrcodbcU.esym:_ZN13NZ_AttributesC2EP14UnfencedServerPi
+./libdb2STrcodbcU.esym:_ZN13NZ_AttributesD0Ev
+./libdb2STrcodbcU.esym:_ZN13NZ_AttributesD1Ev
+./libdb2STrcodbcU.esym:_ZN13NZ_AttributesD2Ev
+./sqlqg_netezza_attributes.C:*  Descriptive Name = Implementation of NZ_Attributes class
+./sqlqg_netezza_attributes.C:#include &quot;sqlqg_netezza_attributes.h&quot;         // NZ_Attributes class definition
+./sqlqg_netezza_attributes.C:// NZ_Attributes class.
+./sqlqg_netezza_attributes.C:*  Function Name: NZ_Attributes::NZ_Attributes()
+./sqlqg_netezza_attributes.C:*  Function: Constructor for NZ_Attributes class
+./sqlqg_netezza_attributes.C:NZ_Attributes::NZ_Attributes(UnfencedServer *a_server, sqlint32 *a_rc)
+./sqlqg_netezza_attributes.C:      SQLT_NZ_Attributes__NZ_Attributes;
+./sqlqg_netezza_attributes.C:*  Function Name  = NZ_Attributes::~NZ_Attributes()
+./sqlqg_netezza_attributes.C:*  Function: Destructor for NZ_Attributes class
+./sqlqg_netezza_attributes.C:NZ_Attributes::~NZ_Attributes(void)
+./sqlqg_netezza_attributes.C:          SQLT_NZ_Attributes__DNZ_Attributes;
+./sqlqg_unfenced_odbc_server.C:        m_attributes = new(&amp;rc) NZ_Attributes(this, &amp;rc);
+</pre></div>
+</div>
+<ul class="simple">
+<li>find the size of files and directory under the current path</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>$ du -sh ./*
+8.0K    ./010616.txt
+12K     ./autorun
+86M     ./autosetup
+35M     ./bin
+4.0K    ./build
+...
+</pre></div>
+</div>
+<ul class="simple">
+<li>find the total size of current path</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>$ du -slh
+1.5G    .
+</pre></div>
+</div>
+<ul class="simple">
+<li>Convert decimal to hex</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>$ printf &quot;%x\n&quot; 4095
+fff
+</pre></div>
+</div>
+<ul class="simple">
+<li>Convert hex to decimal</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>$ printf &quot;%d\n&quot; 0xfff
+4095
+</pre></div>
+</div>
+<ul class="simple">
+<li>untar tar.gz file in AIX</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>gzip -dc ../iidev3/LL.tar.gz | tar xf -
+</pre></div>
+</div>
+<ul class="simple">
+<li>re-execute the last command</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>!!
+</pre></div>
+</div>
+<ul class="simple">
+<li>check the current key bindings (ie. &#8216;C-z&#8217; means suspend job) in linux</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">stty</span> <span class="o">-</span><span class="n">a</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">stty</span> <span class="pre">sane</span></code> alows you to reset linux key bindings to default</p>
+</div>
+<ul class="simple">
+<li>view the last few lines of a growing file, updated continuously. Typically used on log files.</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>tail -f &lt;fname&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="resource">
+<h2>Resource<a class="headerlink" href="#resource" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="http://xahlee.info/linux/linux_common_commands.html">Xah Linux: Shell Commands Basics</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Useful Linux Cmds</a><ul>
+<li><a class="reference internal" href="#linux-commands">Linux Commands</a></li>
+<li><a class="reference internal" href="#resource">Resource</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="config_RHEL.html"
+                        title="previous chapter">Configure RHEL</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tex.html"
+                        title="next chapter">Tex on RHEL/Linux</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tex.html" title="Tex on RHEL/Linux"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="config_RHEL.html" title="Configure RHEL"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Zeyuan&#39;s IBM Docs</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../notes.html" >Notes</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="linux.html" >Linux Related</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015-2016, Zeyuan Hu.
+      Last updated on Feb 03, 2016.
+    </div>
+  </body>
+</html>

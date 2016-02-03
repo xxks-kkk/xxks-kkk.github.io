@@ -1,0 +1,65 @@
+.. _autohive.rst:
+
+######################################################
+Autohive: An auxiliary tool to setup Federation Server
+######################################################
+
+Last Update: |today|
+
+********
+Download
+********
+
+go to `here <https://github.com/xxks-kkk/Zeyuan-s-tools/blob/master/autohive>`_
+
+********
+Usage
+********
+
+Help guide: can be accessed by ``autohive --help``
+
+.. note:: if you don't find your data source, don't specify the data source. Tool will perform general setup
+
+::
+
+        NAME
+
+                autohive - setup Federation Server with specified data source
+
+
+        DESCRIPTION
+
+                autohive is used to assist user to quickly setup connection between
+                Federation Server and specified data source.
+
+        OPTIONS
+                I. Data sources (setup target)
+
+                        -h, --hive
+                                Inform the target data source is hive.
+
+                        -i, --impala
+                                Inform the target data source is Impala
+
+                II. Misc
+
+                        -f, --force
+                                Force the automation setup for connection
+                                with the specified data source. This
+                                will not only summarize config variables
+                                but update them for user as well
+
+                        -p, --party
+                                Notify the script that 3rd-party ODBC driver will be used. 
+                                (Especially useful for Netezza)
+
+                        --help
+                                Prompt help guide
+        NOTE
+
+                1. For now, the installation dir of script is assumed to be /root.
+                2. Script is assumed to be used by DB2 instance owner.
+                3. DB2 instance is assumed to be placed under /root/sqllib.
+                4. This script requires GNU getopt. On Mac OS X and FreeBSD, you have to install this seperately.
+                5. If target data source unspecified, tool will perform general Federation Server setup. Please use
+                   this for unimplemented data source.

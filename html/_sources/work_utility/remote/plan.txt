@@ -1,0 +1,40 @@
+.. _plan.rst:
+
+###########################################################
+plan:: A tool allowed to quickly access explain plan of SQL
+###########################################################
+
+Last Update: |today|
+
+********
+Download
+********
+
+.. :download:`script <plan.sh>` 
+
+go to `here <https://github.com/xxks-kkk/Zeyuan-s-tools/blob/master/plan.sh>`_
+
+*****
+Usage
+*****
+
+0. put ``plan.sh`` into your ``$HOME/bin`` directory.
+1. connect to a local db, say ``feddb``
+2. ``db2 -tvf $HOME/sqllib/misc/EXPLAIN.DDL``
+3. make a sql file (i.e. ``test.clp``) and put sql you want to explain in it.
+
+        For example:
+
+                In ``test.clp``, I write the following:
+
+        code-block:: sql
+
+                select count(*) from (select c1, c2, c3 from n1 group by c1, c2, c3);
+
+4. ``$HOME/bin/plan.sh test.sql -db feddb``
+
+******
+Sample
+******
+
+See :ref:`PMR 53790,674,760 <53790,674,760>`

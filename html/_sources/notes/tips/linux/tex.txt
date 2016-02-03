@@ -1,0 +1,28 @@
+.. _tex.rst:
+
+#################
+Tex on RHEL/Linux
+#################
+
+*************
+Install LaTex
+*************
+
+Please reference http://www.tug.org/texlive/quickinstall.html
+
+***********
+Run tlmgr 
+***********
+
+1. setting PATH: ``PATH=/usr/local/texlive/2015/bin/x86_64-linux:$PATH``
+2. runing tlmgr: ``sudo env PATH="$PATH" tlmgr``
+
+.. note::
+
+        Basically, ``sudo`` resets the value of ``$PATH`` (the whole environment, indeed) to
+        a "known good" one, and is thus ignoring any changes you made to your local environment.
+        The ``env`` command above sets the ``$PATH`` variable in the environment of ``tlmgr`` it
+        executes, so it runs with the value of ``$PATH`` you specify on the command line.
+
+3. ``pygmentize -L Lexers`` helpful to identify what supported language are in Pygment. Especially useful
+   when you want to do source code highlight using "minted" package in LaTex

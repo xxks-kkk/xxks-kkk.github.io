@@ -1,0 +1,107 @@
+.. _installation.rst:
+
+Installation
+------------
+
+	1. Obtain DB2 Express-C image
+	
+	2. Unzip the image and navigate to the directory containing the unzipped DB2 product installation files.
+	
+	3. Launch the install with the "Run as Administrator" option:
+		
+		If the install is launched by clicking on the "setup.exe" executable, you should right click setup.exe and choose the option "Run as Administrator".
+		
+		.. note::
+		
+	
+			| "Run as Administrator" here is critical. Doing this, you can avoid following the error messages:
+			
+			.. image:: /notes/db2/db2_setup/installation_static/error.PNG
+				:width: 450px
+				:align: center
+				:height: 250px
+			   
+			.. image:: /notes/db2/db2_setup/installation_static/error2.PNG
+				:width: 450px
+				:align: center
+				:height: 250px
+				
+			.. image:: /notes/db2/db2_setup/installation_static/error3.PNG
+			   	:width: 450px
+				:align: center
+				:height: 250px
+			
+			.. image:: /notes/db2/db2_setup/installation_static/error4.PNG
+			   	:width: 450px
+				:align: center
+				:height: 250px
+		
+			| This dues to that Windows operating systems, Vista and higher, stripp off some of the user privileges from the local admin users,
+			| and installation user account does not have the required privileges to execute tasks (create a new account ("db2admin"), create new registry keys, configure and start Window
+			| services, etc). 
+		
+			| You can read more about it `here`__
+		
+			__ db2_install_win_error_
+
+	4. Select installation type: *Typical* (this is the default). The Compact option performs a basic installation, while the Custom option allows you to customize the 
+		specific features you want to install.
+
+		.. image:: /notes/db2/db2_setup/installation_static/Capture.PNG
+		
+	5. Select the installation, response file creation, or both: leave the default.
+	
+		.. image:: /notes/db2/db2_setup/installation_static/Capture1.PNG
+	
+	6. Select the installation folder: default
+	
+		.. image:: /notes/db2/db2_setup/installation_static/Capture2.PNG
+		
+	7. Select IBM SSH server installation folder and startup option: default
+	
+		.. image:: /notes/db2/db2_setup/installation_static/Capture3.PNG
+		
+	8. Set user information for the DB2 Administration Server:
+	
+		Once DB2 Express-C installed, certain DB2 processess are run as system services. These
+		services require an operation system account in order to run. In the windows environment,
+		using the default *db2admin* user account is recommended. If the user account does not yet 
+		exist, DB2 creates it in the operating system for you. You can also specify to use an existing
+		account, but that account must have local administrator authority. We recommend using the defaults
+		suggested. Ensure you specify a password for the account.
+		
+		.. image:: /notes/db2/db2_setup/installation_static/Capture4.PNG
+
+	9. Configure DB2 instances: default
+	
+		.. image:: /notes/db2/db2_setup/installation_static/Capture5.PNG
+		
+	10. Install & Finish setup
+	
+		.. image:: /notes/db2/db2_setup/installation_static/Capture6.PNG
+		
+	.. seealso::
+	
+		Read more on installation on page 54 of `Getting Started with DB2 Express-C`__. Even it is written for v9.7, the installation procedure
+		doesn't change much.
+		
+		__ db2_get_started_with_DB2_Express_C_v97_
+
+	11. Validate your DB2 installation:
+	
+		Bring out db2 clp by running ``db2cmd`` in cmd, and run the following command:
+	
+		1. db2level - displays information about the DB2 product installed, fix pack level, and other details.
+		
+			.. image:: /notes/db2/db2_setup/installation_static/db2level.PNG
+			
+		2. db2licm - lists all the licensing information specific to your installed DB2 products
+		
+			.. image:: /notes/db2/db2_setup/installation_static/db2licm.PNG
+		
+		3. db2val - validates your installation by verifying the code functionality of your DB2 copy. It make sure your instances are consistent, and that database creation
+					and database connections work.
+		
+			.. image:: /notes/db2/db2_setup/installation_static/db2val.PNG
+	
+.. include:: /notes/db2/links.rst

@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Problem (Abstract) &mdash; Zeyuan&#39;s IBM Docs</title>
+    
+    <link rel="stylesheet" href="../../../_static/traditional.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Zeyuan&#39;s IBM Docs" href="../../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Zeyuan&#39;s IBM Docs</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="problem-abstract">
+<span id="edit-data-error-rst"></span><h1>Problem (Abstract)<a class="headerlink" href="#problem-abstract" title="Permalink to this headline">¶</a></h1>
+<p>SQL0551N authorization ID does not have the required authorization or privilege when Windows DB2 Server running under Domain account while member of local DB2ADMINS group</p>
+</div>
+<div class="section" id="symptom">
+<h1>Symptom<a class="headerlink" href="#symptom" title="Permalink to this headline">¶</a></h1>
+<p>SQL0551N The statement failed because the authorization ID does not have the required authorization or privilege to perform the operation. Authorization ID: &#8220;&#8221;. Operation:
+&#8220;&#8221;. Object: &#8220;&#8221;. SQLSTATE=42501</p>
+<img alt="../../../_images/edit_data_error.PNG" src="../../../_images/edit_data_error.PNG" />
+</div>
+<div class="section" id="cause">
+<h1>Cause<a class="headerlink" href="#cause" title="Permalink to this headline">¶</a></h1>
+<p>The symptom happened that SAMPLE is created using Windows Domain ID (i.e. ZEYUAN HU),
+which can tell from the default schema. But when connecting with SAMPLE through Data
+Studio, you are using user ID: db2admin, which is shown below:</p>
+<img alt="../../../_images/edit_data_error_cause.PNG" src="../../../_images/edit_data_error_cause.PNG" />
+</div>
+<div class="section" id="detailed-explanation">
+<h1>Detailed Explanation<a class="headerlink" href="#detailed-explanation" title="Permalink to this headline">¶</a></h1>
+<p>DB2 doesn&#8217;t use created user ids like other databases do. It looks to the underlying
+operating system or LDAP for authentication. In the Unix/Linux environment, the
+instance Id that is the highest ID administratively is what ID the instance is set up
+to run as. Your db2admin account is this account. That being said....Windows
+introduces a different security scheme. Even though the instance ID exists, whoever
+installed the product (their user ID) tends to be granted high administrative powers
+in DB2. And when you issue the CREATE DATABASE statement, you are doing it with your
+Windows user ID. Therefore, it becomes the owner of the database and has DBADM,
+SECADM, DATAACCESS, and ACCESSCTRL granted to it. db2admin will generally have DBADM
+WITHOUT DATAACCESS WITHOUT ACCESSCTRL. So you would need to log in as Nenad (the ID
+with SECADM) and grant (to be safe) DBADM, SECADM, DATAACCESS, ACCESSCTRL to user
+db2admin. Now that ID should have what you are looking for.</p>
+<p>I don&#8217;t recommend those privileges for just any ID. If all you need is access to
+read/write to tables then DATAACCESS alone should do it.</p>
+</div>
+<div class="section" id="resolving-the-problem">
+<h1>Resolving the problem<a class="headerlink" href="#resolving-the-problem" title="Permalink to this headline">¶</a></h1>
+<p>There are two ways to fix the problem:</p>
+<ol class="arabic simple">
+<li>connecting with SAMPLE through Data Studio using Windows Domain ID (i.e ZEYUAN HU)</li>
+</ol>
+<img alt="../../../_images/edit_data_error_fix1.PNG" src="../../../_images/edit_data_error_fix1.PNG" />
+<ol class="arabic" start="2">
+<li><p class="first">As Windows Domain ID (i.e. ZEYUAN HU), grant the appropriate permissions to user ID:
+db2admin</p>
+<p>This can be done as following:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first"><code class="docutils literal"><span class="pre">db2</span> <span class="pre">connect</span> <span class="pre">to</span> <span class="pre">sample</span> <span class="pre">user</span> <span class="pre">'ZEYUAN</span> <span class="pre">HU'</span> <span class="pre">using</span> <span class="pre">'password'</span></code></p>
+<blockquote>
+<div><p>or  <code class="docutils literal"><span class="pre">db2</span> <span class="pre">connect</span> <span class="pre">to</span> <span class="pre">sample</span></code></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">both case will use Windows Domain ID to connect with SAMPLE</p>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">db2</span> <span class="pre">grant</span> <span class="pre">DATAACCESS</span> <span class="pre">on</span> <span class="pre">DATABASE</span> <span class="pre">to</span> <span class="pre">user</span> <span class="pre">db2admin</span></code></p>
+</li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="read-more">
+<h1>Read more<a class="headerlink" href="#read-more" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic">
+<li><p class="first"><a class="reference external" href="http://stackoverflow.com/questions/28929634/ibm-data-studio-cant-browse-data-on-sample-db2-express-c">IBM Data Studio can&#8217;t browse data on SAMPLE (DB2 Express-C)</a></p>
+<blockquote>
+<div></div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="http://dba.stackexchange.com/questions/8127/how-do-i-grant-all-privileges-to-local-db2admin-with-db2-9-7-on-windows">How do I grant all privileges to local db2admin with DB2 9.7 on Windows?</a></p>
+<blockquote>
+<div></div></blockquote>
+</li>
+<li><p class="first"><a class="reference external" href="http://www.ibm.com/developerworks/data/tutorials/db2-cert6102/index.html">DB2 10.1 fundamentals certification exam 610 prep, Part 2: DB2 security</a></p>
+<blockquote>
+<div></div></blockquote>
+</li>
+</ol>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Problem (Abstract)</a></li>
+<li><a class="reference internal" href="#symptom">Symptom</a></li>
+<li><a class="reference internal" href="#cause">Cause</a></li>
+<li><a class="reference internal" href="#detailed-explanation">Detailed Explanation</a></li>
+<li><a class="reference internal" href="#resolving-the-problem">Resolving the problem</a></li>
+<li><a class="reference internal" href="#read-more">Read more</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Zeyuan&#39;s IBM Docs</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015-2016, Zeyuan Hu.
+      Last updated on Feb 03, 2016.
+    </div>
+  </body>
+</html>

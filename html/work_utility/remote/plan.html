@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>plan:: A tool allowed to quickly access explain plan of SQL &mdash; Zeyuan&#39;s IBM Docs</title>
+    
+    <link rel="stylesheet" href="../../_static/traditional.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Zeyuan&#39;s IBM Docs" href="../../index.html" />
+    <link rel="up" title="Work Utility" href="../work_utility.html" />
+    <link rel="next" title="Autohive: An auxiliary tool to setup Federation Server" href="autohive.html" />
+    <link rel="prev" title="Windows related" href="../local/windows.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="autohive.html" title="Autohive: An auxiliary tool to setup Federation Server"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../local/windows.html" title="Windows related"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Zeyuan&#39;s IBM Docs</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../work_utility.html" accesskey="U">Work Utility</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="plan-a-tool-allowed-to-quickly-access-explain-plan-of-sql">
+<span id="plan-rst"></span><h1>plan:: A tool allowed to quickly access explain plan of SQL<a class="headerlink" href="#plan-a-tool-allowed-to-quickly-access-explain-plan-of-sql" title="Permalink to this headline">¶</a></h1>
+<p>Last Update: February 03, 2016</p>
+<div class="section" id="download">
+<h2>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h2>
+<p>go to <a class="reference external" href="https://github.com/xxks-kkk/Zeyuan-s-tools/blob/master/plan.sh">here</a></p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic" start="0">
+<li><p class="first">put <code class="docutils literal"><span class="pre">plan.sh</span></code> into your <code class="docutils literal"><span class="pre">$HOME/bin</span></code> directory.</p>
+</li>
+<li><p class="first">connect to a local db, say <code class="docutils literal"><span class="pre">feddb</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">db2</span> <span class="pre">-tvf</span> <span class="pre">$HOME/sqllib/misc/EXPLAIN.DDL</span></code></p>
+</li>
+<li><p class="first">make a sql file (i.e. <code class="docutils literal"><span class="pre">test.clp</span></code>) and put sql you want to explain in it.</p>
+<blockquote>
+<div><p>For example:</p>
+<blockquote>
+<div><p>In <code class="docutils literal"><span class="pre">test.clp</span></code>, I write the following:</p>
+</div></blockquote>
+<p>code-block:: sql</p>
+<blockquote>
+<div><p>select count(*) from (select c1, c2, c3 from n1 group by c1, c2, c3);</p>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">$HOME/bin/plan.sh</span> <span class="pre">test.sql</span> <span class="pre">-db</span> <span class="pre">feddb</span></code></p>
+</li>
+</ol>
+</div>
+<div class="section" id="sample">
+<h2>Sample<a class="headerlink" href="#sample" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="../../pmr/53790,674,760/53790,674,760.html#id1"><span>PMR 53790,674,760</span></a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">plan:: A tool allowed to quickly access explain plan of SQL</a><ul>
+<li><a class="reference internal" href="#download">Download</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#sample">Sample</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../local/windows.html"
+                        title="previous chapter">Windows related</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="autohive.html"
+                        title="next chapter">Autohive: An auxiliary tool to setup Federation Server</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="autohive.html" title="Autohive: An auxiliary tool to setup Federation Server"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../local/windows.html" title="Windows related"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Zeyuan&#39;s IBM Docs</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../work_utility.html" >Work Utility</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015-2016, Zeyuan Hu.
+      Last updated on Feb 03, 2016.
+    </div>
+  </body>
+</html>

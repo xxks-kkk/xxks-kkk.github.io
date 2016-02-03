@@ -1,0 +1,86 @@
+.. _edit-data-error.rst:
+
+Problem (Abstract)
+------------------
+
+SQL0551N authorization ID does not have the required authorization or privilege when Windows DB2 Server running under Domain account while member of local DB2ADMINS group
+
+Symptom
+-------
+
+SQL0551N The statement failed because the authorization ID does not have the required authorization or privilege to perform the operation. Authorization ID: "". Operation:
+"". Object: "". SQLSTATE=42501
+
+.. image:: /notes/db2/db2_data_studio/ibm_data_studio_static/edit_data_error.PNG
+
+Cause
+-----
+
+The symptom happened that SAMPLE is created using Windows Domain ID (i.e. ZEYUAN HU), 
+which can tell from the default schema. But when connecting with SAMPLE through Data
+Studio, you are using user ID: db2admin, which is shown below:
+
+.. image:: /notes/db2/db2_data_studio/ibm_data_studio_static/edit_data_error_cause.PNG
+
+
+Detailed Explanation
+--------------------
+
+DB2 doesn't use created user ids like other databases do. It looks to the underlying
+operating system or LDAP for authentication. In the Unix/Linux environment, the
+instance Id that is the highest ID administratively is what ID the instance is set up
+to run as. Your db2admin account is this account. That being said....Windows
+introduces a different security scheme. Even though the instance ID exists, whoever
+installed the product (their user ID) tends to be granted high administrative powers
+in DB2. And when you issue the CREATE DATABASE statement, you are doing it with your
+Windows user ID. Therefore, it becomes the owner of the database and has DBADM,
+SECADM, DATAACCESS, and ACCESSCTRL granted to it. db2admin will generally have DBADM 
+WITHOUT DATAACCESS WITHOUT ACCESSCTRL. So you would need to log in as Nenad (the ID
+with SECADM) and grant (to be safe) DBADM, SECADM, DATAACCESS, ACCESSCTRL to user
+db2admin. Now that ID should have what you are looking for.
+
+I don't recommend those privileges for just any ID. If all you need is access to 
+read/write to tables then DATAACCESS alone should do it.
+
+
+Resolving the problem
+---------------------
+
+There are two ways to fix the problem:
+
+1. connecting with SAMPLE through Data Studio using Windows Domain ID (i.e ZEYUAN HU)
+
+.. image:: /notes/db2/db2_data_studio/ibm_data_studio_static/edit_data_error_fix1.PNG
+
+2. As Windows Domain ID (i.e. ZEYUAN HU), grant the appropriate permissions to user ID:
+   db2admin
+   
+   This can be done as following:
+   
+		1. ``db2 connect to sample user 'ZEYUAN HU' using 'password'``
+
+			or  ``db2 connect to sample``
+			
+			.. note :: both case will use Windows Domain ID to connect with SAMPLE
+			
+		2. ``db2 grant DATAACCESS on DATABASE to user db2admin``
+
+		
+Read more
+---------
+
+1. `IBM Data Studio can't browse data on SAMPLE (DB2 Express-C)`__
+
+	__ db2_edit_data_error_ans1_
+	
+2. `How do I grant all privileges to local db2admin with DB2 9.7 on Windows?`__
+
+	__ db2_edit_data_error_ans2_
+
+3. `DB2 10.1 fundamentals certification exam 610 prep, Part 2: DB2 security`__
+
+	__ db2_tut_part2_
+
+
+
+.. include:: /notes/db2/links.rst

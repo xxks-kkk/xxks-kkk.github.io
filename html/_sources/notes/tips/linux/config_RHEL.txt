@@ -1,0 +1,459 @@
+.. _config-RHEL:
+
+.. note:: 
+
+        **A short note on RHEL installation**
+
+        Please make sure the RAID is created and detectable when booting BIOS. In system X3655, this is done
+        through IBM utitlity tool, which is accessed by "Ctrl" + "A".
+
+Configure RHEL
+==============
+
+Start an OpenSSH Server
+-----------------------
+
+Each time you reboot RHEL, you need to start an OpenSSH Server so that the RHEL can be remotely login via ssh and
+transfered files using sftp
+::
+
+        service sshd start
+
+Config repository 
+--------------------
+[#f1]_
+
+1.0 About RPMforge repository
+
+        RPMforge repository is a utility that is used to
+        install third party software packages under Red
+        Hat Enterprise Linux (RHEL). It provides more
+        than 5000 software packages in the rpm format for
+        these Linux distributions.
+
+1.1 Add rpmforge repository
+
+        1.1.1 check RHEL version
+        
+                .. code-block:: bash
+        
+                        lsb_release -i -r
+
+        1.1.2 verify whether it is a 32 bit or 64 bit system
+
+                .. code-block:: bash
+
+                        uname -a
+
+                32 bit system show i686 / i386
+                64 bit system show x86_64
+
+        1.1.3 install RPMForge Repository
+
+                For RHEL 64 bit
+
+                .. code-block:: bash
+
+                        wget http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
+                        rpm -Uvh rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm  
+                                  
+                .. note::
+
+                        The RPMForge repository will be installed under ``/etc/yum.repod`` directory
+                        as a file rpmforge.repo
+
+        1.1.4 importing RPMForge Repository Key
+
+                Need to download and install DAG's GPG key for system.                
+
+                .. code-block:: bash
+
+                        wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
+                        rpm --import RPM-GPG-KEY.dag.txt
+                
+                .. note::
+
+                        The imported GPG key stored under ``/etc/pki/rpm-gpg`` directory as a file
+                        RPM-GPG-KEY-rpmforge-dag
+
+        1.1.5 enable RPMForge Repository key
+
+                .. code-block:: bash
+
+                        vi /etc/yum.repos.d/rpmforge.repo
+
+                Change ``enabled=0`` to ``enabled=1``
+
+        1.1.6 verify RPMForge enabled
+
+                .. code-block:: bash
+
+                        yum repolist all
+
+1.2 Reference
+
+        .. [#f1] `enable rpmforge repository <http://www.tecmint.com/enable-rpmforge-repository/>`_        
+
+
+Resolve package update conflict
+----------------------------------
+
+        Sometimes when updating software, you will get update package conflict, this usually due to
+        the same package for different architecture (i.e. x86, i386). 
+
+        For example,
+
+        .. code-block:: bash
+
+                Test Transaction Errors:   file /usr/share/man/man1/telnet.1.gz from install of telnet-1:0.17-48.el6.x86_64 conflicts with file from package telnet-1:0.17-39.el5.i386
+ 
+                 file /etc/xinetd.d/telnet from install of telnet-server-1:0.17-48.el6.x86_64 conflicts with file from package telnet-server-1:0.17-39.el5.i386
+
+                file /usr/share/man/man5/issue.net.5.gz from install of telnet-server-1:0.17-48.el6.x86_64 conflicts with file from package telnet-server-1:0.17-39.el5.i386
+  
+                file /usr/share/man/man8/in.telnetd.8.gz from install of telnet-server-1:0.17-48.el6.x86_64 conflicts with file from package telnet-server-1:0.17-39.el5.i386
+
+        To fix this, one simply needs to remove one package for one arch. 
+
+        For exmaple,
+
+        .. code-block:: bash
+
+                yum erase telnet.i386
+                yum erase telnet-server.i386
+
+Resolve package dependency during package update
+---------------------------------------------------
+
+        Please check if dependency packages included in exclude list in yum.conf (i.e. ``exclude=``)
+
+		
+        .. code-block:: bash
+
+                vi /etc/yum.conf
+
+Config IP
+------------
+
+.. note::
+
+	Applicable to Ring 2nd floor server room. Not sure about the other scenarios.
+	
+Example info::
+
+	IP address: 9.123.110.252
+	Net mask: 255.255.255.0
+	Gateway: 9.123.110.1
+	DNS: 9.0.146.50
+	
+1. Start ``nmtui``
+2. "Edit a connection" then fill out like following ::
+	
+	      "Profile name" enp22s3
+		  "Device"       enp22s3 (00:14:5E:5A:E3:C0)
+
+		- ETHERNET                                       <Show>
+		
+		- IPv4 CONFIGURATION <Manual>
+                 "Addresses" 9.123.110.252/24
+                             <Add...>
+				  "Gateway"  9.123.110.1
+			   "DNS servers" 9.0.146.50
+                             <Add...>
+            "Search domains" <Add...>
+
+                   "Routing" (No custom routes) <Edit...>
+        [ ] Never use this network for default
+        [X] Require IPv4 addressing for this connection
+		
+	    - IPv6 CONFIGURATION <Link-Local>                 <Show>
+		
+		[X] Automaitcally connect
+		[X] Available to all users
+		
+													<Cancel><OK>
+													
+3. ``vi /etc/sysconfig/network-scripts/ifcfg-enp22s3``
+	
+	   ::
+	   
+			DEVICE=enp22s3
+			BOOTPROTO=static
+			ONBOOT=yes
+			PREFIX=24
+			IPADDR=9.123.110.252
+			DNS=9.0.146.50
+			GATEWAY=9.123.110.1
+			NETMASK=255.255.255.0
+			
+4. ``systemctl restart network``
+	
+5. [optional] ``ping 9.123.110.1`` ping gateway to see if above config works.
+	
+6. [optional] ``ping 9.181.24.1`` ping other ip address to see if above config works.
+	
+7. ``iptables -F``, ``iptables -Z``, ``iptables -X``  turn off RHEL firewall
+
+Using official Redhat DVD as repository
+------------------------------------------
+
+.. note::
+
+     More on this please reference the following `link <http://how-to.linuxcareer.com/creating-a-redhat-package-repository>`_ 
+
+1. check the mount disc info
+
+::
+
+    [root@localhost ~]# mount | grep iso9660
+    /dev/sr0 on /run/media/iidev20/RHEL-7.1 Workstation.x86_64 type iso9660 (ro,nosuid,nodev,relatime,uid=1000,gid=1000,iocharset=utf8,mode=0400,dmode=0500,uhelper=udisks2)
+ 
+2. The information interests us the most is ``/run/media/iidev20/RHEL-7.1 Workstation.x86_64``
+
+3. Define our new repoistory pointing to the ``/run/media/iidev20/RHEL-7.1 Workstation.x86_64`` by creating a repository
+entry in ``/etc/yum.repos.d/``
+
+.. code-block:: shell
+
+        vi /etc/yum.repos.d/rhel_disc.repo
+
+Enter the following information
+
+::
+
+        [rhel_disc]
+        name=RHEL_7.1_x86_64_Disc
+        baseurl="file:///run/media/iidev20/RHEL-7.1 Workstation.x86_64/"
+        gpgcheck=0
+
+4. verify by ``yum repolist``
+
+
+Setup local yum repo to install software
+-------------------------------------------
+
+.. note::
+
+	Applicable to Ring 2nd floor server room because it has no internet access.
+
+.. note::
+
+        More on this please reference the following `link <http://how-to.linuxcareer.com/creating-a-redhat-package-repository>`_ 
+
+1. install ``createrepo`` package. If the following output nothing indicates that the package is currently not 
+present in the system.
+
+.. code-block:: shell
+
+        yum list installed | grep createrepo
+
+::
+
+        [root@localhost ~]# yum list installed | grep createrepo
+        createrepo.noarch                      0.9.9-23.el7                @anaconda/7.1
+
+2. create local file directory as local file repository. For example, create a new directory called ``/rhel_repo``:
+
+.. code-block:: shell
+
+        mkdir /rhel_repo
+
+3. copy all packages from your mounted RHEL DVD to your new directory:
+
+.. code-block:: shell
+
+        cp /run/media/iidev20/RHEL-7.1\ Workstation.x86_64/Packages/* /rhel_repo/
+
+4. ``createrepo /rhel_repo/``
+
+5. ``vi /etc/yum.repos.d/rhel_repo.repo``
+
+::
+
+        [rhel_repo]
+        name=rphel_repo
+        baseurl="file:///root/rhel_repo/"
+        gpgcheck=0
+
+6. verify by ``yum repolist``
+
+
+Install vncserver
+--------------------
+
+1. ``yum install vnc-server``
+
+2. start vncserver by ``vncserver``
+
+3. make sure all firewall turn off: ``iptables -X``, ``iptables -F``, ``iptables -Z`` 
+
+Install VMware-Workstation-Full-9.0.3-1410761.x86_64.bundle
+--------------------------------------------------------------
+
+.. warning::
+
+        | Kernel Level: 3.10.0-229.el7.x86_64      (``uname -r``)
+        | OS: Red Hat Enterprise Linux Workstation release 7.1 (Maipo) (``cat /etc/redhat-release``)
+        | VMware: VMware-Workstation-Full-9.0.3
+ 
+.. note::
+
+        | The following has high chance to work on 3.X kernels. You may need to consult with following websites besides
+        | google:
+
+        | 1. <VMware configure tool post installation> https://github.com/rasa/vmware-tools-patches
+        | 2. <VMware other patches> http://pkgbuild.com/git/aur-mirror.git/plain/vmware-patch
+        | 3. <Prototype I consult> https://gist.github.com/xaitax/6001609
+        
+
+1. ``chmod 755 VMware-Workstation-Full-9.x.x.x86_64.bundle``
+
+2. ``./VMware-Workstation-Full-9.x.x.x86_64.bundle``
+
+3. Installer will run, and GUI prompts up. Accept all the default value, and click *install*.
+
+.. note::
+
+        so far, you can reference http://www.itzgeek.com/how-tos/linux/centos-how-tos/install-vmware-workstation-9-on-centos-6-rhel-6.html
+
+4. ``yum install kernel-headers kernel-devel gcc``
+
+5. make symbolic links (i.e. ``build`` ``source``)
+
+.. code-block:: shell
+
+        cd /lib/modules/3.10.0-229.el7.x86_64/
+        rm -f source build
+        ln -s /usr/src/kernels/3.10.0-229.el7.x86_64 build
+        ln -s build source
+       
+::
+
+        [root@localhost 3.10.0-229.el7.x86_64]# ll -ls
+        total 2600
+          0 lrwxrwxrwx.  1 root root     38 Dec 15 03:19 build -> /usr/src/kernels/3.10.0-229.el7.x86_64
+          0 lrwxrwxrwx.  1 root root      5 Dec 15 01:44 source -> build
+ 
+6. patch the kernel
+
+.. note:: 
+
+        These are steps I follow to just make the VMware workstation work. It will surely include **some
+        redundant** steps but I haven't tested them out. I will notify the suspicious skippable steps whenever
+        needed.
+
+|
+
+        6.0 Install patch ``yum install patch``
+
+        6.1 Files that you need to use to work with:
+
+        | :download:`fix_vmware.sh <vmware/fix_vmware.sh>`
+        | :download:`vmblock-9.0.2-5.0.2-3.10.diff <vmware/vmblock-9.0.2-5.0.2-3.10.diff>`
+        | :download:`vmnet-9.0.2-5.0.2-3.10.patch <vmware/vmnet-9.0.2-5.0.2-3.10.patch>`
+        | :download:`vmnet2.patch <vmware/vmnet2.patch>`       
+
+        6.2 
+
+        | Place **fix_vmware.sh** under ``/root``; 
+        | Place **vmblock-9.0.2-5.0.2-3.10.diff** under ``/home/iidev20/Downloads/``
+        | Place **vmnet-9.0.2-5.0.2-3.10.patch** under ``/home/iidev20/Downloads/``
+        | Place **vmnet2.patch** under ``/home/iidev20/Downloads/``
+
+        .. note::
+
+                Technically, you don't need to place *vmblock-9.0.2-5.0.2-3.10.diff*, *vmnet-9.0.2-5.0.2-3.10.patch*,
+                *vmnet2.patch* under ``/home/iidev20/Downloads/`` because *vmnet2.patch* doesn't get invoked by
+                *fix_vmware.sh*, you need to manually play around with it (more on this later). Path to 
+                *vmblock-9.0.2-5.0.2-3.10.diff*, *vmnet-9.0.2-5.0.2-3.10.patch* is hard coded in *fix_vmware.sh*. 
+                If you don't place them under the specified path above, you need to modify *fix_vmware.sh* on your own.
+
+        6.3 ``cd /root`` and run ``./fix_vmware.sh``. Here, you may still see that kernel doesn't get compiled correctly. and you
+        can see the following error message
+
+        ::
+
+                /tmp/modconfig-j1rFI9/vmnet-only/filter.c: At top level:
+                /tmp/modconfig-j1rFI9/vmnet-only/filter.c:206:1: error: conflicting types for ‘VNetFilterHookFn’
+                VNetFilterHookFn(unsigned int hooknum,                 // IN:
+                ^
+
+        That is OK. The reason is **vmnet-9.0.2-5.0.2-3.10.patch** doesn't patch correctly. We will handle this next step.
+
+        6.4 Open *vmnet2.patch* and follow the content in *vmnet2.patch* to manually edit *filter.c* under 
+        */usr/lib/vmware/modules/source/vmnet-only/*.
+
+        .. note::
+
+                | 1. You need to ``tar -xvf vmnet.tar`` under ``/usr/lib/vmware/modules/source`` before you can see 
+                     ``vmnet-only/`` directory.
+                | 2. This indicates that probably *vmnet-9.0.2-5.0.2-3.10.patch* doesn't do anything, 
+                     which is skippable in the previous step.
+                | 3. I reference the following link for this step: http://rglinuxtech.com/?p=1008
+
+        Detailed steps as following:
+
+        | 6.4.0 ``cd /usr/lib/vmware/modules/source``
+        | 6.4.1 ``tar -xvf /usr/lib/vmware/modules/source/vmnet.tar``
+        | 6.4.2 ``cd vmnet-only``
+        | 6.4.3 edit ``filter.c`` following *vmnet2.patch*
+        | 6.4.4 ``tar -cf vmnet.tar vmnet-only``
+
+7. Recompile ``vmware-modconfig --console --install-all`` to see that all work out well.          
+
+8. Register the product: ``/usr/lib/vmware/bin/vmware-vmx-debug --new-sn xxxxx-xxxxx-xxxxx-xxxxx-xxxxx``
+
+.. note::
+
+        reference: http://mergy.org/2013/03/three-tips-to-get-vmware-workstation-9-going-on-kernel-3-8-0/
+
+
+uninstall VMware-Workstation-Full-9.0.3
+------------------------------------------
+
+1. ``vmware-installer -u vmware-workstation``
+
+Setup HDP
+-------------
+
+.. note::
+
+        VNC Viewer will block "Alt" button. So, whenever "Alt" is needed. Press "F8" to bring up
+        VNC menu, then check "Alt" row, which will let VNC Viewer send "Alt" when you type. Then
+        press "F5" to enter HDP.
+
+1. Right click on "HDP_Sandbox" under "My computer" and brings up **setting**
+
+2. Under **setting**, check **"Bridged: Connected directly to the physical network"** and **"Replicate physcial network
+connection state"**
+
+.. note:: 
+
+        Basically, virtual machines with bridged network connections are just like any other physical
+        server on the network. Then, you can config your HDP network just like configuring network for
+        a physical machine.
+
+.. seealso::
+
+        http://www.virtualizationadmin.com/articles-tutorials/vmware-server-workstation-player-articles/understanding-virtual-networking-vmware-workstation-9.html
+
+3. Login to HDP, and we can config the IP address like we did for a physical machine.
+
+4. ``ifconfig`` to see what Network interface available to us. In my case, I can see ``eth1`` and ``Io`` avialable.
+
+5. ``vi /etc/sysconfig/network-scripts/ifcfg-eth1`` and enter the following text (**sample**)
+
+::
+
+        DEVICE="eth1"
+        BOOTPROTO=static
+        ONBOOT=yes
+        PREFIX=24
+        IPADDR=9.181.139.59
+        DNS=9.0.146.50
+        GATEWAY=9.181.139.1
+        NETMASK=255.255.255.0
+
+6. Restart network ``service network restart``
+
+7. Turn off firewall: ``iptables -X``. ``iptables -Z``, ``iptables -F``

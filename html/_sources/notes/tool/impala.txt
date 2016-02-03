@@ -1,0 +1,84 @@
+.. _impala.rst:
+
+######################
+Impala common commands
+######################
+
+Last Update: |today|
+
+
+1. list all tables in specific database
+
+.. code-block:: bash
+
+        SHOW TABLES [IN database_name] [[LIKE] 'pattern']
+
+2. Drop table
+
+.. code-block:: bash
+
+        DROP TABLE [IF EXISTS] [db_name.]table_name
+		
+3. create table from external csv file 
+(see Huang Xue's "FS and Impala" in FS QA DB for detail)
+
+	1. mkdir in hdfs
+	
+	.. code-block:: bash
+	
+		hdfs dfs -mkdir -p /user/cloudera/sample_data/tab1
+	
+	2. put tab1.csv into hdfs dir
+	
+	.. code-block:: bash
+	
+		hdfs dfs -mkdir -p /user/cloudera/sample_data/tab1
+		
+	3. create external table in impala-shell:
+	
+	.. code-block:: bash
+	
+		CREATE EXTERNAL TABLE tab1
+			(
+			id INT,
+			col_1 BOOLEAN,
+			col_2 DOUBLE,
+			col_3 TIMESTAMP
+			)
+			ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+			LOCATION '/user/cloudera/sample_data/tab1';
+
+4. ``VARCHAR(N)`` in Impala doesn't append blanks to stored data to meet length of N but ``CHAR(N)`` does. 
+   This reflects in the server options ``DB2_VARCHAR_BLANKPADDED_COMPARISON`` and
+   ``DB2_CHAR_BLANKPADDED_COMPARISON``.
+        
+        Example: 
+                Suppose in Impala, I have a table t1 with two columns: c1 VARCHAR(10), c2 
+                CHAR(3). There is only one row ('12345', 'F').
+
+                If I do the selection:
+
+                        .. code-block:: sql
+
+                                SELECT c2 FROM t1 WHERE c1='12345  ';
+
+                This selection returns nothing because ``'12345  '`` has length of 7 (5 digits plus
+                2 blanks). But, the data in table has ``'12345'``. They do not match because they 
+                are different by two blanks. 
+
+                However, if I do the selection:
+
+                        .. code-block:: sql
+
+                                SELECT c1 FROM t1 WHERE c2='F  ';
+
+                This selection returns '12345' because ``'F  '`` has lenght of 3 (1 char plus 2 blanks).
+                Even though the data in table is ``'F'`` but since the column type is CHAR(3) and ``'F'`` only
+                has length of 1. So, Impala will add two additional blanks to ``'F'`` in order to meet with
+                CHAR(3) requirement in terms of length. 
+
+                .. note::
+
+                        Notice that ``'F    '`` (1 char plus 3 blanks) or ``'F'`` (1 char without blanks), the
+                        2nd selection SQL won't return anything because the predicate in SQL has to match
+                        with column lenghth (i.e. CHAR(3)) exactly. 

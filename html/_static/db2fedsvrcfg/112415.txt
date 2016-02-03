@@ -1,0 +1,152 @@
+in db2odbct_statement.C:
+
+retcode = (m_driver->m_fpSQLFetch)(m_hstmt);
+
+retcode=100, which represents SQL_NO_DATA_FOUND
+
+???????? TODO: really need to figure out what SQLFetch does: https://msdn.microsoft.com/en-us/library/ms712424%28v=vs.85%29.aspx
+
+*********
+Reading**
+*********
+
+statement handle: https://www-01.ibm.com/support/knowledgecenter/SSEPEK_11.0.0/com.ibm.db2z11.doc.odbc/src/tpc/db2z_allochnd.dita
+				  https://msdn.microsoft.com/en-us/library/ms711842%28v=vs.85%29.aspx
+				 
+SQLFetch: https://www-01.ibm.com/support/knowledgecenter/SSEPEK_11.0.0/com.ibm.db2z11.doc.odbc/src/tpc/db2z_fnfetch.dita
+
+SQLBindCol: https://www-01.ibm.com/support/knowledgecenter/SSEPEK_11.0.0/com.ibm.db2z11.doc.odbc/src/tpc/db2z_fnbindcol.dita
+
+mssql:
+
+ Column length: 254
+ 446 440 2015/11/24 20:53:40         Column nullability: 1
+ 447 441 2015/11/24 20:53:40         Fetched data: mssql2005db1
+ 448 442 2015/11/24 20:53:40         Fetched data: j15user1
+ 449 443 2015/11/24 20:53:40         Fetched data: IITEST1
+ 450 444 2015/11/24 20:53:40         Fetched data: TABLE
+ 451 445 2015/11/24 20:53:40         Fetched data:
+ 452 446 2015/11/24 20:53:40  [<-] Tuning_Statement::fetch
+ 453 447 2015/11/24 20:53:40  [<-] Tuning_Statement::describe_table
+ 454 448 2015/11/24 20:53:40  [<-] Tuning_Describe_Operation::describe_table
+ 455 449 2015/11/24 20:53:40         Catalog name: mssql2005db1
+ 456 450 2015/11/24 20:53:40         Table schema: j15user1
+ 457 451 2015/11/24 20:53:40         Table name: IITEST1
+ 458 452 2015/11/24 20:53:40         Table type: TABLE
+ 459 453 2015/11/24 20:53:40         Remarks:
+ 
+Impala:
+
+128 2015/11/24 23:05:52         Column nullability: 1
+ 133 129 2015/11/24 23:05:52         column type:12 is indeed SQL_VARCHAR
+ 134 130 2015/11/24 23:05:52         retcode: 0
+ 135 131 2015/11/24 23:05:52         Column name: REMARKS
+ 136 132 2015/11/24 23:05:52         Column type: 12
+ 137 133 2015/11/24 23:05:52         Column length: 254
+ 138 134 2015/11/24 23:05:52         Column nullability: 1
+ 139 135 2015/11/24 23:05:52         column type:12 is indeed SQL_VARCHAR
+ 140 136 2015/11/24 23:05:52         retcode: 0
+ 141 137 2015/11/24 23:05:52         retcode after m_fpSQLFetch: 100
+ 142 138 2015/11/24 23:05:52  [->] Tuning_Connection::report_error
+ 143 139 2015/11/24 23:05:52         ODBC native error: 0
+ 144 140 2015/11/24 23:05:52         ODBC sqlstate:
+ 145 141 2015/11/24 23:05:52         ODBC message text:
+ 146 142 2015/11/24 23:05:52  [<-] Tuning_Connection::report_error
+ 147 143 2015/11/24 23:05:52         ---[ODBC Error]-------------------------------------------------------
+ 148  Native Error Code    = 0
+ 149  SQLSTATE             =
+ 150  Message              =
+ 151 ----------------------------------------------------------------------
+ 152 144 2015/11/24 23:05:52         No data found
+ 153 145 2015/11/24 23:05:52  [<-] Tuning_Statement::fetch
+ 154 146 2015/11/24 23:05:52         Failure in the fetch of describe_table.
+ 155 147 2015/11/24 23:05:52  [<-] Tuning_Statement::describe_table
+ 156 148 2015/11/24 23:05:52         Return code: 2
+ 
+!!!!!make fetch function work is **ESSENTIAL** to make this tool work: !!!!
+
+mssql:
+
+589 2015/11/24 20:53:40  [->] Tuning_Qurey_Operation::fetch
+ 601 590 2015/11/24 20:53:40  [->] Tuning_Statement::fetch
+ 602 591 2015/11/24 20:53:40  [->] Tuning_Statement::number_result_columns
+ 603 592 2015/11/24 20:53:40         Number of result columns: 1
+ 604 593 2015/11/24 20:53:40  [<-] Tuning_Statement::number_result_columns
+ 605 594 2015/11/24 20:53:40         Column name: IT1C6
+ 606 595 2015/11/24 20:53:40         Column type: 12
+ 607 596 2015/11/24 20:53:40         Column length: 10
+ 608 597 2015/11/24 20:53:40         Column nullability: 1
+ 609 598 2015/11/24 20:53:40         Fetched data: Liu
+ 610 599 2015/11/24 20:53:40         Fetched data: 12345
+ 611 600 2015/11/24 20:53:40         Fetched data: King
+ 612 601 2015/11/24 20:53:40  [<-] Tuning_Statement::fetch
+ 613 602 2015/11/24 20:53:40  [<-] Tuning_Qurey_Operation::fetch
+ 614 603 2015/11/24 20:53:40  [->] Tuning_Connection::commit
+ 615 604 2015/11/24 20:53:40  [<-] Tuning_Connection::commit
+ 616 605 2015/11/24 20:53:40         *** String data validation success!
+ 617 
+ 618 606 2015/11/24 20:53:40         *** String data validation success!
+ 619 
+ 620 607 2015/11/24 20:53:40         *** String data validation success!
+ 
+ ####################
+ Why fetch important?
+ ####################
+ 
+ call stack:
+ 
+ 1. db2odbct.C
+ ::
+ int get_optimized_server_options(
+  INPUT_PARMS a_input_params,
+  Tuning_Server_Option_List **a_server_option_list)
+  
+-----------------------------------------------------------------
+  
+        if (a_input_params.mode & TUNING_SKIP_PREPARE)
+        {
+            rc = analyze_data_source(connection,
+                                *a_server_option_list,
+                                table_list,
+                                true);
+		}
+
+.. note::
+
+	if ``false``, then tool will hang (run from 5:30pm yesterday to 9:30am today, no result produce)
+		
+2. db2odbct2.C
+::
+int analyze_data_source( Tuning_Connection         *a_conn,
+                         Tuning_Server_Option_List *a_svropt_list,
+                         Tuning_Table_List         *a_table_list,
+                         bool                       a_validation_needed )
+ 
+      
+	  //----------------------------------------------------------------
+      // Validate for each server option
+      //----------------------------------------------------------------
+      if (a_validation_needed == true)
+      {
+        rc = analyzer->validate(option);
+      }
+	  
+	  if (rc == RC_OK)
+      {
+        //----------------------------------------------------------------
+        // Analysis for each server option
+        //----------------------------------------------------------------
+        rc = analyzer->analyze(option);
+		
+		
+3. db2odbct_analyze.C
+::
+
+int Tuning_Server_Option_Analyzer::analyze(Tuning_Server_Option_Info *a_option)
+
+
+logic I:
+
+              // Retrieve result for judgement.
+              rc = operation->fetch(&result_list);
+			  

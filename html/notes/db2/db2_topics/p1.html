@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>What does group by with multiple column mean? &mdash; Zeyuan&#39;s IBM Docs</title>
+    
+    <link rel="stylesheet" href="../../../_static/traditional.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Zeyuan&#39;s IBM Docs" href="../../../index.html" />
+    <link rel="up" title="DB2 Related" href="../db2.html" />
+    <link rel="next" title="SQL Aggregate Functions vs. Scalar Functions" href="p2.html" />
+    <link rel="prev" title="Unique Expression-based Index" href="p0.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="p2.html" title="SQL Aggregate Functions vs. Scalar Functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="p0.html" title="Unique Expression-based Index"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Zeyuan&#39;s IBM Docs</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../notes.html" >Notes</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../db2.html" accesskey="U">DB2 Related</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="what-does-group-by-with-multiple-column-mean">
+<span id="p1-rst"></span><h1>What does group by with multiple column mean?<a class="headerlink" href="#what-does-group-by-with-multiple-column-mean" title="Permalink to this headline">¶</a></h1>
+<p>reference: <a class="reference external" href="http://stackoverflow.com/questions/2421388/using-group-by-on-multiple-columns">http://stackoverflow.com/questions/2421388/using-group-by-on-multiple-columns</a></p>
+<p><a class="reference download internal" href="../../../_downloads/p1.clp"><code class="xref download docutils literal"><span class="pre">Example</span> <span class="pre">clp</span></code></a></p>
+<div class="topic">
+<p class="topic-title first">Key highlight</p>
+<p><strong>Group by X</strong> means <strong>put all those with the same value for X in the one group</strong>
+<strong>Group by X,Y</strong> means <strong>put all those with the same values for both X and Y in the one group</strong></p>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s say we have the following table, to do with who is attending what subject at a university</p>
+<div class="highlight-python"><div class="highlight"><pre>Table: Subject_Selection
+
+Subject   Semester   Attendee
+---------------------------------
+ITB001    1          John
+ITB001    1          Bob
+ITB001    1          Mickey
+ITB001    2          Jenny
+ITB001    2          James
+MKB114    1          John
+MKB114    1          Erica
+</pre></div>
+</div>
+<p>When you use group by on the subject column only</p>
+<div class="highlight-python"><div class="highlight"><pre>select subject, count(*) from p1.subject_selection group by subject
+
+SUBJECT                        2
+------------------------------ -----------
+ITB001                                   5
+MKB114                                   2
+
+2 record(s) selected.
+</pre></div>
+</div>
+<p>because there are 5 entries for ITB001, and 2 for MKB114</p>
+<p>If we use group by two columns</p>
+<div class="highlight-python"><div class="highlight"><pre>select subject, semester, count(*) from p1.subject_selection group by subject, semester
+
+SUBJECT                        SEMESTER                       3
+------------------------------ ------------------------------ -----------
+ITB001                         1                                        3
+ITB001                         2                                        2
+MKB114                         1                                        2
+
+3 record(s) selected.
+</pre></div>
+</div>
+<p>This is becase, when we group by two columns, it is saying &#8220;Grouping them so that all of those with the same
+subject and semester are in the same group, and then calculate all the aggregate functions for each of those groups&#8221;.
+In this example, there are three people doing ITB001 in semester 1, and two doing it in semester 2. Both of the people
+doing MKB114 are in semester 1.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">What does group by with multiple column mean?</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="p0.html"
+                        title="previous chapter">Unique Expression-based Index</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="p2.html"
+                        title="next chapter">SQL Aggregate Functions vs. Scalar Functions</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="p2.html" title="SQL Aggregate Functions vs. Scalar Functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="p0.html" title="Unique Expression-based Index"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Zeyuan&#39;s IBM Docs</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../notes.html" >Notes</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../db2.html" >DB2 Related</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015-2016, Zeyuan Hu.
+      Last updated on Feb 03, 2016.
+    </div>
+  </body>
+</html>

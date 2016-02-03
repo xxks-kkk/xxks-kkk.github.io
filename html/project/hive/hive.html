@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>hive data source investigation &mdash; Zeyuan&#39;s IBM Docs</title>
+    
+    <link rel="stylesheet" href="../../_static/traditional.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Zeyuan&#39;s IBM Docs" href="../../index.html" />
+    <link rel="up" title="Projects" href="../project.html" />
+    <link rel="next" title="Notes" href="../../notes/notes.html" />
+    <link rel="prev" title="db2fedsvrcfg TOOL &amp; hive" href="../db2fedsvrcfg/db2fedsvrcfg_hive.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../notes/notes.html" title="Notes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../db2fedsvrcfg/db2fedsvrcfg_hive.html" title="db2fedsvrcfg TOOL &amp; hive"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Zeyuan&#39;s IBM Docs</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../project.html" accesskey="U">Projects</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hive-data-source-investigation">
+<span id="hive-rst"></span><h1>hive data source investigation<a class="headerlink" href="#hive-data-source-investigation" title="Permalink to this headline">¶</a></h1>
+<p>Last update: February 03, 2016</p>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first"><a class="reference internal" href="#data-type"><span>data type mapping</span></a></p>
+</li>
+<li><p class="first"><a class="reference internal" href="#func-mapping"><span>function type mapping</span></a></p>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="#server-opt"><span>server options related</span></a></dt>
+<dd><ol class="first last arabic simple">
+<li><code class="docutils literal"><span class="pre">db2fedsvrcfg</span></code> tool (ODBC-&gt;Hive)</li>
+<li>based upon tool result, manually run the test queries through FS
+(FS-&gt;ODBC-&gt;Hive)</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><p class="first"><a class="reference internal" href="#custom-odbc"><span>Customization to ODBC wrapper</span></a></p>
+</li>
+</ol>
+</div>
+<div class="section" id="data-type-mapping">
+<span id="data-type"></span><h2>Data type mapping<a class="headerlink" href="#data-type-mapping" title="Permalink to this headline">¶</a></h2>
+<div class="topic">
+<p class="topic-title first">modified files</p>
+<div class="line-block">
+<div class="line">/vbs/engn/sqqg_odbc/inc/sqlqg_hive_attributes.h</div>
+<div class="line">/vbs/engn/sqqg/sqlqg_misc_relserver.C</div>
+</div>
+</div>
+<ul class="simple">
+<li><strong>tm.ppt</strong> (&#8220;DB2 Information Integrator- How does Type Mapping work? From wrapper&#8217;s perspective) really useful</li>
+<li><a class="reference download internal" href="../../_downloads/Hive-Data-Type-mapping.html"><code class="xref download docutils literal"><span class="pre">Hive</span> <span class="pre">Data</span> <span class="pre">Type</span> <span class="pre">Mapping</span> <span class="pre">development</span> <span class="pre">log</span></code></a></li>
+<li><a class="reference download internal" href="../../_downloads/hive-data-type-mapping.xls"><code class="xref download docutils literal"><span class="pre">Hive</span> <span class="pre">Data</span> <span class="pre">Type</span> <span class="pre">Mapping</span> <span class="pre">investigation</span></code></a></li>
+</ul>
+</div>
+<div class="section" id="function-mapping">
+<span id="func-mapping"></span><h2>Function mapping<a class="headerlink" href="#function-mapping" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference download internal" href="../../_downloads/hive-func-mapping.xls"><code class="xref download docutils literal"><span class="pre">Hive</span> <span class="pre">function</span> <span class="pre">mapping</span> <span class="pre">summary</span></code></a></p>
+</div>
+<div class="section" id="server-options">
+<span id="server-opt"></span><h2>Server Options<a class="headerlink" href="#server-options" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="customization-odbc-wrapper">
+<span id="custom-odbc"></span><h2>Customization ODBC wrapper<a class="headerlink" href="#customization-odbc-wrapper" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="nnstat">
+<h2>NNSTAT<a class="headerlink" href="#nnstat" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">hive data source investigation</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#data-type-mapping">Data type mapping</a></li>
+<li><a class="reference internal" href="#function-mapping">Function mapping</a></li>
+<li><a class="reference internal" href="#server-options">Server Options</a></li>
+<li><a class="reference internal" href="#customization-odbc-wrapper">Customization ODBC wrapper</a></li>
+<li><a class="reference internal" href="#nnstat">NNSTAT</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../db2fedsvrcfg/db2fedsvrcfg_hive.html"
+                        title="previous chapter">db2fedsvrcfg TOOL &amp; hive</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../../notes/notes.html"
+                        title="next chapter">Notes</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../notes/notes.html" title="Notes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../db2fedsvrcfg/db2fedsvrcfg_hive.html" title="db2fedsvrcfg TOOL &amp; hive"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Zeyuan&#39;s IBM Docs</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../project.html" >Projects</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015-2016, Zeyuan Hu.
+      Last updated on Feb 03, 2016.
+    </div>
+  </body>
+</html>

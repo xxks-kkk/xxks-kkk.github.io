@@ -1,0 +1,63 @@
+.. _hive.rst:
+
+##############################
+hive data source investigation
+##############################
+
+Last update: |today|
+
+********
+Overview
+********
+
+1. :ref:`data type mapping <data-type>`
+2. :ref:`function type mapping <func-mapping>`
+3. :ref:`server options related <server-opt>`
+        1. ``db2fedsvrcfg`` tool (ODBC->Hive)
+        2. based upon tool result, manually run the test queries through FS
+           (FS->ODBC->Hive)
+4. :ref:`Customization to ODBC wrapper <custom-odbc>`
+
+
+.. _data-type:
+
+********************
+Data type mapping
+********************
+
+.. topic:: modified files
+
+        | /vbs/engn/sqqg_odbc/inc/sqlqg_hive_attributes.h
+        | /vbs/engn/sqqg/sqlqg_misc_relserver.C
+
+- **tm.ppt** ("DB2 Information Integrator- How does Type Mapping work? From wrapper's perspective) really useful
+
+- :download:`Hive Data Type Mapping development log <Hive-Data-Type-mapping.html>`
+
+- :download:`Hive Data Type Mapping investigation <hive-data-type-mapping.xls>`
+
+.. _func-mapping:
+
+********************
+Function mapping
+********************
+
+:download:`Hive function mapping summary <hive-func-mapping.xls>`
+
+
+.. _server-opt:
+
+*******************
+Server Options
+*******************
+
+
+.. _custom-odbc:
+
+******************************
+Customization ODBC wrapper
+******************************
+
+****************
+NNSTAT
+****************

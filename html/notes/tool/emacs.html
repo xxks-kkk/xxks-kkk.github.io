@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>All about Emacs &mdash; Zeyuan&#39;s IBM Docs</title>
+    
+    <link rel="stylesheet" href="../../_static/traditional.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Zeyuan&#39;s IBM Docs" href="../../index.html" />
+    <link rel="up" title="Notes" href="../notes.html" />
+    <link rel="next" title="Makefile" href="makefile.html" />
+    <link rel="prev" title="Git" href="git.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="makefile.html" title="Makefile"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="git.html" title="Git"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Zeyuan&#39;s IBM Docs</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../notes.html" accesskey="U">Notes</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="all-about-emacs">
+<span id="emacs-rst"></span><h1>All about Emacs<a class="headerlink" href="#all-about-emacs" title="Permalink to this headline">¶</a></h1>
+<p>Last Update: February 03, 2016</p>
+<div class="section" id="emacs-configuration">
+<h2>Emacs Configuration<a class="headerlink" href="#emacs-configuration" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">shell profile (ie. <strong>.bashrc</strong>)</p>
+<div class="highlight-python"><div class="highlight"><pre>## quickly fire up emacs in side terminal
+alias em=&#39;emacs -nw&#39;
+## switch tabs with caps
+/usr/bin/setxkbmap -option &quot;ctrl:swapcaps&quot;
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>.emacs</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>; Start emacs ido mode on default
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
+
+; auto show completions for execute-extended-command
+(icomplete-mode 1)
+
+(global-set-key (kbd &quot;C-x C-b&quot;) &#39;ibuffer) ; replace &quot;list-buffers&quot; with &quot;ibuffer&quot;
+(global-set-key (kbd &quot;&lt;f8&gt;&quot;) &#39;execute-extended-command) ; bind with &#39;M-x&#39; by default
+(global-set-key &quot;\C-m&quot; &#39;newline-and-indent) ; make Emacs auto-indent my C code (stackoverflow)
+(global-set-key (kbd &quot;&lt;home&gt;&quot;) &#39;move-beginning-of-line)
+(global-set-key (kbd &quot;&lt;end&gt;&quot;) &#39;move-end-of-line)
+(global-set-key (kbd &quot;&lt;f5&gt;&quot;) &#39;undo)
+(global-set-key (kbd &quot;&lt;f4&gt;&quot;) &#39;yank)
+
+; disable Emacs welcome screen
+(setq inhibit-startup-message t)
+
+; enable &quot;Which function mode&quot;. It will show you which function cursor is in
+(which-function-mode 1)
+
+; make frequently used commands short
+(defalias &#39;lml &#39;list-matching-lines)
+(defalias &#39;gl &#39;goto-line)
+(defalias &#39;rs &#39;replace-string)
+(defalias &#39;qrr &#39;query-replace-regexp)
+(defalias &#39;qr &#39;query-replace)
+(defalias &#39;list-buffers &#39;ibuffer) ; always use ibuffer
+(defalias &#39;yes-or-no-p &#39;y-or-n-p) ; y or n is enough
+(defalias &#39;rb &#39;revert-buffer)
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="learn-about-emacs">
+<h2>Learn about Emacs<a class="headerlink" href="#learn-about-emacs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="terms-in-emacs">
+<h3>Terms in Emacs<a class="headerlink" href="#terms-in-emacs" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Region: the highlighted area</li>
+<li>Kill: same as &#8220;cut&#8221;</li>
+<li>Yank: same as &#8220;paste&#8221;</li>
+</ul>
+</div>
+<div class="section" id="emacs-key-notation">
+<h3>Emacs Key Notation<a class="headerlink" href="#emacs-key-notation" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Prefix</th>
+<th class="head">Meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>C-</td>
+<td>(press and hold) the <strong>Control</strong> key</td>
+</tr>
+<tr class="row-odd"><td>M-</td>
+<td>the Meta key (the <strong>Alt</strong> key, on most keyboards)</td>
+</tr>
+<tr class="row-even"><td>S-</td>
+<td>the <strong>Shift</strong> key (ie. <code class="docutils literal"><span class="pre">S-TAB</span></code> means Shift Tab)</td>
+</tr>
+<tr class="row-odd"><td>DEL</td>
+<td>the <strong>Backspace</strong> key (not the Delete key).</td>
+</tr>
+<tr class="row-even"><td>RET</td>
+<td>the Return or <strong>Enter</strong> key</td>
+</tr>
+<tr class="row-odd"><td>SPC</td>
+<td>the <strong>Space bar</strong> key</td>
+</tr>
+<tr class="row-even"><td>ESC</td>
+<td>the <strong>Escape</strong> key</td>
+</tr>
+<tr class="row-odd"><td>TAB</td>
+<td>the <strong>TAB</strong> key</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="common-usage">
+<h3>Common Usage<a class="headerlink" href="#common-usage" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="system-operation">
+<h4>System operation<a class="headerlink" href="#system-operation" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><strong>C-g</strong> keyboard-quit; cancels anything Emacs is executing. If you press
+any key sequence wrongly, <strong>C-g</strong> to cancel that incorrectly pressed key
+sequence and start again.</li>
+<li><strong>C-x C-c</strong> close emacs</li>
+<li><strong>C-x b</strong> Open a promt to enter a buffer name</li>
+</ul>
+</div>
+<div class="section" id="file-editing">
+<h4>File Editing<a class="headerlink" href="#file-editing" title="Permalink to this headline">¶</a></h4>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">You need to set mark before you can use region operation. To know more about <a class="reference external" href="https://www.cs.colorado.edu/~main/cs1300-old/cs1300/doc/emacs/emacs_13.html">The Mark and Region</a></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To move or copy a region of text in emacs, you must first &#8220;mark&#8221; it, then kill or copy the marked text, move the cu
+rsor to the desired location, and restore the killed or copied text. A region of text is defined by marking one end         of it, then moving the cursor to the other end.</p>
+</div>
+<ul class="simple">
+<li><strong>C-&#64;</strong> Set the mark here</li>
+<li><strong>C-SPC</strong> Set the mark where point is</li>
+<li><strong>C-x-h</strong> Select the whole text</li>
+<li><strong>C-w</strong> kill the region</li>
+<li><strong>C-y</strong> yank the region</li>
+<li><strong>M-w</strong> copy the region</li>
+<li><strong>C-k</strong> kill the whole line (note you need to put the cursor at the very beginning of the line)</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To copy text, kill it, yank it back immediately (so it&#8217;s as if you haven&#8217;t killed it, except it&#8217;s now in the kill ring
+), move elsewhere and yank it back again.</p>
+</div>
+<ul class="simple">
+<li><strong>C-x C-s</strong> save file</li>
+<li><strong>C-x C-v RET</strong> reload a file (alternative way is <strong>M-x revert-buffer</strong>)</li>
+<li><strong>C-/</strong> (<strong>C-x u</strong>) undo</li>
+<li><strong>C-r</strong> invoke backward search (type search word thereafter. Use <strong>C-r</strong>
+to repeatedly travel through the matches backward)</li>
+<li><strong>C-s</strong> similar to <strong>C-r</strong> but search forward</li>
+</ul>
+</div>
+<div class="section" id="cursor-movement">
+<h4>Cursor Movement<a class="headerlink" href="#cursor-movement" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><strong>ESC-&lt;</strong> go to the beginning of the file</li>
+<li><strong>ESC-a</strong> go to beginning of the sentence</li>
+<li><strong>ESC-e</strong> go to end of the sentence</li>
+<li><strong>C-a</strong> go to beginning of the line</li>
+<li><strong>C-e</strong> go to the end of the line</li>
+<li><strong>M-x goto-line</strong> go to the line specified</li>
+</ul>
+</div>
+<div class="section" id="searching-and-replacing">
+<h4>Searching and Replacing<a class="headerlink" href="#searching-and-replacing" title="Permalink to this headline">¶</a></h4>
+<ul>
+<li><p class="first"><strong>ESC-%</strong> (query-replace) - ask before replacing each OLD STRING with NEW STRING.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Type <code class="docutils literal"><span class="pre">y</span></code> to replace this one and go to the next one</li>
+<li>Type <code class="docutils literal"><span class="pre">n</span></code> to skip to next without replacing</li>
+<li>Type <code class="docutils literal"><span class="pre">!</span></code> to replace this one and remaining replacements without asking</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>Esc-x replace-string</strong> replace all occurrences of OLD STRING with NEW STRING.</p>
+</li>
+<li><p class="first"><strong>ESC-x list-matching-lines</strong> lists all the lines matching your pattern in a separate buffer, along with their numbers. Use &#8220;ESC-x goto-line&#8221; to go to the occurrence you&#8217;re interested in.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="manage-split-windows">
+<h4>Manage Split Windows<a class="headerlink" href="#manage-split-windows" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><strong>C-x 2</strong> split-window-below</li>
+<li><strong>C-x 3</strong> split-window-right</li>
+<li><strong>C-x 1</strong> delete-other-windows (unsplit all)</li>
+<li><strong>C-x 0</strong> delete-window  (remove current pane)</li>
+<li><strong>C-x o</strong> other-window (cycles among the opening buffers)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="howtos">
+<h3>HowTos<a class="headerlink" href="#howtos" title="Permalink to this headline">¶</a></h3>
+<div class="topic">
+<p class="topic-title first">Parent shell</p>
+<p>When running Emacs in a terminal, you can press <strong>C-z</strong>, type the shell command and then resume Emacs with <strong>fg</strong></p>
+</div>
+<div class="topic">
+<p class="topic-title first">How can I get Emacs to reload all my definitions that I have updated in .emacs without restarting Emacs?</p>
+<p>You can use the command load-file (<strong>M-x load-file</strong>, then press return twice to accept the default filename, which         is the current file being edited).</p>
+<p>You can also just move the point to the end of any sexp and press <strong>C-x C-e</strong> to execute just that sexp. Usually it&#8217;
+s not necessary to reload the whole file if you&#8217;re just changing a line or two.</p>
+<p><strong>M-x eval-buffer</strong> immediately evaluates all code in the buffer, its the quickest method, if your <code class="docutils literal"><span class="pre">.emacs</span></code> is
+idempotent.</p>
+<p>You can usually just re-evaluate the changed region. Mark the region of ~/.emacs that you&#8217;ve changed, and then use
+<strong>M-x eval-region RET</strong>. This is often safer than re-evaluating the entire file since it&#8217;s easy to write a .emacs
+file that doesn&#8217;t work quite right after being loaded twice.</p>
+</div>
+<div class="topic">
+<p class="topic-title first">Shift multiple lines with TAB</p>
+<p>Mark the point with <strong>C-&#64;</strong> (or <strong>C-SPC</strong>), then highlight the text you want to shift with TAB, then hit <strong>Tab</strong>
+button.</p>
+</div>
+<div class="topic">
+<p class="topic-title first">Switch between windows when one windows open with term</p>
+<p>If you open two windows, and one window open a term (ie. <strong>M-x term</strong>), now you want to switch back to another
+window. You may find out &#8220;C-x o&#8221; may no longer work. In this case, you may want to use <strong>C-c o</strong> to switch to next
+window from term</p>
+</div>
+<div class="topic">
+<p class="topic-title first">Comment out multiple region</p>
+<p>Comment out multiple lines. Highlight the region and then <strong>M-x comment-region</strong>. To undo the comment,
+<strong>M-x uncomment-region</strong></p>
+</div>
+</div>
+<div class="section" id="resources">
+<h3>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h3>
+<p>Personally reference them a lot. But there are ton online through google.</p>
+<ul class="simple">
+<li><a class="reference external" href="http://mally.stanford.edu/~sr/computing/emacs.html">Stanford emacs basics</a></li>
+<li><a class="reference external" href="http://ergoemacs.org/emacs/emacs_find_replace.html">Xah Emacs Tutorial</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">All about Emacs</a><ul>
+<li><a class="reference internal" href="#emacs-configuration">Emacs Configuration</a></li>
+<li><a class="reference internal" href="#learn-about-emacs">Learn about Emacs</a><ul>
+<li><a class="reference internal" href="#terms-in-emacs">Terms in Emacs</a></li>
+<li><a class="reference internal" href="#emacs-key-notation">Emacs Key Notation</a></li>
+<li><a class="reference internal" href="#common-usage">Common Usage</a><ul>
+<li><a class="reference internal" href="#system-operation">System operation</a></li>
+<li><a class="reference internal" href="#file-editing">File Editing</a></li>
+<li><a class="reference internal" href="#cursor-movement">Cursor Movement</a></li>
+<li><a class="reference internal" href="#searching-and-replacing">Searching and Replacing</a></li>
+<li><a class="reference internal" href="#manage-split-windows">Manage Split Windows</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#howtos">HowTos</a></li>
+<li><a class="reference internal" href="#resources">Resources</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="git.html"
+                        title="previous chapter">Git</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="makefile.html"
+                        title="next chapter">Makefile</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="makefile.html" title="Makefile"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="git.html" title="Git"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Zeyuan&#39;s IBM Docs</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../notes.html" >Notes</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015-2016, Zeyuan Hu.
+      Last updated on Feb 03, 2016.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+.. _vnc:
+
+###########
+VNC related
+###########
+
+- List all the current vnc sessions connected to vnc server:
+
+.. code-block:: shell
+
+        vncserver -list
+
+.. note::
+
+        For instance, you update your tomby note on RHEL workstation, and you cannot
+        see it from your remote VNC viewer. Then you may want to restart your vnc session:
+
+        1. ``vncserver -list``
+        2. ``kill pid``
+        3. ``vncserver :1`` (``:1`` is port number you specified when you using VNC Viewer)
+        4. Using VNC Viewer to connect
+
+- Show vnc viewer menu:
+
+.. code-block:: shell
+
+        "F8"
+
+- To change the vnc viewer screen resolution:
+
+.. code-block:: shell
+
+        # displays all the avaliable screen resolutions:
+        xrandr
+        # switch to desired resolution
+        xrandr -s 1360x768
+
+.. seealso::
+
+       http://stackoverflow.com/questions/15816/changing-the-resolution-of-a-vnc-session-in-linux
+
+.. note::
+
+        Once you are satisfy your screen resolution adjustment, you can save it for next time use 
+        by following:
+
+        1. Bring up VNC viewer menu: ``"F8"``
+        2. ``"Options"`` -> ``"Load/Save"`` -> ``"Defaults"`` -> ``"Save"``
