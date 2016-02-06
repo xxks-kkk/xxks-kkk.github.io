@@ -1,1 +1,0 @@
-Search.setIndex({envversion:46,filenames:["index","sample"],objects:{},objnames:{},objtypes:{},terms:{asddddddddddddddddddd:1,content:0,index:[],modul:[],page:[],sampl:[],search:[]},titles:["Welcome to Zeyuan&#8217;s World&#8217;s documentation!","Sample Page"],titleterms:{document:0,indic:[],page:1,sampl:1,tabl:[],welcom:0,world:0,zeyuan:0}})
