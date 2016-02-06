@@ -7,8 +7,18 @@
 Zeyuan's Knowledge Base
 #######################
 
+=================
+Random Articles
+=================
+
 .. toctree::
     
     blog.rst
-    about.rst
+
+=================
+Knowledge Base
+=================
+
+.. toctree::
+
     kb.rst
