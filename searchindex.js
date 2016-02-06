@@ -1,0 +1,1 @@
+Search.setIndex({envversion:46,filenames:["index"],objects:{},objnames:{},objtypes:{},terms:{content:0,index:0,modul:0,page:0,search:0},titles:["Welcome to Zeyuan&#8217;s World&#8217;s documentation!"],titleterms:{document:0,indic:0,tabl:0,welcom:0,world:0,zeyuan:0}})
