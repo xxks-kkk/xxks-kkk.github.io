@@ -1,8 +1,8 @@
 .. _msg.rst:
 
-###########
-Guest Book
-###########
+#################
+Leave a Comment
+#################
 
 Comments are welcome! 
 
