@@ -6,9 +6,9 @@
 .. _`Big SQL`: http://www-01.ibm.com/software/data/infosphere/hadoop/big-sql.html
 .. _`federation`: http://www-03.ibm.com/software/products/en/ibminfofedeserv
 
-################
+%%%%%%%%%%%%%%%%
 Zeyuan's World
-################
+%%%%%%%%%%%%%%%%
 
 .. meta::
    :description: This is the homepage of Zeyuan Hu, a software developer at IBM
