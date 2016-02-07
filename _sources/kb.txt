@@ -1,4 +1,4 @@
-.. kb.rst:
+.. _kb.rst:
 
 ###################
 Knowledge Base
