@@ -105,8 +105,8 @@
       <div class="col-md-3">
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
 <li><a class="reference internal" href="#">Add disqus into doc</a><ul>
-<li><a class="reference internal" href="#dirty-way-in">Dirty Way In</a></li>
-<li><a class="reference internal" href="#clean-way-out">Clean Way Out</a></li>
+<li><a class="reference internal" href="#do-it-on-your-own">Do It On Your Own</a></li>
+<li><a class="reference internal" href="#extension-to-shine">Extension to Shine</a></li>
 </ul>
 </li>
 </ul>
@@ -129,8 +129,8 @@ with unknown readers (I mean you :)) while also having some chance to keep impro
 I am reluctant to adopt the easy-out way: learn <a class="reference external" href="http://blog.getpelican.com">pelican</a> &#8211;&gt; use <a class="reference external" href="https://github.com/jsliang/pelican-fresh/">fresh</a> them &#8211;&gt; start writing. This mainly because I love Sphinx documentation style.
 So clean, so elegant (BTW, even <a class="reference external" href="http://blog.getpelican.com">pelican</a> use Sphinx to do their <a class="reference external" href="http://docs.getpelican.com/en/3.63/">doc</a>, haha). After some experimenting, I finally make it work and I&#8217;ll document it for
 future reference:</p>
-<div class="section" id="dirty-way-in">
-<h2>Dirty Way In<a class="headerlink" href="#dirty-way-in" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="do-it-on-your-own">
+<h2>Do It On Your Own<a class="headerlink" href="#do-it-on-your-own" title="Permalink to this headline">¶</a></h2>
 <p>1. Once you register a website in <a class="reference external" href="https://disqus.com">disqus</a>, you will direct to <em>Installation</em> section. You choose <em>Universal Code</em> and will get a chunk of code that
 asks you to &#8220;Place the following code where you&#8217;d like Disqus to load&#8221;:</p>
 <div class="highlight-python"><div class="highlight"><pre>&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
@@ -158,7 +158,7 @@ asks you to &#8220;Place the following code where you&#8217;d like Disqus to loa
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">You need to add <cite>var disqus_shortname = &#8216;zeyuan&#8217;;</cite> to the code chunk provided by disqus, and make it look like above.</p>
+<p class="last">You need to add <code class="docutils literal"><span class="pre">var</span> <span class="pre">disqus_shortname</span> <span class="pre">=</span> <span class="pre">'zeyuan';</span></code> to the code chunk provided by disqus, and make it look like above.</p>
 </div>
 <ol class="arabic" start="2">
 <li><p class="first">Then, inside Sphinx-doc, you can add the code chunk above to your preferred rst files with a
@@ -176,7 +176,7 @@ I would like to show how to add disqus comment in this page.
 </div>
 </li>
 <li><p class="first">Essentially, adding disqus to Sphinx-doc is done by step 2. However, I would like to add one more layer of encapuslation to make everything looks
-nicer.</p>
+nicer. I create a rst file called <code class="docutils literal"><span class="pre">comment.rst</span></code> and it looks like following:</p>
 <div class="highlight-python"><div class="highlight"><pre>.. _comment.rst:
 
 .. raw:: html
@@ -206,11 +206,24 @@ nicer.</p>
 	     &lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;https://disqus.com/?ref_noscript&quot; rel=&quot;nofollow&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
 </pre></div>
 </div>
+<p>Then, whenever I want to add disqus comment, I can simply add:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. include:: comment.rst
+</pre></div>
+</div>
+<p>to wherever I want disqus comment section appear.</p>
+</li>
+<li><p class="first">If you want to further adjust the width of disqus appears in Sphinx-Doc, I think
+<a class="reference external" href="https://github.com/whiteinge/eseth/blob/master/static/base-eseth.css">this repo</a> should be a good reference.</p>
 </li>
 </ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The repo is also a awesome study material to create your own sphinx template and make it to a blog site.</p>
 </div>
-<div class="section" id="clean-way-out">
-<h2>Clean Way Out<a class="headerlink" href="#clean-way-out" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="extension-to-shine">
+<h2>Extension to Shine<a class="headerlink" href="#extension-to-shine" title="Permalink to this headline">¶</a></h2>
+<p>Of course, we can definitely look for extensions to help us to solve the problem.</p>
 </div>
 </div>
 
