@@ -20,7 +20,7 @@ future reference:
 Dirty Way In
 *************
 
-Once you register a website in `disqus`_, you will direct to *Installation* section. You choose *Universal Code* and will get a chunk of code that
+1. Once you register a website in `disqus`_, you will direct to *Installation* section. You choose *Universal Code* and will get a chunk of code that
 asks you to "Place the following code where you'd like Disqus to load"::
 
     <div id="disqus_thread"></div>
@@ -45,6 +45,27 @@ asks you to "Place the following code where you'd like Disqus to load"::
          </script>
     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 
+.. note::
+
+    You need to add `var disqus_shortname = 'zeyuan';` to the code chunk provided by disqus, and make it look like above.
+
+2. Then, inside Sphinx-doc, you can add the code chunk above to your preferred rst files with a 
+   `raw directive <http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data-pass-through>`_. For example, inside ``foo.rst``::
+
+        ====================================
+        Nice Example to show disqus comment
+        ====================================
+
+        I would like to show how to add disqus comment in this page.
+
+        .. raw:: html
+
+            <the code chunk>
+
+3. Essentially, adding disqus to Sphinx-doc is done by step 2. However, I would like to add one more layer of encapuslation to make everything looks
+   nicer. 
+
+   .. literalinclude:: /comment.rst
 
 
 *************

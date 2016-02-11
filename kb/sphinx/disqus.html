@@ -131,7 +131,7 @@ So clean, so elegant (BTW, even <a class="reference external" href="http://blog.
 future reference:</p>
 <div class="section" id="dirty-way-in">
 <h2>Dirty Way In<a class="headerlink" href="#dirty-way-in" title="Permalink to this headline">¶</a></h2>
-<p>Once you register a website in <a class="reference external" href="https://disqus.com">disqus</a>, you will direct to <em>Installation</em> section. You choose <em>Universal Code</em> and will get a chunk of code that
+<p>1. Once you register a website in <a class="reference external" href="https://disqus.com">disqus</a>, you will direct to <em>Installation</em> section. You choose <em>Universal Code</em> and will get a chunk of code that
 asks you to &#8220;Place the following code where you&#8217;d like Disqus to load&#8221;:</p>
 <div class="highlight-python"><div class="highlight"><pre>&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
      &lt;script&gt;
@@ -156,6 +156,58 @@ asks you to &#8220;Place the following code where you&#8217;d like Disqus to loa
 &lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;https://disqus.com/?ref_noscript&quot; rel=&quot;nofollow&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to add <cite>var disqus_shortname = &#8216;zeyuan&#8217;;</cite> to the code chunk provided by disqus, and make it look like above.</p>
+</div>
+<ol class="arabic" start="2">
+<li><p class="first">Then, inside Sphinx-doc, you can add the code chunk above to your preferred rst files with a
+<a class="reference external" href="http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data-pass-through">raw directive</a>. For example, inside <code class="docutils literal"><span class="pre">foo.rst</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre>====================================
+Nice Example to show disqus comment
+====================================
+
+I would like to show how to add disqus comment in this page.
+
+.. raw:: html
+
+    &lt;the code chunk&gt;
+</pre></div>
+</div>
+</li>
+<li><p class="first">Essentially, adding disqus to Sphinx-doc is done by step 2. However, I would like to add one more layer of encapuslation to make everything looks
+nicer.</p>
+<div class="highlight-python"><div class="highlight"><pre>.. _comment.rst:
+
+.. raw:: html
+
+	 &lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
+	 &lt;script&gt;
+	 /**
+	 * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+	   * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+	     */
+	     /*
+	     var disqus_config = function () {
+	     this.page.url = PAGE_URL; // Replace PAGE_URL with your page&#39;s canonical URL variable
+	     this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page&#39;s unique identifier variable
+	     };
+	     */
+	             var disqus_shortname = &#39;zeyuan&#39;; // required: replace example with your forum shortname 
+	     (function() { // DON&#39;T EDIT BELOW THIS LINE
+	     var d = document, s = d.createElement(&#39;script&#39;);
+
+	     s.src = &#39;//zeyuan.disqus.com/embed.js&#39;;
+
+	     s.setAttribute(&#39;data-timestamp&#39;, +new Date());
+	     (d.head || d.body).appendChild(s);
+	     })();
+	     &lt;/script&gt;
+	     &lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;https://disqus.com/?ref_noscript&quot; rel=&quot;nofollow&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
+</pre></div>
+</div>
+</li>
+</ol>
 </div>
 <div class="section" id="clean-way-out">
 <h2>Clean Way Out<a class="headerlink" href="#clean-way-out" title="Permalink to this headline">¶</a></h2>
