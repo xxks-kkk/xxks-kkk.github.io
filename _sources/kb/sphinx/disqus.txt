@@ -8,6 +8,7 @@ Add disqus into doc
 .. _`pelican`: http://blog.getpelican.com
 .. _`fresh`: https://github.com/jsliang/pelican-fresh/
 .. _`doc`: http://docs.getpelican.com/en/3.63/
+.. _`disqus`: https://disqus.com
 
 One of the driven factors that I want to remake my own personal website is that one day I saw this cool `site`_. I really want to have some interaction
 with unknown readers (I mean you :)) while also having some chance to keep improving based upon feedbacks (again, I mean yours :)). However,
@@ -18,6 +19,31 @@ future reference:
 *************
 Dirty Way In
 *************
+
+Once you register a website in `disqus`_, you will direct to *Installation* section. You choose *Universal Code* and will get a chunk of code that
+asks you to "Place the following code where you'd like Disqus to load"::
+
+    <div id="disqus_thread"></div>
+         <script>
+             /**
+              * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+              * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+              */
+              /*
+               var disqus_config = function () {
+               this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+               this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+               };
+               */
+               var disqus_shortname = 'zeyuan'; // required: replace example with your forum shortname 
+               (function() { // DON'T EDIT BELOW THIS LINE
+               var d = document, s = d.createElement('script');
+               s.src = '//zeyuan.disqus.com/embed.js';
+               s.setAttribute('data-timestamp', +new Date());
+               (d.head || d.body).appendChild(s);
+               })();
+         </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 
 
 
