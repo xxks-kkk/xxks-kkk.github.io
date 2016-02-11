@@ -160,10 +160,10 @@ asks you to &#8220;Place the following code where you&#8217;d like Disqus to loa
 <p class="first admonition-title">Note</p>
 <p class="last">You need to add <code class="docutils literal"><span class="pre">var</span> <span class="pre">disqus_shortname</span> <span class="pre">=</span> <span class="pre">'zeyuan';</span></code> to the code chunk provided by disqus, and make it look like above.</p>
 </div>
-<ol class="arabic" start="2">
-<li><p class="first">Then, inside Sphinx-doc, you can add the code chunk above to your preferred rst files with a
-<a class="reference external" href="http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data-pass-through">raw directive</a>. For example, inside <code class="docutils literal"><span class="pre">foo.rst</span></code>:</p>
-<div class="highlight-python"><div class="highlight"><pre>====================================
+<dl class="docutils">
+<dt>2.Then, inside Sphinx-doc, you can add the code chunk above to your preferred rst files with a</dt>
+<dd><p class="first"><a class="reference external" href="http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data-pass-through">raw directive</a>. For example, inside <code class="docutils literal"><span class="pre">foo.rst</span></code>:</p>
+<div class="last highlight-python"><div class="highlight"><pre>====================================
 Nice Example to show disqus comment
 ====================================
 
@@ -174,9 +174,9 @@ I would like to show how to add disqus comment in this page.
     &lt;the code chunk&gt;
 </pre></div>
 </div>
-</li>
-<li><p class="first">Essentially, adding disqus to Sphinx-doc is done by step 2. However, I would like to add one more layer of encapuslation to make everything looks
-nicer. I create a rst file called <code class="docutils literal"><span class="pre">comment.rst</span></code> and it looks like following:</p>
+</dd>
+<dt>3.Essentially, adding disqus to Sphinx-doc is done by step 2. However, I would like to add one more layer of encapuslation to make everything looks</dt>
+<dd><p class="first">nicer. I create a rst file called <code class="docutils literal"><span class="pre">comment.rst</span></code> and it looks like following:</p>
 <div class="highlight-python"><div class="highlight"><pre>.. _comment.rst:
 
 .. raw:: html
@@ -210,12 +210,11 @@ nicer. I create a rst file called <code class="docutils literal"><span class="pr
 <div class="highlight-python"><div class="highlight"><pre>.. include:: comment.rst
 </pre></div>
 </div>
-<p>to wherever I want disqus comment section appear.</p>
-</li>
-<li><p class="first">If you want to further adjust the width of disqus appears in Sphinx-Doc, I think
-<a class="reference external" href="https://github.com/whiteinge/eseth/blob/master/static/base-eseth.css">this repo</a> should be a good reference.</p>
-</li>
-</ol>
+<p class="last">to wherever I want disqus comment section appear.</p>
+</dd>
+<dt>4.If you want to further adjust the width of disqus appears in Sphinx-Doc, I think</dt>
+<dd><a class="reference external" href="https://github.com/whiteinge/eseth/blob/master/static/base-eseth.css">this repo</a> should be a good reference.</dd>
+</dl>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The repo is also a awesome study material to create your own sphinx template and make it to a blog site.</p>
@@ -223,8 +222,23 @@ nicer. I create a rst file called <code class="docutils literal"><span class="pr
 </div>
 <div class="section" id="extension-to-shine">
 <h2>Extension to Shine<a class="headerlink" href="#extension-to-shine" title="Permalink to this headline">¶</a></h2>
-<p>Of course, we can definitely look for extensions to help us to solve the problem.</p>
-</div>
+<p>Of course, we can definitely look for extensions to help us to solve the problem. The plugin I use is <a class="reference external" href="https://pypi.python.org/pypi/sphinxcontrib-newsfeed">sphinxcontrib-newsfeed</a>, it comes with a support
+of Disqus. It is nice and does work for me.</p>
+<div class="feed-disqus">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "zeyuan";
+var disqus_identifier = "/kb/sphinx/disqus";
+
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</div></div>
 </div>
 
 
