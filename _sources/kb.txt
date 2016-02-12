@@ -29,7 +29,7 @@ List of topics on Utility tools that I experience to improve my productivity.
     :maxdepth: 3
     
     /kb/sphinx/sphinx.rst
-
+    /kb/git.rst
 
 **************
 Tips
