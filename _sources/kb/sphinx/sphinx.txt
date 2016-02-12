@@ -13,7 +13,8 @@ Topics
     :maxdepth: 2
 
     disqus.rst
-
+    sphinx-tips.rst
+    
 ***********
 Resources
 ***********

@@ -1,0 +1,18 @@
+.. _sphinx-tips.rst:
+
+################
+Tips 
+################
+
+Collection of tips when working with `Sphinx-Doc`_. 
+
+
+- filename provided to a directive is usually relative to the directory the current source file is contained in, but if it absolute (starting with :command: \
+  ), it is taken as relative to the top source directory.
+
+.. topic:: Example
+
+	   ``.. include:: links.rst`` expect a doc ``links.rst`` in the same directory as the current source file. However, ``.. include:: /links.rst``
+	   assumes ``links.rst`` in top source directory, which is :command: source/
+
+.. include:: /links.rst

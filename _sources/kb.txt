@@ -37,6 +37,9 @@ Tips
 
 Similar to the previous section but highly biased towards Linux/Unix, Programming in general.
 
+.. toctree::
+    :maxdepth: 2
+
 
 **************
 CS 
