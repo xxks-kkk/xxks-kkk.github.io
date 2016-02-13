@@ -106,6 +106,7 @@
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
 <li><a class="reference internal" href="#">What does group by with multiple column mean?</a><ul>
 <li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#download">Download</a></li>
 </ul>
 </li>
 </ul>
@@ -123,26 +124,6 @@
       
   <div class="section" id="what-does-group-by-with-multiple-column-mean">
 <span id="p1-rst"></span><h1>What does group by with multiple column mean?<a class="headerlink" href="#what-does-group-by-with-multiple-column-mean" title="Permalink to this headline">¶</a></h1>
-<div class="literal-block-wrapper container" id="example-clp-script">
-<div class="code-block-caption"><span class="caption-text">Example clp script</span><a class="headerlink" href="#example-clp-script" title="Permalink to this code">¶</a></div>
-<div class="highlight-python"><div class="highlight"><pre>connect to testdb;
-drop table p1.subject_selection;
-create table p1.subject_selection (subject VARCHAR(30), Semester VARCHAR(30), Attendee VARCHAR(30));
-insert into p1.subject_selection values (&#39;ITB001&#39;, 1, &#39;John&#39;), 
-       (&#39;ITB001&#39;, 1, &#39;Bob&#39;), 
-       (&#39;ITB001&#39;, 1, &#39;Mickey&#39;), 
-       (&#39;ITB001&#39;, 2, &#39;Jenny&#39;), 
-       (&#39;ITB001&#39;, 2, &#39;James&#39;), 
-       (&#39;MKB114&#39;, 1, &#39;John&#39;), 
-       (&#39;MKB114&#39;, 1, &#39;Erica&#39;);
-select * from p1.subject_selection;
-
-select subject, count(*) from p1.subject_selection group by subject;
-
-select subject, semester, count(*) from p1.subject_selection group by subject, semester;
-</pre></div>
-</div>
-</div>
 <div class="topic">
 <p class="topic-title first">Key highlight</p>
 <p><strong>Group by X</strong> means <strong>put all those with the same value for X in the one group</strong>
@@ -192,6 +173,11 @@ MKB114                         1                                        2
 subject and semester are in the same group, and then calculate all the aggregate functions for each of those groups&#8221;.
 In this example, there are three people doing ITB001 in semester 1, and two doing it in semester 2. Both of the people
 doing MKB114 are in semester 1.</p>
+</div>
+<div class="section" id="download">
+<h2>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h2>
+<p>A clp script to work with example above.</p>
+<p><a class="reference download internal" href="../../../_downloads/p1.clp"><code class="xref download docutils literal"><span class="pre">Example</span> <span class="pre">clp</span></code></a></p>
 <p>reference: <a class="reference external" href="http://stackoverflow.com/questions/2421388/using-group-by-on-multiple-columns">http://stackoverflow.com/questions/2421388/using-group-by-on-multiple-columns</a></p>
 </div>
 </div>
