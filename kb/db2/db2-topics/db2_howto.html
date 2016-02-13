@@ -1,21 +1,21 @@
-<!DOCTYPE html>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>DB2 HowTOs &mdash; HZY</title>
+    <title>DB2 HowTOs &mdash; Zeyuan Hu&#39;s World</title>
     
-    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/zeyuan.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootswatch-3.3.4/journal/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '3.1.5',
+        VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,85 +25,42 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
-    <link rel="author" title="About these documents" href="../../../about.html" />
-    <link rel="top" title="HZY" href="../../../index.html" />
-<meta charset='utf-8'>
-<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
-<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
-<meta name="apple-mobile-web-app-capable" content="yes">
-
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/>
+    <link rel="top" title="Zeyuan Hu&#39;s World" href="../../../index.html" />
+    <link rel="up" title="Knowledge Base" href="../../../kb.html" />
+    <link rel="next" title="Sphinx-Doc" href="../../sphinx/sphinx.html" />
+    <link rel="prev" title="Precision vs. Scale" href="p4.html" /> 
   </head>
   <body role="document">
-  
-  <a href="https://github.com/xxks-kkk/xxks-kkk.github.io"
-     class="visible-desktop hidden-xs"><img
-     id="gh-banner"
-     style="position: absolute; top: 50px; right: 0; border: 0;"
-     src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"
-     alt="Fork me on GitHub"></a>
-  <script>
-    // Adjust banner height.
-    $(function () {
-      var navHeight = $(".navbar .container").css("height");
-      $("#gh-banner").css("top", navHeight);
-    });
- </script>
 
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../../../index.html"><img src="../../../_static/logo2.png" border="0" alt="Logo of Zeyuan's personal website"/></a>
+</div>
 
-  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header">
-        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="../../../index.html">
-          Zeyuan&#39;s World</a>
-        <span class="navbar-text navbar-version pull-left"><b>3.1.5</b></span>
-      </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../sphinx/sphinx.html" title="Sphinx-Doc"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="p4.html" title="Precision vs. Scale"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../../index.html">home</a>|&nbsp;</li>
+        <li><a href="../../../kb.html">knowledge base</a>|&nbsp;</li>
+        <li><a href="../../../projects/index.html">projects</a>|&nbsp;</li>
+        <li><a href="../../../resume.html">resume</a>|&nbsp;</li>
+        <li><a href="../../../personal.html">about me</a>|&nbsp;</li>
+        <li><a href="../../../search.html">search</a>|&nbsp;</li>
 
-        <div class="collapse navbar-collapse nav-collapse">
-          <ul class="nav navbar-nav">
-            
-                <li><a href="../../../kb.html">Knowledge</a></li>
-                <li><a href="../../../pj.html">Project</a></li>
-                <li><a href="../../../about.html">Me</a></li>
-            
-            
-    
-
-            
-            
-            
-            
-              <li class="hidden-sm"></li>
-            
-          </ul>
-
-          
-            
-<form class="navbar-form navbar-right" action="../../../search.html" method="get">
- <div class="form-group">
-  <input type="text" name="q" class="form-control" placeholder="Search" />
- </div>
-  <input type="hidden" name="check_keywords" value="yes" />
-  <input type="hidden" name="area" value="default" />
-</form>
-          
-        </div>
+          <li class="nav-item nav-item-1"><a href="../../../kb.html" accesskey="U">Knowledge Base</a> &raquo;</li> 
+      </ul>
     </div>
-  </div>
 
-<div class="container">
-  <div class="row">
-      <div class="col-md-3">
-        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
 <li><a class="reference internal" href="#">DB2 HowTOs</a><ul>
 <li><a class="reference internal" href="#system-catalog">System Catalog</a></li>
 <li><a class="reference internal" href="#misc">Misc</a></li>
@@ -112,17 +69,29 @@
 </li>
 </ul>
 
-<form action="../../../search.html" method="get">
- <div class="form-group">
-  <input type="text" name="q" class="form-control" placeholder="Search" />
- </div>
-  <input type="hidden" name="check_keywords" value="yes" />
-  <input type="hidden" name="area" value="default" />
-</form>
+    <h3>About this site</h3>
+        <ul class="this-page-menu">
+            <li><a class="reference external" 
+                   href="../../../todo.html" >About</a></li>
+        </ul>
+<div id="searchbox" style="display: none">
+  <h3>search this site</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
-    <div class="col-md-9 content">
-      
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
   <div class="section" id="db2-howtos">
 <span id="db2-howto-rst"></span><h1>DB2 HowTOs<a class="headerlink" href="#db2-howtos" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
@@ -395,22 +364,33 @@ add script location to your UNIX&#8217;s $PATH</p>
 </div>
 
 
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
     </div>
-      
-  </div>
-</div>
-<footer class="footer">
-  <div class="container">
-    <p class="pull-right">
-      <a href="#">Back to top</a>
-      
-    </p>
-    <p>
-        &copy; Copyright 2016, Zeyuan (Jerry) Hu.<br/>
-      Last updated on Feb 13, 2016.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.5.<br/>
-    </p>
-  </div>
-</footer>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../sphinx/sphinx.html" title="Sphinx-Doc"
+             >next</a></li>
+        <li class="right" >
+          <a href="p4.html" title="Precision vs. Scale"
+             >previous</a> |</li>
+        <li><a href="../../../index.html">home</a>|&nbsp;</li>
+        <li><a href="../../../kb.html">knowledge base</a>|&nbsp;</li>
+        <li><a href="../../../projects/index.html">projects</a>|&nbsp;</li>
+        <li><a href="../../../resume.html">resume</a>|&nbsp;</li>
+        <li><a href="../../../personal.html">about me</a>|&nbsp;</li>
+        <li><a href="../../../search.html">search</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../../kb.html" >Knowledge Base</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2012-2016, Zeyuan Hu.
+      Last updated on Feb 13, 2016.
+    </div>
   </body>
 </html>
