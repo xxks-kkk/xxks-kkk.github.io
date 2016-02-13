@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>AWK &mdash; HZY</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootswatch-3.3.4/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '3.1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="top" title="HZY" href="../../index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+  
+  <a href="https://github.com/xxks-kkk/xxks-kkk.github.io"
+     class="visible-desktop hidden-xs"><img
+     id="gh-banner"
+     style="position: absolute; top: 50px; right: 0; border: 0;"
+     src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"
+     alt="Fork me on GitHub"></a>
+  <script>
+    // Adjust banner height.
+    $(function () {
+      var navHeight = $(".navbar .container").css("height");
+      $("#gh-banner").css("top", navHeight);
+    });
+ </script>
+
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          Zeyuan&#39;s World</a>
+        <span class="navbar-text navbar-version pull-left"><b>3.1.5</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../kb.html">Knowledge</a></li>
+                <li><a href="../../pj.html">Project</a></li>
+                <li><a href="../../about.html">Me</a></li>
+            
+            
+    
+
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">AWK</a><ul>
+<li><a class="reference internal" href="#case-study">Case Study</a></li>
+<li><a class="reference internal" href="#howtos">HowTos</a></li>
+<li><a class="reference internal" href="#resources">Resources</a></li>
+</ul>
+</li>
+</ul>
+
+<form action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="awk">
+<span id="awk-rst"></span><h1>AWK<a class="headerlink" href="#awk" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="case-study">
+<h2>Case Study<a class="headerlink" href="#case-study" title="Permalink to this headline">¶</a></h2>
+<p><strong>GOAL:</strong> Kill all the quicktest process</p>
+<div class="highlight-python"><div class="highlight"><pre>(iidev20@maradona) /home/iidev20
+$ ps -ef | grep -i quicktest
+iidev20 49814180        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 5 NCLIENT 30 SEED 1452586352
+iidev20 49945254        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 15 NCLIENT 30 SEED 1452586362
+iidev20 50010822        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 14 NCLIENT 30 SEED 1452586361
+iidev20 51124770        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 9 NCLIENT 30 SEED 1452586356
+iidev20 51911254        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 26 NCLIENT 30 SEED 1452586373
+iidev20 52238890        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 11 NCLIENT 30 SEED 1452586358
+iidev20 52501070        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 10 NCLIENT 30 SEED 1452586357
+iidev20 54401732        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 20 NCLIENT 30 SEED 1452586367
+iidev20 54794868        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 22 NCLIENT 30 SEED 1452586369
+iidev20 29825944        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 8 NCLIENT 30 SEED 1452586355
+iidev20 35789764        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 19 NCLIENT 30 SEED 1452586366
+iidev20 36838170        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 13 NCLIENT 30 SEED 1452586360
+iidev20 36903922        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 24 NCLIENT 30 SEED 1452586371
+</pre></div>
+</div>
+<div class="topic">
+<p class="topic-title first">Solution</p>
+<div class="highlight-python"><div class="highlight"><pre>kill -9 `ps -ef | grep $USER | awk &#39;$9 ~ /quicktest/ {print $2}&#39;`
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">$9</span> <span class="pre">~</span> <span class="pre">/quicktest/</span></code> means that &#8220;looking for &#8216;quicktest&#8217; within $9&#8221;</p>
+</div>
+</div>
+<div class="section" id="howtos">
+<h2>HowTos<a class="headerlink" href="#howtos" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="http://stackoverflow.com/questions/6256174/how-to-find-if-substring-is-in-a-variable-in-awk">How to find if substring is in a variable in awk</a></li>
+</ul>
+</div>
+<div class="section" id="resources">
+<h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="http://coolshell.cn/articles/9070.html">AWK short tutorial</a></li>
+</ul>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2016, Zeyuan (Jerry) Hu.<br/>
+      Last updated on Feb 13, 2016.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.5.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
