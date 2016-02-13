@@ -11,4 +11,3 @@ This section can hardly be called projects. Those are just some study notes I ma
 
    ./diveintopython/diveintopython.rst
    ./pythoninpractice/python_in_practice.rst
-   ./theelementsofstyle/the_elements_of_style.rst
