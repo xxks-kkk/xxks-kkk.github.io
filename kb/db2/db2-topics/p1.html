@@ -123,7 +123,26 @@
       
   <div class="section" id="what-does-group-by-with-multiple-column-mean">
 <span id="p1-rst"></span><h1>What does group by with multiple column mean?<a class="headerlink" href="#what-does-group-by-with-multiple-column-mean" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference internal" href=""><em>Example clp</em></a></p>
+<div class="literal-block-wrapper container" id="example-clp-script">
+<div class="code-block-caption"><span class="caption-text">Example clp script</span><a class="headerlink" href="#example-clp-script" title="Permalink to this code">¶</a></div>
+<div class="highlight-python"><div class="highlight"><pre>connect to testdb;
+drop table p1.subject_selection;
+create table p1.subject_selection (subject VARCHAR(30), Semester VARCHAR(30), Attendee VARCHAR(30));
+insert into p1.subject_selection values (&#39;ITB001&#39;, 1, &#39;John&#39;), 
+       (&#39;ITB001&#39;, 1, &#39;Bob&#39;), 
+       (&#39;ITB001&#39;, 1, &#39;Mickey&#39;), 
+       (&#39;ITB001&#39;, 2, &#39;Jenny&#39;), 
+       (&#39;ITB001&#39;, 2, &#39;James&#39;), 
+       (&#39;MKB114&#39;, 1, &#39;John&#39;), 
+       (&#39;MKB114&#39;, 1, &#39;Erica&#39;);
+select * from p1.subject_selection;
+
+select subject, count(*) from p1.subject_selection group by subject;
+
+select subject, semester, count(*) from p1.subject_selection group by subject, semester;
+</pre></div>
+</div>
+</div>
 <div class="topic">
 <p class="topic-title first">Key highlight</p>
 <p><strong>Group by X</strong> means <strong>put all those with the same value for X in the one group</strong>
