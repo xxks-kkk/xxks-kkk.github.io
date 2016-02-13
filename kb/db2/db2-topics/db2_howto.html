@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>DB2 HowTOs &mdash; HZY</title>
+    
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootswatch-3.3.4/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '3.1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="top" title="HZY" href="../../../index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+  
+  <a href="https://github.com/xxks-kkk/xxks-kkk.github.io"
+     class="visible-desktop hidden-xs"><img
+     id="gh-banner"
+     style="position: absolute; top: 50px; right: 0; border: 0;"
+     src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"
+     alt="Fork me on GitHub"></a>
+  <script>
+    // Adjust banner height.
+    $(function () {
+      var navHeight = $(".navbar .container").css("height");
+      $("#gh-banner").css("top", navHeight);
+    });
+ </script>
+
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          Zeyuan&#39;s World</a>
+        <span class="navbar-text navbar-version pull-left"><b>3.1.5</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../kb.html">Knowledge</a></li>
+                <li><a href="../../../pj.html">Project</a></li>
+                <li><a href="../../../about.html">Me</a></li>
+            
+            
+    
+
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">DB2 HowTOs</a><ul>
+<li><a class="reference internal" href="#system-catalog">System Catalog</a></li>
+<li><a class="reference internal" href="#misc">Misc</a></li>
+<li><a class="reference internal" href="#security">Security</a></li>
+</ul>
+</li>
+</ul>
+
+<form action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="db2-howtos">
+<span id="db2-howto-rst"></span><h1>DB2 HowTOs<a class="headerlink" href="#db2-howtos" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">I am trying to port those commands, especially the lengthy ones, to
+<a class="reference external" href="https://github.com/xxks-kkk/Zeyuan-s-tools/blob/master/db2mun">db2mun - a tool to avoid reptitive typing db2 cmds</a></p>
+</div>
+<div class="section" id="system-catalog">
+<h2>System Catalog<a class="headerlink" href="#system-catalog" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Check the default Federation Server option in system catalog</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>db2 &quot;select char(option,10) OPTION, char(setting,10) SETTING \
+     from syscat.serveroptions \
+     where servername=&#39;SERVER1&#39;&quot;
+
+OPTION     SETTING
+---------- ----------
+NODE       hive
+DBNAME     default
+CODEPAGE   1252
+
+3 record(s) selected.
+</pre></div>
+</div>
+<ul class="simple">
+<li>Check the procedures registered with database</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>db2 &quot;SELECT char(ROUTINENAME,15) ROUTINENAME, ROUTINESCHEMA FROM SYSCAT.ROUTINES WHERE OWNER=&#39;ZEYUAN HU&#39; AND ROUTINETYPE = &#39;P&#39;&quot;
+
+ROUTINENAME     ROUTINESCHEMA
+--------------- -------------------------------------------------------------------------------
+BONUS_INCREASE  ZEYUAN HU
+CHECK_COMM      ZEYUAN HU
+
+2 record(s) selected.
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In this case, show a list of the procedures created by the authorization ID ZEYUAN HU</p>
+</div>
+<ul class="simple">
+<li>show a list of the user-defined routines existing in the database</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>db2 &quot;SELECT char(ROUTINENAME,15) ROUTINENAME, ROUTINESCHEMA FROM SYSCAT.ROUTINES WHERE OWNER=&#39;ZEYUAN HU&#39; AND ROUTINETYPE = &#39;F&#39;&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="misc">
+<h2>Misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Show current available database</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>db2 list active databases
+</pre></div>
+</div>
+<ul class="simple">
+<li>Show current active schema</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>db2 values current schema
+</pre></div>
+</div>
+<ul class="simple">
+<li>List all existing schemas</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>$ db2 &quot;select char(schemaname,20) from syscat.schemata&quot;
+
+1
+--------------------
+SYSIBM
+SYSCAT
+SYSFUN
+SYSSTAT
+SYSPROC
+SYSIBMADM
+SYSIBMINTERNAL
+SYSIBMTS
+SYSPUBLIC
+NULLID
+SQLJ
+P0
+SYSTOOLS
+IIDEV28
+
+14 record(s) selected.
+</pre></div>
+</div>
+<ul class="simple">
+<li>Retrieve all table names for a given schema</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>$ db2 list tables for schema p0
+
+Table/View                      Schema          Type  Creation time
+------------------------------- --------------- ----- --------------------------
+TESTTB                          P0              T     2016-01-10-12.22.45.342023
+
+1 record(s) selected.
+</pre></div>
+</div>
+<ul class="simple">
+<li>List all tablespaces for current database</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>$ db2 list tablespaces
+
+Tablespaces for Current Database
+
+Tablespace ID                        = 0
+Name                                 = SYSCATSPACE
+Type                                 = Database managed space
+Contents                             = All permanent data. Regular table space.
+State                                = 0x0000
+  Detailed explanation:
+    Normal
+
+Tablespace ID                        = 1
+Name                                 = TEMPSPACE1
+Type                                 = System managed space
+Contents                             = System Temporary data
+State                                = 0x0000
+  Detailed explanation:
+    Normal
+
+Tablespace ID                        = 2
+Name                                 = USERSPACE1
+Type                                 = Database managed space
+Contents                             = All permanent data. Large table space.
+State                                = 0x0000
+  Detailed explanation:
+    Normal
+
+Tablespace ID                        = 3
+Name                                 = SYSTOOLSPACE
+Type                                 = Database managed space
+Contents                             = All permanent data. Large table space.
+State                                = 0x0000
+  Detailed explanation:
+    Normal
+</pre></div>
+</div>
+<ul class="simple">
+<li>list all databases in an instance</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>=&gt; db2 list db directory
+
+System Database Directory
+
+Number of entries in the directory = 1
+
+Database 1 entry:
+
+Database alias                       = FED
+Database name                        = FED
+Local database directory             = /home/iidev20
+Database release level               = d.00
+Comment                              =
+Directory entry type                 = Indirect
+Catalog database partition number    = 0
+Alternate server hostname            =
+Alternate server port number         =
+</pre></div>
+</div>
+</div>
+<div class="section" id="security">
+<h2>Security<a class="headerlink" href="#security" title="Permalink to this headline">¶</a></h2>
+<p><strong>SYSIBMADM.PRIVILEGES</strong> is a catalog view that holds database object privilege information
+for authorization IDs (roles, users) defined in the system catalog table. If the database
+was created using <code class="docutils literal"><span class="pre">RESTRICTIVE</span></code> clause, select privilege is not automatically granted to PUBLIC.
+If that is the case, one of the following privileges/authorities are needed to query this view:</p>
+<ul class="simple">
+<li>SELECT privilege on the PRIVILEGES administrative view</li>
+<li>CONTROL privilege on the PRIVILEGES administrative view</li>
+<li>DATAACCESS authority</li>
+<li>DBADM authority</li>
+<li>SQLADM authority</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>&gt;db2 select distinct(objecttype) from sysibmadm.privileges
+
+OBJECTTYPE
+------------------------
+DB2 PACKAGE
+FUNCTION
+GLOBAL VARIABLE
+INDEX
+MODULE
+PROCEDURE
+SCHEMA
+TABLE
+TABLESPACE
+VIEW
+WORKLOAD
+
+11 record(s) selected.
+</pre></div>
+</div>
+<ul class="simple">
+<li>What privileges have been granted to this object?</li>
+</ul>
+<p>Given a database object (table/view/alias etc) name &#8220;$OBJECTNAME&#8221; and its schema &#8220;$SCHEMA&#8221;, here is how to
+check current privileges that users hold for this table</p>
+<div class="highlight-python"><div class="highlight"><pre>SELECT char(authid, 20) AS authid_id, \
+        CASE authidtype \
+                WHEN &#39;U&#39; THEN &#39;USER&#39; \
+                WHEN &#39;G&#39; THEN &#39;GROUP&#39; \
+                WHEN &#39;R&#39; THEN &#39;ROLE&#39; \
+        END authidtype , \
+        privilege \
+FROM sysibmadm.privileges \
+WHERE objectname = &#39;$OBJECTNAME&#39; \
+AND objectschema = &#39;$SCHEMA&#39; \
+ORDER BY authid, authidtype, privilege WITH ur;
+</pre></div>
+</div>
+<ul class="simple">
+<li>Which privileges have been granted to a role &#8220;$ROLE&#8221;?</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>SELECT char(objectschema,10) AS SCHEMA, \
+        char(objectname,65) NAME, \
+        char(privilege, 10) PRIVILEGE, \
+        objecttype \
+FROM sysibmadm.privileges \
+WHERE authid=&#39;$ROLE&#39; \
+AND authidtype=&#39;R&#39; ORDER BY 1,2,3 WITH UR;
+</pre></div>
+</div>
+<div class="topic">
+<p class="topic-title first">Example</p>
+<div class="highlight-python"><div class="highlight"><pre>db2 SELECT char(objectschema,10) AS SCHEMA, \
+db2 (cont.) =&gt;     char(objectname,65) NAME, \
+db2 (cont.) =&gt;     char(privilege, 10) PRIVILEGE, \
+db2 (cont.) =&gt;     objecttype \
+db2 (cont.) =&gt; FROM sysibmadm.privileges \
+db2 (cont.) =&gt; WHERE authid=&#39;SALES&#39; \
+db2 (cont.) =&gt; AND authidtype=&#39;R&#39; ORDER BY 1,2,3 WITH UR
+
+SCHEMA     NAME                                                              PRIVILEGE  OBJECTTYPE
+---------- ----------------------------------------------------------------- ---------- ------------------------
+STOREDB    CUSTOMER                                                          INSERT     TABLE
+STOREDB    CUSTOMER                                                          SELECT     TABLE
+STOREDB    CUSTOMER                                                          UPDATE     TABLE
+
+3 record(s) selected.
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li>Which privileges have been granted to a user?</li>
+</ul>
+<p>list the privileges granted to a user &#8220;$USER&#8221; which could be an LDAP ID or OS ID</p>
+<div class="highlight-python"><div class="highlight"><pre>SELECT char(objectschema,10) AS SCHEMA, \
+        char(objectname,65) NAME, \
+        char(privilege, 10) PRIVILEGE, \
+        objecttype \
+FROM sysibmadm.privileges \
+WHERE authid=&#39;$USER&#39; \
+AND authidtype=&#39;U&#39; ORDER BY 1,2,3 WITH UR;
+</pre></div>
+</div>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">you can make a script to contain the above SQLs to avoid repetitive typing. Don&#8217;t forget to
+add script location to your UNIX&#8217;s $PATH</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="http://db2talk.com/2014/06/09/quick-primer-on-checking-database-object-privileges-in-db2-luw">http://db2talk.com/2014/06/09/quick-primer-on-checking-database-object-privileges-in-db2-luw</a></p>
+</div>
+<p><a class="reference download internal" href="../../../_downloads/security_cmds.txt"><code class="xref download docutils literal"><span class="pre">security</span> <span class="pre">commands</span></code></a></p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2016, Zeyuan (Jerry) Hu.<br/>
+      Last updated on Feb 13, 2016.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.5.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
