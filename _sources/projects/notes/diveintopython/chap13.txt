@@ -90,7 +90,7 @@ from Roman numerals?
 Then, the ``romantest.py`` should be a complete test suite to see whether the Roman numeral conversion functions meet
 those requirements.
 
-Example 13.1 romantest.py (download `here <../../../_static/projects/notes/diveintopython/py/romantest.py>`_)
+Example 13.1 :download:`romantest.py </_static/projects/notes/diveintopython/py/romantest.py>`)
 
 .. sourcecode:: python
    :linenos:

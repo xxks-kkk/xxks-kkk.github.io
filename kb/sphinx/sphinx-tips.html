@@ -85,7 +85,7 @@
             
   <div class="section" id="tips">
 <span id="sphinx-tips-rst"></span><h1>Tips<a class="headerlink" href="#tips" title="Permalink to this headline">¶</a></h1>
-<p>Collection of tips when working with <a href="#id1"><span class="problematic" id="id2">`Sphinx-Doc`_</span></a>.</p>
+<p>Collection of tips when working with <a class="reference external" href="http://sphinx-doc.org/">Sphinx-Doc</a>.</p>
 <ul class="simple">
 <li>filename provided to a directive is usually relative to the directory the current source file is contained in, but if it absolute (starting with
 <strong class="command">/</strong>), it is taken as relative to the top source directory.</li>
@@ -94,6 +94,16 @@
 <p class="topic-title first">Example</p>
 <p><code class="docutils literal"><span class="pre">..</span> <span class="pre">include::</span> <span class="pre">links.rst</span></code> expect a doc <code class="docutils literal"><span class="pre">links.rst</span></code> in the same directory as the current source file. However, <code class="docutils literal"><span class="pre">..</span> <span class="pre">include::</span> <span class="pre">/links.rst</span></code>
 assumes <code class="docutils literal"><span class="pre">links.rst</span></code> in top source directory, which is <strong class="command">source/</strong></p>
+</div>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">:download:</span></code> put the files into the <code class="docutils literal"><span class="pre">_downloads</span></code> directory. However, the path towards this <code class="docutils literal"><span class="pre">_downloads</span></code> directory is absolute path. In other words,
+if you copy your source directory to a different location, and rebuild your source, then you will encounter tons of &#8220;downloadable files not found&#8221;
+error. One workaround to this problem is that you direct links the file you want to see, instead of using <code class="docutils literal"><span class="pre">:download:</span></code> directive.</li>
+</ul>
+<div class="topic">
+<p class="topic-title first">Example</p>
+<p>Instead of using <code class="docutils literal"><span class="pre">:download:`romantest.py</span> <span class="pre">&lt;/_static/projects/notes/diveintopython/py/romantest.py&gt;`</span></code>, you can use
+<code class="docutils literal"><span class="pre">`romantest.py</span> <span class="pre">&lt;/_static/projects/notes/diveintopython/py/romantest.py&gt;`_</span></code> to avoid the problem.</p>
 </div>
 </div>
 
