@@ -17,7 +17,7 @@ Object-oriented Python programming:
 5.1. Diving In
 --------------
 
-Example 5.1 fileinfo.py (download `here <../../../_static/projects/notes/diveintopython/py/fileinfo.py>`_)
+Example 5.1 `fileinfo.py </_static/projects/notes/diveintopython/py/fileinfo.py>`_
 
 .. sourcecode:: python
 
