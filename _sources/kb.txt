@@ -30,6 +30,10 @@ Programming Languages
 
 Some language study notes I made.
 
+==========
+Python
+==========
+
 .. toctree::
     :maxdepth: 1
 
