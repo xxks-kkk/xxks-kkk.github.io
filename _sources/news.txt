@@ -5,6 +5,8 @@ News
 Feb 13 2016
     Start to revive this site to reflect my current status.
 
+.. stop-recent-news
+
 Feb 25 2013
     Android App project `Optitimal <projects/software_hardware/timing.html>`_ has launched.
 
@@ -16,8 +18,6 @@ __ mcm_
 Jan 07 2013
     * add social networks links to the contact
     * add `about this website <./todo.html>`_ into sidebar
-
-.. stop-recent-news
 
 Jan 06 2013
     finish first six chapters update of `dive into python study notes <./projects/notes/diveintopython/diveintopython.html>`_
