@@ -1,8 +1,8 @@
-.. _indice:
+.. _indice.rst:
 
-=================================
+#################################
 Understanding Indices and Slicing
-=================================
+#################################
 
 List or string indices are powerful techniques to help you 
 quickly manipulate lists or strings.
@@ -15,8 +15,9 @@ quickly manipulate lists or strings.
 
 .. _formats_slicing:
 
-0. Formats in slicing
----------------------
+******************
+Formats in slicing
+******************
 
 Example 0 Setting
 
@@ -47,11 +48,13 @@ There are only three things to remember:
 
 .. _indexing_pos_neg:
 
-1. Indexing with positive and negative numbers
-----------------------------------------------
+*******************************************
+Indexing with positive and negative numbers
+*******************************************
 
+==========================
 1.0. with positive numbers
-**************************
+==========================
 
 .. sourcecode:: python
 
@@ -61,8 +64,9 @@ There are only three things to remember:
         ^         ^                              ^
         b[0]     b[10]                           b[41]
 
+==========================
 1.1. with negative numbers
-**************************
+==========================
 
 Sometimes it is useful to refer to chars of the string as seen from the end of the string.
 In this case, we use negative numbers and count backwards, from -1 (*not from 0*)
@@ -75,8 +79,9 @@ In this case, we use negative numbers and count backwards, from -1 (*not from 0*
         ^         ^                              ^
         b[-42]    b[-32]                         b[-1]
 
+===============
 1.2.connection
-**************
+===============
 
 In general, indexing with positive numbers and indexing with negative numbers have the following relation:
 
@@ -96,11 +101,13 @@ Example 1 connection with two indexing systems
 
 .. _moving:
 
-2. Moving
----------
+*******
+Moving
+*******
 
+=====================
 2.0. Moving forwards
-********************
+=====================
 
 **If step is positive we are moving forwards (if the value of 'step' is omitted, it defaults to +1)**
 
@@ -139,8 +146,9 @@ Thus::
 So, as long as you are starting or ending your slice with the start or the end of the string, you can
 leave those out and Python will use the defaults.
 
+=====================
 2.1 Moving backwards
-********************
+=====================
 
 **If step is negative then we are moving backwards**
 
