@@ -1,0 +1,33 @@
+## SYSIBMADM.PRIVILEGES has privilege information about different types of database objects
+select distinct(objecttype) from sysibmadm.privileges
+
+## What privileges have been granted to this object?
+SELECT char(authid, 20) AS authid_id, 
+	CASE authidtype 
+		WHEN 'U' THEN 'USER' 
+		WHEN 'G' THEN 'GROUP' 
+		WHEN 'R' THEN 'ROLE' 
+	END authidtype , 
+	privilege 
+FROM sysibmadm.privileges
+WHERE objectname = '$OBJECTNAME'
+AND objectschema = '$SCHEMA'
+ORDER BY authid, authidtype, privilege WITH ur;
+
+## Which privileges have been granted to a role?
+SELECT char(objectschema,10) AS SCHEMA, \
+	   char(objectname,65) NAME, \
+	   char(privilege, 10) PRIVILEGE, \
+	   objecttype \
+FROM sysibmadm.privileges \ 
+WHERE authid='$ROLE' \
+AND authidtype='R' ORDER BY 1,2,3 WITH UR;
+
+## Which privileges have been granted to a user?
+SELECT char(objectschema,10) AS SCHEMA, \
+	   char(objectname,65) NAME, \
+	   char(privilege, 10) PRIVILEGE, \
+	   objecttype \
+FROM sysibmadm.privileges \ 
+WHERE authid='$USER' \
+AND authidtype='U' ORDER BY 1,2,3 WITH UR;

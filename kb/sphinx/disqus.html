@@ -1,0 +1,232 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Add disqus into doc &mdash; Zeyuan Hu&#39;s World</title>
+    
+    <link rel="stylesheet" href="../../_static/zeyuan.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/>
+    <link rel="top" title="Zeyuan Hu&#39;s World" href="../../index.html" />
+    <link rel="up" title="Sphinx-Doc" href="sphinx.html" />
+    <link rel="next" title="Tips" href="sphinx-tips.html" />
+    <link rel="prev" title="Sphinx-Doc" href="sphinx.html" /> 
+  </head>
+  <body role="document">
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../../index.html"><img src="../../_static/logo2.png" border="0" alt="Logo of Zeyuan's personal website"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="sphinx-tips.html" title="Tips"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="sphinx.html" title="Sphinx-Doc"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">home</a>|&nbsp;</li>
+        <li><a href="../../kb.html">knowledge base</a>|&nbsp;</li>
+        <li><a href="../../pj.html">projects</a>|&nbsp;</li>
+        <li><a href="../../resume.html">resume</a>|&nbsp;</li>
+        <li><a href="../../personal.html">about me</a>|&nbsp;</li>
+        <li><a href="../../search.html">search</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../kb.html" >Knowledge Base</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="sphinx.html" accesskey="U">Sphinx-Doc</a> &raquo;</li> 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Add disqus into doc</a><ul>
+<li><a class="reference internal" href="#do-it-on-your-own">Do It On Your Own</a></li>
+<li><a class="reference internal" href="#extension-to-shine">Extension to Shine</a></li>
+</ul>
+</li>
+</ul>
+
+    <h3>About this site</h3>
+        <ul class="this-page-menu">
+            <li><a class="reference external" 
+                   href="../../todo.html" >About</a></li>
+        </ul>
+<div id="searchbox" style="display: none">
+  <h3>search this site</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="add-disqus-into-doc">
+<span id="disqus-rst"></span><h1>Add disqus into doc<a class="headerlink" href="#add-disqus-into-doc" title="Permalink to this headline">¶</a></h1>
+<p>One of the driven factors that I want to remake my own personal website is that one day I saw this cool <a class="reference external" href="http://xiaming.me">site</a>. I really want to have some interaction
+with unknown readers (I mean you :)) while also having some chance to keep improving based upon feedbacks (again, I mean yours :)). However,
+I am reluctant to adopt the easy-out way: learn <a class="reference external" href="http://blog.getpelican.com">pelican</a> &#8211;&gt; use <a class="reference external" href="https://github.com/jsliang/pelican-fresh/">fresh</a> them &#8211;&gt; start writing. This mainly because I love Sphinx documentation style.
+So clean, so elegant (BTW, even <a class="reference external" href="http://blog.getpelican.com">pelican</a> use Sphinx to do their <a class="reference external" href="http://docs.getpelican.com/en/3.63/">doc</a>, haha). After some experimenting, I finally make it work and I&#8217;ll document it for
+future reference:</p>
+<div class="section" id="do-it-on-your-own">
+<h2>Do It On Your Own<a class="headerlink" href="#do-it-on-your-own" title="Permalink to this headline">¶</a></h2>
+<p>1. Once you register a website in <a class="reference external" href="https://disqus.com">disqus</a>, you will direct to <em>Installation</em> section. You choose <em>Universal Code</em> and will get a chunk of code that
+asks you to &#8220;Place the following code where you&#8217;d like Disqus to load&#8221;:</p>
+<div class="highlight-python"><div class="highlight"><pre>&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
+     &lt;script&gt;
+         /**
+          * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+          * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+          */
+          /*
+           var disqus_config = function () {
+           this.page.url = PAGE_URL; // Replace PAGE_URL with your page&#39;s canonical URL variable
+           this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page&#39;s unique identifier variable
+           };
+           */
+           var disqus_shortname = &#39;zeyuan&#39;; // required: replace example with your forum shortname
+           (function() { // DON&#39;T EDIT BELOW THIS LINE
+           var d = document, s = d.createElement(&#39;script&#39;);
+           s.src = &#39;//zeyuan.disqus.com/embed.js&#39;;
+           s.setAttribute(&#39;data-timestamp&#39;, +new Date());
+           (d.head || d.body).appendChild(s);
+           })();
+     &lt;/script&gt;
+&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;https://disqus.com/?ref_noscript&quot; rel=&quot;nofollow&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You need to add <code class="docutils literal"><span class="pre">var</span> <span class="pre">disqus_shortname</span> <span class="pre">=</span> <span class="pre">'zeyuan';</span></code> to the code chunk provided by disqus, and make it look like above.</p>
+</div>
+<ol class="arabic" start="2">
+<li><p class="first">Then, inside Sphinx-doc, you can add the code chunk above to your preferred rst files with a
+<a class="reference external" href="http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data-pass-through">raw directive</a>. For example, inside <code class="docutils literal"><span class="pre">foo.rst</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre>====================================
+Nice Example to show disqus comment
+====================================
+
+I would like to show how to add disqus comment in this page.
+
+.. raw:: html
+
+    &lt;the code chunk&gt;
+</pre></div>
+</div>
+</li>
+<li><p class="first">Essentially, adding disqus to Sphinx-doc is done by step 2. However, I would like to add one more layer of encapuslation to make everything looks
+nicer. I create a rst file called <code class="docutils literal"><span class="pre">comment.rst</span></code> and it looks like following:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. _comment.rst:
+
+.. raw:: html
+
+	 &lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
+	 &lt;script&gt;
+	 /**
+	 * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+	   * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+	     */
+	     /*
+	     var disqus_config = function () {
+	     this.page.url = PAGE_URL; // Replace PAGE_URL with your page&#39;s canonical URL variable
+	     this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page&#39;s unique identifier variable
+	     };
+	     */
+	             var disqus_shortname = &#39;zeyuan&#39;; // required: replace example with your forum shortname 
+	     (function() { // DON&#39;T EDIT BELOW THIS LINE
+	     var d = document, s = d.createElement(&#39;script&#39;);
+
+	     s.src = &#39;//zeyuan.disqus.com/embed.js&#39;;
+
+	     s.setAttribute(&#39;data-timestamp&#39;, +new Date());
+	     (d.head || d.body).appendChild(s);
+	     })();
+	     &lt;/script&gt;
+	     &lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;https://disqus.com/?ref_noscript&quot; rel=&quot;nofollow&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
+</pre></div>
+</div>
+<p>Then, whenever I want to add disqus comment, I can simply add:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. include:: comment.rst
+</pre></div>
+</div>
+<p>to wherever I want disqus comment section appear.</p>
+</li>
+<li><p class="first">If you want to further adjust the width of disqus appears in Sphinx-Doc, I think
+<a class="reference external" href="https://github.com/whiteinge/eseth/blob/master/static/base-eseth.css">this repo</a> should be a good reference.</p>
+</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The repo is also a awesome study material to create your own sphinx template and make it to a blog site.</p>
+</div>
+</div>
+<div class="section" id="extension-to-shine">
+<h2>Extension to Shine<a class="headerlink" href="#extension-to-shine" title="Permalink to this headline">¶</a></h2>
+<p>Of course, we can definitely look for extensions to help us to solve the problem. The plugin I use is <a class="reference external" href="https://pypi.python.org/pypi/sphinxcontrib-newsfeed">sphinxcontrib-newsfeed</a>, it comes with a support
+of Disqus. It is nice and does work for me.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="sphinx-tips.html" title="Tips"
+             >next</a></li>
+        <li class="right" >
+          <a href="sphinx.html" title="Sphinx-Doc"
+             >previous</a> |</li>
+        <li><a href="../../index.html">home</a>|&nbsp;</li>
+        <li><a href="../../kb.html">knowledge base</a>|&nbsp;</li>
+        <li><a href="../../pj.html">projects</a>|&nbsp;</li>
+        <li><a href="../../resume.html">resume</a>|&nbsp;</li>
+        <li><a href="../../personal.html">about me</a>|&nbsp;</li>
+        <li><a href="../../search.html">search</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../kb.html" >Knowledge Base</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="sphinx.html" >Sphinx-Doc</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2012-2016, Zeyuan Hu.
+      Last updated on Feb 16, 2016.
+    </div>
+  </body>
+</html>

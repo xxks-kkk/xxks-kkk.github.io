@@ -1,0 +1,77 @@
+.. _p1.rst:
+
+##############################################
+What does group by with multiple column mean?
+##############################################
+
+
+
+
+.. topic::  Key highlight
+
+        **Group by X** means **put all those with the same value for X in the one group**
+        **Group by X,Y** means **put all those with the same values for both X and Y in the one group**
+
+=======
+Example
+=======
+
+Let's say we have the following table, to do with who is attending what subject at a university
+
+::
+
+        Table: Subject_Selection
+
+        Subject   Semester   Attendee
+        ---------------------------------
+        ITB001    1          John
+        ITB001    1          Bob
+        ITB001    1          Mickey
+        ITB001    2          Jenny
+        ITB001    2          James
+        MKB114    1          John
+        MKB114    1          Erica
+
+When you use group by on the subject column only
+
+::
+
+        select subject, count(*) from p1.subject_selection group by subject
+
+        SUBJECT                        2          
+        ------------------------------ -----------
+        ITB001                                   5
+        MKB114                                   2
+
+        2 record(s) selected.
+
+because there are 5 entries for ITB001, and 2 for MKB114
+
+If we use group by two columns
+
+::
+
+        select subject, semester, count(*) from p1.subject_selection group by subject, semester
+
+        SUBJECT                        SEMESTER                       3          
+        ------------------------------ ------------------------------ -----------
+        ITB001                         1                                        3
+        ITB001                         2                                        2
+        MKB114                         1                                        2
+
+        3 record(s) selected.
+
+This is becase, when we group by two columns, it is saying "Grouping them so that all of those with the same
+subject and semester are in the same group, and then calculate all the aggregate functions for each of those groups".
+In this example, there are three people doing ITB001 in semester 1, and two doing it in semester 2. Both of the people
+doing MKB114 are in semester 1.
+
+==============
+Download 
+==============
+
+A clp script to work with example above.
+
+:download:`Example clp <p1.clp>`
+
+reference: http://stackoverflow.com/questions/2421388/using-group-by-on-multiple-columns

@@ -1,0 +1,121 @@
+.. _p3.rst:
+
+#################################
+GROUP BY CUBE vs. GROUP BY ROLLUP
+#################################
+
+*************
+GROUPING SETS
+*************
+
+Multiple grouping clauses can be specified in a single statement using grouping 
+sets.
+
+.. topic:: Example
+
+    - ``GROUP BY x`` is the same as ``GROUP BY GROUPING SETS((x))``
+    - ``GROUP BY x,y,z`` is the same as ``GROUP BY GROUPING SETS((x,y,z))``
+
+**********************************
+GROUP BY CUBE vs. GROUP BY ROLLUP
+**********************************
+
+``GROUP BY ROLLUP (YEAR, MONTH, DAY)`` is the same as
+::
+    
+    GROUP BY GROUPING SETS ((YEAR, MONTH, DAY)
+                            (YEAR, MONTH)
+                            (YEAR)
+                            ())
+
+``GROUP BY CUBE (YEAR, MONTH, DAY)`` is the same as
+::
+
+    GROUP BY GROUPING SETS ((YEAR, MONTH, DAY)
+                            (YEAR, MONTH)
+                            (YEAR, DAY)
+                            (YEAR)
+                            (MONTH, DAY)
+                            (MONTH)
+                            (DAY)
+                            ())
+
+``CUBE`` essentially contains every possible rollup scenario for each node 
+whereas ``ROLLUP`` will keep the hierarchy intact (so it won't skip MONTH and
+show YEAR/DAY, whereas ``CUBE`` will)
+
+**************
+Example
+**************
+
+::
+
+    db2 => select job, sex, dec(avg(salary),9,2) from employee group by rollup (job, sex)
+    
+    JOB      SEX 3
+    -------- --- -----------
+     -        -      58155.35
+     ANALYST  -      70213.33
+     CLERK    -      43876.25
+     DESIGNER -      57437.00
+     FIELDREP -      39274.00
+     MANAGER  -      88142.14
+     OPERATOR -      37898.33
+     PRES     -     152750.00
+     SALESREP -      56500.00
+     ANALYST  F      70213.33
+     CLERK    F      42315.00
+     CLERK    M      44396.66
+     DESIGNER F      58317.50
+     DESIGNER M      56850.00
+     FIELDREP F      35370.00
+     FIELDREP M      40250.00
+     MANAGER  F      94723.33
+     MANAGER  M      83206.25
+     OPERATOR F      38575.00
+     OPERATOR M      36545.00
+     PRES     F     152750.00
+     SALESREP F      46500.00
+     SALESREP M      66500.00
+                                    
+   23 record(s) selected.
+
+
+   db2 => select job, sex, dec(avg(salary),9,2) from employee group by rollup (job, sex)
+
+     JOB      SEX 3
+     -------- --- -----------
+     -        -      58155.35
+     ANALYST  -      70213.33
+     CLERK    -      43876.25
+     DESIGNER -      57437.00
+     FIELDREP -      39274.00
+     MANAGER  -      88142.14
+     OPERATOR -      37898.33
+     PRES     -     152750.00
+     SALESREP -      56500.00
+     ANALYST  F      70213.33
+     CLERK    F      42315.00
+     CLERK    M      44396.66
+     DESIGNER F      58317.50
+     DESIGNER M      56850.00
+     FIELDREP F      35370.00
+     FIELDREP M      40250.00
+     MANAGER  F      94723.33
+     MANAGER  M      83206.25
+     OPERATOR F      38575.00
+     OPERATOR M      36545.00
+     PRES     F     152750.00
+     SALESREP F      46500.00
+     SALESREP M      66500.00
+
+   23 record(s) selected.
+
+In this case, ``rollup`` has 3 group by: ``(job,sex)``, ``(job)``, ``()``
+``cube`` has 4 group bt: ``(job,sex)``, ``(job)``, ``(sex)``, ``()``
+
+.. seealso::
+
+    - http://stackoverflow.com/questions/7053471/understanding-the-differences-between-cube-and-rollup
+    
+    - http://www.toadworld.com/platforms/ibmdb2/w/wiki/7596.grouping-sets

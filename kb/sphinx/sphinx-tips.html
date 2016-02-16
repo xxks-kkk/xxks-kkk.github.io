@@ -1,0 +1,141 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tips &mdash; Zeyuan Hu&#39;s World</title>
+    
+    <link rel="stylesheet" href="../../_static/zeyuan.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/>
+    <link rel="top" title="Zeyuan Hu&#39;s World" href="../../index.html" />
+    <link rel="up" title="Sphinx-Doc" href="sphinx.html" />
+    <link rel="next" title="Themes" href="resource.html" />
+    <link rel="prev" title="Add disqus into doc" href="disqus.html" /> 
+  </head>
+  <body role="document">
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../../index.html"><img src="../../_static/logo2.png" border="0" alt="Logo of Zeyuan's personal website"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="resource.html" title="Themes"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="disqus.html" title="Add disqus into doc"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">home</a>|&nbsp;</li>
+        <li><a href="../../kb.html">knowledge base</a>|&nbsp;</li>
+        <li><a href="../../pj.html">projects</a>|&nbsp;</li>
+        <li><a href="../../resume.html">resume</a>|&nbsp;</li>
+        <li><a href="../../personal.html">about me</a>|&nbsp;</li>
+        <li><a href="../../search.html">search</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../kb.html" >Knowledge Base</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="sphinx.html" accesskey="U">Sphinx-Doc</a> &raquo;</li> 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <h3>About this site</h3>
+        <ul class="this-page-menu">
+            <li><a class="reference external" 
+                   href="../../todo.html" >About</a></li>
+        </ul>
+<div id="searchbox" style="display: none">
+  <h3>search this site</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="tips">
+<span id="sphinx-tips-rst"></span><h1>Tips<a class="headerlink" href="#tips" title="Permalink to this headline">¶</a></h1>
+<p>Collection of tips when working with <a class="reference external" href="http://sphinx-doc.org/">Sphinx-Doc</a>.</p>
+<ul class="simple">
+<li>filename provided to a directive is usually relative to the directory the current source file is contained in, but if it absolute (starting with
+<strong class="command">/</strong>), it is taken as relative to the top source directory.</li>
+</ul>
+<div class="topic">
+<p class="topic-title first">Example</p>
+<p><code class="docutils literal"><span class="pre">..</span> <span class="pre">include::</span> <span class="pre">links.rst</span></code> expect a doc <code class="docutils literal"><span class="pre">links.rst</span></code> in the same directory as the current source file. However, <code class="docutils literal"><span class="pre">..</span> <span class="pre">include::</span> <span class="pre">/links.rst</span></code>
+assumes <code class="docutils literal"><span class="pre">links.rst</span></code> in top source directory, which is <strong class="command">source/</strong></p>
+</div>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">:download:</span></code> put the files into the <code class="docutils literal"><span class="pre">_downloads</span></code> directory. However, the path towards this <code class="docutils literal"><span class="pre">_downloads</span></code> directory is absolute path. In other words,
+if you copy your source directory to a different location, and rebuild your source, then you will encounter tons of &#8220;downloadable files not found&#8221;
+error. One workaround to this problem is that you direct links the file you want to see, instead of using <code class="docutils literal"><span class="pre">:download:</span></code> directive.</li>
+</ul>
+<div class="topic">
+<p class="topic-title first">Example</p>
+<p>Instead of using <code class="docutils literal"><span class="pre">:download:`romantest.py</span> <span class="pre">&lt;/_static/projects/notes/diveintopython/py/romantest.py&gt;`</span></code>, you can use
+<code class="docutils literal"><span class="pre">`romantest.py</span> <span class="pre">&lt;/_static/projects/notes/diveintopython/py/romantest.py&gt;`_</span></code> to avoid the problem.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="resource.html" title="Themes"
+             >next</a></li>
+        <li class="right" >
+          <a href="disqus.html" title="Add disqus into doc"
+             >previous</a> |</li>
+        <li><a href="../../index.html">home</a>|&nbsp;</li>
+        <li><a href="../../kb.html">knowledge base</a>|&nbsp;</li>
+        <li><a href="../../pj.html">projects</a>|&nbsp;</li>
+        <li><a href="../../resume.html">resume</a>|&nbsp;</li>
+        <li><a href="../../personal.html">about me</a>|&nbsp;</li>
+        <li><a href="../../search.html">search</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../kb.html" >Knowledge Base</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="sphinx.html" >Sphinx-Doc</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2012-2016, Zeyuan Hu.
+      Last updated on Feb 16, 2016.
+    </div>
+  </body>
+</html>
