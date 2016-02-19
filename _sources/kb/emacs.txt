@@ -219,3 +219,4 @@ Personally reference them a lot. But there are ton online through google.
 
 - `Stanford emacs basics <http://mally.stanford.edu/~sr/computing/emacs.html>`_
 - `Xah Emacs Tutorial <http://ergoemacs.org/emacs/emacs_find_replace.html>`_
+- `Emacs-Elisp-Programming <https://github.com/caiorss/Emacs-Elisp-Programming>`_

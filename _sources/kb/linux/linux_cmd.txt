@@ -50,11 +50,39 @@ https://unix.stackexchange.com/questions/47407/cat-line-x-to-line-y-on-a-huge-fi
 
         tar -cf vmblock.tar vmblock-only
 
+- tar a directory with gzip::
+
+        tar -zcvf archive-name.tar.gz directory-name
+
+.. note::
+
+        -z: using gzip
+        -c: Create archive
+        -v: Verbose; diplay progress while creating archive
+        -f: Archive file name
+
+.. note::
+
+        If GNU tar is not supported, then try
+        ``tar -cvf - file1 file2 dir3 | gzip > archive.tar.gz``
+
 - untar a directory
 
 .. code-block:: shell
 
         tar -xvf vmblock.tar
+
+- untar ``tar.gz``::
+
+        tar -zxvf prog-1-jan-2005.tar.gz
+
+.. note::
+
+        1. To change directory using ``-C`` option: ``tar -zxvf data.tar.gz -C /data/projects``
+      
+- To view a detailed table of contents (list all files) for this archive::
+
+        tar -tzvf data.tar.gz
 
 - recursively remove all the files under certain directory (force)
 

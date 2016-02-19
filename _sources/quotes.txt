@@ -16,7 +16,7 @@ He hardly knows which is which. He simply pursues his vision of excellence
 in whatever he does, leaving others to decide whether he is working or playing.
 To him he is always doing both."
 
-**-- Zen Philosophy (found in Prof. Remzi's website)**
+**-- Zen Philosophy** (found in `Prof. Remzi Arpaci-Dusseau's  website <http://pages.cs.wisc.edu/~remzi/quotes.html>`_)
 
 .. stop-show-quotes
 

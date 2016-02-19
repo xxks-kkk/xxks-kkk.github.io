@@ -1,5 +1,4 @@
-.
-_sphinx.rst:
+.. _sphinx.rst:
 
 ######################
 Sphinx-Doc

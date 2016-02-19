@@ -9,9 +9,9 @@ Zeyuan Hu
        :height: 300px
        :width: 400px
 
-A brief summary of where I come from... I was born in Beijing, China. From there I moved to Madison, Wisconsin, where I am currently studying Computer Science, Economics, and Mathematics.
+I'm a former `badger <http://www.wisc.edu>`_ and now work as a software developer \@ IBM. My current focus is in DBMS (Runtime/Compiler), 
+Distributed System (Hadoop), and `Art of Unix Programming <http://nakamotoinstitute.org/static/docs/taoup.pdf>`_. 
 
-My primary interest lies in Economics, especially to explain social acitivies through real economics data. Since sophomore year, I have become increasingly interested in programming. I think it is fun and it forces me to think about problems thoroughly.
 
 -------------------------------------------------------------------------------------------
 
