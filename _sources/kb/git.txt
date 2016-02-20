@@ -29,3 +29,8 @@ The solutions provided by link should work because I have tested them by myself
    2. Put ``CNAME`` inside ``username.github.io``, not the source repo of web if you use two separate repo `one for publish <https://github.com/xxks-kkk/xxks-kkk.github.io>`_ and `one for source code of static generated web <https://github.com/xxks-kkk/source2.github.io.xxks-kkk>`_ like I do.
 
 - `Git on Bitbucket: Always asked for password, even after uploading my public SSH key <http://stackoverflow.com/questions/8600652/git-on-bitbucket-always-asked-for-password-even-after-uploading-my-public-ssh>`_
+
+.. topic:: Push an existing repository ...
+
+	  | $ git remote add origin git@github.com:username/new_repo
+	  | $ git push -u origin master
