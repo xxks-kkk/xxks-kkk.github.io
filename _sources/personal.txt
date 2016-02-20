@@ -9,7 +9,7 @@ Zeyuan Hu
        :height: 300px
        :width: 400px
 
-I'm a former `badger <http://www.wisc.edu>`_ and now work as a software developer \@ IBM. My current focus is in DBMS (Runtime/Compiler), 
+I'm a former `badger <http://www.wisc.edu>`_ and now work as a software developer \@ IBM in Beijing. My current focus is in DBMS (Runtime/Compiler), 
 Distributed System (Hadoop), and `Art of Unix Programming <http://nakamotoinstitute.org/static/docs/taoup.pdf>`_. 
 
 

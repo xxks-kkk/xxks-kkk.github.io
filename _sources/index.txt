@@ -15,10 +15,6 @@ Welcome
 
 I am a software developer \@ IBM working on Big Data `federation`_ query server and `Big SQL`_, a Massively Parallel Processing query engine on Hadoop.
 
-.. include:: news.rst
-    :end-before: stop-recent-news
-
-`Older news ... <news.html>`_
 
 .. include:: contact.rst
 
@@ -28,7 +24,6 @@ I am a software developer \@ IBM working on Big Data `federation`_ query server 
    
    kb.rst
    pj.rst
-   resume.rst
    personal.rst 
 
 
