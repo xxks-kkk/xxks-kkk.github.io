@@ -63,6 +63,7 @@
 <li><a class="reference internal" href="#system-catalog">System Catalog</a></li>
 <li><a class="reference internal" href="#misc">Misc</a></li>
 <li><a class="reference internal" href="#security">Security</a></li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
 </ul>
@@ -359,6 +360,20 @@ add script location to your UNIX&#8217;s $PATH</p>
 </div>
 <p><a class="reference download internal" href="../../../_downloads/security_cmds.txt"><code class="xref download docutils literal"><span class="pre">security</span> <span class="pre">commands</span></code></a></p>
 </div>
+<div class="section" id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<div class="topic">
+<p class="topic-title first">SQL1397N The DB2 service failed to logon</p>
+<p>This is usually happened on Windows. This is mainly due to the logon information mismatch in windows service. In order to solve this
+you need to go <span class="menuselection">Administrative Tools -&gt; Services</span> Then select &#8220;Properties&#8221; by right clicking on DB2 instance service (ie.
+&#8220;DB2-DB2COPY1-DB&#8221; in my case) and under logon tab, change this account password with the correct password you changed through Windows
+account management. Of course, you can always change the authorization for thoses services to &#8220;Local system&#8221;.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="http://www.ibm.com/developerworks/data/library/techarticle/dm-0508wasserman/">DB2 UDB security, Part1: Understand how user and group accounts interact with DB2 UDB</a></p>
+</div>
+</div>
 </div>
 
 
@@ -386,7 +401,7 @@ add script location to your UNIX&#8217;s $PATH</p>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2012-2016, Zeyuan Hu.
-      Last updated on Feb 19, 2016.
+      Last updated on Feb 20, 2016.
     </div>
   </body>
 </html>

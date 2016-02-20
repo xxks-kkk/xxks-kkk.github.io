@@ -280,3 +280,19 @@ list the privileges granted to a user "$USER" which could be an LDAP ID or OS ID
         http://db2talk.com/2014/06/09/quick-primer-on-checking-database-object-privileges-in-db2-luw 
 
 :download:`security commands<security_cmds.txt>`
+
+*****************
+Troubleshooting
+*****************
+
+.. topic:: SQL1397N The DB2 service failed to logon
+
+    This is usually happened on Windows. This is mainly due to the logon information mismatch in windows service. In order to solve this 
+    you need to go :menuselection:`Administrative Tools -> Services` Then select "Properties" by right clicking on DB2 instance service (ie.
+    "DB2-DB2COPY1-DB" in my case) and under logon tab, change this account password with the correct password you changed through Windows
+    account management. Of course, you can always change the authorization for thoses services to "Local system".
+
+.. seealso::
+
+    `DB2 UDB security, Part1: Understand how user and group accounts interact with DB2 UDB <http://www.ibm.com/developerworks/data/library/
+    techarticle/dm-0508wasserman/>`_
