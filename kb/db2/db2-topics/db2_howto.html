@@ -363,6 +363,39 @@ add script location to your UNIX&#8217;s $PATH</p>
 <div class="section" id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
 <div class="topic">
+<p class="topic-title first">lookup db2 error code in system</p>
+<p>(<a class="reference external" href="mailto:iidev20&#37;&#52;&#48;maradona">iidev20<span>&#64;</span>maradona</a>) /home/iidev20
+$ db2 ? sql901n</p>
+<dl class="docutils">
+<dt>SQL0901N  The SQL statement failed because of a non-severe system error.</dt>
+<dd>Subsequent SQL statements can be processed. (Reason &#8220;&lt;reason&gt;&#8221;.)</dd>
+</dl>
+<p>Explanation:</p>
+<p>An error has occurred which is due to a system error. Processing of the
+SQL statement has ended for reason &#8220;&lt;reason&gt;&#8221; (this is in English only
+and is useful only to IBM support personnel).</p>
+<p>User response:</p>
+<p>Record the message number (SQLCODE) and reason &#8220;&lt;reason&gt;&#8221;.</p>
+<p>If trace was active, invoke the Independent Trace Facility at the
+operating system command prompt. Then contact your technical service
+representative with the following information:</p>
+<ul class="simple">
+<li>Problem description</li>
+<li>SQLCODE</li>
+<li>reason &#8220;&lt;reason&gt;&#8221;</li>
+<li>SQLCA contents if possible</li>
+<li>Trace file if possible.</li>
+</ul>
+<p>Federated system users: isolate the problem to the data source failing
+the request (refer to the Troubleshooting Guide to determine which data
+source is failing to process the SQL statement) and take the necessary
+diagnostic steps for that data source. The problem determination
+procedures for data sources vary, so refer to the applicable data source
+manuals.</p>
+<p>sqlcode: -901</p>
+<p>sqlstate: 58004, 5UA0L</p>
+</div>
+<div class="topic">
 <p class="topic-title first">SQL1397N The DB2 service failed to logon</p>
 <p>This is usually happened on Windows. This is mainly due to the logon information mismatch in windows service. In order to solve this
 you need to go <span class="menuselection">Administrative Tools -&gt; Services</span> Then select &#8220;Properties&#8221; by right clicking on DB2 instance service (ie.
@@ -401,7 +434,7 @@ account management. Of course, you can always change the authorization for those
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2012-2016, Zeyuan Hu.
-      Last updated on Feb 20, 2016.
+      Last updated on Mar 02, 2016.
     </div>
   </body>
 </html>

@@ -91,15 +91,16 @@
             
   <div class="section" id="useful-linux-cmds">
 <span id="linux-cmd-rst"></span><h1>Useful Linux Cmds<a class="headerlink" href="#useful-linux-cmds" title="Permalink to this headline">¶</a></h1>
-<p>Last Update: February 19, 2016</p>
+<p>Last Update: March 02, 2016</p>
 <div class="section" id="linux-commands">
 <h2>Linux Commands<a class="headerlink" href="#linux-commands" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>cat line X (i.e. <code class="docutils literal"><span class="pre">46</span></code>) to line Y (i.e. <code class="docutils literal"><span class="pre">396</span></code>) on a file (i.e. <code class="docutils literal"><span class="pre">db2odbct_statement.h</span></code>)</li>
-</ul>
-<div class="highlight-shell"><div class="highlight"><pre>awk <span class="s1">&#39;NR&lt;=396 &amp;&amp; NR &gt;=46&#39;</span> db2odbct_statement.h &gt; $HOME/hive_server_opts.txt
+<ul>
+<li><p class="first">cat line X (i.e. <code class="docutils literal"><span class="pre">46</span></code>) to line Y (i.e. <code class="docutils literal"><span class="pre">396</span></code>) on a file (i.e. <code class="docutils literal"><span class="pre">db2odbct_statement.h</span></code>):</p>
+<div class="highlight-python"><div class="highlight"><pre>awk &#39;NR&lt;=396 &amp;&amp; NR &gt;=46&#39; db2odbct_statement.h &gt; $HOME/hive_server_opts.txt
 </pre></div>
 </div>
+</li>
+</ul>
 <p><a class="reference external" href="https://unix.stackexchange.com/questions/47407/cat-line-x-to-line-y-on-a-huge-file">https://unix.stackexchange.com/questions/47407/cat-line-x-to-line-y-on-a-huge-file</a></p>
 <ul class="simple">
 <li><a class="reference external" href="https://stackoverflow.com/questions/11681683/cant-close-a-scpitelnet-session-with-echo-when-i-use-it-in-a-script">terminate telnet session</a></li>
@@ -109,31 +110,27 @@
 <span class="n">telnet</span><span class="o">&gt;</span> <span class="n">quit</span> <span class="p">(</span><span class="n">enter</span><span class="p">)</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li>sort the files in a directory by modification date</li>
-</ul>
-<div class="highlight-shell"><div class="highlight"><pre>ls -lrt
-</pre></div>
-</div>
-<ul class="simple">
-<li>find certain files from /root</li>
-</ul>
-<div class="highlight-shell"><div class="highlight"><pre>find / -name version.h
-</pre></div>
-</div>
-<ul class="simple">
-<li>cd back into the directory where I come from</li>
-</ul>
-<div class="highlight-shell"><div class="highlight"><pre><span class="nb">cd</span> -
-</pre></div>
-</div>
-<ul class="simple">
-<li>tar a directory</li>
-</ul>
-<div class="highlight-shell"><div class="highlight"><pre>tar -cf vmblock.tar vmblock-only
-</pre></div>
-</div>
 <ul>
+<li><p class="first">sort the files in a directory by modification date:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ls</span> <span class="o">-</span><span class="n">lrt</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">find certain files from /root:</p>
+<div class="highlight-python"><div class="highlight"><pre>find / -name version.h
+</pre></div>
+</div>
+</li>
+<li><p class="first">cd back into the directory where I come from:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd -
+</pre></div>
+</div>
+</li>
+<li><p class="first">tar a directory:</p>
+<div class="highlight-python"><div class="highlight"><pre>tar -cf vmblock.tar vmblock-only
+</pre></div>
+</div>
+</li>
 <li><p class="first">tar a directory with gzip:</p>
 <div class="highlight-python"><div class="highlight"><pre>tar -zcvf archive-name.tar.gz directory-name
 </pre></div>
@@ -364,6 +361,68 @@ arises. To know about trap, run <code class="docutils literal"><span class="pre"
 all the process belongs to the same group as <code class="docutils literal"><span class="pre">ksh</span></code>, which are subshells. <a class="reference external" href="http://unix.stackexchange.com/questions/67532/what-does-kill-0-do-actually">This answer</a> gives detail explanation about <code class="docutils literal"><span class="pre">kill</span> <span class="pre">0</span></code>. Also, don&#8217;t confuse with <a class="reference external" href="http://unix.stackexchange.com/questions/169898/what-does-kill-0-do?rq=1">kill -0</a></li>
 </ul>
 </div>
+<ul>
+<li><p class="first">output text to both screen and file inside a shell script:</p>
+<div class="highlight-python"><div class="highlight"><pre>command | tee -a &quot;$log_file&quot;
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">tee</span></code> saves input to a file (use <code class="docutils literal"><span class="pre">-a</span></code> to append rather than overwrite), and copies the input to standard output as well.</p>
+</div>
+<ul>
+<li><p class="first">A simple implementation to <code class="docutils literal"><span class="pre">watch</span></code> command in Linux:</p>
+<div class="highlight-python"><div class="highlight"><pre># $1 is the number of iterations you&#39;d like to run
+# $2 is the amount of time to sleep between iterations (in seconds)
+# $3 is the command you&#39;d like to run
+
+i=0
+
+while test &quot;$i&quot; -lt $1
+do
+  clear
+  $3
+  i=`echo $i + 1 | bc`
+  sleep $2
+done
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is particularly useful when working with AIX, which has
+<code class="docutils literal"><span class="pre">watch</span></code> command that works completely different than the one on
+Linux.</p>
+</div>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">shift</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre>shift [n]
+The  positional parameters from n+1 ... are renamed to $1 ....
+If n is not given, it is assumed to be 1.
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="topic">
+<p class="topic-title first">Example</p>
+<p>Example script:</p>
+<div class="highlight-python"><div class="highlight"><pre>#!/bin/bash
+echo &quot;Input: $@&quot;
+shift 3
+echo &quot;After shift: $@&quot;
+</pre></div>
+</div>
+<p>run script and shows:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ myscript.sh one two three four five six
+
+Input: one two three four five six
+After shift: four five six
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="resource">
 <h2>Resource<a class="headerlink" href="#resource" title="Permalink to this headline">¶</a></h2>
@@ -398,7 +457,7 @@ all the process belongs to the same group as <code class="docutils literal"><spa
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2012-2016, Zeyuan Hu.
-      Last updated on Feb 19, 2016.
+      Last updated on Mar 02, 2016.
     </div>
   </body>
 </html>

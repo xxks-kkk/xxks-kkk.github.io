@@ -285,6 +285,47 @@ list the privileges granted to a user "$USER" which could be an LDAP ID or OS ID
 Troubleshooting
 *****************
 
+.. topic:: lookup db2 error code in system
+
+    (iidev20@maradona) /home/iidev20
+    $ db2 ? sql901n    
+
+
+    SQL0901N  The SQL statement failed because of a non-severe system error.
+          Subsequent SQL statements can be processed. (Reason "<reason>".)
+
+    Explanation: 
+
+    An error has occurred which is due to a system error. Processing of the
+    SQL statement has ended for reason "<reason>" (this is in English only
+    and is useful only to IBM support personnel).
+
+    User response: 
+
+    Record the message number (SQLCODE) and reason "<reason>".
+
+    If trace was active, invoke the Independent Trace Facility at the
+    operating system command prompt. Then contact your technical service
+    representative with the following information:
+
+    *  Problem description
+    *  SQLCODE
+    *  reason "<reason>"
+    *  SQLCA contents if possible
+    *  Trace file if possible.
+
+    Federated system users: isolate the problem to the data source failing
+    the request (refer to the Troubleshooting Guide to determine which data
+    source is failing to process the SQL statement) and take the necessary
+    diagnostic steps for that data source. The problem determination
+    procedures for data sources vary, so refer to the applicable data source
+    manuals.
+
+    sqlcode: -901
+
+    sqlstate: 58004, 5UA0L
+
+
 .. topic:: SQL1397N The DB2 service failed to logon
 
     This is usually happened on Windows. This is mainly due to the logon information mismatch in windows service. In order to solve this 

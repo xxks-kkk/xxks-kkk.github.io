@@ -14,6 +14,10 @@ To him he is always doing both."
 
 .. stop-show-quotes
 
+"Curly braces lead to anger. Anger leads to fear. Fear leads to suffering."
+
+**-- Kensanata on #emacs**
+
 "The secret to creativity is knowing how to hide your sources."
 
 **-- Albert Einstein**

@@ -10,9 +10,7 @@ Last Update: |today|
 Linux Commands
 ==============
 
-- cat line X (i.e. ``46``) to line Y (i.e. ``396``) on a file (i.e. ``db2odbct_statement.h``)
-
-.. code-block:: shell
+- cat line X (i.e. ``46``) to line Y (i.e. ``396``) on a file (i.e. ``db2odbct_statement.h``)::
 
         awk 'NR<=396 && NR >=46' db2odbct_statement.h > $HOME/hive_server_opts.txt
 
@@ -26,27 +24,19 @@ https://unix.stackexchange.com/questions/47407/cat-line-x-to-line-y-on-a-huge-fi
         "enter"
         telnet> quit (enter)
         
-- sort the files in a directory by modification date
-
-.. code-block:: shell
+- sort the files in a directory by modification date::
 
         ls -lrt
 
-- find certain files from /root
-
-.. code-block:: shell
+- find certain files from /root::
 
         find / -name version.h
 
-- cd back into the directory where I come from
-
-.. code-block:: shell
+- cd back into the directory where I come from::
 
         cd -
 
-- tar a directory
-
-.. code-block:: shell
+- tar a directory::
 
         tar -cf vmblock.tar vmblock-only
 
@@ -273,6 +263,59 @@ current directory. I can do ``grep "foo" ./*``
    - ``kill 0`` kills all the members of the process group of the caller. In our case, caller is ``ksh`` and it will kill
      all the process belongs to the same group as ``ksh``, which are subshells. `This answer <http://unix.stackexchange.com/questions/67532/what-does-kill-0-do-actually>`_ gives detail explanation about ``kill 0``. Also, don't confuse with `kill -0 <http://unix.stackexchange.com/questions/169898/what-does-kill-0-do?rq=1>`_
    
+- output text to both screen and file inside a shell script::
+
+    command | tee -a "$log_file"
+
+.. note::
+
+    ``tee`` saves input to a file (use ``-a`` to append rather than overwrite), and copies the input to standard output as well.
+
+
+- A simple implementation to ``watch`` command in Linux::
+
+    # $1 is the number of iterations you'd like to run
+    # $2 is the amount of time to sleep between iterations (in seconds)
+    # $3 is the command you'd like to run
+
+    i=0
+
+    while test "$i" -lt $1
+    do
+      clear
+      $3
+      i=`echo $i + 1 | bc`
+      sleep $2
+    done
+
+.. note::
+
+    This is particularly useful when working with AIX, which has 
+    ``watch`` command that works completely different than the one on 
+    Linux.
+
+- ``shift``::
+
+    shift [n]
+    The  positional parameters from n+1 ... are renamed to $1 .... 
+    If n is not given, it is assumed to be 1.
+
+.. topic:: Example
+
+    Example script::
+
+        #!/bin/bash
+        echo "Input: $@"
+        shift 3
+        echo "After shift: $@"
+
+    run script and shows::
+
+        $ myscript.sh one two three four five six
+
+        Input: one two three four five six
+        After shift: four five six
+
 =========
 Resource
 =========
