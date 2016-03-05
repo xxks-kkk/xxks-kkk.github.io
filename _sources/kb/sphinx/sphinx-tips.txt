@@ -25,3 +25,29 @@ Collection of tips when working with `Sphinx-Doc`_.
 
         Instead of using ``:download:`romantest.py </_static/projects/notes/diveintopython/py/romantest.py>```, you can use
         ```romantest.py </_static/projects/notes/diveintopython/py/romantest.py>`_`` to avoid the problem.
+
+.. note::
+
+    This issue has been succesfully `reported and fixed <https://github.com/sphinx-doc/sphinx/issues/2329>`_ and it will ship to next release of 
+    Sphinx soon.
+
+- Work with ``toctree``:
+
+   ``toctree`` can be very sensitive with the amount of leading spaces. The following is one toctree printed out under `emacs whitespace mode
+   <https://www.emacswiki.org/emacs/WhiteSpace>`_ ::
+
+        $
+        ..·toctree::$
+        ···:maxdepth:·1$
+        $
+        ···./gre/verbal.rst$
+        ···./gre/writing.rst$
+        
+   Notice the three dots right before "./gre/verbal.rst". That means there are **three** leading blanks. This is important because based upon my
+   experimentation, Sphinx won't be happy with leading blanks either smaller than three or bigger than three. If you mess up with the leading blanks
+   under ``toctree``, you may get the error message looks like::
+
+    /home/zeyuan_hu/Documents/zeyuan-s-doc/source/notes/cs/overview.rst:28: WARNING: toctree contains reference to nonexisting document u'notes/cs/ ./gre/verbal'
+    /home/zeyuan_hu/Documents/zeyuan-s-doc/source/notes/cs/overview.rst:28: WARNING: toctree contains reference to nonexisting document u'notes/cs/ ./gre/writing'
+    /home/zeyuan_hu/Documents/zeyuan-s-doc/source/notes/cs/overview.rst:28: WARNING: toctree contains reference to nonexisting document u'notes/cs/ ./gre/math' 
+    /home/zeyuan_hu/Documents/zeyuan-s-doc/source/notes/cs/overview.rst:28: WARNING: toctree contains reference to nonexisting document u'notes/cs/ ./gre/word'    

@@ -103,6 +103,35 @@ error. One workaround to this problem is that you direct links the file you want
 <p>Instead of using <code class="docutils literal"><span class="pre">:download:`romantest.py</span> <span class="pre">&lt;/_static/projects/notes/diveintopython/py/romantest.py&gt;`</span></code>, you can use
 <code class="docutils literal"><span class="pre">`romantest.py</span> <span class="pre">&lt;/_static/projects/notes/diveintopython/py/romantest.py&gt;`_</span></code> to avoid the problem.</p>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This issue has been succesfully <a class="reference external" href="https://github.com/sphinx-doc/sphinx/issues/2329">reported and fixed</a> and it will ship to next release of
+Sphinx soon.</p>
+</div>
+<ul>
+<li><p class="first">Work with <code class="docutils literal"><span class="pre">toctree</span></code>:</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">toctree</span></code> can be very sensitive with the amount of leading spaces. The following is one toctree printed out under <a class="reference external" href="https://www.emacswiki.org/emacs/WhiteSpace">emacs whitespace mode</a></p>
+<div class="highlight-python"><div class="highlight"><pre>$
+..·toctree::$
+···:maxdepth:·1$
+$
+···./gre/verbal.rst$
+···./gre/writing.rst$
+</pre></div>
+</div>
+<p>Notice the three dots right before &#8221;./gre/verbal.rst&#8221;. That means there are <strong>three</strong> leading blanks. This is important because based upon my
+experimentation, Sphinx won&#8217;t be happy with leading blanks either smaller than three or bigger than three. If you mess up with the leading blanks
+under <code class="docutils literal"><span class="pre">toctree</span></code>, you may get the error message looks like:</p>
+<div class="highlight-python"><div class="highlight"><pre>/home/zeyuan_hu/Documents/zeyuan-s-doc/source/notes/cs/overview.rst:28: WARNING: toctree contains reference to nonexisting document u&#39;notes/cs/ ./gre/verbal&#39;
+/home/zeyuan_hu/Documents/zeyuan-s-doc/source/notes/cs/overview.rst:28: WARNING: toctree contains reference to nonexisting document u&#39;notes/cs/ ./gre/writing&#39;
+/home/zeyuan_hu/Documents/zeyuan-s-doc/source/notes/cs/overview.rst:28: WARNING: toctree contains reference to nonexisting document u&#39;notes/cs/ ./gre/math&#39;
+/home/zeyuan_hu/Documents/zeyuan-s-doc/source/notes/cs/overview.rst:28: WARNING: toctree contains reference to nonexisting document u&#39;notes/cs/ ./gre/word&#39;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
 </div>
 
 
@@ -131,7 +160,7 @@ error. One workaround to this problem is that you direct links the file you want
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2012-2016, Zeyuan Hu.
-      Last updated on Feb 19, 2016.
+      Last updated on Mar 05, 2016.
     </div>
   </body>
 </html>
