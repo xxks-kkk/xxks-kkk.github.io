@@ -102,7 +102,7 @@ we can have the following shell script to parse the flow file
     - ``-v`` to pass shell variable to awk. If you want to pass more than one shell variable to awk, you need to use
       multiple ``-v`` options (ie. ``awk -v var1=2 -v var2="HI" 'BEGIN{print var1; print var2}'``)
 
-    - Use awk's ``~`` operator and not ``\pattern\```. awk will not work if you use 
+    - Use awk's ``~`` operator and not ``\pattern\``. awk will not work if you use 
       ``lowerboundlineno=`awk -v p="$1" '/p/ {print NR}' "$3"```. For some reason, even though ``p`` is assigned with 
       value say 856, since it is put inside ``/.../``, the pattern is ``p`` itself, and awk will match rows containing
       ``p``, not 856. So, **Use ~ for passing shell variable as pattern not /.../**
