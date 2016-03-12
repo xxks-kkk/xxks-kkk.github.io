@@ -91,6 +91,8 @@ File Editing
 - **C-s** similar to **C-r** but search forward
 - **C-x r t** insert words to multiple lines highlighted (the same thing you typed will be entered on all the lines you've
   selected)
+- **M-x clipboard-yank** paste the clipboard text to emacs (useful when using emacs GUI)
+- **M-x clipboard-kill-region** paste emacs text to clipboard
 
 Cursor Movement
 ====================
@@ -125,6 +127,13 @@ Manage Split Windows
 - **C-x 1** delete-other-windows (unsplit all)
 - **C-x 0** delete-window  (remove current pane)
 - **C-x o** other-window (cycles among the opening buffers) 
+
+
+Other
+====================
+
+- **M-x whitespace-mode** allows you to explicitly see white-space, tab, newline. Especially useful when work
+  with python.
 
 
 ====================

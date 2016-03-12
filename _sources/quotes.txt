@@ -14,6 +14,13 @@ To him he is always doing both."
 
 .. stop-show-quotes
 
+"I think the value of getting a great education - that is going to college - is easy to underestimate. 
+The most interesting jobs require a college education. The STEM related jobs are probably the most interesting 
+although they are not for everyone. The value of staying curious - reading a lot and learning new things even after college is also underestimated."
+
+**-- Bill Gates (found in reddit AMA)**
+
+
 "Curly braces lead to anger. Anger leads to fear. Fear leads to suffering."
 
 **-- Kensanata on #emacs**

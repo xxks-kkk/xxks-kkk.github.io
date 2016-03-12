@@ -14,11 +14,8 @@ Linux Commands
 
         awk 'NR<=396 && NR >=46' db2odbct_statement.h > $HOME/hive_server_opts.txt
 
-https://unix.stackexchange.com/questions/47407/cat-line-x-to-line-y-on-a-huge-file
 
-- `terminate telnet session <https://stackoverflow.com/questions/11681683/cant-close-a-scpitelnet-session-with-echo-when-i-use-it-in-a-script>`_
-
-::
+- terminate telnet session::
 
         "ctrl" "]"
         "enter"
@@ -56,9 +53,7 @@ https://unix.stackexchange.com/questions/47407/cat-line-x-to-line-y-on-a-huge-fi
         If GNU tar is not supported, then try
         ``tar -cvf - file1 file2 dir3 | gzip > archive.tar.gz``
 
-- untar a directory
-
-.. code-block:: shell
+- untar a directory::
 
         tar -xvf vmblock.tar
 
@@ -74,57 +69,39 @@ https://unix.stackexchange.com/questions/47407/cat-line-x-to-line-y-on-a-huge-fi
 
         tar -tzvf data.tar.gz
 
-- recursively remove all the files under certain directory (force)
-
-.. code-block:: shell
+- recursively remove all the files under certain directory (force)::
 
         rm -rf [dirname]
 
-- list all network interface
-
-.. code-block:: shell
+- list all network interface::
 
         ifconfig -a
 
-- Enter text mode in RHEL
-
-::
+- Enter text mode in RHEL::
 
       "ctrl" + "Alt" + "F5"
 
-- Exit text mode in RHEL (aka back to GUI mode in RHEL)
-
-::
+- Exit text mode in RHEL (aka back to GUI mode in RHEL)::
 
       "ctrl" + "Alt" + "F1"
 
-- Bring up VNC menu
-
-::
+- Bring up VNC menu::
 
       "F8"
 
-- Check memory info
-
-::
+- Check memory info::
 
       cat /proc/meminfo
 
-- Create a symboli link
-
-::
+- Create a symboli link::
 
       ln -s [path] [symbol]
 
-- view pdf on RHEL
-
-::
+- view pdf on RHEL::
 
       evince [pdf file]
 
-- compile tex to pdf
-
-::
+- compile tex to pdf::
 
       pdflatex [tex file]
 
@@ -133,9 +110,17 @@ https://unix.stackexchange.com/questions/47407/cat-line-x-to-line-y-on-a-huge-fi
 For example, I want to find out where ``foo`` get called in the code under
 current directory. I can do ``grep "foo" ./*``
 
-- find the size of files and directory under the current path
+- invert match with ``grep``
 
-::
+For example, I want to find out where ``foo`` exist in a file called ``test.txt`` but
+I know ``foo`` pattern also appears in ``fooBar``. I am only interested in ``foo`` not ``fooBar`` and I want
+to exclude ``fooBar`` from my ``grep`` result. So, I do the following::
+
+    grep -i "foo" test.txt | grep -i -v "Bar"
+
+``-v`` will do invert-match and select non-matching lines.
+
+- find the size of files and directory under the current path::
 
         $ du -sh ./*                      
         8.0K    ./010616.txt
@@ -145,42 +130,30 @@ current directory. I can do ``grep "foo" ./*``
         4.0K    ./build
         ...
 
-- find the total size of current path
-
-::
+- find the total size of current path::
 
         $ du -slh
         1.5G    .
 
-- Convert decimal to hex
-
-::
+- Convert decimal to hex::
 
         $ printf "%x\n" 4095      
         fff
 
-- Convert hex to decimal
-
-::
+- Convert hex to decimal::
 
         $ printf "%d\n" 0xfff
         4095
 
-- untar tar.gz file in AIX
-
-::
+- untar tar.gz file in AIX::
 
         gzip -dc ../iidev3/LL.tar.gz | tar xf -
 
-- re-execute the last command
-
-::
+- re-execute the last command::
 
         !!        
 
-- check the current key bindings (ie. 'C-z' means suspend job) in linux
-
-::
+- check the current key bindings (ie. 'C-z' means suspend job) in linux::
 
         stty -a
 
@@ -188,9 +161,7 @@ current directory. I can do ``grep "foo" ./*``
 
         ``stty sane`` alows you to reset linux key bindings to default
 
-- view the last few lines of a growing file, updated continuously. Typically used on log files.
-
-::
+- view the last few lines of a growing file, updated continuously. Typically used on log files.::
 
         tail -f <fname>
 
