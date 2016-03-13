@@ -67,7 +67,7 @@ TODO List
 This is a collection of features or bugs about this website that
 I need to implement or fix someday in the future.
 
-* change the project list page to make some subtitle.
+* :strike:`change the project list page to make some subtitle.`
 
 * indicate the progress of each project (done or under development) at the end of each title:
   ie. Myproject (*done*) or Myproject2 (*under development*)
@@ -78,6 +78,8 @@ I need to implement or fix someday in the future.
   I really like
 
 * add the exception highlighting into ipython_highlighting extension.
+
+* add one config value to newsfeed extension to not allow disqus to autoload.
 
 * :strike:`customize more about navbar to make it more "fashion"`
 
