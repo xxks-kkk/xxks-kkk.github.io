@@ -60,6 +60,7 @@ blog format may not be appropriate:
   of the content, and the sentence I use. The major part of the site is just want to doucment stuff. I don't really 
   care about I should offer some intro to shell language if all I want to do is to document ``echo 'hello world'`` usage. 
 
+**UPDATE(03/13/16):** OK, I got a :ref:`blog <blog.rst>`. So, I guess above doesn't hold anymore.
 
 TODO List
 -----------
