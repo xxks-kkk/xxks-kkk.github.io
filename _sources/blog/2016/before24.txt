@@ -20,7 +20,7 @@ Published on March 12, 2016; Last Update on |today|
 
 .. note::
 
-     |   本文转载自 `知乎陈安民 <http://www.zhihu.com/question/19696981/answer/15145954>`_
+     |   本文整理自 `知乎陈安民 <http://www.zhihu.com/question/19696981/answer/15145954>`_
      |   著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
      |   黄底字为我个人的感想及观点。
 
