@@ -174,6 +174,10 @@ HowTos
         Comment out multiple lines. Highlight the region and then **M-x comment-region**. To undo the comment,
 	**M-x uncomment-region**
 
+.. topic:: Error during download request: Not Found
+
+        Happened when you try to install a package (M-x package-install). **M-x package-refresh-contents** to rescue.
+
 
 ==================
 Resources

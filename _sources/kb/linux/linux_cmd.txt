@@ -287,6 +287,10 @@ to exclude ``fooBar`` from my ``grep`` result. So, I do the following::
         Input: one two three four five six
         After shift: four five six
 
+- ``cd`` (without any words after it) will allow you switch back to ``$HOME`` directory immediately
+
+- To create a new screen with name "foo", use ``screen -S foo``
+
 =========
 Resource
 =========
