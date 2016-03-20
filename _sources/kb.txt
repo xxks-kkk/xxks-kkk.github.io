@@ -24,14 +24,15 @@ Topics
     /kb/db2/db2-topics/p4.rst
     /kb/db2/db2-topics/db2_howto.rst
 
-***********
-Algorithm
-***********
+..
+   ***********
+   Algorithm
+   ***********
 
-.. toctree::
-   :maxdepth: 1
+   .. toctree::
+      :maxdepth: 1
 
-   /kb/algo/invariant.rst
+      /kb/algo/invariant.rst
 
 
 **********************
