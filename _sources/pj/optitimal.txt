@@ -4,22 +4,73 @@
 OptiTimal
 ############
 
+=================================
 What is OptiTimal? Why this name?
----------------------------------
+=================================
 
-*OptiTimal* is a time management app on Android platform. 
+OptiTimal is a time management app on Android platform. 
 The goal behind this app is to help users optimize their time usage on the phone.
 So, :math:`OptiTimal = optimal + time`
 
-This app is developed by *Zeyuan Hu*, *Liqi Xu*, and *Kristie Stalberger*
+=================================
+Features
+=================================
 
-News & Update
--------------
+**Clean, straightforward graphic design**
 
-Coming soon!
+OptiTimal is a time management app. I don't want you to waste anytime on the app itself. So, everything is kept simple and easy to figure out.
 
-Development Progress
---------------------
+.. image:: optitimal/main.jpeg
+   :height: 384px
+   :width: 216px
+.. image:: optitimal/setting01.jpeg
+   :height: 384px
+   :width: 216px
 
-Feb 25th 2013
-    `Project proposal </_static/project_proposal.pdf>`_ is submitted and under reviewed.
+**Simple but sufficient tools to meet complex daily todo task managment needs**
+
+The task page is kept simple but it's poweful enough to allow you record any todo task that you may encounter. Also, a todo task can never get easily missed!
+
+.. image:: optitimal/task01.jpeg
+   :height: 384px
+   :width: 216px
+.. image:: optitimal/task02.jpeg
+   :height: 384px
+   :width: 216px
+.. image:: optitimal/notification.jpeg
+   :height: 384px
+   :width: 216px
+
+**Time, Time, Time!**
+
+Time is valuable resource to you and OptiTimal provides a straightforward way to help you analyze your past time usage, and help you improve your time 
+utilization. OptiTimal offers you pie chart and line chart  to help you better understand what keeps you occupied the most. Furthermore, OptiTimal comes
+with multiple categories to allow you further customize on what kind of todo tasks you want to track.
+
+.. image:: optitimal/analyze01.jpeg
+   :height: 384px
+   :width: 216px
+.. image:: optitimal/analyze02.jpeg
+   :height: 384px
+   :width: 216px
+.. image:: optitimal/analyze03.jpeg
+   :height: 384px
+   :width: 216px
+.. image:: optitimal/tracking-category-list.jpeg
+   :height: 384px
+   :width: 216px
+
+
+
+=================================
+Download
+=================================
+
+OptiTimal is available for `Download <https://github.com/xxks-kkk/Optitimal>`_ on github. So is `source <https://github.com/xxks-kkk/Optitimal>`_. 
+
+
+
+
+
+..
+   `Project proposal </_static/project_proposal.pdf>`_ is submitted and under reviewed.
