@@ -9,7 +9,7 @@ Topics
 ***********
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     disqus.rst
     sphinx-tips.rst
@@ -19,7 +19,7 @@ Resources
 ***********
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     resource.rst
 

@@ -6,9 +6,7 @@ Useful Linux Cmds
 
 Last Update: |today|
 
-==============
-Linux Commands
-==============
+Collections of linux commands that I collect during the work and other fun activities. 
 
 - cat line X (i.e. ``46``) to line Y (i.e. ``396``) on a file (i.e. ``db2odbct_statement.h``)::
 
@@ -291,8 +289,3 @@ to exclude ``fooBar`` from my ``grep`` result. So, I do the following::
 
 - To create a new screen with name "foo", use ``screen -S foo``
 
-=========
-Resource
-=========
-
-- `Xah Linux: Shell Commands Basics <http://xahlee.info/linux/linux_common_commands.html>`_
