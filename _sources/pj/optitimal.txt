@@ -26,6 +26,9 @@ OptiTimal is a time management app. I don't want you to waste anytime on the app
 .. image:: optitimal/setting01.jpeg
    :height: 384px
    :width: 216px
+.. image:: optitimal/tracking-category-list.jpeg
+   :height: 384px
+   :width: 216px
 
 **Simple but sufficient tools to meet complex daily todo task managment needs**
 
@@ -56,10 +59,6 @@ with multiple categories to allow you further customize on what kind of todo tas
 .. image:: optitimal/analyze03.jpeg
    :height: 384px
    :width: 216px
-.. image:: optitimal/tracking-category-list.jpeg
-   :height: 384px
-   :width: 216px
-
 
 
 =================================

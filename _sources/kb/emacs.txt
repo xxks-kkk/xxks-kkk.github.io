@@ -128,6 +128,20 @@ Manage Split Windows
 - **C-x 0** delete-window  (remove current pane)
 - **C-x o** other-window (cycles among the opening buffers) 
 
+File Management (dired mode)
+=============================
+
+- **M-x dired** start view directory
+- **^** go to parent dir
+- **q** Quit dired mode (buffer still exists)
+- **RET** Open the file or directory
+- **o** Open file in another window (move cursor to that window as well)
+- **C-o** Open file in another window but stay on dired buffer
+
+.. seealso::
+
+  `Emacs: File Management on ergoemacs <http://ergoemacs.org/emacs/file_management.html>`_
+
 
 Other
 ====================
