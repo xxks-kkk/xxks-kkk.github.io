@@ -14,6 +14,18 @@ To him he is always doing both."
 
 .. stop-show-quotes
 
+"If you want to become a good programmer, you can spend 10 years programming, or spend
+2 years programming and learning algorithms."
+
+**-- Erik Demaine**
+
+"To use an analogy, if algorithms were about automobiles, it would be for the person
+who wants to know how cars work, how they are built, and how one might design fuel-efficient,
+safe, reliable vehicles for the 21st century. The people who hate algorithms are the ones
+who just want to know how to drive their car on the highway, just like everyone else."
+
+**-- Peter Norvig**
+
 "I think the value of getting a great education - that is going to college - is easy to underestimate. 
 The most interesting jobs require a college education. The STEM related jobs are probably the most interesting 
 although they are not for everyone. The value of staying curious - reading a lot and learning new things even after college is also underestimated."
