@@ -39,4 +39,5 @@ The solutions provided by link should work because I have tested them by myself
 
 - `git checkout -- multiple files <http://stackoverflow.com/questions/24916186/how-to-do-git-checkout-theirs-for-multiple-files-or-all-unmerged-files>`_
 
+- `How do I tell Git for Windows where to find my private RSA key? <http://serverfault.com/questions/194567/how-do-i-tell-git-for-windows-where-to-find-my-private-rsa-key?newreg=0943c080d308458eadbcafa23019d7d4>`_
 

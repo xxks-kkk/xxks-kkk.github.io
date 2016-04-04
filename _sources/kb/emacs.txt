@@ -133,11 +133,12 @@ File Management (dired mode)
 
 - **M-x dired** start view directory
 - **^** go to parent dir
+- **g** refresh dir listing
 - **q** Quit dired mode (buffer still exists)
 - **RET** Open the file or directory
 - **o** Open file in another window (move cursor to that window as well)
 - **C-o** Open file in another window but stay on dired buffer
-
+  
 .. seealso::
 
   `Emacs: File Management on ergoemacs <http://ergoemacs.org/emacs/file_management.html>`_
