@@ -9,7 +9,7 @@ Zeyuan Hu
 %%%%%%%%%%%%%
 
 .. meta::
-   :description: This is the homepage of Zeyuan Hu, undergraduate student at the University of Wisconsin - Madison, ibm,
+   :description: This is the homepage of Zeyuan Hu, software developer at ibm, badger
    :keywords: Zeyuan Hu, Zeyuan, Zeyuan uw, Zeyuan UW Madison, UW Madison, University of Wisconsin Madison, ibm
    :author: Zeyuan Hu
 
