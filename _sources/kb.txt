@@ -11,10 +11,6 @@ Database
 
 `DB2`_ combines with database in general.
 
-========
-Topics
-========
-
 .. toctree::
     :maxdepth: 1   
 
@@ -40,10 +36,6 @@ Programming Languages
 **********************
 
 Some language study notes I made when I was in college.
-
-==========
-Python
-==========
 
 .. toctree::
     :maxdepth: 1

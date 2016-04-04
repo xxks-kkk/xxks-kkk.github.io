@@ -289,7 +289,7 @@ to exclude ``fooBar`` from my ``grep`` result. So, I do the following::
 
 - To create a new screen with name "foo", use ``screen -S foo``
 
-- **Understanding ``ps aux`` from practical view**::
+- Understanding ``ps aux`` from practical view::
 
     a = show all the user's processes
     u = show you the process listed in a user oriented fashion (by user names)
