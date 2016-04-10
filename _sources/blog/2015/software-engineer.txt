@@ -7,7 +7,7 @@ Way to be pro
 2015-09-05
 
 
-This is some experience I got when I worked *professionally* as a progrmmer in the industry.
+This is some experience I got after I have worked *professionally* as a progrmmer in the industry for a few months.
 
 **********************************************
 Be aware of coding convention used in the file

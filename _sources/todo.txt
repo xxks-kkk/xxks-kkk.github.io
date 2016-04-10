@@ -95,9 +95,12 @@ I need to implement or fix someday in the future.
 * :strike:`figure out how to add metadata (i.e. keywords, author, description) into
   the HTML pages.`
 
-* figure out a way to better organize blog article:
+* figure out a way to better organize blog article
 
-    - allow group "blogs" by tags
-    - archive by dates
+* Add new directive through extension to change Chinese font into::
+
+    body {
+        font-family: Optima, Georgia, "Xin Gothic", "Hiragino Sans GB", "WenQuanYi Micro Hei", serif;
+    }
 
 .. include:: links.rst
