@@ -47,6 +47,16 @@
 
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Way to be pro</a><ul>
+<li><a class="reference internal" href="#be-aware-of-coding-convention-used-in-the-file">Be aware of coding convention used in the file</a></li>
+<li><a class="reference internal" href="#dont-add-redundant-debug-statement">Don’t add redundant debug statement</a></li>
+<li><a class="reference internal" href="#treat-comment-as-serious-as-code">Treat comment as serious as code</a></li>
+</ul>
+</li>
+</ul>
+
     <h3>About this site</h3>
         <ul class="this-page-menu">
             <li><a class="reference external" 
@@ -74,7 +84,8 @@
 <span id="software-engineer-rst"></span><h1>Way to be pro<a class="headerlink" href="#way-to-be-pro" title="Permalink to this headline">¶</a></h1>
 <p>2015-09-05</p>
 <p>This is some experience I got when I worked <em>professionally</em> as a progrmmer in the industry.</p>
-<p><strong>Be aware of coding convention used in the file</strong></p>
+<div class="section" id="be-aware-of-coding-convention-used-in-the-file">
+<h2>Be aware of coding convention used in the file<a class="headerlink" href="#be-aware-of-coding-convention-used-in-the-file" title="Permalink to this headline">¶</a></h2>
 <p>What’s the difference between the following two chunks of code?</p>
 <div class="literal-block-wrapper container" id="block-a">
 <div class="code-block-caption"><span class="caption-text">block A</span><a class="headerlink" href="#block-a" title="Permalink to this code">¶</a></div>
@@ -108,7 +119,9 @@ However, in the code review, this chunk of code is commented by reviewer “Note
 Then I realized with more than 3,000 lines of code, all the condition structure is following the second one I listed above.
 So, consistency in style is really the key in professional programming. By the way, block A follows 1TBS style while block B follows Allman style. More
 info on <a class="reference external" href="https://en.wikipedia.org/wiki/Indent_style">wiki indent style</a></p>
-<p><strong>Don’t add redundant debug statement</strong></p>
+</div>
+<div class="section" id="dont-add-redundant-debug-statement">
+<h2>Don’t add redundant debug statement<a class="headerlink" href="#dont-add-redundant-debug-statement" title="Permalink to this headline">¶</a></h2>
 <p>Following the code chunk I added above, it is probably natural to add a printout statement to see if <code class="docutils literal"><span class="pre">my_requests_block_buf</span></code> is actually set to the
 right value. So, I added:</p>
 <div class="highlight-cpp"><div class="highlight"><pre><span class="n">pdTraceData1</span><span class="p">(</span><span class="n">FUNCTION_TRACE_ID</span><span class="p">,</span>
@@ -120,7 +133,9 @@ right value. So, I added:</p>
 include in actual product. The debug statement is OK for development phase: developer need to immediately make sure everything work correctly so far
 before moving on to next part, and this is exactly the incremental development philosophy. But, once developer are pretty sure the value he get is correct,
 he need to delete the debug statement. With excessive debug statements, the performance of product hurts.</p>
-<p><strong>Treat comment as serious as code</strong></p>
+</div>
+<div class="section" id="treat-comment-as-serious-as-code">
+<h2>Treat comment as serious as code<a class="headerlink" href="#treat-comment-as-serious-as-code" title="Permalink to this headline">¶</a></h2>
 <p>I developed a bad habit to joke around in the comment during the college, and I somewhat carry it out to the real job. This is one of the comments I wrote
 in my recent work:</p>
 <div class="highlight-cpp"><div class="highlight"><pre><span class="c1">// cheat on initialize_server() function</span>
@@ -145,6 +160,7 @@ var disqus_identifier = "/blog/2015/software-engineer";
 <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 </div></div>
+</div>
 
 
           </div>
