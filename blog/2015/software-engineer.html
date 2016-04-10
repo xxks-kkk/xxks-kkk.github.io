@@ -1,0 +1,156 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Way to be pro &mdash; Zeyuan Hu&#39;s World</title>
+    
+    <link rel="stylesheet" href="../../_static/zeyuan.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/>
+    <link rel="top" title="Zeyuan Hu&#39;s World" href="../../index.html" /> 
+  </head>
+  <body role="document">
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../../index.html"><img src="../../_static/logo2.png" border="0" alt="Logo of Zeyuan's personal website"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="../../index.html">home</a>|&nbsp;</li>
+        <li><a href="../../kb.html">knowledge base</a>|&nbsp;</li>
+        <li><a href="../../pj.html">projects</a>|&nbsp;</li>
+        <li><a href="../blog.html">blog</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <h3>About this site</h3>
+        <ul class="this-page-menu">
+            <li><a class="reference external" 
+                   href="../../todo.html" >About</a></li>
+        </ul>
+<div id="searchbox" style="display: none">
+  <h3>search this site</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="way-to-be-pro">
+<span id="software-engineer-rst"></span><h1>Way to be pro<a class="headerlink" href="#way-to-be-pro" title="Permalink to this headline">¶</a></h1>
+<p>2015-09-05</p>
+<p>This is some experience I got when I worked <em>professionally</em> as a progrmmer in the industry.</p>
+<p><strong>Be aware of coding convention used in the file</strong></p>
+<p>What’s the difference between the following two chunks of code?</p>
+<div class="literal-block-wrapper container" id="block-a">
+<div class="code-block-caption"><span class="caption-text">block A</span><a class="headerlink" href="#block-a" title="Permalink to this code">¶</a></div>
+<div class="highlight-cpp"><div class="highlight"><pre> <span class="k">if</span> <span class="p">(</span><span class="n">block_buf</span> <span class="o">&gt;</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">){</span>
+
+ <span class="n">my_requests_block_buf</span> <span class="o">=</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">;</span>
+
+ <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+
+ <span class="n">my_requests_block_buf</span> <span class="o">=</span> <span class="n">block_buf</span><span class="p">;</span>
+
+ <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper container" id="block-b">
+<div class="code-block-caption"><span class="caption-text">block B</span><a class="headerlink" href="#block-b" title="Permalink to this code">¶</a></div>
+<div class="highlight-cpp"><div class="highlight"><pre> <span class="k">if</span> <span class="p">(</span><span class="n">block_buf</span> <span class="o">&gt;</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">)</span>
+ <span class="p">{</span>
+   <span class="n">my_requests_block_buf</span> <span class="o">=</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="k">else</span>
+ <span class="p">{</span>
+   <span class="n">my_requests_block_buf</span> <span class="o">=</span> <span class="n">block_buf</span><span class="p">;</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>I guess you would say they are literally the same. In fact, that was what I thought initially, and I chose to write the code like the first one.
+However, in the code review, this chunk of code is commented by reviewer “Note the coding convention in the file.”
+Then I realized with more than 3,000 lines of code, all the condition structure is following the second one I listed above.
+So, consistency in style is really the key in professional programming. By the way, block A follows 1TBS style while block B follows Allman style. More
+info on <a class="reference external" href="https://en.wikipedia.org/wiki/Indent_style">wiki indent style</a></p>
+<p><strong>Don’t add redundant debug statement</strong></p>
+<p>Following the code chunk I added above, it is probably natural to add a printout statement to see if <cite>my_requests_block_buf</cite> is actually set to the
+right value. So, I added:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="n">pdTraceData1</span><span class="p">(</span><span class="n">FUNCTION_TRACE_ID</span><span class="p">,</span>
+             <span class="mi">1992</span><span class="p">,</span>
+             <span class="n">PD_SINT</span><span class="p">(</span><span class="n">my_requests_block_buf</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>However, this statement may not be OK in the professional setting. There is a clear cutline between what can include in development phase and what should
+include in actual product. The debug statement is OK for development phase: developer need to immediately make sure everything work correctly so far
+before moving on to next part, and this is exactly the incremental development philosophy. But, once developer are pretty sure the value he get is correct,
+he need to delete the debug statement. With excessive debug statements, the performance of product hurts.</p>
+<p><strong>Treat comment as serious as code</strong></p>
+<p>I developed a bad habit to joke around in the comment during the college, and I somewhat carry it out to the real job. This is one of the comments I wrote
+in my recent work:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="c1">// cheat on initialize_server() function</span>
+<span class="cp">#define REQUESTS_BLOCK_BUF_MAX_OLD 1024</span>
+</pre></div>
+</div>
+<p>If this comment appears in a hobby project or the project that shared with limited people, it will be fine.
+However, it might not be appropriate when comes to real business. And, this comment is essentially useless:
+why named “OLD”? What do you mean by “cheating”? My fellow developers will have no clue what I am trying to convey here.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="../../index.html">home</a>|&nbsp;</li>
+        <li><a href="../../kb.html">knowledge base</a>|&nbsp;</li>
+        <li><a href="../../pj.html">projects</a>|&nbsp;</li>
+        <li><a href="../blog.html">blog</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2012-2016, Zeyuan Hu.
+      Last updated on Apr 10, 2016.
+    </div>
+  </body>
+</html>
