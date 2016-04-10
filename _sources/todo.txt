@@ -95,4 +95,9 @@ I need to implement or fix someday in the future.
 * :strike:`figure out how to add metadata (i.e. keywords, author, description) into
   the HTML pages.`
 
+* figure out a way to better organize blog article:
+
+    - allow group "blogs" by tags
+    - archive by dates
+
 .. include:: links.rst
