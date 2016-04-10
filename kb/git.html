@@ -1,0 +1,159 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Git &mdash; Zeyuan Hu&#39;s World</title>
+    
+    <link rel="stylesheet" href="../_static/zeyuan.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+    <link rel="top" title="Zeyuan Hu&#39;s World" href="../index.html" />
+    <link rel="up" title="Knowledge Base" href="../kb.html" />
+    <link rel="next" title="All about Emacs" href="emacs.html" />
+    <link rel="prev" title="Themes" href="sphinx/resource.html" /> 
+  </head>
+  <body role="document">
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/logo2.png" border="0" alt="Logo of Zeyuan's personal website"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="emacs.html" title="All about Emacs"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="sphinx/resource.html" title="Themes"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../kb.html">knowledge base</a>|&nbsp;</li>
+        <li><a href="../pj.html">projects</a>|&nbsp;</li>
+        <li><a href="../blog/blog.html">blog</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="../kb.html" accesskey="U">Knowledge Base</a> &raquo;</li> 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <h3>About this site</h3>
+        <ul class="this-page-menu">
+            <li><a class="reference external" 
+                   href="../todo.html" >About</a></li>
+        </ul>
+<div id="searchbox" style="display: none">
+  <h3>search this site</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="git">
+<span id="git-rst"></span><h1>Git<a class="headerlink" href="#git" title="Permalink to this headline">¶</a></h1>
+<p>Git trouble shooting guide. All of the listed problems I have encountered before.
+The solutions provided by link should work because I have tested them by myself</p>
+<ul class="simple">
+<li><a class="reference external" href="http://stackoverflow.com/questions/11383094/unstaged-changes-left-after-git-reset-hard">Unstaged changes left after git reset &#8211;hard</a></li>
+<li><a class="reference external" href="http://stackoverflow.com/questions/61212/how-do-i-remove-local-untracked-files-from-my-current-git-branch">Remove local(untracked) files from my current Git branch</a></li>
+</ul>
+<div class="topic">
+<p class="topic-title first">Problem</p>
+<div class="line-block">
+<div class="line">$ ssh -T <a class="reference external" href="mailto:git&#37;&#52;&#48;github&#46;com">git<span>&#64;</span>github<span>&#46;</span>com</a></div>
+<div class="line">Agent admitted failure to sign using the key.</div>
+<div class="line">Permission denied (publickey).</div>
+</div>
+</div>
+<ul class="simple">
+<li><a class="reference external" href="https://help.github.com/articles/error-agent-admitted-failure-to-sign">Error: Agent admitted failure to sign</a></li>
+<li><a class="reference external" href="http://stackoverflow.com/questions/492558/removing-multiple-files-from-a-git-repo-that-have-already-been-deleted-from-disk">Removing multiple files from a Git repo that have already been deleted from disk</a></li>
+<li><a class="reference external" href="http://www.chenhuijing.com/blog/setting-up-custom-domain-github-pages/">[TUTORIAL]Custom domain for github pages</a></li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ol class="last arabic simple">
+<li>You need purchase a domain before you can configure for a custom domain (<em>of course, why I didn&#8217;t think about this when I tried to take control of hzy.o
+rg owned by some store at the first place?</em>). I use <a class="reference external" href="https://www.namesilo.com">namesilo</a> to get my current domain name like the author did in above
+link.</li>
+<li>Put <code class="docutils literal"><span class="pre">CNAME</span></code> inside <code class="docutils literal"><span class="pre">username.github.io</span></code>, not the source repo of web if you use two separate repo <a class="reference external" href="https://github.com/xxks-kkk/xxks-kkk.github.io">one for publish</a> and <a class="reference external" href="https://github.com/xxks-kkk/source2.github.io.xxks-kkk">one for source code of static generated web</a> like I do.</li>
+</ol>
+</div>
+<ul class="simple">
+<li><a class="reference external" href="http://stackoverflow.com/questions/8600652/git-on-bitbucket-always-asked-for-password-even-after-uploading-my-public-ssh">Git on Bitbucket: Always asked for password, even after uploading my public SSH key</a></li>
+</ul>
+<div class="topic">
+<p class="topic-title first">Push an existing repository ...</p>
+<div class="line-block">
+<div class="line">$ git remote add origin <a class="reference external" href="mailto:git&#37;&#52;&#48;github&#46;com">git<span>&#64;</span>github<span>&#46;</span>com</a>:username/new_repo</div>
+<div class="line">$ git push -u origin master</div>
+</div>
+</div>
+<ul class="simple">
+<li><a class="reference external" href="http://stackoverflow.com/questions/52704/how-do-you-discard-unstaged-changes-in-git">Discard unstaged changes in Git</a></li>
+<li><a class="reference external" href="http://stackoverflow.com/questions/24916186/how-to-do-git-checkout-theirs-for-multiple-files-or-all-unmerged-files">git checkout &#8211; multiple files</a></li>
+<li><a class="reference external" href="http://serverfault.com/questions/194567/how-do-i-tell-git-for-windows-where-to-find-my-private-rsa-key?newreg=0943c080d308458eadbcafa23019d7d4">How do I tell Git for Windows where to find my private RSA key?</a></li>
+<li><a class="reference external" href="https://help.github.com/articles/syncing-a-fork/">Syncing a fork</a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="emacs.html" title="All about Emacs"
+             >next</a></li>
+        <li class="right" >
+          <a href="sphinx/resource.html" title="Themes"
+             >previous</a> |</li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../kb.html">knowledge base</a>|&nbsp;</li>
+        <li><a href="../pj.html">projects</a>|&nbsp;</li>
+        <li><a href="../blog/blog.html">blog</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="../kb.html" >Knowledge Base</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2012-2016, Zeyuan Hu.
+      Last updated on Apr 10, 2016.
+    </div>
+  </body>
+</html>
