@@ -8,7 +8,3 @@ Recent Updates
 - 2015-09-05 :ref:`software-engineer.rst`
 - 2015-09-01 :ref:`after-three-weeks.rst`
 
-#################
-Archive
-#################
-
