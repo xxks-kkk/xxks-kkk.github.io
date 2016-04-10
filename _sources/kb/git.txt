@@ -41,3 +41,4 @@ The solutions provided by link should work because I have tested them by myself
 
 - `How do I tell Git for Windows where to find my private RSA key? <http://serverfault.com/questions/194567/how-do-i-tell-git-for-windows-where-to-find-my-private-rsa-key?newreg=0943c080d308458eadbcafa23019d7d4>`_
 
+- `Syncing a fork <https://help.github.com/articles/syncing-a-fork/>`_
