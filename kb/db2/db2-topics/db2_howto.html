@@ -1,7 +1,6 @@
 
-
-
-<!doctype html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -26,16 +25,11 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.png"/>
     <link rel="top" title="Zeyuan Hu&#39;s World" href="../../../index.html" />
     <link rel="up" title="Knowledge Base" href="../../../kb.html" />
     <link rel="next" title="Dive into Python Study Notes" href="../../python/diveintopython/diveintopython.html" />
-    <link rel="prev" title="Precision vs. Scale" href="p4.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
-    <![endif]-->
+    <link rel="prev" title="Precision vs. Scale" href="p4.html" /> 
   </head>
   <body role="document">
 
@@ -109,7 +103,7 @@
 <ul class="simple">
 <li>Check the default Federation Server option in system catalog</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span></span>db2 &quot;select char(option,10) OPTION, char(setting,10) SETTING \
+<div class="highlight-python"><div class="highlight"><pre>db2 &quot;select char(option,10) OPTION, char(setting,10) SETTING \
      from syscat.serveroptions \
      where servername=&#39;SERVER1&#39;&quot;
 
@@ -125,7 +119,7 @@ CODEPAGE   1252
 <ul class="simple">
 <li>Check the procedures registered with database</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span></span>db2 &quot;SELECT char(ROUTINENAME,15) ROUTINENAME, ROUTINESCHEMA FROM SYSCAT.ROUTINES WHERE OWNER=&#39;ZEYUAN HU&#39; AND ROUTINETYPE = &#39;P&#39;&quot;
+<div class="highlight-python"><div class="highlight"><pre>db2 &quot;SELECT char(ROUTINENAME,15) ROUTINENAME, ROUTINESCHEMA FROM SYSCAT.ROUTINES WHERE OWNER=&#39;ZEYUAN HU&#39; AND ROUTINETYPE = &#39;P&#39;&quot;
 
 ROUTINENAME     ROUTINESCHEMA
 --------------- -------------------------------------------------------------------------------
@@ -142,7 +136,7 @@ CHECK_COMM      ZEYUAN HU
 <ul class="simple">
 <li>show a list of the user-defined routines existing in the database</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span></span>db2 &quot;SELECT char(ROUTINENAME,15) ROUTINENAME, ROUTINESCHEMA FROM SYSCAT.ROUTINES WHERE OWNER=&#39;ZEYUAN HU&#39; AND ROUTINETYPE = &#39;F&#39;&quot;
+<div class="highlight-python"><div class="highlight"><pre>db2 &quot;SELECT char(ROUTINENAME,15) ROUTINENAME, ROUTINESCHEMA FROM SYSCAT.ROUTINES WHERE OWNER=&#39;ZEYUAN HU&#39; AND ROUTINETYPE = &#39;F&#39;&quot;
 </pre></div>
 </div>
 </div>
@@ -151,19 +145,19 @@ CHECK_COMM      ZEYUAN HU
 <ul class="simple">
 <li>Show current available database</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span></span>db2 list active databases
+<div class="highlight-python"><div class="highlight"><pre>db2 list active databases
 </pre></div>
 </div>
 <ul class="simple">
 <li>Show current active schema</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span></span>db2 values current schema
+<div class="highlight-python"><div class="highlight"><pre>db2 values current schema
 </pre></div>
 </div>
 <ul class="simple">
 <li>List all existing schemas</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span></span>$ db2 &quot;select char(schemaname,20) from syscat.schemata&quot;
+<div class="highlight-python"><div class="highlight"><pre>$ db2 &quot;select char(schemaname,20) from syscat.schemata&quot;
 
 1
 --------------------
@@ -188,7 +182,7 @@ IIDEV28
 <ul class="simple">
 <li>Retrieve all table names for a given schema</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span></span>$ db2 list tables for schema p0
+<div class="highlight-python"><div class="highlight"><pre>$ db2 list tables for schema p0
 
 Table/View                      Schema          Type  Creation time
 ------------------------------- --------------- ----- --------------------------
@@ -200,7 +194,7 @@ TESTTB                          P0              T     2016-01-10-12.22.45.342023
 <ul class="simple">
 <li>List all tablespaces for current database</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span></span>$ db2 list tablespaces
+<div class="highlight-python"><div class="highlight"><pre>$ db2 list tablespaces
 
 Tablespaces for Current Database
 
@@ -240,7 +234,7 @@ State                                = 0x0000
 <ul class="simple">
 <li>list all databases in an instance</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span></span>=&gt; db2 list db directory
+<div class="highlight-python"><div class="highlight"><pre>=&gt; db2 list db directory
 
 System Database Directory
 
@@ -273,7 +267,7 @@ If that is the case, one of the following privileges/authorities are needed to q
 <li>DBADM authority</li>
 <li>SQLADM authority</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&gt;db2 select distinct(objecttype) from sysibmadm.privileges
+<div class="highlight-python"><div class="highlight"><pre>&gt;db2 select distinct(objecttype) from sysibmadm.privileges
 
 OBJECTTYPE
 ------------------------
@@ -297,7 +291,7 @@ WORKLOAD
 </ul>
 <p>Given a database object (table/view/alias etc) name &#8220;$OBJECTNAME&#8221; and its schema &#8220;$SCHEMA&#8221;, here is how to
 check current privileges that users hold for this table</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>SELECT char(authid, 20) AS authid_id, \
+<div class="highlight-python"><div class="highlight"><pre>SELECT char(authid, 20) AS authid_id, \
         CASE authidtype \
                 WHEN &#39;U&#39; THEN &#39;USER&#39; \
                 WHEN &#39;G&#39; THEN &#39;GROUP&#39; \
@@ -313,7 +307,7 @@ ORDER BY authid, authidtype, privilege WITH ur;
 <ul class="simple">
 <li>Which privileges have been granted to a role &#8220;$ROLE&#8221;?</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span></span>SELECT char(objectschema,10) AS SCHEMA, \
+<div class="highlight-python"><div class="highlight"><pre>SELECT char(objectschema,10) AS SCHEMA, \
         char(objectname,65) NAME, \
         char(privilege, 10) PRIVILEGE, \
         objecttype \
@@ -324,7 +318,7 @@ AND authidtype=&#39;R&#39; ORDER BY 1,2,3 WITH UR;
 </div>
 <div class="topic">
 <p class="topic-title first">Example</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>db2 SELECT char(objectschema,10) AS SCHEMA, \
+<div class="highlight-python"><div class="highlight"><pre>db2 SELECT char(objectschema,10) AS SCHEMA, \
 db2 (cont.) =&gt;     char(objectname,65) NAME, \
 db2 (cont.) =&gt;     char(privilege, 10) PRIVILEGE, \
 db2 (cont.) =&gt;     objecttype \
@@ -346,7 +340,7 @@ STOREDB    CUSTOMER                                                          UPD
 <li>Which privileges have been granted to a user?</li>
 </ul>
 <p>list the privileges granted to a user &#8220;$USER&#8221; which could be an LDAP ID or OS ID</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>SELECT char(objectschema,10) AS SCHEMA, \
+<div class="highlight-python"><div class="highlight"><pre>SELECT char(objectschema,10) AS SCHEMA, \
         char(objectname,65) NAME, \
         char(privilege, 10) PRIVILEGE, \
         objecttype \

@@ -1,7 +1,6 @@
 
-
-
-<!doctype html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -26,16 +25,11 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.png"/>
     <link rel="top" title="Zeyuan Hu&#39;s World" href="../../../index.html" />
     <link rel="up" title="Knowledge Base" href="../../../kb.html" />
     <link rel="next" title="SQL Aggregate Functions vs. Scalar Functions" href="p2.html" />
-    <link rel="prev" title="Knowledge Base" href="../../../kb.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
-    <![endif]-->
+    <link rel="prev" title="Knowledge Base" href="../../../kb.html" /> 
   </head>
   <body role="document">
 
@@ -105,7 +99,7 @@
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>Let&#8217;s say we have the following table, to do with who is attending what subject at a university</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>Table: Subject_Selection
+<div class="highlight-python"><div class="highlight"><pre>Table: Subject_Selection
 
 Subject   Semester   Attendee
 ---------------------------------
@@ -119,7 +113,7 @@ MKB114    1          Erica
 </pre></div>
 </div>
 <p>When you use group by on the subject column only</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>select subject, count(*) from p1.subject_selection group by subject
+<div class="highlight-python"><div class="highlight"><pre>select subject, count(*) from p1.subject_selection group by subject
 
 SUBJECT                        2
 ------------------------------ -----------
@@ -131,7 +125,7 @@ MKB114                                   2
 </div>
 <p>because there are 5 entries for ITB001, and 2 for MKB114</p>
 <p>If we use group by two columns</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>select subject, semester, count(*) from p1.subject_selection group by subject, semester
+<div class="highlight-python"><div class="highlight"><pre>select subject, semester, count(*) from p1.subject_selection group by subject, semester
 
 SUBJECT                        SEMESTER                       3
 ------------------------------ ------------------------------ -----------

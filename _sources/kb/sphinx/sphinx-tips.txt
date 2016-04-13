@@ -51,3 +51,5 @@ Collection of tips when working with `Sphinx-Doc`_.
     /home/zeyuan_hu/Documents/zeyuan-s-doc/source/notes/cs/overview.rst:28: WARNING: toctree contains reference to nonexisting document u'notes/cs/ ./gre/writing'
     /home/zeyuan_hu/Documents/zeyuan-s-doc/source/notes/cs/overview.rst:28: WARNING: toctree contains reference to nonexisting document u'notes/cs/ ./gre/math' 
     /home/zeyuan_hu/Documents/zeyuan-s-doc/source/notes/cs/overview.rst:28: WARNING: toctree contains reference to nonexisting document u'notes/cs/ ./gre/word'    
+
+- Sphinx installation on Linux is under ``/usr/lib/python2.6/site-packages/``
