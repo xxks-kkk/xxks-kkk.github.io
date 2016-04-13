@@ -1,6 +1,7 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<!doctype html>
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -25,11 +26,16 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.png"/>
     <link rel="top" title="Zeyuan Hu&#39;s World" href="../../../index.html" />
     <link rel="up" title="Knowledge Base" href="../../../kb.html" />
     <link rel="next" title="Precision vs. Scale" href="p4.html" />
-    <link rel="prev" title="SQL Aggregate Functions vs. Scalar Functions" href="p2.html" /> 
+    <link rel="prev" title="SQL Aggregate Functions vs. Scalar Functions" href="p2.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
   </head>
   <body role="document">
 
@@ -107,14 +113,14 @@ sets.</p>
 <div class="section" id="id1">
 <h2>GROUP BY CUBE vs. GROUP BY ROLLUP<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal"><span class="pre">GROUP</span> <span class="pre">BY</span> <span class="pre">ROLLUP</span> <span class="pre">(YEAR,</span> <span class="pre">MONTH,</span> <span class="pre">DAY)</span></code> is the same as</p>
-<div class="highlight-python"><div class="highlight"><pre>GROUP BY GROUPING SETS ((YEAR, MONTH, DAY)
+<div class="highlight-python"><div class="highlight"><pre><span></span>GROUP BY GROUPING SETS ((YEAR, MONTH, DAY)
                         (YEAR, MONTH)
                         (YEAR)
                         ())
 </pre></div>
 </div>
 <p><code class="docutils literal"><span class="pre">GROUP</span> <span class="pre">BY</span> <span class="pre">CUBE</span> <span class="pre">(YEAR,</span> <span class="pre">MONTH,</span> <span class="pre">DAY)</span></code> is the same as</p>
-<div class="highlight-python"><div class="highlight"><pre>GROUP BY GROUPING SETS ((YEAR, MONTH, DAY)
+<div class="highlight-python"><div class="highlight"><pre><span></span>GROUP BY GROUPING SETS ((YEAR, MONTH, DAY)
                         (YEAR, MONTH)
                         (YEAR, DAY)
                         (YEAR)
@@ -130,7 +136,7 @@ show YEAR/DAY, whereas <code class="docutils literal"><span class="pre">CUBE</sp
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre> db2 =&gt; select job, sex, dec(avg(salary),9,2) from employee group by rollup (job, sex)
+<div class="highlight-python"><div class="highlight"><pre><span></span> db2 =&gt; select job, sex, dec(avg(salary),9,2) from employee group by rollup (job, sex)
 
  JOB      SEX 3
  -------- --- -----------
@@ -224,7 +230,7 @@ db2 =&gt; select job, sex, dec(avg(salary),9,2) from employee group by rollup (j
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2012-2016, Zeyuan Hu.
-      Last updated on Apr 10, 2016.
+      Last updated on Apr 13, 2016.
     </div>
   </body>
 </html>

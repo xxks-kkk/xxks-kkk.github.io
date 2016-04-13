@@ -1,6 +1,7 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<!doctype html>
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -25,11 +26,16 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/bizstyle.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
     <link rel="top" title="Zeyuan Hu&#39;s World" href="../../index.html" />
     <link rel="up" title="Knowledge Base" href="../../kb.html" />
     <link rel="next" title="Useful Linux Cmds" href="linux_cmd.html" />
-    <link rel="prev" title="All about Emacs" href="../emacs.html" /> 
+    <link rel="prev" title="All about Emacs" href="../emacs.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
   </head>
   <body role="document">
 
@@ -96,13 +102,13 @@
             
   <div class="section" id="awk">
 <span id="awk-rst"></span><h1>AWK<a class="headerlink" href="#awk" title="Permalink to this headline">¶</a></h1>
-<p>Last Update: April 10, 2016</p>
+<p>Last Update: April 13, 2016</p>
 <div class="section" id="case-study">
 <h2>Case Study<a class="headerlink" href="#case-study" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="search-pattern-for-each-line">
 <h3>Search pattern for each line<a class="headerlink" href="#search-pattern-for-each-line" title="Permalink to this headline">¶</a></h3>
 <p><strong>GOAL:</strong> Kill all the processes containing keyword &#8220;quicktest&#8221;</p>
-<div class="highlight-python"><div class="highlight"><pre>(iidev20@maradona) /home/iidev20
+<div class="highlight-python"><div class="highlight"><pre><span></span>(iidev20@maradona) /home/iidev20
 $ ps -ef | grep -i quicktest
 iidev20 49814180        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 5 NCLIENT 30 SEED 1452586352
 iidev20 49945254        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 15 NCLIENT 30 SEED 1452586362
@@ -121,7 +127,7 @@ iidev20 36903922        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod 
 </div>
 <div class="topic">
 <p class="topic-title first">Solution</p>
-<div class="highlight-python"><div class="highlight"><pre>kill -9 `ps -ef | grep $USER | awk &#39;$9 ~ /quicktest/ {print $2}&#39;`
+<div class="highlight-python"><div class="highlight"><pre><span></span>kill -9 `ps -ef | grep $USER | awk &#39;$9 ~ /quicktest/ {print $2}&#39;`
 </pre></div>
 </div>
 </div>
@@ -139,7 +145,7 @@ word of certain function calls (of course, you can use mask to format trace file
 the call stack in between. Thus, my interest is on part of trace file, and I want to cut the trace file based upon
 the trace point numbers located through <code class="docutils literal"><span class="pre">grep</span></code>.</p>
 <p>The following is one sample flw file:</p>
-<div class="highlight-python"><div class="highlight"><pre>...
+<div class="highlight-python"><div class="highlight"><pre><span></span>...
 
 pid = 19834 tid = 1 node = 0
 
@@ -164,7 +170,7 @@ pid = 19834 tid = 1 node = 0
 </div>
 <p>The number 846, 847, ... are the trace point number, and the key observation here is that those numbers are unique. Thus,
 we can have the following shell script to parse the flow file</p>
-<div class="highlight-shell"><div class="highlight"><pre><span class="ch">#!/bin/sh</span>
+<div class="highlight-shell"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
 
 <span class="nb">printf</span> <span class="s2">&quot;Trace file: %s\n&quot;</span> <span class="s2">&quot;</span><span class="nv">$3</span><span class="s2">&quot;</span>
 <span class="nb">printf</span> <span class="s2">&quot;Trace point number lower bound: %d\n&quot;</span> <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
@@ -237,7 +243,7 @@ value say 856, since it is put inside <code class="docutils literal"><span class
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2012-2016, Zeyuan Hu.
-      Last updated on Apr 10, 2016.
+      Last updated on Apr 13, 2016.
     </div>
   </body>
 </html>

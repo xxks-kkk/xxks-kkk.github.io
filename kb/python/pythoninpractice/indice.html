@@ -1,6 +1,7 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<!doctype html>
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -25,11 +26,16 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.png"/>
     <link rel="top" title="Zeyuan Hu&#39;s World" href="../../../index.html" />
     <link rel="up" title="Python in Practice" href="python_in_practice.html" />
     <link rel="next" title="Mutable Objects in Function Calls" href="mutable.html" />
-    <link rel="prev" title="Python in Practice" href="python_in_practice.html" /> 
+    <link rel="prev" title="Python in Practice" href="python_in_practice.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
   </head>
   <body role="document">
 
@@ -113,12 +119,12 @@ quickly manipulate lists or strings.</p>
 <div class="section" id="formats-in-slicing">
 <span id="formats-slicing"></span><h2>Formats in slicing<a class="headerlink" href="#formats-in-slicing" title="Permalink to this headline">¶</a></h2>
 <p>Example 0 Setting</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="s1">&#39;0123456789&#39;</span> <span class="c1"># where the char at k-th position is k</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="s1">&#39;0123456789&#39;</span> <span class="c1"># where the char at k-th position is k</span>
 </pre></div>
 </div>
 <div class="admonition-key-expression admonition">
 <p class="first admonition-title">Key Expression</p>
-<div class="last highlight-python"><div class="highlight"><pre><span class="c1"># slicing format</span>
+<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="c1"># slicing format</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -153,7 +159,7 @@ quickly manipulate lists or strings.</p>
 <span id="indexing-pos-neg"></span><h2>Indexing with positive and negative numbers<a class="headerlink" href="#indexing-with-positive-and-negative-numbers" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="with-positive-numbers">
 <h3>1.0. with positive numbers<a class="headerlink" href="#with-positive-numbers" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span class="c1"># counting from the beginning of the string starting at 0</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># counting from the beginning of the string starting at 0</span>
 
 <span class="n">b</span> <span class="o">=</span> <span class="s2">&quot;my mistress&#39; eyes are nothing like the sun&quot;</span>
      <span class="o">^</span>         <span class="o">^</span>                              <span class="o">^</span>
@@ -165,7 +171,7 @@ quickly manipulate lists or strings.</p>
 <h3>1.1. with negative numbers<a class="headerlink" href="#with-negative-numbers" title="Permalink to this headline">¶</a></h3>
 <p>Sometimes it is useful to refer to chars of the string as seen from the end of the string.
 In this case, we use negative numbers and count backwards, from -1 (<em>not from 0</em>)</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c1"># counting from the end of the string starting at -1</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># counting from the end of the string starting at -1</span>
 
 <span class="n">b</span> <span class="o">=</span> <span class="s2">&quot;my mistress&#39; eyes are nothing like the sun&quot;</span>
      <span class="o">^</span>         <span class="o">^</span>                              <span class="o">^</span>
@@ -176,11 +182,11 @@ In this case, we use negative numbers and count backwards, from -1 (<em>not from
 <div class="section" id="connection">
 <h3>1.2.connection<a class="headerlink" href="#connection" title="Permalink to this headline">¶</a></h3>
 <p>In general, indexing with positive numbers and indexing with negative numbers have the following relation:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">b</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">+</span><span class="n">k</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">b</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">+</span><span class="n">k</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Example 1 connection with two indexing systems</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="mi">42</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="mi">42</span>
 
 <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>        <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">42</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
 <span class="n">b</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>      <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">41</span><span class="p">]</span>  <span class="o">=</span> <span class="s1">&#39;n&#39;</span>
@@ -194,28 +200,28 @@ In this case, we use negative numbers and count backwards, from -1 (<em>not from
 <div class="section" id="moving-forwards">
 <h3>2.0. Moving forwards<a class="headerlink" href="#moving-forwards" title="Permalink to this headline">¶</a></h3>
 <p><strong>If step is positive we are moving forwards (if the value of &#8216;step&#8217; is omitted, it defaults to +1)</strong></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c1"># the first char that we want is that in the 2nd position,</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># the first char that we want is that in the 2nd position,</span>
 <span class="c1"># the first char that we do not want is that in the 6th position</span>
 
 <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0123456789&#39;</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;2345&#39;</span>
 </pre></div>
 </div>
 <p>Alternatively, seeing it from the end of the string:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c1"># the first char that we want is that in the 8-th position from the end (i.e., the 2),</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># the first char that we want is that in the 8-th position from the end (i.e., the 2),</span>
 <span class="c1"># the first char that we do not want is that in the 4-th position from the end (i.e., the 6)</span>
 
 <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0123456789&#39;</span><span class="p">[</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;2345&#39;</span>
 </pre></div>
 </div>
 <p>Hence, for any positive step we have the following defaults:</p>
-<div class="highlight-python"><div class="highlight"><pre>     <span class="o">|-&gt;</span> <span class="o">-&gt;</span> <span class="o">-&gt;|</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span>     <span class="o">|-&gt;</span> <span class="o">-&gt;</span> <span class="o">-&gt;|</span>
 <span class="n">a</span> <span class="o">=</span> <span class="s1">&#39;0123456789&#39;</span>
      <span class="o">^</span>        <span class="o">^</span>
  <span class="n">start</span><span class="p">:</span><span class="mi">0</span>    <span class="n">stop</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span><span class="p">,</span> <span class="n">one</span> <span class="n">position</span> <span class="n">beyond</span> <span class="n">the</span> <span class="n">end</span> <span class="n">of</span> <span class="n">the</span> <span class="n">string</span>
 </pre></div>
 </div>
 <p>Thus:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">a</span><span class="p">[:]</span>   <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">):</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0123456789&#39;</span> <span class="c1"># a +1 step is the default</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">a</span><span class="p">[:]</span>   <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">):</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0123456789&#39;</span> <span class="c1"># a +1 step is the default</span>
 <span class="n">a</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">):</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;02468&#39;</span>      <span class="c1"># all the even positions</span>
 <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;13579&#39;</span>                     <span class="c1"># all the odd positions</span>
 <span class="n">a</span><span class="p">[::</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0369&#39;</span>                       <span class="c1"># all the multiples of 3</span>
@@ -227,26 +233,26 @@ leave those out and Python will use the defaults.</p>
 <div class="section" id="moving-backwards">
 <h3>2.1 Moving backwards<a class="headerlink" href="#moving-backwards" title="Permalink to this headline">¶</a></h3>
 <p><strong>If step is negative then we are moving backwards</strong></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c1"># the first char that we want is that in the 6-th position,</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># the first char that we want is that in the 6-th position,</span>
 <span class="c1"># the first char that we do not want is that in the 2nd position</span>
 
 <span class="n">a</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0123456789&#39;</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;6543&#39;</span>
 </pre></div>
 </div>
 <p>Alternatively,</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c1"># the first char that we want is that in the 4-th position from the back (i.e., the 6)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># the first char that we want is that in the 4-th position from the back (i.e., the 6)</span>
 <span class="c1"># the first chat that we do not want is that in the 8-th position from the back (i.e., the 2)</span>
 <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0123456789&#39;</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;6543&#39;</span>
 </pre></div>
 </div>
 <p>Notice that we can use positive or negative indices going either forwards or backwards on the string.. we
 can even mix them:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">a</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;6543&#39;</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">a</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;6543&#39;</span>
 <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;6543&#39;</span>
 </pre></div>
 </div>
 <p>Sometimes this mixing might come very handy:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;http://udacity.com&quot;&gt;&#39;</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;http://udacity.com&quot;&gt;&#39;</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
     <span class="o">=</span> <span class="s1">&#39;http://udacity.com&#39;</span>
 </pre></div>
 </div>
@@ -258,7 +264,7 @@ Moving forwards or backwards is determined solely by the
 sign of the step variable.</p>
 </div>
 <p>Hence, for any negative steps, we have the following in mind:</p>
-<div class="highlight-python"><div class="highlight"><pre>     <span class="o">|&lt;-</span> <span class="o">&lt;-</span> <span class="o">&lt;-|</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span>     <span class="o">|&lt;-</span> <span class="o">&lt;-</span> <span class="o">&lt;-|</span>
 <span class="n">a</span> <span class="o">=</span> <span class="s1">&#39;0123456789&#39;</span>
      <span class="o">^</span>        <span class="o">^</span>
      <span class="o">^</span>      <span class="n">start</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
@@ -266,13 +272,13 @@ sign of the step variable.</p>
 </pre></div>
 </div>
 <p>hence:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">a</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;9876543210&#39;</span> <span class="c1"># this is how we reverse a string in python</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">a</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;9876543210&#39;</span> <span class="c1"># this is how we reverse a string in python</span>
 <span class="n">a</span><span class="p">[::</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;97531&#39;</span>
 <span class="n">a</span><span class="p">[::</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;9630&#39;</span>
 </pre></div>
 </div>
 <p>So now, we have mastered Python indices and should be able to understand:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="s1">&#39;0123456789&#39;</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;864&#39;</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="s1">&#39;0123456789&#39;</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;864&#39;</span>
 <span class="s1">&#39;0123456789&#39;</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;864&#39;</span>
 <span class="s1">&#39;0123456789&#39;</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;864&#39;</span>
 <span class="s1">&#39;0123456789&#39;</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;864&#39;</span>
@@ -308,7 +314,7 @@ sign of the step variable.</p>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2012-2016, Zeyuan Hu.
-      Last updated on Apr 10, 2016.
+      Last updated on Apr 13, 2016.
     </div>
   </body>
 </html>

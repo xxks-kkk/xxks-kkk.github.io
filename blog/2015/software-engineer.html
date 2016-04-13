@@ -1,6 +1,7 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<!doctype html>
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -25,8 +26,13 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/bizstyle.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
-    <link rel="top" title="Zeyuan Hu&#39;s World" href="../../index.html" /> 
+    <link rel="top" title="Zeyuan Hu&#39;s World" href="../../index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
   </head>
   <body role="document">
 
@@ -89,7 +95,7 @@
 <p>What’s the difference between the following two chunks of code?</p>
 <div class="literal-block-wrapper container" id="block-a">
 <div class="code-block-caption"><span class="caption-text">block A</span><a class="headerlink" href="#block-a" title="Permalink to this code">¶</a></div>
-<div class="highlight-cpp"><div class="highlight"><pre> <span class="k">if</span> <span class="p">(</span><span class="n">block_buf</span> <span class="o">&gt;</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">){</span>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span> <span class="k">if</span> <span class="p">(</span><span class="n">block_buf</span> <span class="o">&gt;</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">){</span>
 
  <span class="n">my_requests_block_buf</span> <span class="o">=</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">;</span>
 
@@ -103,7 +109,7 @@
 </div>
 <div class="literal-block-wrapper container" id="block-b">
 <div class="code-block-caption"><span class="caption-text">block B</span><a class="headerlink" href="#block-b" title="Permalink to this code">¶</a></div>
-<div class="highlight-cpp"><div class="highlight"><pre> <span class="k">if</span> <span class="p">(</span><span class="n">block_buf</span> <span class="o">&gt;</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">)</span>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span> <span class="k">if</span> <span class="p">(</span><span class="n">block_buf</span> <span class="o">&gt;</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">)</span>
  <span class="p">{</span>
    <span class="n">my_requests_block_buf</span> <span class="o">=</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">;</span>
  <span class="p">}</span>
@@ -124,7 +130,7 @@ info on <a class="reference external" href="https://en.wikipedia.org/wiki/Indent
 <h2>Don’t add redundant debug statement<a class="headerlink" href="#dont-add-redundant-debug-statement" title="Permalink to this headline">¶</a></h2>
 <p>Following the code chunk I added above, it is probably natural to add a printout statement to see if <code class="docutils literal"><span class="pre">my_requests_block_buf</span></code> is actually set to the
 right value. So, I added:</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">pdTraceData1</span><span class="p">(</span><span class="n">FUNCTION_TRACE_ID</span><span class="p">,</span>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">pdTraceData1</span><span class="p">(</span><span class="n">FUNCTION_TRACE_ID</span><span class="p">,</span>
              <span class="mi">1992</span><span class="p">,</span>
              <span class="n">PD_SINT</span><span class="p">(</span><span class="n">my_requests_block_buf</span><span class="p">));</span>
 </pre></div>
@@ -138,7 +144,7 @@ he need to delete the debug statement. With excessive debug statements, the perf
 <h2>Treat comment as serious as code<a class="headerlink" href="#treat-comment-as-serious-as-code" title="Permalink to this headline">¶</a></h2>
 <p>I developed a bad habit to joke around in the comment during the college, and I somewhat carry it out to the real job. This is one of the comments I wrote
 in my recent work:</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="c1">// cheat on initialize_server() function</span>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// cheat on initialize_server() function</span>
 <span class="cp">#define REQUESTS_BLOCK_BUF_MAX_OLD 1024</span>
 </pre></div>
 </div>
@@ -180,7 +186,7 @@ var disqus_identifier = "/blog/2015/software-engineer";
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2012-2016, Zeyuan Hu.
-      Last updated on Apr 10, 2016.
+      Last updated on Apr 13, 2016.
     </div>
   </body>
 </html>

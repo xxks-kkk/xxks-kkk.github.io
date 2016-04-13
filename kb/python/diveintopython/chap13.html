@@ -1,6 +1,7 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<!doctype html>
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -25,11 +26,16 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.png"/>
     <link rel="top" title="Zeyuan Hu&#39;s World" href="../../../index.html" />
     <link rel="up" title="Dive into Python Study Notes" href="diveintopython.html" />
     <link rel="next" title="HTML Processing" href="chap8.html" />
-    <link rel="prev" title="Regular Expression" href="chap7.html" /> 
+    <link rel="prev" title="Regular Expression" href="chap7.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
   </head>
   <body role="document">
 
@@ -328,7 +334,7 @@ those requirements.</p>
 136
 137
 138
-139</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">roman</span>
+139</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">roman</span>
 <span class="kn">import</span> <span class="nn">unittest</span>
 
 <span class="k">class</span> <span class="nc">KnownValues</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
@@ -559,7 +565,7 @@ Each test case is an island.</li>
 64
 65
 66
-67</pre></div></td><td class="code"><div class="highlight"><pre><span class="hll">   <span class="k">class</span> <span class="nc">KnownValues</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+67</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll">   <span class="k">class</span> <span class="nc">KnownValues</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 </span>        <span class="n">knownValues</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">),</span>
                         <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;II&#39;</span><span class="p">),</span>
                         <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;III&#39;</span><span class="p">),</span>
@@ -688,7 +694,7 @@ test.</dd>
 13
 14
 15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span class="k">class</span> <span class="nc">ToRomanBadInput</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ToRomanBadInput</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">testTooLarge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="sd">&quot;&quot;&quot;toRoman should fail with large input&quot;&quot;&quot;</span>
 <span class="hll">                <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">roman</span><span class="o">.</span><span class="n">OutOfRangeError</span><span class="p">,</span> <span class="n">roman</span><span class="o">.</span><span class="n">toRoman</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
@@ -755,7 +761,7 @@ and checking to make sure that it raises <code class="docutils literal"><span cl
 13
 14
 15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span class="k">class</span> <span class="nc">FromRomanBadInput</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FromRomanBadInput</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">testTooManyRepeatedNumerals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="sd">&quot;&quot;&quot;fromRoman should fail with too many repeated numerals&quot;&quot;&quot;</span>
                 <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;MMMMM&#39;</span><span class="p">,</span> <span class="s1">&#39;DD&#39;</span><span class="p">,</span> <span class="s1">&#39;CCCC&#39;</span><span class="p">,</span> <span class="s1">&#39;LL&#39;</span><span class="p">,</span> <span class="s1">&#39;XXXX&#39;</span><span class="p">,</span> <span class="s1">&#39;VV&#39;</span><span class="p">,</span> <span class="s1">&#39;IIII&#39;</span><span class="p">):</span>
@@ -797,7 +803,7 @@ should end up with the number you started with. So <code class="docutils literal
 4
 5
 6
-7</pre></div></td><td class="code"><div class="highlight"><pre><span class="k">class</span> <span class="nc">SanityCheck</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SanityCheck</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">testSanity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="sd">&quot;&quot;&quot;fromRoman(toRoman(n))==n for all n&quot;&quot;&quot;</span>
                 <span class="k">for</span> <span class="n">integer</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5000</span><span class="p">):</span>
@@ -827,7 +833,7 @@ should end up with the number you started with. So <code class="docutils literal
 10
 11
 12
-13</pre></div></td><td class="code"><div class="highlight"><pre><span class="k">class</span> <span class="nc">CaseCheck</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CaseCheck</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">testToRomanCase</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="sd">&quot;&quot;&quot;toRoman should always return uppercase&quot;&quot;&quot;</span>
                 <span class="k">for</span> <span class="n">integer</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5000</span><span class="p">):</span>
@@ -919,7 +925,7 @@ the limit should be 3999. Otherwise, it should be 4999.</td></tr>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2012-2016, Zeyuan Hu.
-      Last updated on Apr 10, 2016.
+      Last updated on Apr 13, 2016.
     </div>
   </body>
 </html>
