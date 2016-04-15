@@ -298,4 +298,30 @@ to exclude ``fooBar`` from my ``grep`` result. So, I do the following::
 
 .. note::
 
-   To display the header of the result of ``ps aux`` only. Do ``ps aux | head -1``
+   To display the header of the result of ``ps aux`` only. Do ``ps aux | head -1``::
+
+     USER          PID %CPU %MEM   SZ  RSS    TTY STAT    STIME  TIME COMMAND
+
+   - **%CPU** The percentage of time the process has used the CPU since the process started. This value is computed by dividing the time the process
+              uses the CPU by the elapsed time of the process.
+   - **%MEM** The percentage of real memory used by this process.
+   - **SZ** The size in 1 KB units of the core image of the process.
+   - **RSS** The real-memory (resident set) size of the process (in 1 KB units).
+   - **TTY** The controlling terminal for the process (ie *-* The process is not associated with a terminal.)
+   - **STAT** Contains the state of the process (ie *A* Active)
+   - **STIME** The starting time of the process.
+   - **TIME** The total runtime for the process. The time is displayed in the format of mm:ss or mmmm:ss if the runtime reaches 100 minutes
+   - **COMMAND** Contains the command name
+
+   This should make the following result clear::
+
+
+     Tue Mar 22 03:44:22 CDT 2016
+     iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:48 db2fmp (C)
+     Tue Mar 22 03:45:13 CDT 2016
+     iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:52 db2fmp (C)
+     Tue Mar 22 03:45:19 CDT 2016
+     iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:53 db2fmp (C)
+     Tue Mar 22 03:45:26 CDT 2016
+     iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:53 db2fmp (C)
+     

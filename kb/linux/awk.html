@@ -63,6 +63,7 @@
 <li><a class="reference internal" href="#case-study">Case Study</a><ul>
 <li><a class="reference internal" href="#search-pattern-for-each-line">Search pattern for each line</a></li>
 <li><a class="reference internal" href="#pass-shell-variable-as-a-pattern-to-awk">Pass shell variable as a /pattern/ to awk</a></li>
+<li><a class="reference internal" href="#work-with-ps-aux">Work with <cite>ps aux</cite></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#howtos">HowTos</a></li>
@@ -193,6 +194,51 @@ value say 856, since it is put inside <code class="docutils literal"><span class
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">Please reference <a class="reference external" href="http://www.ibm.com/developerworks/data/library/techarticle/dm-0409melnyk/index.html">IBM developerWorks tutorial</a> and <a class="reference external" href="http://www.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.admin.trb.doc/com.ibm.db2.luw.admin.trb.doc-gentopic1.html?lang=en">IBM Knowledge center</a> if you want to learn more about db2trace facility.</p>
+</div>
+</div>
+<div class="section" id="work-with-ps-aux">
+<h3>Work with <cite>ps aux</cite><a class="headerlink" href="#work-with-ps-aux" title="Permalink to this headline">¶</a></h3>
+<p><strong>GOAL:</strong> Detect whether there is memory leak issue for certain application?</p>
+<p>During the work, I run into an issue that client observes memory leak for our product and I need to invesitgate into it. First things first, I need to at least
+make sure if memory leak problem exists. I use a small shell script to take snapshot of product&#8217;s memory usage every certain time period and it looks like below:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>Tue Mar 22 03:44:22 CDT 2016
+iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:48 db2fmp (C)
+Tue Mar 22 03:45:13 CDT 2016
+iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:52 db2fmp (C)
+Tue Mar 22 03:45:19 CDT 2016
+iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:53 db2fmp (C)
+Tue Mar 22 03:45:26 CDT 2016
+iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:53 db2fmp (C)
+Tue Mar 22 04:04:44 CDT 2016
+iidev20  40504624  0.5  0.0 29200 29240      - A    04:02:54  0:04 db2fmp (C)
+Tue Mar 22 04:14:45 CDT 2016
+iidev20  40504624  0.8  0.0 37784 37824      - A    04:02:54  0:47 db2fmp (C)
+
+...
+</pre></div>
+</div>
+<p>This result is generated from <cite>ps aux</cite> and what I&#8217;m really interested is the <cite>RSS</cite> column (ie 29800, 29800, ...). How do I ignore all other info for now and
+extract that column from my result (&#8220;log_fenced_bad.txt&#8221;) in order to further analyze it through plotting? AWK!:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>awk &#39;!(NR%2) {print $6}&#39; log_fenced_bad.txt
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li><cite>$6</cite> refers to 6th column of every line separate by white space, which happen to be our <cite>RSS</cite> column</li>
+<li><cite>NR%2</cite> checks if the line number is even or odd. In our case, we only print <cite>$6</cite> when line number is odd.</li>
+</ul>
+</div>
+<p>This will get us:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">29800</span>
+<span class="mi">29800</span>
+<span class="mi">29800</span>
+<span class="mi">29800</span>
+<span class="mi">29240</span>
+<span class="mi">37824</span>
+
+<span class="o">...</span>
+</pre></div>
 </div>
 </div>
 </div>

@@ -111,6 +111,49 @@ we can have the following shell script to parse the flow file
 
     Please reference `IBM developerWorks tutorial <http://www.ibm.com/developerworks/data/library/techarticle/dm-0409melnyk/index.html>`_ and `IBM Knowledge center <http://www.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.admin.trb.doc/com.ibm.db2.luw.admin.trb.doc-gentopic1.html?lang=en>`_ if you want to learn more about db2trace facility.
 
+Work with `ps aux`
+----------------------
+
+**GOAL:** Detect whether there is memory leak issue for certain application?
+
+During the work, I run into an issue that client observes memory leak for our product and I need to invesitgate into it. First things first, I need to at least
+make sure if memory leak problem exists. I use a small shell script to take snapshot of product's memory usage every certain time period and it looks like below::
+
+  Tue Mar 22 03:44:22 CDT 2016
+  iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:48 db2fmp (C)
+  Tue Mar 22 03:45:13 CDT 2016
+  iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:52 db2fmp (C)
+  Tue Mar 22 03:45:19 CDT 2016
+  iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:53 db2fmp (C)
+  Tue Mar 22 03:45:26 CDT 2016
+  iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:53 db2fmp (C)
+  Tue Mar 22 04:04:44 CDT 2016
+  iidev20  40504624  0.5  0.0 29200 29240      - A    04:02:54  0:04 db2fmp (C)
+  Tue Mar 22 04:14:45 CDT 2016
+  iidev20  40504624  0.8  0.0 37784 37824      - A    04:02:54  0:47 db2fmp (C)
+
+  ...
+
+This result is generated from `ps aux` and what I'm really interested is the `RSS` column (ie 29800, 29800, ...). How do I ignore all other info for now and
+extract that column from my result ("log_fenced_bad.txt") in order to further analyze it through plotting? AWK!::
+
+  awk '!(NR%2) {print $6}' log_fenced_bad.txt
+
+.. note::
+
+   - `$6` refers to 6th column of every line separate by white space, which happen to be our `RSS` column
+   - `NR%2` checks if the line number is even or odd. In our case, we only print `$6` when line number is odd.
+
+This will get us::
+
+  29800
+  29800
+  29800
+  29800
+  29240
+  37824
+
+  ...
 
 ************
 HowTos

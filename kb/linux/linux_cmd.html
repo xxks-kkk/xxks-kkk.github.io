@@ -420,7 +420,45 @@ x = show you all processes, not just ones attached to a terminal.
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">To display the header of the result of <code class="docutils literal"><span class="pre">ps</span> <span class="pre">aux</span></code> only. Do <code class="docutils literal"><span class="pre">ps</span> <span class="pre">aux</span> <span class="pre">|</span> <span class="pre">head</span> <span class="pre">-1</span></code></p>
+<p>To display the header of the result of <code class="docutils literal"><span class="pre">ps</span> <span class="pre">aux</span></code> only. Do <code class="docutils literal"><span class="pre">ps</span> <span class="pre">aux</span> <span class="pre">|</span> <span class="pre">head</span> <span class="pre">-1</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>USER          PID %CPU %MEM   SZ  RSS    TTY STAT    STIME  TIME COMMAND
+</pre></div>
+</div>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>%CPU</strong> The percentage of time the process has used the CPU since the process started. This value is computed by dividing the time the process</dt>
+<dd><p class="first last">uses the CPU by the elapsed time of the process.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>%MEM</strong> The percentage of real memory used by this process.</p>
+</li>
+<li><p class="first"><strong>SZ</strong> The size in 1 KB units of the core image of the process.</p>
+</li>
+<li><p class="first"><strong>RSS</strong> The real-memory (resident set) size of the process (in 1 KB units).</p>
+</li>
+<li><p class="first"><strong>TTY</strong> The controlling terminal for the process (ie <em>-</em> The process is not associated with a terminal.)</p>
+</li>
+<li><p class="first"><strong>STAT</strong> Contains the state of the process (ie <em>A</em> Active)</p>
+</li>
+<li><p class="first"><strong>STIME</strong> The starting time of the process.</p>
+</li>
+<li><p class="first"><strong>TIME</strong> The total runtime for the process. The time is displayed in the format of mm:ss or mmmm:ss if the runtime reaches 100 minutes</p>
+</li>
+<li><p class="first"><strong>COMMAND</strong> Contains the command name</p>
+</li>
+</ul>
+<p>This should make the following result clear:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span></span>Tue Mar 22 03:44:22 CDT 2016
+iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:48 db2fmp (C)
+Tue Mar 22 03:45:13 CDT 2016
+iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:52 db2fmp (C)
+Tue Mar 22 03:45:19 CDT 2016
+iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:53 db2fmp (C)
+Tue Mar 22 03:45:26 CDT 2016
+iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:53 db2fmp (C)
+</pre></div>
+</div>
 </div>
 </div>
 
