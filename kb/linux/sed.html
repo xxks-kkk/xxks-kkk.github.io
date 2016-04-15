@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Loop invariants &mdash; Zeyuan Hu&#39;s World</title>
+    <title>SED &mdash; Zeyuan Hu&#39;s World</title>
     
     <link rel="stylesheet" href="../../_static/zeyuan.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -26,7 +26,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../_static/favicon.png"/>
-    <link rel="top" title="Zeyuan Hu&#39;s World" href="../../index.html" /> 
+    <link rel="top" title="Zeyuan Hu&#39;s World" href="../../index.html" />
+    <link rel="up" title="Knowledge Base" href="../../kb.html" />
+    <link rel="next" title="Sphinx-Doc" href="../sphinx/sphinx.html" />
+    <link rel="prev" title="AWK" href="awk.html" /> 
   </head>
   <body role="document">
 
@@ -37,26 +40,23 @@
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../sphinx/sphinx.html" title="Sphinx-Doc"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="awk.html" title="AWK"
+             accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">home</a>|&nbsp;</li>
         <li><a href="../../kb.html">knowledge base</a>|&nbsp;</li>
         <li><a href="../../pj.html">projects</a>|&nbsp;</li>
         <li><a href="../../blog/blog.html">blog</a>|&nbsp;</li>
- 
+
+          <li class="nav-item nav-item-1"><a href="../../kb.html" accesskey="U">Knowledge Base</a> &raquo;</li> 
       </ul>
     </div>
 
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Loop invariants</a><ul>
-<li><a class="reference internal" href="#concept">Concept</a></li>
-<li><a class="reference internal" href="#examples">Examples</a></li>
-<li><a class="reference internal" href="#resources">Resources</a></li>
-</ul>
-</li>
-</ul>
-
     <h3>About this site</h3>
         <ul class="this-page-menu">
             <li><a class="reference external" 
@@ -80,18 +80,19 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="loop-invariants">
-<span id="invariant-rst"></span><h1>Loop invariants<a class="headerlink" href="#loop-invariants" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="sed">
+<h1>SED<a class="headerlink" href="#sed" title="Permalink to this headline">¶</a></h1>
 <p>Last Update: April 15, 2016</p>
-<p>I&#8217;ll reoragnize information regarding loop invariants to make it more readable for myself.</p>
-<div class="section" id="concept">
-<h2>Concept<a class="headerlink" href="#concept" title="Permalink to this headline">¶</a></h2>
+<p><strong>Delete a line containing a specific string using sed</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sed &#39;/pattern to match/d&#39; ./infile
+</pre></div>
 </div>
-<div class="section" id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="resources">
-<h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>You can redirect the output with <code class="docutils literal"><span class="pre">sed</span> <span class="pre">'/pattern</span> <span class="pre">to</span> <span class="pre">match/d'</span> <span class="pre">./infile</span> <span class="pre">&gt;</span> <span class="pre">./newfile</span></code>.</li>
+<li>If you want to do an in-place edit then you can add the <code class="docutils literal"><span class="pre">-i</span></code> flag to sed as in <code class="docutils literal"><span class="pre">sed</span> <span class="pre">-i</span> <span class="pre">'/pattern</span> <span class="pre">to</span> <span class="pre">match/d'</span> <span class="pre">./infile</span></code>. Note that the <code class="docutils literal"><span class="pre">-i</span></code> flag requires GNU sed and is not portable</li>
+</ul>
 </div>
 </div>
 
@@ -104,11 +105,18 @@
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../sphinx/sphinx.html" title="Sphinx-Doc"
+             >next</a></li>
+        <li class="right" >
+          <a href="awk.html" title="AWK"
+             >previous</a> |</li>
         <li><a href="../../index.html">home</a>|&nbsp;</li>
         <li><a href="../../kb.html">knowledge base</a>|&nbsp;</li>
         <li><a href="../../pj.html">projects</a>|&nbsp;</li>
         <li><a href="../../blog/blog.html">blog</a>|&nbsp;</li>
- 
+
+          <li class="nav-item nav-item-1"><a href="../../kb.html" >Knowledge Base</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

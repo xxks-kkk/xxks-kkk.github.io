@@ -35,20 +35,17 @@ Database
 Programming Languages
 **********************
 
-Some language study notes I made when I was in college.
-
 .. toctree::
     :maxdepth: 1
 
     /kb/python/diveintopython/diveintopython.rst
     /kb/python/pythoninpractice/python_in_practice.rst
+    /kb/linux/awk.rst
+    /kb/linux/sed.rst
 
 ***************
-All Other
+Tools
 ***************
-
-Misc topics and tips.
-
 
 .. toctree::
     :maxdepth: 1
@@ -56,7 +53,6 @@ Misc topics and tips.
     /kb/sphinx/sphinx.rst
     /kb/git.rst
     /kb/emacs.rst
-    /kb/linux/awk.rst
     /kb/linux/linux_cmd.rst
 
 ..
