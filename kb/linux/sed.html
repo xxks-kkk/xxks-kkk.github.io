@@ -57,6 +57,14 @@
 
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">SED</a><ul>
+<li><a class="reference internal" href="#delete-a-line-containing-a-specific-string-using-sed">Delete a line containing a specific string using sed</a></li>
+</ul>
+</li>
+</ul>
+
     <h3>About this site</h3>
         <ul class="this-page-menu">
             <li><a class="reference external" 
@@ -83,16 +91,17 @@
   <div class="section" id="sed">
 <h1>SED<a class="headerlink" href="#sed" title="Permalink to this headline">¶</a></h1>
 <p>Last Update: April 15, 2016</p>
-<p><strong>Delete a line containing a specific string using sed</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>sed &#39;/pattern to match/d&#39; ./infile
-</pre></div>
-</div>
+<div class="section" id="delete-a-line-containing-a-specific-string-using-sed">
+<h2>Delete a line containing a specific string using sed<a class="headerlink" href="#delete-a-line-containing-a-specific-string-using-sed" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>sed &#8216;/pattern to match/d&#8217; ./infile</div></blockquote>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <ul class="last simple">
 <li>You can redirect the output with <code class="docutils literal"><span class="pre">sed</span> <span class="pre">'/pattern</span> <span class="pre">to</span> <span class="pre">match/d'</span> <span class="pre">./infile</span> <span class="pre">&gt;</span> <span class="pre">./newfile</span></code>.</li>
 <li>If you want to do an in-place edit then you can add the <code class="docutils literal"><span class="pre">-i</span></code> flag to sed as in <code class="docutils literal"><span class="pre">sed</span> <span class="pre">-i</span> <span class="pre">'/pattern</span> <span class="pre">to</span> <span class="pre">match/d'</span> <span class="pre">./infile</span></code>. Note that the <code class="docutils literal"><span class="pre">-i</span></code> flag requires GNU sed and is not portable</li>
 </ul>
+</div>
 </div>
 </div>
 
