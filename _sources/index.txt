@@ -14,8 +14,7 @@ Zeyuan Hu
    :author: Zeyuan Hu
 
 I am a former `badger <http://www.wisc.edu>`_ and now work as a software engineer on `federation`_ and `Big SQL`_ \@ IBM in Beijing. 
-I primarily use C++ & Shell for my work and like to try new things for my hobby projects. I like to make things as simple as possible for the user but
-try not to make descision for them. My current focus is in DBMS (Runtime/Compiler), Distributed System (Hadoop), and `Art of Unix Programming <http://nakamotoinstitute.org/static/docs/taoup.pdf>`_.
+I primarily use C++ & Shell for my work and like to `share knowledge <kb.html>`_
 
 Here is a photo of `mine <_static/zeyuan.JPG>`_ when I was 20 at `Minnehaha Park <https://en.wikipedia.org/wiki/Minnehaha_Park_(Minneapolis)>`_.
 
