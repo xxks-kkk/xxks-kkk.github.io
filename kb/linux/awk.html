@@ -63,7 +63,7 @@
 <li><a class="reference internal" href="#case-study">Case Study</a><ul>
 <li><a class="reference internal" href="#search-pattern-for-each-line">Search pattern for each line</a></li>
 <li><a class="reference internal" href="#pass-shell-variable-as-a-pattern-to-awk">Pass shell variable as a /pattern/ to awk</a></li>
-<li><a class="reference internal" href="#work-with-ps-aux">Work with <cite>ps aux</cite></a></li>
+<li><a class="reference internal" href="#work-with-ps-aux">Work with <code class="docutils literal"><span class="pre">ps</span> <span class="pre">aux</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#howtos">HowTos</a></li>
@@ -197,7 +197,7 @@ value say 856, since it is put inside <code class="docutils literal"><span class
 </div>
 </div>
 <div class="section" id="work-with-ps-aux">
-<h3>Work with <cite>ps aux</cite><a class="headerlink" href="#work-with-ps-aux" title="Permalink to this headline">¶</a></h3>
+<h3>Work with <code class="docutils literal"><span class="pre">ps</span> <span class="pre">aux</span></code><a class="headerlink" href="#work-with-ps-aux" title="Permalink to this headline">¶</a></h3>
 <p><strong>GOAL:</strong> Detect whether there is memory leak issue for certain application?</p>
 <p>During the work, I run into an issue that client observes memory leak for our product and I need to invesitgate into it. First things first, I need to at least
 make sure if memory leak problem exists. I use a small shell script to take snapshot of product&#8217;s memory usage every certain time period and it looks like below:</p>
@@ -225,8 +225,8 @@ extract that column from my result (&#8220;log_fenced_bad.txt&#8221;) in order t
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <ul class="last simple">
-<li><cite>$6</cite> refers to 6th column of every line separate by white space, which happen to be our <cite>RSS</cite> column</li>
-<li><cite>NR%2</cite> checks if the line number is even or odd. In our case, we only print <cite>$6</cite> when line number is odd.</li>
+<li><code class="docutils literal"><span class="pre">$6</span></code> refers to 6th column of every line separate by white space, which happen to be our <cite>RSS</cite> column</li>
+<li><code class="docutils literal"><span class="pre">NR%2</span></code> checks if the line number is even or odd. In our case, we only print <cite>$6</cite> when line number is odd.</li>
 </ul>
 </div>
 <p>This will get us:</p>
