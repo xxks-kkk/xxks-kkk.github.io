@@ -96,13 +96,13 @@
             
   <div class="section" id="awk">
 <span id="awk-rst"></span><h1>AWK<a class="headerlink" href="#awk" title="Permalink to this headline">¶</a></h1>
-<p>Last Update: April 15, 2016</p>
+<p>Last Update: April 16, 2016</p>
 <div class="section" id="case-study">
 <h2>Case Study<a class="headerlink" href="#case-study" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="search-pattern-for-each-line">
 <h3>Search pattern for each line<a class="headerlink" href="#search-pattern-for-each-line" title="Permalink to this headline">¶</a></h3>
 <p><strong>GOAL:</strong> Kill all the processes containing keyword &#8220;quicktest&#8221;</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>(iidev20@maradona) /home/iidev20
+<div class="highlight-python"><div class="highlight"><pre>(iidev20@maradona) /home/iidev20
 $ ps -ef | grep -i quicktest
 iidev20 49814180        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 5 NCLIENT 30 SEED 1452586352
 iidev20 49945254        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod OP 2 ITR 3000 CLIENT 15 NCLIENT 30 SEED 1452586362
@@ -121,7 +121,7 @@ iidev20 36903922        1   0   Jan 12      -  0:00 quicktest 55556,671,760.mod 
 </div>
 <div class="topic">
 <p class="topic-title first">Solution</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>kill -9 `ps -ef | grep $USER | awk &#39;$9 ~ /quicktest/ {print $2}&#39;`
+<div class="highlight-python"><div class="highlight"><pre>kill -9 `ps -ef | grep $USER | awk &#39;$9 ~ /quicktest/ {print $2}&#39;`
 </pre></div>
 </div>
 </div>
@@ -139,7 +139,7 @@ word of certain function calls (of course, you can use mask to format trace file
 the call stack in between. Thus, my interest is on part of trace file, and I want to cut the trace file based upon
 the trace point numbers located through <code class="docutils literal"><span class="pre">grep</span></code>.</p>
 <p>The following is one sample flw file:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>...
+<div class="highlight-python"><div class="highlight"><pre>...
 
 pid = 19834 tid = 1 node = 0
 
@@ -164,7 +164,7 @@ pid = 19834 tid = 1 node = 0
 </div>
 <p>The number 846, 847, ... are the trace point number, and the key observation here is that those numbers are unique. Thus,
 we can have the following shell script to parse the flow file</p>
-<div class="highlight-shell"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+<div class="highlight-shell"><div class="highlight"><pre><span class="ch">#!/bin/sh</span>
 
 <span class="nb">printf</span> <span class="s2">&quot;Trace file: %s\n&quot;</span> <span class="s2">&quot;</span><span class="nv">$3</span><span class="s2">&quot;</span>
 <span class="nb">printf</span> <span class="s2">&quot;Trace point number lower bound: %d\n&quot;</span> <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
@@ -200,7 +200,7 @@ value say 856, since it is put inside <code class="docutils literal"><span class
 <p><strong>GOAL:</strong> Detect whether there is memory leak issue for certain application?</p>
 <p>During the work, I run into an issue that client observes memory leak for our product and I need to invesitgate into it. First things first, I need to at least
 make sure if memory leak problem exists. I use a small shell script to take snapshot of product&#8217;s memory usage every certain time period and it looks like below:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>Tue Mar 22 03:44:22 CDT 2016
+<div class="highlight-python"><div class="highlight"><pre>Tue Mar 22 03:44:22 CDT 2016
 iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:48 db2fmp (C)
 Tue Mar 22 03:45:13 CDT 2016
 iidev20  62786192  0.9  0.0 29760 29800      - A      Mar 16 592:52 db2fmp (C)
@@ -218,7 +218,7 @@ iidev20  40504624  0.8  0.0 37784 37824      - A    04:02:54  0:47 db2fmp (C)
 </div>
 <p>This result is generated from <cite>ps aux</cite> and what I&#8217;m really interested is the <cite>RSS</cite> column (ie 29800, 29800, ...). How do I ignore all other info for now and
 extract that column from my result (&#8220;log_fenced_bad.txt&#8221;) in order to further analyze it through plotting? AWK!:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span>awk &#39;!(NR%2) {print $6}&#39; log_fenced_bad.txt
+<div class="highlight-python"><div class="highlight"><pre>awk &#39;!(NR%2) {print $6}&#39; log_fenced_bad.txt
 </pre></div>
 </div>
 <div class="admonition note">
@@ -229,7 +229,7 @@ extract that column from my result (&#8220;log_fenced_bad.txt&#8221;) in order t
 </ul>
 </div>
 <p>This will get us:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mi">29800</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="mi">29800</span>
 <span class="mi">29800</span>
 <span class="mi">29800</span>
 <span class="mi">29800</span>
@@ -275,7 +275,7 @@ extract that column from my result (&#8220;log_fenced_bad.txt&#8221;) in order t
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2012-2016, Zeyuan Hu.
-      Last updated on Apr 15, 2016.
+      Last updated on Apr 16, 2016.
     </div>
   </body>
 </html>
