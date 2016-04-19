@@ -5,32 +5,6 @@ Knowledge Base
 ###################
 
 
-***********
-Database
-***********
-
-`DB2`_ combines with database in general.
-
-.. toctree::
-    :maxdepth: 1   
-
-    /kb/db2/db2-topics/p1.rst
-    /kb/db2/db2-topics/p2.rst
-    /kb/db2/db2-topics/p3.rst
-    /kb/db2/db2-topics/p4.rst
-    /kb/db2/db2-topics/db2_howto.rst
-
-..
-   ***********
-   Algorithm
-   ***********
-
-   .. toctree::
-      :maxdepth: 1
-
-      /kb/algo/invariant.rst
-
-
 **********************
 Programming Languages
 **********************
@@ -40,8 +14,6 @@ Programming Languages
 
     /kb/python/diveintopython/diveintopython.rst
     /kb/python/pythoninpractice/python_in_practice.rst
-    /kb/linux/awk.rst
-    /kb/linux/sed.rst
 
 ***************
 Tools
@@ -51,9 +23,6 @@ Tools
     :maxdepth: 1
     
     /kb/sphinx/sphinx.rst
-    /kb/git.rst
-    /kb/emacs.rst
-    /kb/linux/linux_cmd.rst
 
 ..
    ===========

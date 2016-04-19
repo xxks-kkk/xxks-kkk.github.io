@@ -38,7 +38,7 @@
       <h3>Navigation</h3>
       <ul>
         <li><a href="../../index.html">home</a>|&nbsp;</li>
-        <li><a href="../../kb.html">knowledge base</a>|&nbsp;</li>
+        ## <li><a href="../../kb.html">knowledge base</a>|&nbsp;</li>
         <li><a href="../../pj.html">projects</a>|&nbsp;</li>
         <li><a href="../blog.html">blog</a>|&nbsp;</li>
  
@@ -89,7 +89,7 @@
 <p>What’s the difference between the following two chunks of code?</p>
 <div class="literal-block-wrapper container" id="block-a">
 <div class="code-block-caption"><span class="caption-text">block A</span><a class="headerlink" href="#block-a" title="Permalink to this code">¶</a></div>
-<div class="highlight-cpp"><div class="highlight"><pre> <span class="k">if</span> <span class="p">(</span><span class="n">block_buf</span> <span class="o">&gt;</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">){</span>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span> <span class="k">if</span> <span class="p">(</span><span class="n">block_buf</span> <span class="o">&gt;</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">){</span>
 
  <span class="n">my_requests_block_buf</span> <span class="o">=</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">;</span>
 
@@ -103,7 +103,7 @@
 </div>
 <div class="literal-block-wrapper container" id="block-b">
 <div class="code-block-caption"><span class="caption-text">block B</span><a class="headerlink" href="#block-b" title="Permalink to this code">¶</a></div>
-<div class="highlight-cpp"><div class="highlight"><pre> <span class="k">if</span> <span class="p">(</span><span class="n">block_buf</span> <span class="o">&gt;</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">)</span>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span> <span class="k">if</span> <span class="p">(</span><span class="n">block_buf</span> <span class="o">&gt;</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">)</span>
  <span class="p">{</span>
    <span class="n">my_requests_block_buf</span> <span class="o">=</span> <span class="n">REQUESTS_BLOCK_BUF_MAX</span><span class="p">;</span>
  <span class="p">}</span>
@@ -124,7 +124,7 @@ info on <a class="reference external" href="https://en.wikipedia.org/wiki/Indent
 <h2>Don’t add redundant debug statement<a class="headerlink" href="#dont-add-redundant-debug-statement" title="Permalink to this headline">¶</a></h2>
 <p>Following the code chunk I added above, it is probably natural to add a printout statement to see if <code class="docutils literal"><span class="pre">my_requests_block_buf</span></code> is actually set to the
 right value. So, I added:</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">pdTraceData1</span><span class="p">(</span><span class="n">FUNCTION_TRACE_ID</span><span class="p">,</span>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">pdTraceData1</span><span class="p">(</span><span class="n">FUNCTION_TRACE_ID</span><span class="p">,</span>
              <span class="mi">1992</span><span class="p">,</span>
              <span class="n">PD_SINT</span><span class="p">(</span><span class="n">my_requests_block_buf</span><span class="p">));</span>
 </pre></div>
@@ -138,7 +138,7 @@ he need to delete the debug statement. With excessive debug statements, the perf
 <h2>Treat comment as serious as code<a class="headerlink" href="#treat-comment-as-serious-as-code" title="Permalink to this headline">¶</a></h2>
 <p>I developed a bad habit to joke around in the comment during the college, and I somewhat carry it out to the real job. This is one of the comments I wrote
 in my recent work:</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="c1">// cheat on initialize_server() function</span>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="c1">// cheat on initialize_server() function</span>
 <span class="cp">#define REQUESTS_BLOCK_BUF_MAX_OLD 1024</span>
 </pre></div>
 </div>
@@ -172,7 +172,7 @@ var disqus_identifier = "/blog/2015/software-engineer";
       <h3>Navigation</h3>
       <ul>
         <li><a href="../../index.html">home</a>|&nbsp;</li>
-        <li><a href="../../kb.html">knowledge base</a>|&nbsp;</li>
+        ## <li><a href="../../kb.html">knowledge base</a>|&nbsp;</li>
         <li><a href="../../pj.html">projects</a>|&nbsp;</li>
         <li><a href="../blog.html">blog</a>|&nbsp;</li>
  
@@ -180,7 +180,7 @@ var disqus_identifier = "/blog/2015/software-engineer";
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2012-2016, Zeyuan Hu.
-      Last updated on Apr 16, 2016.
+      Last updated on Apr 19, 2016.
     </div>
   </body>
 </html>
