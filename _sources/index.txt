@@ -13,10 +13,7 @@ Zeyuan Hu
    :keywords: Zeyuan Hu, Zeyuan, Zeyuan uw, Zeyuan UW Madison, UW Madison, University of Wisconsin Madison, ibm
    :author: Zeyuan Hu
 
-I am a former `badger <http://www.wisc.edu>`_ and now work as a software engineer on `federation`_ and `Big SQL`_ \@ IBM in Beijing. 
-I primarily use C++ & Shell for my work and like to `share knowledge <kb.html>`_.
-
-Here is a photo of `mine <_static/zeyuan.JPG>`_ when I was 20 at `Minnehaha Park <https://en.wikipedia.org/wiki/Minnehaha_Park_(Minneapolis)>`_.
+I am a former `badger <http://www.wisc.edu>`_ and now work as a software engineer on `federation`_ and `Big SQL`_ \@ IBM in Beijing. Here is a photo of `mine <_static/zeyuan.JPG>`_ when I was 20 at `Minnehaha Park <https://en.wikipedia.org/wiki/Minnehaha_Park_(Minneapolis)>`_.
 
 -------------------------------------------------------------------------------------------
 
