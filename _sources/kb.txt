@@ -15,15 +15,6 @@ Programming Languages
     /kb/python/diveintopython/diveintopython.rst
     /kb/python/pythoninpractice/python_in_practice.rst
 
-***************
-Tools
-***************
-
-.. toctree::
-    :maxdepth: 1
-    
-    /kb/sphinx/sphinx.rst
-
 ..
    ===========
    Non-CS
