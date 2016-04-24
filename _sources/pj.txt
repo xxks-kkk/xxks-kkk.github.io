@@ -10,3 +10,4 @@ Things that I have been spending time upon besides work.
 - :ref:`mcm.rst`
 - `Emacs configuration <https://github.com/xxks-kkk/emacs-config>`_
 - :ref:`LemonDB <db.rst>`
+- :ref:`bookreview.rst`
