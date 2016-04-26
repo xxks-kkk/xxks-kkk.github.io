@@ -4,10 +4,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-%%%%%%%%%%%%%
-Zeyuan Hu
-%%%%%%%%%%%%%
-
 .. meta::
    :description: This is the homepage of Zeyuan Hu, software developer at ibm, badger
    :keywords: Zeyuan Hu, Zeyuan, Zeyuan uw, Zeyuan UW Madison, UW Madison, University of Wisconsin Madison, ibm
