@@ -183,27 +183,27 @@ them into a newer system.</p>
 </div>
 <div class="admonition-key-func admonition">
 <p class="first admonition-title">Key Func</p>
-<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">repl</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span>
+<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">repl</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;100 NORTH MAIN ROAD&#39;</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;100 NORTH MAIN ROAD&#39;</span>
 
-<span class="gp">In [2]: </span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;ROAD&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">)</span>
-<span class="gr">Out[2]: </span><span class="s1">&#39;100 NORTH MAIN RD.&#39;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;ROAD&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="s1">&#39;100 NORTH MAIN RD.&#39;</span>
 
-<span class="gp">In [3]: </span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;100 NORTH BROAD ROAD&#39;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;100 NORTH BROAD ROAD&#39;</span>
 
-<span class="gp">In [4]: </span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;ROAD&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">)</span>
-<span class="gr">Out[4]: </span><span class="s1">&#39;100 NORTH BRD. RD.&#39;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;ROAD&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="s1">&#39;100 NORTH BRD. RD.&#39;</span>
 
-<span class="gp">In [5]: </span><span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;ROAD&#39;</span><span class="p">,</span><span class="s1">&#39;RD.&#39;</span><span class="p">)</span>
-<span class="gr">Out[5]: </span><span class="s1">&#39;100 NORTH BROAD RD.&#39;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;ROAD&#39;</span><span class="p">,</span><span class="s1">&#39;RD.&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="s1">&#39;100 NORTH BROAD RD.&#39;</span>
 
-<span class="hll"><span class="gp">In [6]: </span><span class="kn">import</span> <span class="nn">re</span>
+<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">re</span>
 </span>
-<span class="hll"><span class="gp">In [7]: </span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;ROAD$&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-</span><span class="gr">Out[7]: </span><span class="s1">&#39;100 NORTH BROAD RD.&#39;</span>
+<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;ROAD$&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+</span><span class="n">Out</span><span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="s1">&#39;100 NORTH BROAD RD.&#39;</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -240,7 +240,7 @@ In Python, all functionality related to regular expressions is contained in the 
 </dd>
 </dl>
 </li>
-<li><div class="first highlight-default"><div class="highlight"><pre><span></span><span class="c1"># you search the string &#39;s&#39; for the regular expression &#39;ROAD$&#39; and replace it with &#39;RD.&#39;</span>
+<li><div class="first highlight-python"><div class="highlight"><pre><span></span><span class="c1"># you search the string &#39;s&#39; for the regular expression &#39;ROAD$&#39; and replace it with &#39;RD.&#39;</span>
 <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">repl</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -268,24 +268,24 @@ In Python, all functionality related to regular expressions is contained in the 
 <li>raw string: prefix the string with the letter <code class="docutils literal"><span class="pre">r</span></code>.</li>
 </ul>
 </div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;100 BROAD&#39;</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;100 BROAD&#39;</span>
 
-<span class="gp">In [14]: </span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;ROAD$&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-<span class="gr">Out[14]: </span><span class="s1">&#39;100 BRD.&#39;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;ROAD$&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="s1">&#39;100 BRD.&#39;</span>
 
-<span class="gp">In [15]: </span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">bROAD$&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-<span class="gr">Out[15]: </span><span class="s1">&#39;100 BROAD&#39;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">bROAD$&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="s1">&#39;100 BROAD&#39;</span>
 
-<span class="hll"><span class="gp">In [16]: </span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">r&#39;\bROAD$&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-</span><span class="gr">Out[16]: </span><span class="s1">&#39;100 BROAD&#39;</span>
+<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">r&#39;\bROAD$&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+</span><span class="n">Out</span><span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="s1">&#39;100 BROAD&#39;</span>
 
-<span class="gp">In [17]: </span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;100 BROAD ROAD APT.3&#39;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;100 BROAD ROAD APT.3&#39;</span>
 
-<span class="gp">In [18]: </span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">r&#39;\bROAD$&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-<span class="gr">Out[18]: </span><span class="s1">&#39;100 BROAD ROAD APT.3&#39;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">r&#39;\bROAD$&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="s1">&#39;100 BROAD ROAD APT.3&#39;</span>
 
-<span class="hll"><span class="gp">In [19]: </span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">r&#39;\bROAD\b&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-</span><span class="gr">Out[19]: </span><span class="s1">&#39;100 BROAD RD. APT.3&#39;</span>
+<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">r&#39;\bROAD\b&#39;</span><span class="p">,</span> <span class="s1">&#39;RD.&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+</span><span class="n">Out</span><span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="s1">&#39;100 BROAD RD. APT.3&#39;</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -461,26 +461,26 @@ would need to write it as <code class="docutils literal"><span class="pre">XCIX<
 </div>
 <div class="admonition-key-func admonition">
 <p class="first admonition-title">Key Func</p>
-<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span>
+<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [20]: </span><span class="kn">import</span> <span class="nn">re</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">20</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="hll"><span class="gp">In [21]: </span><span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;^M?M?M?M?$&#39;</span>
+<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">21</span><span class="p">]:</span> <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;^M?M?M?M?$&#39;</span>
 </span>
-<span class="hll"><span class="gp">In [22]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span>
-</span><span class="gr">Out[22]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92c5b48</span><span class="o">&gt;</span>
+<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">22</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span>
+</span><span class="n">Out</span><span class="p">[</span><span class="mi">22</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92c5b48</span><span class="o">&gt;</span>
 
-<span class="gp">In [23]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MM&#39;</span><span class="p">)</span>
-<span class="gr">Out[23]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92c5bf0</span><span class="o">&gt;</span>
-<span class="gp">In [24]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;MMM&#39;</span><span class="p">)</span>
-<span class="gr">Out[24]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92c5d08</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MM&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92c5bf0</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;MMM&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92c5d08</span><span class="o">&gt;</span>
 
-<span class="gp">In [25]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;MMMMM&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;MMMMM&#39;</span><span class="p">)</span>
 
-<span class="gp">In [26]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-<span class="gr">Out[26]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92c5e58</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92c5e58</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -502,7 +502,7 @@ after the <code class="docutils literal"><span class="pre">M</span></code> chara
 <dt>[22]:</dt>
 <dd><ul class="first last">
 <li><p class="first">re.search:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># takes a regular expression (pattern) and a string (M) to try to match against the regular expression.</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># takes a regular expression (pattern) and a string (M) to try to match against the regular expression.</span>
 <span class="c1"># If a match is found, search returns an object which has various methods to describe the match</span>
 <span class="c1"># If no match is found, search returns None, the Python null value.</span>
 <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span>
@@ -560,23 +560,23 @@ expressed, depending on its value.</p>
 <p class="first admonition-title">Key Expression</p>
 <p class="last"><code class="docutils literal"><span class="pre">(a|b|c)</span></code> matches either <code class="docutils literal"><span class="pre">a</span></code> or <code class="docutils literal"><span class="pre">b</span></code> or <code class="docutils literal"><span class="pre">c</span></code>.</p>
 </div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [27]: </span><span class="kn">import</span> <span class="nn">re</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">27</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="hll"><span class="gp">In [28]: </span><span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;^M?M?M?M?(CM|CD|D?C?C?C?)$&#39;</span>
+<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">28</span><span class="p">]:</span> <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;^M?M?M?M?(CM|CD|D?C?C?C?)$&#39;</span>
 </span>
-<span class="gp">In [29]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;MCM&#39;</span><span class="p">)</span>
-<span class="gr">Out[29]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x9248820</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">29</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;MCM&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">29</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x9248820</span><span class="o">&gt;</span>
 
-<span class="gp">In [30]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;MD&#39;</span><span class="p">)</span>
-<span class="gr">Out[30]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92487a0</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">30</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;MD&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">30</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92487a0</span><span class="o">&gt;</span>
 
-<span class="gp">In [31]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;MMMCCC&#39;</span><span class="p">)</span>
-<span class="gr">Out[31]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x9248760</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">31</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;MMMCCC&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">31</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x9248760</span><span class="o">&gt;</span>
 
-<span class="gp">In [32]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;MCMC&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">32</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;MCMC&#39;</span><span class="p">)</span>
 
-<span class="gp">In [33]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-<span class="gr">Out[33]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92488e0</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">33</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">33</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92488e0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -610,33 +610,33 @@ There is another way to express this in regular expression.</p>
 <p class="first admonition-title">Key Expression</p>
 <p class="last"><code class="docutils literal"><span class="pre">x{n,m}</span></code> matches an <code class="docutils literal"><span class="pre">x</span></code> character [n,m] times</p>
 </div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [34]: </span><span class="kn">import</span> <span class="nn">re</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">34</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="gp">In [35]: </span><span class="n">old_pattern</span> <span class="o">=</span> <span class="s1">&#39;^M?M?M?M?$&#39;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">35</span><span class="p">]:</span> <span class="n">old_pattern</span> <span class="o">=</span> <span class="s1">&#39;^M?M?M?M?$&#39;</span>
 
-<span class="gp">In [36]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">old_pattern</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span>
-<span class="gr">Out[36]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d4528</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">36</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">old_pattern</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">36</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d4528</span><span class="o">&gt;</span>
 
-<span class="gp">In [37]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">old_pattern</span><span class="p">,</span> <span class="s1">&#39;MM&#39;</span><span class="p">)</span>
-<span class="gr">Out[37]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d4608</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">37</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">old_pattern</span><span class="p">,</span> <span class="s1">&#39;MM&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">37</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d4608</span><span class="o">&gt;</span>
 
-<span class="gp">In [38]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">old_pattern</span><span class="p">,</span> <span class="s1">&#39;MMM&#39;</span><span class="p">)</span>
-<span class="gr">Out[38]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d4720</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">38</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">old_pattern</span><span class="p">,</span> <span class="s1">&#39;MMM&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">38</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d4720</span><span class="o">&gt;</span>
 
-<span class="gp">In [39]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">old_pattern</span><span class="p">,</span> <span class="s1">&#39;MMMMM&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">39</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">old_pattern</span><span class="p">,</span> <span class="s1">&#39;MMMMM&#39;</span><span class="p">)</span>
 
-<span class="hll"><span class="gp">In [40]: </span><span class="n">new_pattern</span> <span class="o">=</span> <span class="s1">&#39;^M{0,4}$&#39;</span>
+<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">40</span><span class="p">]:</span> <span class="n">new_pattern</span> <span class="o">=</span> <span class="s1">&#39;^M{0,4}$&#39;</span>
 </span>
-<span class="gp">In [41]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">new_pattern</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span>
-<span class="gr">Out[41]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d4988</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">41</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">new_pattern</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">41</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d4988</span><span class="o">&gt;</span>
 
-<span class="gp">In [42]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">new_pattern</span><span class="p">,</span> <span class="s1">&#39;MM&#39;</span><span class="p">)</span>
-<span class="gr">Out[42]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d4aa0</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">42</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">new_pattern</span><span class="p">,</span> <span class="s1">&#39;MM&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">42</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d4aa0</span><span class="o">&gt;</span>
 
-<span class="gp">In [43]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">new_pattern</span><span class="p">,</span> <span class="s1">&#39;MMM&#39;</span><span class="p">)</span>
-<span class="gr">Out[43]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d4bb8</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">43</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">new_pattern</span><span class="p">,</span> <span class="s1">&#39;MMM&#39;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">43</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d4bb8</span><span class="o">&gt;</span>
 
-<span class="gp">In [44]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">new_pattern</span><span class="p">,</span> <span class="s1">&#39;MMMMM&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">44</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">new_pattern</span><span class="p">,</span> <span class="s1">&#39;MMMMM&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -691,21 +691,21 @@ but no more than three <code class="docutils literal"><span class="pre">M</span>
 </table>
 </div></blockquote>
 <p>Example 7.6 Checking for Tens</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [45]: </span><span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;^M?M?M?(CM|CD|D?C?C?C?)(XC|XL|L?X?X?X?)$&#39;</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">45</span><span class="p">]:</span> <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;^M?M?M?(CM|CD|D?C?C?C?)(XC|XL|L?X?X?X?)$&#39;</span>
 
-<span class="gp">In [46]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCMXL&#39;</span><span class="p">)</span>  <span class="c1"># 1940</span>
-<span class="gr">Out[46]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92440b0</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">46</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCMXL&#39;</span><span class="p">)</span>  <span class="c1"># 1940</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">46</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92440b0</span><span class="o">&gt;</span>
 
-<span class="gp">In [47]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCML&#39;</span><span class="p">)</span> <span class="c1"># 1950</span>
-<span class="gr">Out[47]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x9244e30</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">47</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCML&#39;</span><span class="p">)</span> <span class="c1"># 1950</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">47</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x9244e30</span><span class="o">&gt;</span>
 
-<span class="gp">In [48]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCMLX&#39;</span><span class="p">)</span> <span class="c1"># 1960</span>
-<span class="gr">Out[48]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x9244608</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">48</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCMLX&#39;</span><span class="p">)</span> <span class="c1"># 1960</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">48</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x9244608</span><span class="o">&gt;</span>
 
-<span class="gp">In [49]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCMLXXX&#39;</span><span class="p">)</span> <span class="c1"># 1980</span>
-<span class="gr">Out[49]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92b1020</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">49</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCMLXXX&#39;</span><span class="p">)</span> <span class="c1"># 1980</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">49</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92b1020</span><span class="o">&gt;</span>
 
-<span class="gp">In [50]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCMLXXXX&#39;</span><span class="p">)</span> <span class="c1"># invalid</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">50</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCMLXXXX&#39;</span><span class="p">)</span> <span class="c1"># invalid</span>
 </pre></div>
 </div>
 </div>
@@ -735,30 +735,30 @@ putting a backslash in front of it.)</li>
 <li>Comments are ignored.</li>
 </ul>
 </div></blockquote>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [51]: </span><span class="n">pattern</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="go">    ...:    ^                 # beginning of string</span>
-<span class="go">    ...:    M{0,4}            # thousands - 0 to 4 M&#39;s</span>
-<span class="go">    ...:    (CM|CD|D?C{0,3})  # hundreds - 900 (CM), 400 (CD), 0-300 (0 to 3 C&#39;s),</span>
-<span class="go">    ...:                      #            or 500-800 (D, followed by 0 to 3 C&#39;s)</span>
-<span class="go">    ...:    (XC|XL|L?X{0,3})  # tens - 90 (XC), 40 (XL), 0-30 (0 to 3 X&#39;s),</span>
-<span class="go">    ...:                      #        or 50-80 (L, followed by 0 to 3 X&#39;s)</span>
-<span class="go">    ...:    (IX|IV|V?I{0,3})  # ones - 9 (IX), 4 (IV), 0-3 (0 to 3 I&#39;s),</span>
-<span class="go">    ...:                      #        or 5-8 (V, followed by 0 to 3 I&#39;s)</span>
-<span class="go">    ...:    $                 # end of string</span>
-<span class="go">    ...:    &quot;&quot;&quot;</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">51</span><span class="p">]:</span> <span class="n">pattern</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    ...:    ^                 # beginning of string</span>
+<span class="s2">    ...:    M{0,4}            # thousands - 0 to 4 M&#39;s</span>
+<span class="s2">    ...:    (CM|CD|D?C{0,3})  # hundreds - 900 (CM), 400 (CD), 0-300 (0 to 3 C&#39;s),</span>
+<span class="s2">    ...:                      #            or 500-800 (D, followed by 0 to 3 C&#39;s)</span>
+<span class="s2">    ...:    (XC|XL|L?X{0,3})  # tens - 90 (XC), 40 (XL), 0-30 (0 to 3 X&#39;s),</span>
+<span class="s2">    ...:                      #        or 50-80 (L, followed by 0 to 3 X&#39;s)</span>
+<span class="s2">    ...:    (IX|IV|V?I{0,3})  # ones - 9 (IX), 4 (IV), 0-3 (0 to 3 I&#39;s),</span>
+<span class="s2">    ...:                      #        or 5-8 (V, followed by 0 to 3 I&#39;s)</span>
+<span class="s2">    ...:    $                 # end of string</span>
+<span class="s2">    ...:    &quot;&quot;&quot;</span>
 
-<span class="hll"><span class="gp">In [52]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span><span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">)</span>
-</span><span class="gr">Out[52]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d71e0</span><span class="o">&gt;</span>
+<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">52</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span><span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">)</span>
+</span><span class="n">Out</span><span class="p">[</span><span class="mi">52</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x92d71e0</span><span class="o">&gt;</span>
 
-<span class="gp">In [53]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCMLXXXX&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">53</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCMLXXXX&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">)</span>
 
-<span class="gp">In [54]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCMLXXXIX&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">)</span>
-<span class="gr">Out[54]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x9241bb0</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">54</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MCMLXXXIX&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">54</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x9241bb0</span><span class="o">&gt;</span>
 
-<span class="gp">In [55]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MMMMDCCCLXXXVIII&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">)</span>
-<span class="gr">Out[55]: </span><span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x9241b60</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">55</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;MMMMDCCCLXXXVIII&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">55</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Match</span> <span class="n">at</span> <span class="mh">0x9241b60</span><span class="o">&gt;</span>
 
-<span class="gp">In [56]: </span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">56</span><span class="p">]:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -808,24 +808,24 @@ For those with an extension, I need to know that the extension was <code class="
 <p>patternObj = re.compile(pattern)</p>
 <p class="last">patternObj.search(string).groups()</p>
 </div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">re</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="hll"><span class="gp">In [2]: </span><span class="n">phonePattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^(\d{3})-(\d{3})-(\d{4})$&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">phonePattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^(\d{3})-(\d{3})-(\d{4})$&#39;</span><span class="p">)</span>
 </span>
-<span class="gp">In [3]: </span><span class="nb">type</span><span class="p">(</span><span class="n">phonePattern</span><span class="p">)</span>
-<span class="gr">Out[3]: </span><span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Pattern</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="n">phonePattern</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">_sre</span><span class="o">.</span><span class="n">SRE_Pattern</span>
 
-<span class="hll"><span class="gp">In [4]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-</span><span class="gr">Out[4]: </span><span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+</span><span class="n">Out</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">)</span>
 
-<span class="gp">In [5]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212-1234&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212-1234&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="docutils">
 <dt>[2]:</dt>
 <dd><ul class="first last">
 <li><p class="first">re.complie:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># compile a regular expression pattern into a regular expression object,</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># compile a regular expression pattern into a regular expression object,</span>
 <span class="c1"># which can be used for matching using its match() and search() methods</span>
 <span class="n">patternObj</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
 </pre></div>
@@ -845,7 +845,7 @@ For those with an extension, I need to know that the extension was <code class="
 <dt>[4]:</dt>
 <dd><ul class="first last">
 <li><p class="first">groups():</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># to get access to the groups that the regular expression parser remembered along the way</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># to get access to the groups that the regular expression parser remembered along the way</span>
 <span class="c1"># it will return a tuple of however many groups were defined in the regular expression.</span>
 <span class="n">patternObj</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
 </pre></div>
@@ -867,14 +867,14 @@ For those with an extension, I need to know that the extension was <code class="
 <p class="first admonition-title">Key Expression</p>
 <p class="last"><code class="docutils literal"><span class="pre">x+</span></code> matches <code class="docutils literal"><span class="pre">x</span></code> one or more times</p>
 </div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="n">phonePattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^(\d{3})-(\d{3})-(\d{4})-(\d+)$&#39;</span><span class="p">)</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">phonePattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^(\d{3})-(\d{3})-(\d{4})-(\d+)$&#39;</span><span class="p">)</span>
 
-<span class="gp">In [7]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212-1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<span class="gr">Out[7]: </span><span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212-1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
 
-<span class="hll"><span class="gp">In [8]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800 555 1212 1234&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800 555 1212 1234&#39;</span><span class="p">)</span>
 </span>
-<span class="gp">In [9]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -912,17 +912,17 @@ What if they&#8217;re separated by spaces, or commas, or dots?</li>
 <p class="first admonition-title">Key Expression</p>
 <p class="last"><code class="docutils literal"><span class="pre">\D</span></code> matches any non-numeric character.</p>
 </div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="gp">In [10]: </span><span class="n">phonePattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^(\d{3})\D+(\d{3})\D+(\d{4})\D+(\d+)$&#39;</span><span class="p">)</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">phonePattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^(\d{3})\D+(\d{3})\D+(\d{4})\D+(\d+)$&#39;</span><span class="p">)</span>
 </span>
-<span class="gp">In [11]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800 555 1212 1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<span class="gr">Out[11]: </span><span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">11</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800 555 1212 1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">11</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
 
-<span class="gp">In [12]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212-1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<span class="gr">Out[12]: </span><span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">12</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212-1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">12</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
 
-<span class="gp">In [13]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;8005551212&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;8005551212&#39;</span><span class="p">)</span>
 
-<span class="gp">In [14]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -950,18 +950,18 @@ What if they&#8217;re separated by spaces, or commas, or dots?</li>
 <p class="first admonition-title">Key Expression</p>
 <p class="last"><code class="docutils literal"><span class="pre">x*</span></code> matches <code class="docutils literal"><span class="pre">x</span></code> zero or more times.</p>
 </div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="gp">In [15]: </span><span class="n">phonePattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^(\d{3})\D*(\d{3})\D*(\d{4})\D*(\d*)$&#39;</span><span class="p">)</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="n">phonePattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^(\d{3})\D*(\d{3})\D*(\d{4})\D*(\d*)$&#39;</span><span class="p">)</span>
 </span>
-<span class="gp">In [16]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;80055512121234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<span class="gr">Out[16]: </span><span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;80055512121234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
 
-<span class="gp">In [18]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800.555.1212 x1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<span class="gr">Out[18]: </span><span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800.555.1212 x1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
 
-<span class="gp">In [21]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<span class="gr">Out[21]: </span><span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">21</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">21</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
-<span class="gp">In [22]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;(800)5551212 x1234&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">22</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;(800)5551212 x1234&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -985,16 +985,16 @@ area code is the first thing at the beginning of the string.</p>
 </dd>
 </dl>
 <p>Example 7.14 Handling Leading Characters</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="gp">In [23]: </span><span class="n">phonePattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;(\d{3})\D*(\d{3})\D*(\d{4})\D*(\d*)$&#39;</span><span class="p">)</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="n">phonePattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;(\d{3})\D*(\d{3})\D*(\d{4})\D*(\d*)$&#39;</span><span class="p">)</span>
 </span>
-<span class="gp">In [24]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;(800)5551212 ext. 1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<span class="gr">Out[24]: </span><span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;(800)5551212 ext. 1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
 
-<span class="gp">In [25]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<span class="gr">Out[25]: </span><span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
-<span class="gp">In [26]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;work 1-(800) 555.1212 #1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<span class="gr">Out[26]: </span><span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;work 1-(800) 555.1212 #1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -1003,23 +1003,23 @@ area code is the first thing at the beginning of the string.</p>
 You are not matching the beginning of the string anymore.</dd>
 </dl>
 <p>Example 7.15 Parsing Phone Numbers (Final Version)</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [27]: </span><span class="n">phonePattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;&#39;&#39;</span>
-<span class="go">    ...:              # don&#39;t match beginning of string, number can start anywhere</span>
-<span class="go">    ...: (\d{3})      # area code is 3 digits (e.g. &#39;800&#39;)</span>
-<span class="go">    ...: \D*          # optional separator is any number of non-digits</span>
-<span class="go">    ...: (\d{3})      # trunk is 3 digits (e.g. &#39;555&#39;)</span>
-<span class="go">    ...: \D*          # optional separator</span>
-<span class="go">    ...: (\d{4})      # rest of number is 4 digits (e.g. &#39;1212&#39;)</span>
-<span class="go">    ...: \D*          # optional separator</span>
-<span class="go">    ...: (\d*)        # extension is optional and can be any number of digits</span>
-<span class="go">    ...: $            # end of string</span>
-<span class="go">    ...: &#39;&#39;&#39;, re.VERBOSE)</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">27</span><span class="p">]:</span> <span class="n">phonePattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;&#39;&#39;</span>
+<span class="s1">    ...:              # don&#39;t match beginning of string, number can start anywhere</span>
+<span class="s1">    ...: (\d{3})      # area code is 3 digits (e.g. &#39;800&#39;)</span>
+<span class="s1">    ...: \D*          # optional separator is any number of non-digits</span>
+<span class="s1">    ...: (\d{3})      # trunk is 3 digits (e.g. &#39;555&#39;)</span>
+<span class="s1">    ...: \D*          # optional separator</span>
+<span class="s1">    ...: (\d{4})      # rest of number is 4 digits (e.g. &#39;1212&#39;)</span>
+<span class="s1">    ...: \D*          # optional separator</span>
+<span class="s1">    ...: (\d*)        # extension is optional and can be any number of digits</span>
+<span class="s1">    ...: $            # end of string</span>
+<span class="s1">    ...: &#39;&#39;&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">)</span>
 
-<span class="gp">In [28]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;work 1-(800) 555.1212 #1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<span class="gr">Out[28]: </span><span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">28</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;work 1-(800) 555.1212 #1234&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">28</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;1234&#39;</span><span class="p">)</span>
 
-<span class="gp">In [29]: </span><span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<span class="gr">Out[29]: </span><span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">29</span><span class="p">]:</span> <span class="n">phonePattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;800-555-1212&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">29</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;800&#39;</span><span class="p">,</span> <span class="s1">&#39;555&#39;</span><span class="p">,</span> <span class="s1">&#39;1212&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1058,7 +1058,7 @@ You are not matching the beginning of the string anymore.</dd>
     </div>
 <div class="footer" role="contentinfo">
       &copy; Copyright 2012-2016, Zeyuan Hu.
-    Last updated on Apr 23, 2016. 
+    Last updated on Apr 27, 2016. 
   <a href="http://www.easycounter.com/">
   <img src="//www.easycounter.com/counter.php?ferrishu3886"
        height="12" border="0" alt="Website Hit Counters">Unique Visitors.<a>
