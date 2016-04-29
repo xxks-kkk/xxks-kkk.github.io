@@ -139,17 +139,17 @@ thing after the colon).</li>
 <div class="section" id="everything-is-an-object">
 <span id="id3"></span><h2>2.3 Everything is an object<a class="headerlink" href="#everything-is-an-object" title="Permalink to this headline">¶</a></h2>
 <p>Example 2.3. Accessing the buildConnectionString Function&#8217;s <strong>doc</strong> string</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [1]: import odbhelper
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">odbhelper</span>
 
-In [2]: params = {&quot;server&quot;:&quot;mpilgrim&quot;,&quot;database&quot;:&quot;master&quot;,&quot;uid&quot;:&quot;sa&quot;,&quot;pwd&quot;:&quot;secret&quot;}
+<span class="gp">In [2]: </span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;server&quot;</span><span class="p">:</span><span class="s2">&quot;mpilgrim&quot;</span><span class="p">,</span><span class="s2">&quot;database&quot;</span><span class="p">:</span><span class="s2">&quot;master&quot;</span><span class="p">,</span><span class="s2">&quot;uid&quot;</span><span class="p">:</span><span class="s2">&quot;sa&quot;</span><span class="p">,</span><span class="s2">&quot;pwd&quot;</span><span class="p">:</span><span class="s2">&quot;secret&quot;</span><span class="p">}</span>
 
-In [3]: print odbhelper.buildConnectionString(params)
-Out[3]: server=mpilgrrim;uid=sa;database=master;pwd=secret
+<span class="gp">In [3]: </span><span class="k">print</span> <span class="n">odbhelper</span><span class="o">.</span><span class="n">buildConnectionString</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+<span class="gr">Out[3]: </span><span class="n">server</span><span class="o">=</span><span class="n">mpilgrrim</span><span class="p">;</span><span class="n">uid</span><span class="o">=</span><span class="n">sa</span><span class="p">;</span><span class="n">database</span><span class="o">=</span><span class="n">master</span><span class="p">;</span><span class="n">pwd</span><span class="o">=</span><span class="n">secret</span>
 
-In [4]: print odbhelper.buildConnectionString.__doc__
-Out[4]: Build a connection string from a dictionary
+<span class="gp">In [4]: </span><span class="k">print</span> <span class="n">odbhelper</span><span class="o">.</span><span class="n">buildConnectionString</span><span class="o">.</span><span class="n">__doc__</span>
+<span class="gr">Out[4]: </span><span class="n">Build</span> <span class="n">a</span> <span class="n">connection</span> <span class="n">string</span> <span class="kn">from</span> <span class="nn">a</span> <span class="nn">dictionary</span>
 
-        Returns string.
+<span class="go">        Returns string.</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -159,35 +159,35 @@ Out[4]: Build a connection string from a dictionary
 <div class="section" id="the-import-search-path">
 <span id="import-search-path"></span><h2>2.4 The import Search Path<a class="headerlink" href="#the-import-search-path" title="Permalink to this headline">¶</a></h2>
 <p>Example 2.4. Import Search Path</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [1]: import sys
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">sys</span>
 
-In [2]: sys.path
-Out[2]: [&#39;&#39;,
- &#39;/usr/local/lib/python2.7/dist-packages/pymc-2.2-py2.7-linux-i686.egg&#39;,
- &#39;/usr/local/lib/python2.7/dist-packages/Jinja2-2.6-py2.7.egg&#39;,
- &#39;/usr/lib/python2.7&#39;,
- &#39;/usr/lib/python2.7/plat-linux2&#39;,
- &#39;/usr/lib/python2.7/lib-tk&#39;,
- &#39;/usr/lib/python2.7/lib-old&#39;,
- &#39;/usr/lib/python2.7/lib-dynload&#39;,
- &#39;/usr/local/lib/python2.7/dist-packages&#39;,
- &#39;/usr/local/lib/python2.7/dist-packages/PIL&#39;,
- &#39;/usr/lib/python2.7/dist-packages&#39;,
- &#39;/usr/lib/python2.7/dist-packages/PIL&#39;,
- &#39;/usr/lib/python2.7/dist-packages/gst-0.10&#39;,
- &#39;/usr/lib/python2.7/dist-packages/gtk-2.0&#39;,
- &#39;/usr/lib/pymodules/python2.7&#39;,
- &#39;/usr/lib/python2.7/dist-packages/ubuntu-sso-client&#39;,
- &#39;/usr/lib/python2.7/dist-packages/ubuntuone-client&#39;,
- &#39;/usr/lib/python2.7/dist-packages/ubuntuone-control-panel&#39;,
- &#39;/usr/lib/python2.7/dist-packages/ubuntuone-couch&#39;,
- &#39;/usr/lib/python2.7/dist-packages/ubuntuone-storage-protocol&#39;,
- &#39;/usr/lib/python2.7/dist-packages/wx-2.8-gtk2-unicode&#39;,
- &#39;/usr/lib/python2.7/dist-packages/IPython/extensions&#39;]
+<span class="gp">In [2]: </span><span class="n">sys</span><span class="o">.</span><span class="n">path</span>
+<span class="gr">Out[2]: </span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="go"> &#39;/usr/local/lib/python2.7/dist-packages/pymc-2.2-py2.7-linux-i686.egg&#39;,</span>
+<span class="go"> &#39;/usr/local/lib/python2.7/dist-packages/Jinja2-2.6-py2.7.egg&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/plat-linux2&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/lib-tk&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/lib-old&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/lib-dynload&#39;,</span>
+<span class="go"> &#39;/usr/local/lib/python2.7/dist-packages&#39;,</span>
+<span class="go"> &#39;/usr/local/lib/python2.7/dist-packages/PIL&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/dist-packages&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/dist-packages/PIL&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/dist-packages/gst-0.10&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/dist-packages/gtk-2.0&#39;,</span>
+<span class="go"> &#39;/usr/lib/pymodules/python2.7&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/dist-packages/ubuntu-sso-client&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/dist-packages/ubuntuone-client&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/dist-packages/ubuntuone-control-panel&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/dist-packages/ubuntuone-couch&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/dist-packages/ubuntuone-storage-protocol&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/dist-packages/wx-2.8-gtk2-unicode&#39;,</span>
+<span class="go"> &#39;/usr/lib/python2.7/dist-packages/IPython/extensions&#39;]</span>
 
-In [3]: sys
-Out[3]: &lt;module &#39;sys&#39; (built-in)&gt;
-In [4]: sys.path.append(os.path.abspath(&#39;sphinxext&#39;))
+<span class="gp">In [3]: </span><span class="n">sys</span>
+<span class="gr">Out[3]: </span><span class="o">&lt;</span><span class="n">module</span> <span class="s1">&#39;sys&#39;</span> <span class="p">(</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span><span class="p">)</span><span class="o">&gt;</span>
+<span class="gp">In [4]: </span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;sphinxext&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -238,9 +238,9 @@ in which case <em>__name__</em> will be a special default value, <em>__main__</e
 </div></blockquote>
 </li>
 </ul>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [1]: import odbhelper
-In [2]: odbhelper.__name__
-Out[2]: &#39;odbhelper&#39;
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">odbhelper</span>
+<span class="gp">In [2]: </span><span class="n">odbhelper</span><span class="o">.</span><span class="n">__name__</span>
+<span class="gr">Out[2]: </span><span class="s1">&#39;odbhelper&#39;</span>
 </pre></div>
 </div>
 <ul class="simple">
