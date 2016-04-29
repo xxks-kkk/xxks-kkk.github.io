@@ -102,20 +102,20 @@
 <div class="section" id="same-behavior">
 <h3>0.1. same behavior?<a class="headerlink" href="#same-behavior" title="Permalink to this headline">¶</a></h3>
 <p>Example 0. <code class="docutils literal"><span class="pre">+</span></code> and <code class="docutils literal"><span class="pre">append</span></code> do the same thing</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">list1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [1]: list1 = [1, 2, 3, 4]
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">list1</span> <span class="o">=</span> <span class="n">list1</span> <span class="o">+</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+<span class="hll">In [2]: list1 = list1 + [5]
 </span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="k">print</span> <span class="n">list1</span>
-<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+In [3]: print list1
+[1, 2, 3, 4, 5]
 </pre></div>
 </div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">list2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [4]: list2 = [1, 2, 3, 4]
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">list2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="hll">In [5]: list2.append(5)
 </span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="k">print</span> <span class="n">list2</span>
-<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+In [6]: print list2
+[1, 2, 3, 4, 5]
 </pre></div>
 </div>
 <dl class="docutils">
@@ -145,22 +145,22 @@
 <span class="hll">    <span class="n">mylist</span>  <span class="o">=</span> <span class="n">mylist</span> <span class="o">+</span> <span class="p">[</span><span class="mi">6</span><span class="p">]</span>
 </span></pre></div>
 </td></tr></table></div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="k">print</span> <span class="n">list1</span>
-<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [9]: print list1
+[1, 2, 3, 4, 5]
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">proc</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span>
+In [10]: proc(list1)
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">11</span><span class="p">]:</span> <span class="k">print</span> <span class="n">list1</span>
-</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="hll">In [11]: print list1
+</span>[1, 2, 3, 4, 5, 6]
 </pre></div>
 </div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">12</span><span class="p">]:</span> <span class="k">print</span> <span class="n">list2</span>
-<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [12]: print list2
+[1, 2, 3, 4, 5]
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="n">proc2</span><span class="p">(</span><span class="n">list2</span><span class="p">)</span>
+In [13]: proc2(list2)
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="k">print</span> <span class="n">list2</span>
-</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="hll">In [14]: print list2
+</span>[1, 2, 3, 4, 5]
 </pre></div>
 </div>
 <dl class="docutils">
@@ -179,10 +179,10 @@ That&#8217;s why calling the variable outside of the function, it still prints <
 </dd>
 </dl>
 <p>Example 2. Difference 2: append</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="n">list2</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll">In [15]: list2.append([7,8,9])
 </span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="n">list2</span>
-<span class="hll"><span class="n">Out</span><span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]]</span>
+In [16]: list2
+<span class="hll">Out[16]: [1, 2, 3, 4, 5, 6, [7, 8, 9]]
 </span></pre></div>
 </div>
 <dl class="docutils">
@@ -191,10 +191,10 @@ That&#8217;s why calling the variable outside of the function, it still prints <
 It does not produce <code class="docutils literal"><span class="pre">[1,2,3,4,5,6,7,8,9]</span></code>, which is the concatenation of two strings.</dd>
 </dl>
 <p>Example 3. Difference 2: +</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="n">list1</span> <span class="o">=</span> <span class="n">list1</span> <span class="o">+</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll">In [17]: list1 = list1 + [7,8,9]
 </span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">list1</span>
-<span class="hll"><span class="n">Out</span><span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+In [18]: list1
+<span class="hll">Out[18]: [1, 2, 3, 4, 5, 7, 8, 9]
 </span></pre></div>
 </div>
 <dl class="docutils">
@@ -211,12 +211,12 @@ It does not produce <code class="docutils literal"><span class="pre">[1,2,3,4,5,
 3
 4
 5
-6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="n">list3</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span>In [19]: list3 = [1,2,3,4]
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">20</span><span class="p">]:</span> <span class="n">list3</span> <span class="o">+=</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+<span class="hll">In [20]: list3 += [5]
 </span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">21</span><span class="p">]:</span> <span class="n">list3</span>
-<span class="hll"><span class="n">Out</span><span class="p">[</span><span class="mi">21</span><span class="p">]:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+In [21]: list3
+<span class="hll">Out[21]: [1, 2, 3, 4, 5]
 </span></pre></div>
 </td></tr></table></div>
 <dl class="docutils">
@@ -229,13 +229,13 @@ It does not produce <code class="docutils literal"><span class="pre">[1,2,3,4,5,
     <span class="n">mylist</span> <span class="o">+=</span> <span class="p">[</span><span class="mi">6</span><span class="p">]</span>
 </pre></div>
 </td></tr></table></div>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="k">print</span> <span class="n">list3</span>
-<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [23]: print list3
+[1, 2, 3, 4, 5]
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="n">proc3</span><span class="p">(</span><span class="n">list3</span><span class="p">)</span>
+In [24]: proc3(list3)
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="k">print</span> <span class="n">list3</span>
-</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="hll">In [25]: print list3
+</span>[1, 2, 3, 4, 5, 6]
 </pre></div>
 </div>
 <dl class="docutils">
@@ -243,10 +243,10 @@ It does not produce <code class="docutils literal"><span class="pre">[1,2,3,4,5,
 <dd>so <code class="docutils literal"><span class="pre">+=</span></code> works the same as <code class="docutils literal"><span class="pre">append</span></code>: it mutates the original list.</dd>
 </dl>
 <p>Example 6. <code class="docutils literal"><span class="pre">+=</span></code> concatenates the lists</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="n">list3</span> <span class="o">+=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [26]: list3 += [7,8,9]
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">27</span><span class="p">]:</span> <span class="n">list3</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">27</span><span class="p">]:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+In [27]: list3
+Out[27]: [1, 2, 3, 4, 5, 6, 7, 8, 9]
 </pre></div>
 </div>
 </div>
@@ -295,7 +295,7 @@ It does not produce <code class="docutils literal"><span class="pre">[1,2,3,4,5,
     </div>
 <div class="footer" role="contentinfo">
       &copy; Copyright 2012-2016, Zeyuan Hu.
-    Last updated on Apr 27, 2016. 
+    Last updated on Apr 29, 2016. 
   <a href="http://www.easycounter.com/">
   <img src="//www.easycounter.com/counter.php?ferrishu3886"
        height="12" border="0" alt="Website Hit Counters">Unique Visitors.<a>

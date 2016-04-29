@@ -144,22 +144,22 @@
 13
 14
 15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">fsock</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/notthere&quot;</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
-<span class="o">---------------------------------------------------------------------------</span>
-<span class="ne">IOError</span>                                   <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">12</span><span class="n">d3ba34a1ce</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">fsock</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/notthere&quot;</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span>In [1]: fsock = open(&quot;/notthere&quot;,&quot;r&quot;)
+---------------------------------------------------------------------------
+IOError                                   Traceback (most recent call last)
+&lt;ipython-input-1-12d3ba34a1ce&gt; in &lt;module&gt;()
+----&gt; 1 fsock = open(&quot;/notthere&quot;,&quot;r&quot;)
 
-<span class="ne">IOError</span><span class="p">:</span> <span class="p">[</span><span class="n">Errno</span> <span class="mi">2</span><span class="p">]</span> <span class="n">No</span> <span class="n">such</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">directory</span><span class="p">:</span> <span class="s1">&#39;/notthere&#39;</span>
+IOError: [Errno 2] No such file or directory: &#39;/notthere&#39;
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="k">try</span><span class="p">:</span>
-   <span class="o">...</span><span class="p">:</span>     <span class="n">fsock</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/notthere&quot;</span><span class="p">)</span>
-   <span class="o">...</span><span class="p">:</span> <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-   <span class="o">...</span><span class="p">:</span>     <span class="k">print</span> <span class="s2">&quot;The file does not exist, exiting gracefully&quot;</span>
-   <span class="o">...</span><span class="p">:</span> <span class="k">print</span> <span class="s2">&quot;This line will always print&quot;</span>
-   <span class="o">...</span><span class="p">:</span>
-<span class="n">The</span> <span class="nb">file</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">,</span> <span class="n">exiting</span> <span class="n">gracefully</span>
-<span class="n">This</span> <span class="n">line</span> <span class="n">will</span> <span class="n">always</span> <span class="k">print</span>
+In [2]: try:
+   ...:     fsock = open(&quot;/notthere&quot;)
+   ...: except IOError:
+   ...:     print &quot;The file does not exist, exiting gracefully&quot;
+   ...: print &quot;This line will always print&quot;
+   ...:
+The file does not exist, exiting gracefully
+This line will always print
 </pre></div>
 </td></tr></table></div>
 <dl class="docutils">
@@ -266,21 +266,21 @@ then raise your exceptions with the <code class="docutils literal"><span class="
 <h3>6.2.1 Opening files<a class="headerlink" href="#opening-files" title="Permalink to this headline">¶</a></h3>
 <div class="admonition-key-func admonition">
 <p class="first admonition-title">Key Func</p>
-<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <p>Example 6.3 Opening a File</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;./Music/Taylor Swift - State of Grace.mp3&quot;</span><span class="p">,</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll">In [1]: f = open(&quot;./Music/Taylor Swift - State of Grace.mp3&quot;,&quot;rb&quot;)
 </span>
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">f</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="o">&lt;</span><span class="nb">open</span> <span class="nb">file</span> <span class="s1">&#39;./Music/Taylor Swift - State of Grace.mp3&#39;</span><span class="p">,</span> <span class="n">mode</span> <span class="s1">&#39;rb&#39;</span> <span class="n">at</span> <span class="mh">0x9132808</span><span class="o">&gt;</span>
+<span class="hll">In [2]: f
+</span>Out[2]: &lt;open file &#39;./Music/Taylor Swift - State of Grace.mp3&#39;, mode &#39;rb&#39; at 0x9132808&gt;
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">mode</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="s1">&#39;rb&#39;</span>
+<span class="hll">In [3]: f.mode
+</span>Out[3]: &#39;rb&#39;
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="s1">&#39;./Music/Taylor Swift - State of Grace.mp3&#39;</span>
+<span class="hll">In [4]: f.name
+</span>Out[4]: &#39;./Music/Taylor Swift - State of Grace.mp3&#39;
 </pre></div>
 </div>
 <dl class="docutils">
@@ -308,29 +308,29 @@ about and manipulating the opened file.</dd>
 <h3>6.2.2 Reading Files<a class="headerlink" href="#reading-files" title="Permalink to this headline">¶</a></h3>
 <div class="admonition-key-func admonition">
 <p class="first admonition-title">Key Func</p>
-<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">(),</span> <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="o">...</span><span class="p">),</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">(),</span> <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="o">...</span><span class="p">),</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <p>Example 6.4. Reading a File</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">f</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="o">&lt;</span><span class="nb">open</span> <span class="nb">file</span> <span class="s1">&#39;./Music/Taylor Swift - State of Grace.mp3&#39;</span><span class="p">,</span> <span class="n">mode</span> <span class="s1">&#39;rb&#39;</span> <span class="n">at</span> <span class="mh">0x9132808</span><span class="o">&gt;</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [5]: f
+Out[5]: &lt;open file &#39;./Music/Taylor Swift - State of Grace.mp3&#39;, mode &#39;rb&#39; at 0x9132808&gt;
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="il">0L</span>
+<span class="hll">In [6]: f.tell()
+</span>Out[6]: 0L
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="o">-</span><span class="mi">128</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="hll">In [7]: f.seek(-128,2)
 </span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="il">11934864L</span>
+In [8]: f.tell()
+Out[8]: 11934864L
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="n">tagData</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
+<span class="hll">In [9]: tagData = f.read(128)
 </span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">tagData</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="s1">&#39;TAGState of Grace</span><span class="se">\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00</span><span class="s1">Taylor Swift</span><span class="se">\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00</span><span class="s1">State of Grace - Single</span><span class="se">\x00\x00\x00\x00\x00\x00\x00</span><span class="s1">2012</span><span class="se">\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x02</span><span class="s1">&#39;</span>
+In [10]: tagData
+Out[10]: &#39;TAGState of Grace\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00Taylor Swift\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00State of Grace - Single\x00\x00\x00\x00\x00\x00\x002012\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x02&#39;
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">11</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">11</span><span class="p">]:</span> <span class="il">11934992L</span>
+<span class="hll">In [11]: f.tell()
+</span>Out[11]: 11934992L
 </pre></div>
 </div>
 <dl class="docutils">
@@ -375,45 +375,45 @@ you&#8217;ll see that after reading 128 bytes, the position has been incremented
 <p>Open files consume system resourcesm and depending on the file mode, other programs may not
 be able to access them. It&#8217;s important to close files as soon as you&#8217;re finished with them.</p>
 <p>Example 6.5 Closing a File</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">12</span><span class="p">]:</span> <span class="n">f</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">12</span><span class="p">]:</span> <span class="o">&lt;</span><span class="nb">open</span> <span class="nb">file</span> <span class="s1">&#39;./Music/Taylor Swift - State of Grace.mp3&#39;</span><span class="p">,</span> <span class="n">mode</span> <span class="s1">&#39;rb&#39;</span> <span class="n">at</span> <span class="mh">0x9132808</span><span class="o">&gt;</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [12]: f
+Out[12]: &lt;open file &#39;./Music/Taylor Swift - State of Grace.mp3&#39;, mode &#39;rb&#39; at 0x9132808&gt;
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">closed</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="bp">False</span>
+<span class="hll">In [13]: f.closed
+</span>Out[13]: False
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="hll">In [15]: f.close()
 </span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="n">f</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">closed</span> <span class="nb">file</span> <span class="s1">&#39;./Music/Taylor Swift - State of Grace.mp3&#39;</span><span class="p">,</span> <span class="n">mode</span> <span class="s1">&#39;rb&#39;</span> <span class="n">at</span> <span class="mh">0x9132808</span><span class="o">&gt;</span>
+In [16]: f
+Out[16]: &lt;closed file &#39;./Music/Taylor Swift - State of Grace.mp3&#39;, mode &#39;rb&#39; at 0x9132808&gt;
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">closed</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="bp">True</span>
+In [17]: f.closed
+Out[17]: True
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span class="o">---------------------------------------------------------------------------</span>
-<span class="ne">ValueError</span>                                <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">18</span><span class="o">-</span><span class="n">d0cb2b3c0dfb</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="hll">In [18]: f.seek(0)
+</span>---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+&lt;ipython-input-18-d0cb2b3c0dfb&gt; in &lt;module&gt;()
+----&gt; 1 f.seek(0)
 
-<span class="ne">ValueError</span><span class="p">:</span> <span class="n">I</span><span class="o">/</span><span class="n">O</span> <span class="n">operation</span> <span class="n">on</span> <span class="n">closed</span> <span class="nb">file</span>
+ValueError: I/O operation on closed file
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-<span class="o">---------------------------------------------------------------------------</span>
-<span class="ne">ValueError</span>                                <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">19</span><span class="o">-</span><span class="mi">322</span><span class="n">ae27c0b94</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+In [19]: f.tell()
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+&lt;ipython-input-19-322ae27c0b94&gt; in &lt;module&gt;()
+----&gt; 1 f.tell()
 
-<span class="ne">ValueError</span><span class="p">:</span> <span class="n">I</span><span class="o">/</span><span class="n">O</span> <span class="n">operation</span> <span class="n">on</span> <span class="n">closed</span> <span class="nb">file</span>
+ValueError: I/O operation on closed file
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">20</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="o">---------------------------------------------------------------------------</span>
-<span class="ne">ValueError</span>                                <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">20</span><span class="o">-</span><span class="n">bacd0e0f09a3</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+In [20]: f.read()
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+&lt;ipython-input-20-bacd0e0f09a3&gt; in &lt;module&gt;()
+----&gt; 1 f.read()
 
-<span class="ne">ValueError</span><span class="p">:</span> <span class="n">I</span><span class="o">/</span><span class="n">O</span> <span class="n">operation</span> <span class="n">on</span> <span class="n">closed</span> <span class="nb">file</span>
+ValueError: I/O operation on closed file
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">21</span><span class="p">]:</span> <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="hll">In [21]: f.close()
 </span></pre></div>
 </div>
 <dl class="docutils">
@@ -496,23 +496,23 @@ all of this code is wrapped in a <code class="docutils literal"><span class="pre
 </div></blockquote>
 <p>Either mode will create the file automatically if it doesn&#8217;t already exist.</p>
 <p>Example 6.7. Writing to Files</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">22</span><span class="p">]:</span> <span class="n">logfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;test.log&#39;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll">In [22]: logfile = open(&#39;test.log&#39;,&#39;w&#39;)
 </span>
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="n">logfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;test succeeded&#39;</span><span class="p">)</span>
+<span class="hll">In [23]: logfile.write(&#39;test succeeded&#39;)
 </span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="n">logfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+In [24]: logfile.close()
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="k">print</span> <span class="nb">file</span><span class="p">(</span><span class="s1">&#39;test.log&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-</span><span class="n">test</span> <span class="n">succeeded</span>
+<span class="hll">In [25]: print file(&#39;test.log&#39;).read()
+</span>test succeeded
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="n">logfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;test.log&#39;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+<span class="hll">In [26]: logfile = open(&#39;test.log&#39;,&#39;a&#39;)
 </span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">27</span><span class="p">]:</span> <span class="n">logfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;line 2&#39;</span><span class="p">)</span>
+In [27]: logfile.write(&#39;line 2&#39;)
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">28</span><span class="p">]:</span> <span class="n">logfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+In [28]: logfile.close()
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">29</span><span class="p">]:</span> <span class="k">print</span> <span class="nb">file</span><span class="p">(</span><span class="s1">&#39;test.log&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-</span><span class="n">test</span> <span class="n">succeededline</span> <span class="mi">2</span>
+<span class="hll">In [29]: print file(&#39;test.log&#39;).read()
+</span>test succeededline 2
 </pre></div>
 </div>
 <dl class="docutils">
@@ -539,19 +539,19 @@ Since you didn&#8217;t do this, everything you wrote to the file ended up smoosh
 so you end up doing a lot of manual work, specifying a start, end, and step to define a range of integers or character or other iteratable entities.
 But in Python, a <code class="docutils literal"><span class="pre">for</span></code> loop simply iterates over a lis, the same way list comprehensions work.</p>
 <p>Example 6.8 Introducing the <code class="docutils literal"><span class="pre">for</span></code> loop</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">li</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;e&#39;</span><span class="p">]</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [1]: li = [&#39;a&#39;,&#39;b&#39;,&#39;e&#39;]
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">li</span><span class="p">:</span>
-</span>   <span class="o">...</span><span class="p">:</span>     <span class="k">print</span> <span class="n">s</span>
-   <span class="o">...</span><span class="p">:</span>
-<span class="n">a</span>
-<span class="n">b</span>
-<span class="n">e</span>
+<span class="hll">In [2]: for s in li:
+</span>   ...:     print s
+   ...:
+a
+b
+e
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">li</span><span class="p">)</span>
-</span><span class="n">a</span>
-<span class="n">b</span>
-<span class="n">e</span>
+<span class="hll">In [3]: print &quot;\n&quot;.join(li)
+</span>a
+b
+e
 </pre></div>
 </div>
 <dl class="docutils">
@@ -560,39 +560,39 @@ But in Python, a <code class="docutils literal"><span class="pre">for</span></co
 and <code class="docutils literal"><span class="pre">s</span></code> will take the value of each element in turn, starting from the first element.</dd>
 </dl>
 <p>Example 6.9 Simple counters</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-</span>   <span class="o">...</span><span class="p">:</span>     <span class="k">print</span> <span class="n">i</span>
-   <span class="o">...</span><span class="p">:</span>
-<span class="mi">0</span>
-<span class="mi">1</span>
-<span class="mi">2</span>
-<span class="mi">3</span>
-<span class="mi">4</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll">In [5]: for i in range(5):
+</span>   ...:     print i
+   ...:
+0
+1
+2
+3
+4
 </pre></div>
 </div>
 <p><code class="docutils literal"><span class="pre">for</span></code> loops are not just for simple counters. They can iterate through all kinds of things.</p>
 <p>Example 6.10 Iterating Through a Dictionary</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [8]: import os
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span>   <span class="o">...</span><span class="p">:</span>     <span class="k">print</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
-   <span class="o">...</span><span class="p">:</span>
-<span class="n">XAUTHORITY</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">zeyuan_hu</span><span class="o">/.</span><span class="n">Xauthority</span>
-<span class="n">GNOME_DESKTOP_SESSION_ID</span><span class="o">=</span><span class="n">this</span><span class="o">-</span><span class="ow">is</span><span class="o">-</span><span class="n">deprecated</span>
-<span class="n">LESSOPEN</span><span class="o">=|</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">lesspipe</span> <span class="o">%</span><span class="k">s</span>
-<span class="n">LOGNAME</span><span class="o">=</span><span class="n">zeyuan_hu</span>
-<span class="n">USER</span><span class="o">=</span><span class="n">zeyuan_hu</span>
+<span class="hll">In [9]: for k,v in os.environ.items():
+</span>   ...:     print &quot;%s=%s&quot; % (k,v)
+   ...:
+XAUTHORITY=/home/zeyuan_hu/.Xauthority
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LESSOPEN=| /usr/bin/lesspipe %s
+LOGNAME=zeyuan_hu
+USER=zeyuan_hu
 
-<span class="p">[</span><span class="o">...</span><span class="n">snip</span><span class="o">...</span><span class="p">]</span>
+[...snip...]
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
-</span><span class="n">XAUTHORITY</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">zeyuan_hu</span><span class="o">/.</span><span class="n">Xauthority</span>
-<span class="n">GNOME_DESKTOP_SESSION_ID</span><span class="o">=</span><span class="n">this</span><span class="o">-</span><span class="ow">is</span><span class="o">-</span><span class="n">deprecated</span>
-<span class="n">LESSOPEN</span><span class="o">=|</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">lesspipe</span> <span class="o">%</span><span class="k">s</span>
-<span class="n">LOGNAME</span><span class="o">=</span><span class="n">zeyuan_hu</span>
-<span class="n">USER</span><span class="o">=</span><span class="n">zeyuan_hu</span>
+<span class="hll">In [10]: print &quot;\n&quot;.join([&quot;%s=%s&quot; % (k,v) for k,v in os.environ.items()])
+</span>XAUTHORITY=/home/zeyuan_hu/.Xauthority
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LESSOPEN=| /usr/bin/lesspipe %s
+LOGNAME=zeyuan_hu
+USER=zeyuan_hu
 
-<span class="p">[</span><span class="o">...</span><span class="n">snip</span><span class="o">...</span><span class="p">]</span>
+[...snip...]
 </pre></div>
 </div>
 <dl class="docutils">
@@ -653,24 +653,24 @@ gets <code class="docutils literal"><span class="pre">3</span></code>, <code cla
 <p>Modules, like everything else in Python, are objects.
 Once imported, you can always get a reference to a module through the global dictionary <code class="docutils literal"><span class="pre">sys.modules</span></code>.</p>
 <p>Example 6.12 Introducing <code class="docutils literal"><span class="pre">sys.modules</span></code></p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">sys</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll">In [3]: import sys
 </span>
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-</span><span class="n">copy_reg</span>
-<span class="n">sre_compile</span>
-<span class="n">_sre</span>
-<span class="n">encodings</span>
-<span class="n">site</span>
-<span class="n">__builtin__</span>
-<span class="n">sys</span>
-<span class="n">__main__</span>
-<span class="n">encodings</span><span class="o">.</span><span class="n">encodings</span>
-<span class="n">abc</span>
-<span class="n">posixpath</span>
-<span class="n">_weakrefset</span>
-<span class="n">errno</span>
-<span class="n">re</span>
-<span class="n">os</span>
+<span class="hll">In [4]: print &#39;\n&#39;.join(sys.modules.keys())
+</span>copy_reg
+sre_compile
+_sre
+encodings
+site
+__builtin__
+sys
+__main__
+encodings.encodings
+abc
+posixpath
+_weakrefset
+errno
+re
+os
 </pre></div>
 </div>
 <dl class="docutils">
@@ -682,31 +682,31 @@ Once imported, you can always get a reference to a module through the global dic
 was started; the key is the module name, the value is the module object.</dd>
 </dl>
 <p>Example 6.13 Using sys.modules</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">fileinfo</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll">In [13]: import fileinfo
 </span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-<span class="n">copy_reg</span>
-<span class="n">fileinfo</span>
-<span class="n">sre_compile</span>
-<span class="n">_sre</span>
-<span class="n">encodings</span>
-<span class="n">site</span>
-<span class="n">__builtin__</span>
-<span class="n">sys</span>
-<span class="n">__main__</span>
-<span class="n">encodings</span><span class="o">.</span><span class="n">encodings</span>
-<span class="n">abc</span>
-<span class="n">posixpath</span>
-<span class="n">_weakrefset</span>
-<span class="n">errno</span>
-<span class="n">re</span>
-<span class="n">os</span>
+In [14]: print &#39;\n&#39;.join(sys.modules.keys())
+copy_reg
+fileinfo
+sre_compile
+_sre
+encodings
+site
+__builtin__
+sys
+__main__
+encodings.encodings
+abc
+posixpath
+_weakrefset
+errno
+re
+os
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="n">fileinfo</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">module</span> <span class="s1">&#39;fileinfo&#39;</span> <span class="kn">from</span> <span class="s1">&#39;fileinfo.pyc&#39;</span><span class="o">&gt;</span>
+In [15]: fileinfo
+Out[15]: &lt;module &#39;fileinfo&#39; from &#39;fileinfo.pyc&#39;&gt;
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="s2">&quot;fileinfo&quot;</span><span class="p">]</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">module</span> <span class="s1">&#39;fileinfo&#39;</span> <span class="kn">from</span> <span class="s1">&#39;fileinfo.pyc&#39;</span><span class="o">&gt;</span>
+<span class="hll">In [16]: sys.modules[&quot;fileinfo&quot;]
+</span>Out[16]: &lt;module &#39;fileinfo&#39; from &#39;fileinfo.pyc&#39;&gt;
 </pre></div>
 </div>
 <dl class="docutils">
@@ -717,13 +717,13 @@ was started; the key is the module name, the value is the module object.</dd>
 you can get a reference to the module itself through the <code class="docutils literal"><span class="pre">sys.modules</span></code> dictionary.</dd>
 </dl>
 <p>Example 6.14 The __module__ Class Attribute</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">fileinfo</span> <span class="kn">import</span> <span class="n">MP3FileInfo</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [17]: from fileinfo import MP3FileInfo
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">MP3FileInfo</span><span class="o">.</span><span class="n">__module__</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="s1">&#39;fileinfo&#39;</span>
+<span class="hll">In [18]: MP3FileInfo.__module__
+</span>Out[18]: &#39;fileinfo&#39;
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">MP3FileInfo</span><span class="o">.</span><span class="n">__module__</span><span class="p">]</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">module</span> <span class="s1">&#39;fileinfo&#39;</span> <span class="kn">from</span> <span class="s1">&#39;fileinfo.pyc&#39;</span><span class="o">&gt;</span>
+<span class="hll">In [19]: sys.modules[MP3FileInfo.__module__]
+</span>Out[19]: &lt;module &#39;fileinfo&#39; from &#39;fileinfo.pyc&#39;&gt;
 </pre></div>
 </div>
 <dl class="docutils">
@@ -756,19 +756,19 @@ you can get a reference to the module itself through the <code class="docutils l
 <div class="section" id="constructing-pathnames">
 <h3>6.5.1 Constructing Pathnames<a class="headerlink" href="#constructing-pathnames" title="Permalink to this headline">¶</a></h3>
 <p>Example 6.16 Constructing Pathnames</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">21</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [21]: import os
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">22</span><span class="p">]:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;../Music/&quot;</span><span class="p">,</span><span class="s2">&quot;Taylor Swift - State of Grace.mp3&quot;</span><span class="p">)</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">22</span><span class="p">]:</span> <span class="s1">&#39;../Music/Taylor Swift - State of Grace.mp3&#39;</span>
+<span class="hll">In [22]: os.path.join(&quot;../Music/&quot;,&quot;Taylor Swift - State of Grace.mp3&quot;)
+</span>Out[22]: &#39;../Music/Taylor Swift - State of Grace.mp3&#39;
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;../Music&quot;</span><span class="p">,</span><span class="s2">&quot;Taylor Swift - State of Grace.mp3&quot;</span><span class="p">)</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="s1">&#39;../Music/Taylor Swift - State of Grace.mp3&#39;</span>
+<span class="hll">In [23]: os.path.join(&quot;../Music&quot;,&quot;Taylor Swift - State of Grace.mp3&quot;)
+</span>Out[23]: &#39;../Music/Taylor Swift - State of Grace.mp3&#39;
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="s1">&#39;/home/zeyuan_hu&#39;</span>
+<span class="hll">In [24]: os.path.expanduser(&quot;~&quot;)
+</span>Out[24]: &#39;/home/zeyuan_hu&#39;
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">),</span><span class="s2">&quot;Python&quot;</span><span class="p">)</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="s1">&#39;/home/zeyuan_hu/Python&#39;</span>
+<span class="hll">In [25]: os.path.join(os.path.expanduser(&quot;~&quot;),&quot;Python&quot;)
+</span>Out[25]: &#39;/home/zeyuan_hu/Python&#39;
 </pre></div>
 </div>
 <dl class="docutils">
@@ -790,24 +790,24 @@ Just as <code class="docutils literal"><span class="pre">getpass</span></code> e
 <div class="section" id="splitting-pathnames">
 <h3>6.5.2 Splitting Pathnames<a class="headerlink" href="#splitting-pathnames" title="Permalink to this headline">¶</a></h3>
 <p>Example 6.17 Splitting Pathnames</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;../Music/Taylor Swift - State of Grace.mp3&#39;</span><span class="p">)</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="p">(</span><span class="s1">&#39;../Music&#39;</span><span class="p">,</span> <span class="s1">&#39;Taylor Swift - State of Grace.mp3&#39;</span><span class="p">)</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="hll">In [26]: os.path.split(&#39;../Music/Taylor Swift - State of Grace.mp3&#39;)
+</span>Out[26]: (&#39;../Music&#39;, &#39;Taylor Swift - State of Grace.mp3&#39;)
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">27</span><span class="p">]:</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;../Music/Taylor Swift - State of Grace.mp3&#39;</span><span class="p">)</span>
+<span class="hll">In [27]: filepath, filename = os.path.split(&#39;../Music/Taylor Swift - State of Grace.mp3&#39;)
 </span>
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">28</span><span class="p">]:</span> <span class="n">filepath</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">28</span><span class="p">]:</span> <span class="s1">&#39;../Music&#39;</span>
+<span class="hll">In [28]: filepath
+</span>Out[28]: &#39;../Music&#39;
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">29</span><span class="p">]:</span> <span class="n">filename</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">29</span><span class="p">]:</span> <span class="s1">&#39;Taylor Swift - State of Grace.mp3&#39;</span>
+<span class="hll">In [29]: filename
+</span>Out[29]: &#39;Taylor Swift - State of Grace.mp3&#39;
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">30</span><span class="p">]:</span> <span class="n">shortname</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="hll">In [30]: shortname, extension = os.path.splitext(filename)
 </span>
-<span class="n">In</span> <span class="p">[</span><span class="mi">31</span><span class="p">]:</span> <span class="n">shortname</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">31</span><span class="p">]:</span> <span class="s1">&#39;Taylor Swift - State of Grace&#39;</span>
+In [31]: shortname
+Out[31]: &#39;Taylor Swift - State of Grace&#39;
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">32</span><span class="p">]:</span> <span class="n">extension</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">32</span><span class="p">]:</span> <span class="s1">&#39;.mp3&#39;</span>
+In [32]: extension
+Out[32]: &#39;.mp3&#39;
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># splits a full pathname and returns a tuple containing the path and filename.</span>
@@ -822,28 +822,28 @@ Just as <code class="docutils literal"><span class="pre">getpass</span></code> e
 <div class="section" id="listing-directories">
 <h3>6.5.3 Listing Directories<a class="headerlink" href="#listing-directories" title="Permalink to this headline">¶</a></h3>
 <p>Example 6.18 Listing Directories</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">35</span><span class="p">]:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">35</span><span class="p">]:</span> <span class="s1">&#39;/home/zeyuan_hu&#39;</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [35]: os.path.expanduser(&quot;~&quot;)
+Out[35]: &#39;/home/zeyuan_hu&#39;
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">36</span><span class="p">]:</span> <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span>
+In [36]: dirname = os.path.expanduser(&quot;~&quot;)
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">37</span><span class="p">]:</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">37</span><span class="p">]:</span>
-<span class="p">[</span><span class="s1">&#39;.pip&#39;</span><span class="p">,</span><span class="s1">&#39;.adobe&#39;</span><span class="p">,</span><span class="s1">&#39;.gconf&#39;</span><span class="p">,</span><span class="s1">&#39;.gnome2&#39;</span><span class="p">,</span><span class="s1">&#39;.xscreensaver&#39;</span><span class="p">,</span><span class="s1">&#39;Dropbox&#39;</span><span class="p">,</span>
- <span class="s1">&#39;Music&#39;</span><span class="p">,</span><span class="s1">&#39;.profile&#39;</span><span class="p">,</span><span class="s1">&#39;py&#39;</span><span class="p">,</span><span class="s1">&#39;Videos&#39;</span><span class="p">,</span><span class="s1">&#39;.pki&#39;</span><span class="p">,</span><span class="s1">&#39;.dropbox&#39;</span><span class="p">,</span><span class="s1">&#39;.swp&#39;</span><span class="p">,</span>
- <span class="s1">&#39;.cache&#39;</span><span class="o">.</span><span class="s1">&#39;.Xauthority&#39;</span><span class="p">,</span><span class="s1">&#39;Documents&#39;</span><span class="p">,</span><span class="s1">&#39;.vim&#39;</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
+<span class="hll">In [37]: os.listdir(dirname)
+</span>Out[37]:
+[&#39;.pip&#39;,&#39;.adobe&#39;,&#39;.gconf&#39;,&#39;.gnome2&#39;,&#39;.xscreensaver&#39;,&#39;Dropbox&#39;,
+ &#39;Music&#39;,&#39;.profile&#39;,&#39;py&#39;,&#39;Videos&#39;,&#39;.pki&#39;,&#39;.dropbox&#39;,&#39;.swp&#39;,
+ &#39;.cache&#39;.&#39;.Xauthority&#39;,&#39;Documents&#39;,&#39;.vim&#39;, ... ]
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">38</span><span class="p">]:</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span><span class="n">f</span><span class="p">))]</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">38</span><span class="p">]:</span>
-<span class="p">[</span><span class="s1">&#39;.dmrc&#39;</span><span class="p">,</span> <span class="s1">&#39;.swp&#39;</span><span class="p">,</span><span class="s1">&#39;.Xauthority&#39;</span><span class="p">,</span><span class="s1">&#39;.pam_environment&#39;</span><span class="p">,</span><span class="s1">&#39;.bash_history&#39;</span><span class="p">,</span>
- <span class="s1">&#39;.gksu.lock&#39;</span><span class="p">,</span><span class="s1">&#39;.install4j&#39;</span><span class="p">,</span><span class="s1">&#39;.viminfo&#39;</span><span class="p">,</span><span class="s1">&#39;.pulse-cookie&#39;</span><span class="p">,</span><span class="s1">&#39;examples.desktop&#39;</span><span class="p">,</span>
- <span class="s1">&#39;.vimrc~&#39;</span><span class="p">,</span><span class="s1">&#39;.bashrc&#39;</span><span class="p">,</span><span class="s1">&#39;.vimrc&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="hll">In [38]: [f for f in os.listdir(dirname) if os.path.isfile(os.path.join(dirname,f))]
+</span>Out[38]:
+[&#39;.dmrc&#39;, &#39;.swp&#39;,&#39;.Xauthority&#39;,&#39;.pam_environment&#39;,&#39;.bash_history&#39;,
+ &#39;.gksu.lock&#39;,&#39;.install4j&#39;,&#39;.viminfo&#39;,&#39;.pulse-cookie&#39;,&#39;examples.desktop&#39;,
+ &#39;.vimrc~&#39;,&#39;.bashrc&#39;,&#39;.vimrc&#39;, ...]
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">39</span><span class="p">]:</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span><span class="n">f</span><span class="p">))]</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">39</span><span class="p">]:</span>
-<span class="p">[</span><span class="s1">&#39;Downloads&#39;</span><span class="p">,</span><span class="s1">&#39;.matplotlib&#39;</span><span class="p">,</span><span class="s1">&#39;.pip&#39;</span><span class="p">,</span><span class="s1">&#39;.gnome2&#39;</span><span class="p">,</span><span class="s1">&#39;.java&#39;</span><span class="p">,</span><span class="s1">&#39;Dropbox&#39;</span><span class="p">,</span><span class="s1">&#39;Music&#39;</span><span class="p">,</span>
- <span class="s1">&#39;py&#39;</span><span class="p">,</span><span class="s1">&#39;Videos&#39;</span><span class="p">,</span><span class="s1">&#39;.dropbox&#39;</span><span class="p">,</span><span class="s1">&#39;.cache&#39;</span><span class="p">,</span><span class="s1">&#39;Documents&#39;</span><span class="p">,</span><span class="s1">&#39;.vim&#39;</span><span class="p">,</span><span class="s1">&#39;Desktop&#39;</span><span class="p">,</span>
- <span class="s1">&#39;Public&#39;</span><span class="p">,</span><span class="s1">&#39;Ubuntu One&#39;</span><span class="p">,</span><span class="s1">&#39;Templates&#39;</span><span class="p">,</span><span class="s1">&#39;Pictures&#39;</span><span class="p">,</span><span class="s1">&#39;.ssh&#39;</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
+<span class="hll">In [39]: [f for f in os.listdir(dirname) if os.path.isdir(os.path.join(dirname,f))]
+</span>Out[39]:
+[&#39;Downloads&#39;,&#39;.matplotlib&#39;,&#39;.pip&#39;,&#39;.gnome2&#39;,&#39;.java&#39;,&#39;Dropbox&#39;,&#39;Music&#39;,
+ &#39;py&#39;,&#39;Videos&#39;,&#39;.dropbox&#39;,&#39;.cache&#39;,&#39;Documents&#39;,&#39;.vim&#39;,&#39;Desktop&#39;,
+ &#39;Public&#39;,&#39;Ubuntu One&#39;,&#39;Templates&#39;,&#39;Pictures&#39;,&#39;.ssh&#39;, ... ]
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># takes a pathname and returns a list of the contents of the directory</span>
@@ -901,25 +901,25 @@ Those modules are wrappers for platform-specific modules, so function like <code
 and any other platform supported by Python.</p>
 </div>
 <p>Example 6.20 Listing Directories with glob</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">42</span><span class="p">]:</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s2">&quot;/home/zeyuan_hu/Music&quot;</span><span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">42</span><span class="p">]:</span> <span class="p">[</span><span class="s1">&#39;a_time_long_forgotten_con.mp3&#39;</span><span class="p">,</span> <span class="s1">&#39;hellraiser.mp3&#39;</span><span class="p">,</span><span class="s1">&#39;kairo.mp3&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;long_way_home1.mp3&#39;</span><span class="p">,</span> <span class="s1">&#39;sidewinder.mp3&#39;</span><span class="p">,</span><span class="s1">&#39;spinning.mp3&#39;</span><span class="p">]</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span>In [42]: os.listdir(&quot;/home/zeyuan_hu/Music&quot;)
+Out[42]: [&#39;a_time_long_forgotten_con.mp3&#39;, &#39;hellraiser.mp3&#39;,&#39;kairo.mp3&#39;,
+          &#39;long_way_home1.mp3&#39;, &#39;sidewinder.mp3&#39;,&#39;spinning.mp3&#39;]
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">43</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">glob</span>
+In [43]: import glob
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">44</span><span class="p">]:</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;/home/zeyuan_hu/Music/*.mp3&quot;</span><span class="p">)</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">44</span><span class="p">]:</span> <span class="p">[</span><span class="s2">&quot;/home/zeyuan_hu/Music/a_time_long_forgotten_con.mp3&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;/home/zeyuan_hu/Music/hellraiser.mp3&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;/home/zeyuan_hu/Music/kairo.mp3&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;/home/zeyuan_hu/Music/long_way_home1.mp3&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;/home/zeyuan_hu/Music/sidewinder.mp3&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;/home/zeyuan_hu/Music/spinning.mp3&quot;</span><span class="p">]</span>
+<span class="hll">In [44]: glob.glob(&quot;/home/zeyuan_hu/Music/*.mp3&quot;)
+</span>Out[44]: [&quot;/home/zeyuan_hu/Music/a_time_long_forgotten_con.mp3&quot;,
+          &quot;/home/zeyuan_hu/Music/hellraiser.mp3&quot;,
+          &quot;/home/zeyuan_hu/Music/kairo.mp3&quot;,
+          &quot;/home/zeyuan_hu/Music/long_way_home1.mp3&quot;,
+          &quot;/home/zeyuan_hu/Music/sidewinder.mp3&quot;,
+          &quot;/home/zeyuan_hu/Music/spinning.mp3&quot;]
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">45</span><span class="p">]:</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;/home/zeyuan_hu/Music/s*.mp3&quot;</span><span class="p">)</span>
-</span><span class="n">Out</span><span class="p">[</span><span class="mi">45</span><span class="p">]:</span> <span class="p">[</span><span class="s2">&quot;/home/zeyuan_hu/Music/sidewinder.mp3&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;/home/zeyuan_hu/Music/spinning.mp3&quot;</span><span class="p">]</span>
+<span class="hll">In [45]: glob.glob(&quot;/home/zeyuan_hu/Music/s*.mp3&quot;)
+</span>Out[45]: [&quot;/home/zeyuan_hu/Music/sidewinder.mp3&quot;,
+          &quot;/home/zeyuan_hu/Music/spinning.mp3&quot;]
 
-<span class="hll"><span class="n">In</span> <span class="p">[</span><span class="mi">46</span><span class="p">]:</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;/home/zeyuan_hu/*/*.mp3&quot;</span><span class="p">)</span>
+<span class="hll">In [46]: glob.glob(&quot;/home/zeyuan_hu/*/*.mp3&quot;)
 </span></pre></div>
 </div>
 <dl class="docutils">
@@ -1038,7 +1038,7 @@ process, and then introspects its own module to see what special handler classes
     </div>
 <div class="footer" role="contentinfo">
       &copy; Copyright 2012-2016, Zeyuan Hu.
-    Last updated on Apr 27, 2016. 
+    Last updated on Apr 29, 2016. 
   <a href="http://www.easycounter.com/">
   <img src="//www.easycounter.com/counter.php?ferrishu3886"
        height="12" border="0" alt="Website Hit Counters">Unique Visitors.<a>

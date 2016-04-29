@@ -14,7 +14,6 @@ I invested most of my spare time and some work time on.
 
 - :ref:`LemonDB <db.rst>`
 - :ref:`bookreview.rst`
-- :ref:`mon.rst`
 
 ***********
 Archive

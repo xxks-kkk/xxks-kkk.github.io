@@ -14,6 +14,17 @@ To him he is always doing both."
 
 .. stop-show-quotes
 
+"I've always lived cheaply. I live like a
+student, basically.  And I like that, because it means that money is not
+telling me what to do.  I can do what I think is important for me to do.
+It freed me to do what seemed worth doing.  So make a real effort to
+avoid getting sucked into all the expensive lifestyle habits of typical
+Americans.  Because if you do that, then people with the money will
+dictate what you do with your life.  You won't be able to do what's really
+important to you."
+
+**-- Richard Stallman**
+
 "Effective interview process: interviewing is a two-way process. During the interview, 
 the interviewee is evaluating the company by the interviewing question quality. 
 I'd suggest this is one of the most efficient ways to understand your potential coworkers. 
