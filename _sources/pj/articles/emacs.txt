@@ -204,5 +204,5 @@ Personally reference them a lot. But there are ton online through google.
 Emacs Configuration
 *******************
 
-Please `see my github repo <https://github.com/xxks-kkk/emacs-config>`_
+This is my `personal emacs configuration <https://github.com/xxks-kkk/emacs-config>`_.
   
