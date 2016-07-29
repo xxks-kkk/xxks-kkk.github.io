@@ -265,23 +265,20 @@ window from term</p>
 <div class="topic">
 <p class="topic-title first">Editing multiple lines at the same time</p>
 <p>suppose I have the following chunk of code that I want to edit</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd><blockquote class="first">
-<div>printf &#8220;%s=%sn&#8221; &#8220;Database&#8221; &#8220;bool_db&#8221;
-printf &#8220;%s=%sn&#8221; &#8220;Username&#8221;  &#8220;admin&#8221;
-printf &#8220;%s=%sn&#8221; &#8220;Password&#8221;  &#8220;password&#8221;
-printf &#8220;%s=%sn&#8221; &#8220;ReadOnly&#8221;  &#8220;false&#8221;
-printf &#8220;%s=%sn&#8221; &#8220;ShowSystemTables&#8221; &#8220;false&#8221;
-printf &#8220;%s=%sn&#8221; &#8220;LegacySQLTables&#8221; &#8220;false&#8221;
-printf &#8220;%s=%sn&#8221; &#8220;LoginTimeout&#8221; &#8220;0&#8221;</div></blockquote>
-<p>and I want to remove all <code class="docutils literal"><span class="pre">printf</span> <span class="pre">&quot;%s=%s\n&quot;</span></code> in each line. I can do the following:</p>
-<ol class="last arabic simple">
-<li>Mark the beginning of the region and invoke <strong>M-x rectangle-mark-mode</strong> (or <strong>C-x SPC</strong>) and select all the <code class="docutils literal"><span class="pre">printf</span> <span class="pre">&quot;%s=%s\n&quot;</span></code></li>
-<li>Delete them by <strong>M-x kill-region</strong> (or <strong>C-x r k</strong>)</li>
-</ol>
-</dd>
-</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span>   printf &quot;%s=%s\n&quot; &quot;Database&quot; &quot;bool_db&quot;
+   printf &quot;%s=%s\n&quot; &quot;Username&quot;  &quot;admin&quot;
+   printf &quot;%s=%s\n&quot; &quot;Password&quot;  &quot;password&quot;
+   printf &quot;%s=%s\n&quot; &quot;ReadOnly&quot;  &quot;false&quot;
+   printf &quot;%s=%s\n&quot; &quot;ShowSystemTables&quot; &quot;false&quot;
+   printf &quot;%s=%s\n&quot; &quot;LegacySQLTables&quot; &quot;false&quot;
+   printf &quot;%s=%s\n&quot; &quot;LoginTimeout&quot; &quot;0&quot;
+
+and I want to remove all ``printf &quot;%s=%s\n&quot;`` in each line. I can do the following:
+
+1. Mark the beginning of the region and invoke **M-x rectangle-mark-mode** (or **C-x SPC**) and select all the ``printf &quot;%s=%s\n&quot;``
+2. Delete them by **M-x kill-region** (or **C-x r k**)
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="resources">
