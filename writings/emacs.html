@@ -52,7 +52,7 @@
                  
   <div class="section" id="minimal-emacs-tutorial">
 <span id="emacs-rst"></span><h1>Minimal Emacs Tutorial<a class="headerlink" href="#minimal-emacs-tutorial" title="Permalink to this headline">¶</a></h1>
-<p>Last Update: April 19, 2016</p>
+<p>Last Update: Jul 29, 2016</p>
 <div class="section" id="learn-about-emacs">
 <h2>Learn about Emacs<a class="headerlink" href="#learn-about-emacs" title="Permalink to this headline">¶</a></h2>
 <p>Here I will cover some basic manipulation with text files using emacs. It should be enough to get started working with
@@ -115,6 +115,7 @@ any key sequence wrongly, <strong>C-g</strong> to cancel that incorrectly presse
 sequence and start again.</li>
 <li><strong>C-x C-c</strong> close emacs</li>
 <li><strong>C-x b</strong> Open a promt to enter a buffer name</li>
+<li><strong>C-h f</strong> Describe a function (i.e., <code class="docutils literal"><span class="pre">C-h</span> <span class="pre">f</span> <span class="pre">electric-indent-mode</span></code>, <code class="docutils literal"><span class="pre">C-h</span> <span class="pre">f</span> <span class="pre">fboundp</span></code>)</li>
 </ul>
 </div>
 <div class="section" id="file-editing">
@@ -167,6 +168,8 @@ selected)</li>
 <li><strong>C-e RET</strong> simulate <code class="docutils literal"><span class="pre">o</span></code> in vi</li>
 <li><strong>C-a RET</strong> simulate <code class="docutils literal"><span class="pre">O</span></code> in vi</li>
 <li><strong>C-Up</strong> go to the cursor location before a chunk of test pasted</li>
+<li><strong>C-v</strong> page down</li>
+<li><strong>M-v</strong> page up</li>
 </ul>
 </div>
 <div class="section" id="searching-and-replacing">
@@ -207,6 +210,8 @@ selected)</li>
 <li><strong>RET</strong> Open the file or directory</li>
 <li><strong>o</strong> Open file in another window (move cursor to that window as well)</li>
 <li><strong>C-o</strong> Open file in another window but stay on dired buffer</li>
+<li><strong>+</strong> create new dir</li>
+<li><strong>C-x C-f</strong> Create a new file (yes, the command is the same as opening a new file in non-dired mode)</li>
 </ul>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -256,6 +261,24 @@ window from term</p>
 <div class="topic">
 <p class="topic-title first">Error during download request: Not Found</p>
 <p>Happened when you try to install a package (M-x package-install). <strong>M-x package-refresh-contents</strong> to rescue.</p>
+</div>
+<div class="topic">
+<p class="topic-title first">Editing multiple lines at the same time</p>
+<p>suppose I have the following chunk of code that I want to edit:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>   printf &quot;%s=%s\n&quot; &quot;Database&quot; &quot;bool_db&quot;
+   printf &quot;%s=%s\n&quot; &quot;Username&quot;  &quot;admin&quot;
+   printf &quot;%s=%s\n&quot; &quot;Password&quot;  &quot;password&quot;
+   printf &quot;%s=%s\n&quot; &quot;ReadOnly&quot;  &quot;false&quot;
+   printf &quot;%s=%s\n&quot; &quot;ShowSystemTables&quot; &quot;false&quot;
+   printf &quot;%s=%s\n&quot; &quot;LegacySQLTables&quot; &quot;false&quot;
+   printf &quot;%s=%s\n&quot; &quot;LoginTimeout&quot; &quot;0&quot;
+
+and I want to remove all ``printf &quot;%s=%s\n&quot;`` in each line. I can do the following:
+
+1. Mark the beginning of the region and invoke **M-x rectangle-mark-mode** (or **C-x SPC**) and select all the ``printf &quot;%s=%s\n&quot;``
+2. Delete them by **M-x kill-region** (or **C-x r k**)
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="resources">
