@@ -35,7 +35,64 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="http://zhu45.org/posts/2016/Dec/03/reverse-singly-linked-list/">Reverse Singly Linked List</a></h1>
+                <h1 class="entry-title"><a href="http://zhu45.org/posts/2016/Dec/16/lesson-learned-portability/">Lesson learned: Portability</a></h1>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-16T23:20:00+08:00">Fri 16 Dec 2016, 23:20</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="http://zhu45.org/category/misc.html">misc</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="http://zhu45.org/tag/software-engineering.html">software engineering</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>Portability is a kind of issue that people always talk about in software engineering feild.
+I never have been through such problem on my own probably because I don't have to port my
+stuff into different platforms. However, this is not the case anymore during the work.</p>
+<p>Recently, I revisit the first task I owned when I joined the team, which is to develop a lightweight
+configuration tool to improve product usability. Lightweight is the key of this task as we originally
+have a Java-based GUI setup tool involving lots of point &amp; click. This solution is fairly unpopular among
+our customers mainly because the program itself takes lots of space for DB2 image and it doesn't fit well
+with his peers, which all are scripts that can be executed directly from shell.</p>
+<p>So, in my iteration, I decide to follow the format of majority of utility tools in DB2 image - using scripting language.
+The language I choose is, unfortunately, Shell. The whole task goes amazingly well. With the help of my tool, product configuration
+time is reduced by 75%. Everyone in my team loves it until someone decides to run it on AIX.</p>
+<p>The environment I develop the tool is SUSE with <tt class="docutils literal">ksh</tt> installed. The AIX that my colleague tries to test my tool on also has <tt class="docutils literal">ksh</tt> configured
+but there are some quirky behavior difference on different platform.</p>
+<p>For instance, when I try to split an array, say <tt class="docutils literal">tmp2</tt> with delimiter <tt class="docutils literal">:</tt>, the following code works great on SUSE:</p>
+<pre class="literal-block">
+saveIFS=$IFS
+IFS=&quot;:&quot;
+local tmp2=($tmp) # split tmp with &quot;:&quot; and stored into tmp2 as array
+IFS=$saveIFS
+</pre>
+<p>However, on AIX, only the following way will work:</p>
+<pre class="literal-block">
+#!/bin/sh
+tmp=a:b:c:d
+saveIFS=$IFS
+IFS=&quot;:&quot;
+local tmp2
+n=0
+for i in $tmp; do tmp2[$n]=$i; ((n=n+1)); done
+IFS=$saveIFS
+echo ${tmp2[0]}
+echo ${tmp2[1]}
+echo ${tmp2[2]}
+echo ${tmp2[3]}
+</pre>
+<p>As you can see, I need a for loop to split the array on AIX.</p>
+<p>For another example, when I try to increment counter inside a loop, on SUSE,
+I can do <tt class="docutils literal"><span class="pre">((n++))</span></tt> but on AIX, I need to do <tt class="docutils literal">((n=n+1))</tt>.</p>
+<p>This makes me realize why most of our development scripts (i.e. to help build the source code)
+use perl instead of shell.</p>
+<p>This is a very important lesson for a fresh college graduate by that time.</p>
+
+        </article></aside><!-- /#featured -->
+                <h1><i class="fa fa-bars"></i> Other articles</h1>
+                <hr />
+                    <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="http://zhu45.org/posts/2016/Dec/03/reverse-singly-linked-list/" rel="bookmark" title="Permalink to Reverse Singly Linked List">Reverse Singly Linked List</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-03T20:34:00+08:00">Sat 03 Dec 2016, 20:34</abbr></p>
 
@@ -54,278 +111,10 @@ extra space.</li>
 </div>
 <div class="section" id="solution">
 <h2>Solution</h2>
-<p>Essentially, this is just one problem: reverse a singly linked list with various
-constraints. There are a couple of ways doing so. All of them satisfy 3.12.a and
-3.12.b</p>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p class="last">Solution 2 &amp; 3 are probably most people will expect, particularly during an
-interview.</p>
-</div>
-<div class="section" id="solution-1">
-<h3>Solution 1</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">List</span>
- <span class="nf">reverseList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">Pos</span> <span class="n">dummyL</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-   <span class="n">List</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-
-   <span class="k">while</span> <span class="p">(</span><span class="n">dummyL</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="n">Pos</span> <span class="n">tmpNode</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-     <span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Element</span> <span class="o">=</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">;</span>
-     <span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-     <span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">tmpNode</span><span class="p">;</span>
-     <span class="n">dummyL</span> <span class="o">=</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-   <span class="p">}</span>
-   <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
- <span class="p">}</span>
-</pre></div>
-</td></tr></table><p>Solution 1 is pretty straightforward. We first create a new list. Then, we walk
-through the original list and insert node we visit at the very beginning of the
-new list. Once we finish the traversal of the original list, we return the new list.</p>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p class="last">You can use a stack to reverse the list. This will require O(N) extra space.</p>
-</div>
-<p>This solution shows one of the reasons why we use a <em>header</em> node or <em>dummy</em> node
-in our linked list implementation (instead of just use a pointer directly pointing
-towards the first element in the list):</p>
-<blockquote>
-Without the dummy node, there is no really obvious way to insert at the
-front of the list.</blockquote>
-<p>This can be seen from Line[12]. Also, this routine has a return type <tt class="docutils literal">List</tt> instead of
-<tt class="docutils literal">void</tt>.</p>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p class="last">The definition for using or not using <em>dummy</em> node is the same. However,
-implementation difference can be seen by observing how the program construct
-a list: in my case, <a class="reference external" href="http://zhu45.org/posts/2016/Nov/28/printlots/">initializeList</a>.</p>
-</div>
-<p>However, this solution wastes a ton of memory space and too many <tt class="docutils literal">malloc</tt> operations,
-which basically duplicate the data. This is the place where the algorithm can be improved.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">List</span>
- <span class="nf">reverseList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">Pos</span> <span class="n">dummyL</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-   <span class="n">List</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-
-   <span class="k">while</span> <span class="p">(</span><span class="n">dummyL</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="c1">// Remove element from old list.</span>
-     <span class="n">Pos</span> <span class="n">tmpNode</span> <span class="o">=</span> <span class="n">dummyL</span><span class="p">;</span>
-     <span class="n">dummyL</span> <span class="o">=</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-
-     <span class="c1">// Insert element in new list.</span>
-     <span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-     <span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">tmpNode</span><span class="p">;</span>
-   <span class="p">}</span>
-   <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
- <span class="p">}</span>
-</pre></div>
-</td></tr></table><div class="note">
-<p class="first admonition-title">Note</p>
-<p>This solution has two interesting points:</p>
-<ul class="last simple">
-<li>It's obvious that it's correct: there are no corner cases to worry about
-and both two-line operations are familiar to anyone who's manipulated a
-linked list.</li>
-<li>It's pretty much identical to the Solution 2 (same number of temporary variables,
-same assignments in slightly different order).</li>
-</ul>
-</div>
-</div>
-<div class="section" id="solution-2">
-<h3>Solution 2</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kt">void</span>
- <span class="nf">reverseListIterative</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">Pos</span> <span class="n">dummyCurrent</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">,</span>
-       <span class="n">dummyPrev</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">,</span>
-       <span class="n">dummyNext</span><span class="p">;</span>
-
-   <span class="k">while</span> <span class="p">(</span><span class="n">dummyCurrent</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="n">dummyNext</span> <span class="o">=</span> <span class="n">dummyCurrent</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-     <span class="n">dummyCurrent</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">dummyPrev</span><span class="p">;</span>
-     <span class="n">dummyPrev</span> <span class="o">=</span> <span class="n">dummyCurrent</span><span class="p">;</span>
-     <span class="n">dummyCurrent</span> <span class="o">=</span> <span class="n">dummyNext</span><span class="p">;</span>
-   <span class="p">}</span>
-   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">dummyPrev</span><span class="p">;</span>
- <span class="p">}</span>
-</pre></div>
-</td></tr></table><p>The 2nd solution is an iterative approach. The logic itself is quite straightforward.
-But, please always remember we assume <em>dummy</em> node exists. You can see both from
-Line[4] and Line[15].</p>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p class="last">This actually not the solution I come up initially. My initial implementation
-works but is not as nice as this one. You can check it out in my
-<a class="reference external" href="https://github.com/xxks-kkk/algo/blob/master/linkedList/linkedList.c">linkedList.c</a></p>
-</div>
-</div>
-<div class="section" id="solution-3">
-<h3>Solution 3</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="k">static</span> <span class="n">List</span> <span class="n">P</span><span class="p">;</span>
- <span class="k">static</span> <span class="kt">void</span>
- <span class="nf">reverseListRecursiveHelper</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="n">P</span> <span class="o">=</span> <span class="n">L</span><span class="p">;</span>
-     <span class="k">return</span><span class="p">;</span>
-   <span class="p">}</span>
-   <span class="n">reverseListRecursiveHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
-   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">L</span><span class="p">;</span>
-   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
- <span class="p">}</span>
-
- <span class="kt">void</span>
- <span class="nf">reverseListRecursive</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">reverseListRecursiveHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
-   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">P</span><span class="p">;</span>
- <span class="p">}</span>
-</pre></div>
-</td></tr></table><p>This solution is a recursive solution. This causes me much time to think about
-because we have a <em>dummy</em> node to be taken care of. That's why I use a private
-helper function. There is a couple important points to be noticed here:</p>
-<ul>
-<li><p class="first">Use a static List variable <tt class="docutils literal">P</tt> is necessary because we need to keep track of
-where is our first node after reverse (i.e. the last node in the original list
-will become the first node after reversal). This is important because without
-<tt class="docutils literal">P</tt>, we cannot access the first node because all the links are reversed and
-we can no longer traverse the list from our <em>dummy</em> node.</p>
-</li>
-<li><p class="first">Inside <tt class="docutils literal">reverseListRecursiveHelper</tt>, I don't have to check if <tt class="docutils literal">L</tt> is <tt class="docutils literal">NULL</tt>
-(You need to do this for no <em>dummy</em> node implementation style). Essentially, this
-is the base case where I got passed in an empty list. Since in our implementation,
-<em>dummy</em> node always exists even when the list is empty (check out <tt class="docutils literal">deleteList</tt> routine),
-<tt class="docutils literal"><span class="pre">L-&gt;Next</span></tt> is always valid (we don't want to reference <tt class="docutils literal">L</tt>, which is <tt class="docutils literal">NULL</tt> already).</p>
-</li>
-<li><p class="first">We use a private function mainly because we have <em>dummy</em> node in our implementation.
-This is a special case that cannot be handled inside the recusive call. That's
-also why the first data node in the original list is passed into the helper function.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">List</span> <span class="n">P</span><span class="p">;</span>
-<span class="kt">void</span>
-<span class="nf">reverseListRecursive</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="c1">// empty list base case</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">return</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="c1">// only one node (tail node) base case</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">P</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-    <span class="k">return</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="n">reverseListRecursive</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
-  <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-  <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">P</span><span class="p">;</span>
- <span class="p">}</span>
-</pre></div>
-</td></tr></table><p>The above code shows a perfect example why <em>dummy</em> node case cannot be handled
-in recursive call. This is because, when we do recursion, we always assume
-there is <em>dummy</em> node exists in the sub list we passed in. However, that is not
-what our list acutally is. You can see why our recursion assumes the <em>dummy</em> node exists by
-reading Line[6] &amp; Line[11] &amp; Line[16].</p>
-</li>
-</ul>
-</div>
-</div>
-
-        </article></aside><!-- /#featured -->
-                <h1><i class="fa fa-bars"></i> Other articles</h1>
-                <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>Essentially, this is just one problem: reverse a singly linked list ...</p></div>
+                <a class="readmore" href="http://zhu45.org/posts/2016/Dec/03/reverse-singly-linked-list/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="http://zhu45.org/posts/2016/Nov/28/printlots/" rel="bookmark" title="Permalink to PrintLots">PrintLots</a></h1>
@@ -509,6 +298,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                     <li class="list-group-item tag-1">
                         <a href="http://zhu45.org/tag/singly-linked-list.html">
                             singly-linked-list
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://zhu45.org/tag/software-engineering.html">
+                            software engineering
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
