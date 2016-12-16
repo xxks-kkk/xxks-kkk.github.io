@@ -29,70 +29,14 @@
                     <li ><a href="http://zhu45.org/about-zeyuan.html">About Zeyuan</a></li>
                     <li ><a href="http://zhu45.org/projects.html">Projects</a></li>
                 <li><a href="http://zhu45.org/">Blog</a></li>
+                <!--  -->
                 </ul></nav>
         </header><!-- /#banner -->
 
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="http://zhu45.org/posts/2016/Dec/16/lesson-learned-portability/">Lesson learned: Portability</a></h1>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-16T23:20:00+08:00">Fri 16 Dec 2016, 23:20</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="http://zhu45.org/category/misc.html">misc</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="http://zhu45.org/tag/software-engineering.html">software engineering</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>Portability is a kind of issue that people always talk about in software engineering feild.
-I never have been through such problem on my own probably because I don't have to port my
-stuff into different platforms. However, this is not the case anymore during the work.</p>
-<p>Recently, I revisit the first task I owned when I joined the team, which is to develop a lightweight
-configuration tool to improve product usability. Lightweight is the key of this task as we originally
-have a Java-based GUI setup tool involving lots of point &amp; click. This solution is fairly unpopular among
-our customers mainly because the program itself takes lots of space for DB2 image and it doesn't fit well
-with his peers, which all are scripts that can be executed directly from shell.</p>
-<p>So, in my iteration, I decide to follow the format of majority of utility tools in DB2 image - using scripting language.
-The language I choose is, unfortunately, Shell. The whole task goes amazingly well. With the help of my tool, product configuration
-time is reduced by 75%. Everyone in my team loves it until someone decides to run it on AIX.</p>
-<p>The environment I develop the tool is SUSE with <tt class="docutils literal">ksh</tt> installed. The AIX that my colleague tries to test my tool on also has <tt class="docutils literal">ksh</tt> configured
-but there are some quirky behavior difference on different platform.</p>
-<p>For instance, when I try to split an array, say <tt class="docutils literal">tmp2</tt> with delimiter <tt class="docutils literal">:</tt>, the following code works great on SUSE:</p>
-<pre class="literal-block">
-saveIFS=$IFS
-IFS=&quot;:&quot;
-local tmp2=($tmp) # split tmp with &quot;:&quot; and stored into tmp2 as array
-IFS=$saveIFS
-</pre>
-<p>However, on AIX, only the following way will work:</p>
-<pre class="literal-block">
-#!/bin/sh
-tmp=a:b:c:d
-saveIFS=$IFS
-IFS=&quot;:&quot;
-local tmp2
-n=0
-for i in $tmp; do tmp2[$n]=$i; ((n=n+1)); done
-IFS=$saveIFS
-echo ${tmp2[0]}
-echo ${tmp2[1]}
-echo ${tmp2[2]}
-echo ${tmp2[3]}
-</pre>
-<p>As you can see, I need a for loop to split the array on AIX.</p>
-<p>For another example, when I try to increment counter inside a loop, on SUSE,
-I can do <tt class="docutils literal"><span class="pre">((n++))</span></tt> but on AIX, I need to do <tt class="docutils literal">((n=n+1))</tt>.</p>
-<p>This makes me realize why most of our development scripts (i.e. to help build the source code)
-use perl instead of shell.</p>
-<p>This is a very important lesson for a fresh college graduate by that time.</p>
-
-        </article></aside><!-- /#featured -->
-                <h1><i class="fa fa-bars"></i> Other articles</h1>
-                <hr />
-                    <ol id="posts-list" class="hfeed">
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="http://zhu45.org/posts/2016/Nov/23/hello-world/" rel="bookmark" title="Permalink to Hello World">Hello World</a></h1>
-                </header>
-
-                <div class="entry-content">
+                <h1 class="entry-title"><a href="http://zhu45.org/posts/2016/Nov/23/hello-world/">Hello World</a></h1>
 <footer class="post-info">
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-11-23T23:00:00+08:00">Wed 23 Nov 2016, 23:00</abbr></p>
 
@@ -102,9 +46,7 @@ use perl instead of shell.</p>
 mathematical expression. If you are looking for my posts about life reflection,
 book review, and many other non-technical posts, please check out <a class="reference external" href="https://zeyuanhu.wordpress.com/">my blog on wordpress</a>.</p>
 
-                <a class="readmore" href="http://zhu45.org/posts/2016/Nov/23/hello-world/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
+        </article></aside><!-- /#featured -->
 </ol><!-- /#posts-list -->
 </section><!-- /#content -->
 
@@ -116,14 +58,20 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
 <br style="clear:left;" />
 </div> -->
           <h2><i class="fa fa-twitter fa-lg"></i> Twitter Feed</h2>
-<a class="twitter-timeline" data-width="280" data-height="300" href="https://twitter.com/zeyuanhu">Tweets by zeyuanhu</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>                <div class="widget">
-                        <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
-                        <ul>
-                           <li ><a href="http://zhu45.org/category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C</a></li>
-                           <li class="active"><a href="http://zhu45.org/category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc</a></li>
-                           <li ><a href="http://zhu45.org/category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools</a></li>
-                        </ul>
-                </div>
+<a class="twitter-timeline" data-width="280" data-height="300" href="https://twitter.com/zeyuanhu">Tweets by zeyuanhu</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>                <!-- <div class="widget"> -->
+                <!--         <h2><i class="fa fa-home fa-lg"></i> Categories</h2> -->
+                <!--         <ul> -->
+                <!--          -->
+                <!--            <li ><a href="http://zhu45.org/category/16.html"><i class="fa fa-folder-open fa-lg"></i> 16</a></li> -->
+                <!--          -->
+                <!--            <li ><a href="http://zhu45.org/category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C</a></li> -->
+                <!--          -->
+                <!--            <li class="active"><a href="http://zhu45.org/category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc</a></li> -->
+                <!--          -->
+                <!--            <li ><a href="http://zhu45.org/category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools</a></li> -->
+                <!--          -->
+                <!--         </ul> -->
+                <!-- </div> -->
                 <div class="widget social">
                         <h2><i class="fa fa-comments fa-lg"></i> Social</h2>
                         <ul>
@@ -139,6 +87,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
             <div class="widget tags">
             <h2><i class="fa fa-tags fa-lg"></i>Tags</h2>
                 <ul class="list-group list-inline tagcloud" id="tags">
+                    <li class="list-group-item tag-4">
+                        <a href="http://zhu45.org/tag/aix.html">
+                            AIX
+                        </a>
+                    </li>
                     <li class="list-group-item tag-1">
                         <a href="http://zhu45.org/tag/c.html">
                             c
@@ -157,6 +110,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                     <li class="list-group-item tag-4">
                         <a href="http://zhu45.org/tag/meta.html">
                             meta
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://zhu45.org/tag/shell.html">
+                            shell
                         </a>
                     </li>
                     <li class="list-group-item tag-1">
