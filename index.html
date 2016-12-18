@@ -36,7 +36,266 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="./posts/2016/Dec/17/pelican-hack-day/">Pelican Hack Day</a></h1>
+                <h1 class="entry-title"><a href="./posts/2016/Dec/18/polynomial-multiplication/">Polynomial Multiplication</a></h1>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-18T18:53:00+08:00">Sun 18 Dec 2016, 18:53</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/c.html">c</a> <a href="./tag/singly-linked-list.html">singly-linked-list</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>I finally got time to continue working through MAW. The problem 3.7 relates to polynomial multiplication.</p>
+<div class="section" id="problem">
+<h2>Problem</h2>
+<p>Write a function to multiply two polynomials, using a linked list implementation. You must make sure that
+the output polynomial is sorted by exponent and has at most one term of any power.</p>
+<blockquote>
+<ol class="loweralpha simple">
+<li>Give an algorithm to solve this problem in O(M^2 N^2) time.</li>
+<li>Write a program to perform the multiplication in O(M^2 N) time, where M is the number
+of terms in the polynomiial of fewer terms.</li>
+<li>Write a program to perform the multiplication in O(MN log(MN)) time.</li>
+<li>Which time bound above is the best?</li>
+</ol>
+</blockquote>
+</div>
+<div class="section" id="solution">
+<h2>Solution</h2>
+<div class="section" id="question-1">
+<h3>Question 1</h3>
+<p>The first question is quite straightforward. We keep the result in a linked list with
+exponent sorted in descending order. Each time a multiply is performed, we search through
+the result linkedlist for the term with the same exponent as ours. If so, we simply add
+coefficients together. If not, we add our product as a new term.</p>
+<div class="highlight"><pre><span></span><span class="n">Polynomial</span>
+<span class="nf">multiply1</span><span class="p">(</span><span class="n">Polynomial</span> <span class="n">A</span><span class="p">,</span> <span class="n">Polynomial</span> <span class="n">B</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="n">Polynomial</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+<span class="n">PtrToNode</span> <span class="n">dummyRPrev</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
+<span class="n">PtrToNode</span> <span class="n">dummyR</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
+<span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+<span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">tmpExponent</span><span class="p">,</span> <span class="n">tmpCoefficient</span><span class="p">;</span>
+
+<span class="k">while</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="n">tmpExponent</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">exponent</span> <span class="o">+</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="p">;</span>
+      <span class="n">tmpCoefficient</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">*</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="p">;</span>
+
+      <span class="c1">// we go through the output polynomial to see if there is</span>
+      <span class="c1">// a term with the same exponent as our tmpExponent.</span>
+      <span class="k">while</span> <span class="p">(</span><span class="n">dummyR</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+      <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">exponent</span> <span class="o">==</span> <span class="n">tmpExponent</span><span class="p">)</span>
+        <span class="p">{</span>
+          <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">+</span> <span class="n">tmpCoefficient</span><span class="p">;</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+        <span class="p">{</span>
+          <span class="n">dummyRPrev</span> <span class="o">=</span> <span class="n">dummyR</span><span class="p">;</span>
+          <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+
+      <span class="c1">// We couldn&#39;t find the term with the same exponent, so we create</span>
+      <span class="c1">// a new term in our output polynomial.</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">dummyR</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+      <span class="p">{</span>
+        <span class="n">insert</span><span class="p">(</span><span class="n">tmpCoefficient</span><span class="p">,</span> <span class="n">tmpExponent</span><span class="p">,</span> <span class="n">dummyRPrev</span><span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="n">dummyR</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
+      <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>The total running time is <span class="math">\(O(M*N)\)</span>. We start from the inner most loop. We
+go through the result linkedList to search for the duplicate exponent term. The running
+time depends on the length of the linkedList. The result linkedList can have at most
+<span class="math">\(M*N\)</span> terms. Then, for the middle loop, we iterate through <span class="math">\(N\)</span> times and
+for the outer most loop, we iterate through <span class="math">\(M\)</span> times. So, the total running time
+is <span class="math">\(O(M*N*MN) = O(M^2N^2)\)</span>.</p>
+</div>
+<div class="section" id="question-2">
+<h3>Question 2</h3>
+<p>We can certainly do better than <span class="math">\(O(M^2N^2)\)</span>.</p>
+<div class="highlight"><pre><span></span><span class="n">Polynomial</span>
+<span class="nf">multiply2</span><span class="p">(</span><span class="n">Polynomial</span> <span class="n">A</span><span class="p">,</span> <span class="n">Polynomial</span> <span class="n">B</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">lenA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">lenB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="n">Polynomial</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+  <span class="n">PtrToNode</span> <span class="n">dummyTmp</span><span class="p">,</span> <span class="n">dummyShort</span><span class="p">,</span> <span class="n">dummyLong</span><span class="p">,</span> <span class="n">Long</span><span class="p">;</span>
+  <span class="n">Polynomial</span> <span class="n">Tmp</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">lenA</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">lenB</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">lenA</span> <span class="o">&lt;</span> <span class="n">lenB</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">dummyShort</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">Long</span> <span class="o">=</span> <span class="n">B</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="n">dummyShort</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">Long</span> <span class="o">=</span> <span class="n">A</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="n">dummyShort</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">dummyTmp</span> <span class="o">=</span> <span class="n">Tmp</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">dummyLong</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">coefficient</span> <span class="o">=</span> <span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">*</span> <span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="p">;</span>
+      <span class="kt">int</span> <span class="n">exponent</span> <span class="o">=</span> <span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">exponent</span> <span class="o">+</span> <span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="p">;</span>
+      <span class="n">insert</span><span class="p">(</span><span class="n">coefficient</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">dummyTmp</span><span class="p">);</span>
+      <span class="n">dummyTmp</span> <span class="o">=</span> <span class="n">dummyTmp</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+      <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Tmp</span><span class="p">);</span>
+    <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">Long</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">deletePolynomial</span><span class="p">(</span><span class="n">Tmp</span><span class="p">);</span>
+    <span class="n">dummyShort</span> <span class="o">=</span> <span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>Suppose polynomials <span class="math">\(A\)</span> has <span class="math">\(M\)</span> terms, and polynomials
+<span class="math">\(B\)</span> has <span class="math">\(N\)</span> terms. <span class="math">\(M &lt; N\)</span>.
+Instead of updating the result after each multiply, we multiply one term
+from <span class="math">\(A\)</span> (the polynomials with fewer terms) by all the terms from
+<span class="math">\(B\)</span> (the polynomials with more terms). Then we add this with the output
+linkedList using <tt class="docutils literal">Polynomial <span class="pre">add(...)</span></tt> function I implemented (can be found under
+<a class="reference external" href="https://github.com/xxks-kkk/algo/blob/master/linkedList/polynomial/polynomial.c">polynomial.c</a>).
+The <tt class="docutils literal">add</tt> function has a runtime <span class="math">\(O(max(M,N))\)</span> and thus we can get our runtime for <tt class="docutils literal">multiply2</tt>:</p>
+<div class="math">
+\begin{equation*}
+O(max(N,0)) + O(max(N,N)) + O(max(N,2N)) + ... + O(max(N, N(M-1))) = O(M^2N)
+\end{equation*}
+</div>
+<p>Also, we calculate the length of <span class="math">\(A\)</span> taking <span class="math">\(O(M)\)</span>; we calculate the length of <span class="math">\(B\)</span>
+taking <span class="math">\(O(N)\)</span>; and we do <cite>deleteList</cite> during the while loop taking <span class="math">\(O(MN)\)</span>. So, the total runtime is:</p>
+<div class="math">
+\begin{equation*}
+O(M^2 N) + O(M) + O(N) + O(MN) = O(M^2 N)
+\end{equation*}
+</div>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">For this implementation, I kind of using an interface within the function. The logic
+begins with <tt class="docutils literal">while (dummyShort != NULL)</tt> are the same for both <span class="math">\(M&lt;N\)</span> and <span class="math">\(M&gt;N\)</span>.
+So, there is potential to write the same logic twice for these two cases respectively. The solution
+I use is to provide an interface using <tt class="docutils literal">dummyLong</tt> and <tt class="docutils literal">dummyShort</tt> variables.</p>
+</div>
+</div>
+<div class="section" id="question-3-4">
+<h3>Question 3 &amp; 4</h3>
+<p>I haven't coded up for question 3 because I want to wait for finishing sorting chapter. However, I can see how we
+can get <span class="math">\(O(MNlog(MN))\)</span>. This solution is very similar to Question 1. We first multiply all terms out using
+<span class="math">\(O(MN)\)</span>. Then, we sort resulting <span class="math">\(MN\)</span> terms by exponent. Then, we run through the linked list merging any
+summing any terms with the same exponent (which will be contiguous). The sort takes <span class="math">\(O(MNlog(MN))\)</span> time.
+The multipies and the merging of duplicates can be performed in <span class="math">\(O(MN)\)</span> time.
+So, we have:</p>
+<div class="math">
+\begin{equation*}
+O(MN) + O(MNlog(MN)) + O(MN) = O(MNlog(MN))
+\end{equation*}
+</div>
+<p>When we actually compare the runtime of three solutions, we can see 1st one is the worst among the three. However,
+for 2nd one and 3rd one, the comparison result depends on the size of <span class="math">\(M\)</span> and <span class="math">\(N\)</span>. If <span class="math">\(M\)</span> and
+<span class="math">\(N\)</span> are close in size, then <span class="math">\(O(MNlog(MN))\approx O(MNlog(M^2))=O(MNlog(M))\)</span>, which is better than <span class="math">\(O(M^2N)\)</span>.
+However, if <span class="math">\(M\)</span> is very small in comparison to <span class="math">\(N\)</span>, then <span class="math">\(M\)</span> is less than <span class="math">\(log(MN)\)</span> and in this case,
+2nd one is better than 3rd one.</p>
+</div>
+</div>
+<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article></aside><!-- /#featured -->
+                <h1><i class="fa fa-bars"></i> Other articles</h1>
+                <hr />
+                    <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="./posts/2016/Dec/17/pelican-hack-day/" rel="bookmark" title="Permalink to Pelican Hack Day">Pelican Hack Day</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-17T22:44:00+08:00">Sat 17 Dec 2016, 22:44</abbr></p>
 
@@ -46,198 +305,10 @@
 my old Sphinx-based websites
 (<a class="reference external" href="https://zeyuanhu.wordpress.com/2016/11/24/under-construction-part-12/">This article revisits all my past website construction effort</a>).
 However, most of the time I'm tweaking the CSS and content organization of the site.
-I never get my hands on a serious template customization. The reason is quite simple,
-I have limited knowledge how Sphinx interact with Jinja template engine and Jinja
-language itself just looks really bizzare to me.</p>
-<p>Now, since I start a new blog, I decide to give Jinja a chance and customize
-<a class="reference external" href="/archives/index.html">my archive page</a> a little bit.</p>
-<p>Here is what I want my archive page to look like:</p>
-<blockquote>
-<ul class="simple">
-<li>Don't display post content. Only the title itself.</li>
-<li>Display archives by year and archives by tags within the same page at the same time.</li>
-<li>Display the number of posts for each year, and for each tag.</li>
-<li>Show the time only in &quot;month.day.year&quot;. I don't need the hours and minutes.</li>
-</ul>
-</blockquote>
-<div class="section" id="first-iteration">
-<h2>First Iteration</h2>
-<p>If you have read about <a class="reference external" href="http://docs.getpelican.com/en/3.6.3/themes.html#templates-and-variables">Creating themes section in Pelican doc</a>,
-you will see that we have to work with <tt class="docutils literal">archives.html</tt>. Pelican will use the layout
-specified in this file to generate our archive page.</p>
-<p>For the first iteration, my <tt class="docutils literal">archives.html</tt> looks something like this</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21</pre></div></td><td class="code"><div class="highlight"><pre><span></span> {% extends &quot;base.html&quot; %}
- {% block content %}
- &lt;section id=&quot;content&quot; class=&quot;body&quot;&gt;
- &lt;h1&gt;Archives for {{ SITENAME }}&lt;/h1&gt;
-
- {# based on http://stackoverflow.com/questions/12764291/jinja2-group-by-month-year #}
-
- {% for year, year_group in dates|groupby(&#39;date.year&#39;)|reverse %}
- {% for month, month_group in year_group|groupby(&#39;date.month&#39;)|reverse %}
-     &lt;h4 class=&quot;date&quot;&gt;{{ (month_group|first).date|strftime(&#39;%b %Y&#39;) }}&lt;/h4&gt;
-     &lt;div class=&quot;post archives&quot;&gt;
-     &lt;ul&gt;
-         {% for article in month_group %}
-             &lt;li&gt;&lt;a href=&quot;{{ SITEURL }}/{{ article.url }}&quot;&gt;{{ article.title }}&lt;/a&gt;&lt;/li&gt;
-         {% endfor %}
-     &lt;/ul&gt;
-     &lt;/div&gt;
- {% endfor %}
- {% endfor %}
- &lt;/section&gt;
- {% endblock %}
-</pre></div>
-</td></tr></table><p>Let's first take a look at what archive page we can get from this code.</p>
-<img alt="" src="/images/pelican-hack-1.png" />
-<p>Line[1],[2] illustrates how usually template file get organized. Usually, we create
-a basic html file that specifies the layout of our site, which is <tt class="docutils literal">base.html</tt> in my case.
-Then, we want to extends this basic html to tailor to different needs. Inside <tt class="docutils literal">base.html</tt>,
-we will place a placeholder, which will be replaced by the content of each child html page:</p>
-<pre class="literal-block">
-{% block content %}
-{% endblock %}
-</pre>
-<p>In my case, I extends <tt class="docutils literal">base.html</tt> to make an archive page. The content enclosed between
-<tt class="docutils literal">{% block content %}</tt> and <tt class="docutils literal">{% endblock %}</tt> will replace the placeholder inside <tt class="docutils literal">base.html</tt>.</p>
-<p>Line[4] <tt class="docutils literal">{{ SITENAME }}</tt> is very similar to shell expansion. We will expand the variable <tt class="docutils literal">SITENAME</tt>
-with its content. <tt class="docutils literal">SITENAME</tt> is the same variable we specify in <tt class="docutils literal">pelicanconf.py</tt> and the expanded
-result will be the value we assign to <tt class="docutils literal">SITENAME</tt> variable in config file. In my case, the expansion
-result will be &quot;Tech Stuff&quot;.</p>
-<p>Starts from Line[8], things start to get interesting:</p>
-<pre class="literal-block">
-{% for year, year_group in dates|groupby('date.year')|reverse %}
-...
-{% endfor %}
-</pre>
-<p>Jinja itself is based on Python. So, we can borrow some knowledge from our Python realm. As you can tell,
-<tt class="docutils literal">{% for ... %} ... {% endfor %}</tt> is what for loop looks like in Jinja.</p>
-<p><tt class="docutils literal">dates</tt> itself is a list of articles ordered by date, with each element is an <em>article</em> object. Here is what
-<tt class="docutils literal">dates</tt> looks like in my mind:</p>
-<pre class="literal-block">
-dates = [ article1, article2, article2, ... ]
-</pre>
-<p>and each <em>article</em> looks like:</p>
-<pre class="literal-block">
-article = [ title, summary, author, date, ... ]
-</pre>
-<p>Let's put the following code in our <tt class="docutils literal">archives.html</tt> to better understand the structure of <tt class="docutils literal">dates</tt>:</p>
-<pre class="literal-block">
-{% for year in dates %}
-&lt;h1&gt;{{ year }}&lt;/h4&gt;
-{% endfor %}
-</pre>
-<p>The output looks like:</p>
-<pre class="literal-block">
-/Users/zeyuan/Documents/projects/linuxjedi.co.uk/content/blog/2016/12/17/pelican-hack.rst
-/Users/zeyuan/Documents/projects/linuxjedi.co.uk/content/blog/2016/12/16/portability.rst
-/Users/zeyuan/Documents/projects/linuxjedi.co.uk/content/blog/2016/12/03/maw-003.rst
-/Users/zeyuan/Documents/projects/linuxjedi.co.uk/content/blog/2016/11/28/maw-002.rst
-...
-</pre>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p class="last">I would highly recommend to read through the
-<a class="reference external" href="http://docs.getpelican.com/en/3.6.3/themes.html#templates-and-variables">Creating themes section in Pelican doc</a> page,
-they describe those objects in word.</p>
-</div>
-<p><tt class="docutils literal">groupby</tt> is a <a class="reference external" href="http://jinja.pocoo.org/docs/dev/templates/">Jinja filter which can group a sequence of objects by a common attribute</a>
-In our case, we want to group the info based on year. In other words, <em>article</em> with the same year should be in the same group.
-Let's experiment with the following code:</p>
-<pre class="literal-block">
-{% for year, year_group in dates|groupby('date.year') %}
-    &lt;h1&gt;{{ year }} {{ year_group }}&lt;/h4&gt;
-{% endfor %}
-</pre>
-<p>The output looks like:</p>
-<pre class="literal-block">
-2015 []
-2016 [, , , , , , ]
-</pre>
-<p>Then, we apply <tt class="docutils literal">reverse</tt> filter to make <tt class="docutils literal">2016</tt> on top of <tt class="docutils literal">2015</tt>. The reset of the code shouldn't be hard to decode.</p>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p class="last"><tt class="docutils literal">|</tt> is pipe, which is used to separate filters. It works like pipe in shell.</p>
-</div>
-</div>
-<div class="section" id="count-posts">
-<h2>Count posts</h2>
-<p>This is what my current archive page layout looks like:</p>
-<pre class="literal-block">
-{% extends &quot;base.html&quot; %}
-{% block content %}
-&lt;section id=&quot;content&quot; class=&quot;body&quot;&gt;
-&lt;h1&gt;Archives for {{ SITENAME }}&lt;/h1&gt;
-
-&lt;p&gt;
-&lt;h2&gt;Archives by year&lt;/h2&gt;
-
-{% for year, numposts in articles|groupby('date.year') %}
-&lt;li&gt;&lt;a href=&quot;{{ SITEURL }}/archives/{{ year }}/period_archives.html&quot;&gt;{{ year }} ({{ numposts|count }})&lt;/a&gt;&lt;/li&gt;
-{% endfor %}
-&lt;/p&gt;
-
-&lt;p&gt;
-&lt;h2&gt;Archives by tag&lt;/h2&gt;
-
-{% for tag, articles in tags %}
-&lt;li&gt;&lt;a href=&quot;{{ SITEURL }}/tag/{{ tag }}.html&quot;&gt;{{ tag }} ({{ articles|count }})&lt;/a&gt;&lt;/li&gt;
-{% endfor %}
-&lt;/p&gt;
-&lt;/section&gt;
-{% endblock %}
-</pre>
-<p>If you understand previous sections, this code chunk should have no problem to you. I should point out that <tt class="docutils literal">count</tt>
-is the filter we use to count the number of <em>articles</em>.</p>
-</div>
-<div class="section" id="the-rest">
-<h2>The rest</h2>
-<p>For &quot;Archive by year&quot;, I use another template &quot;period_archives.html&quot; to specify the layout. It looks pretty straightforward.
-However, there is a problem takes me a while to figure out:</p>
-<blockquote>
-When I click on certain year, I jump to the archive page for that year. In that year, I want to have
-the page display &quot;Archives for 2016&quot;. &quot;2016&quot; can be replaced based on the year I actually click initially.
-This leads to a problem to me: how do I know which year the user click? In other words, how do I pass the information
-to &quot;period_archives.html&quot;?</blockquote>
-<p>I couldn't find a nice way to solve this problem. Here is what I do:</p>
-<pre class="literal-block">
-{% for year, null in dates|groupby('date.year') %}
-    &lt;h1&gt;Archives for {{ year }}&lt;/h1&gt;
-{% endfor %}
-</pre>
-<p>Since each articles under a certain year archive should have the same year value, I need to take a look at one of them
-to find out the year value and put the value to the heading. However, I don't have to do this trick for tag. I can somehow
-magically reference the value:</p>
-<pre class="literal-block">
-&lt;h1&gt;Archives by tag '{{ tag }}'&lt;/h1&gt;
-</pre>
-<p>Last point I want to point out is that you can define your own Jinja filter under <tt class="docutils literal">pelicanconf.py</tt>.</p>
-</div>
-
-        </article></aside><!-- /#featured -->
-                <h1><i class="fa fa-bars"></i> Other articles</h1>
-                <hr />
-                    <ol id="posts-list" class="hfeed">
+I never get my ...</p>
+                <a class="readmore" href="./posts/2016/Dec/17/pelican-hack-day/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="./posts/2016/Dec/16/lesson-learned-portability/" rel="bookmark" title="Permalink to Lesson Learned: Portability">Lesson Learned: Portability</a></h1>
@@ -425,7 +496,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (3)</a></li>
+                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (4)</a></li>
                            <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
                            <li ><a href="./category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (3)</a></li>
                         </ul>

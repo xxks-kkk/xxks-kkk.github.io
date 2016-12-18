@@ -36,7 +36,266 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="../posts/2016/Dec/03/reverse-singly-linked-list/">Reverse Singly Linked List</a></h1>
+                <h1 class="entry-title"><a href="../posts/2016/Dec/18/polynomial-multiplication/">Polynomial Multiplication</a></h1>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-18T18:53:00+08:00">Sun 18 Dec 2016, 18:53</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/c.html">c</a> <a href="../tag/singly-linked-list.html">singly-linked-list</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>I finally got time to continue working through MAW. The problem 3.7 relates to polynomial multiplication.</p>
+<div class="section" id="problem">
+<h2>Problem</h2>
+<p>Write a function to multiply two polynomials, using a linked list implementation. You must make sure that
+the output polynomial is sorted by exponent and has at most one term of any power.</p>
+<blockquote>
+<ol class="loweralpha simple">
+<li>Give an algorithm to solve this problem in O(M^2 N^2) time.</li>
+<li>Write a program to perform the multiplication in O(M^2 N) time, where M is the number
+of terms in the polynomiial of fewer terms.</li>
+<li>Write a program to perform the multiplication in O(MN log(MN)) time.</li>
+<li>Which time bound above is the best?</li>
+</ol>
+</blockquote>
+</div>
+<div class="section" id="solution">
+<h2>Solution</h2>
+<div class="section" id="question-1">
+<h3>Question 1</h3>
+<p>The first question is quite straightforward. We keep the result in a linked list with
+exponent sorted in descending order. Each time a multiply is performed, we search through
+the result linkedlist for the term with the same exponent as ours. If so, we simply add
+coefficients together. If not, we add our product as a new term.</p>
+<div class="highlight"><pre><span></span><span class="n">Polynomial</span>
+<span class="nf">multiply1</span><span class="p">(</span><span class="n">Polynomial</span> <span class="n">A</span><span class="p">,</span> <span class="n">Polynomial</span> <span class="n">B</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="n">Polynomial</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+<span class="n">PtrToNode</span> <span class="n">dummyRPrev</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
+<span class="n">PtrToNode</span> <span class="n">dummyR</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
+<span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+<span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">tmpExponent</span><span class="p">,</span> <span class="n">tmpCoefficient</span><span class="p">;</span>
+
+<span class="k">while</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="n">tmpExponent</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">exponent</span> <span class="o">+</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="p">;</span>
+      <span class="n">tmpCoefficient</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">*</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="p">;</span>
+
+      <span class="c1">// we go through the output polynomial to see if there is</span>
+      <span class="c1">// a term with the same exponent as our tmpExponent.</span>
+      <span class="k">while</span> <span class="p">(</span><span class="n">dummyR</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+      <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">exponent</span> <span class="o">==</span> <span class="n">tmpExponent</span><span class="p">)</span>
+        <span class="p">{</span>
+          <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">+</span> <span class="n">tmpCoefficient</span><span class="p">;</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+        <span class="p">{</span>
+          <span class="n">dummyRPrev</span> <span class="o">=</span> <span class="n">dummyR</span><span class="p">;</span>
+          <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+
+      <span class="c1">// We couldn&#39;t find the term with the same exponent, so we create</span>
+      <span class="c1">// a new term in our output polynomial.</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">dummyR</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+      <span class="p">{</span>
+        <span class="n">insert</span><span class="p">(</span><span class="n">tmpCoefficient</span><span class="p">,</span> <span class="n">tmpExponent</span><span class="p">,</span> <span class="n">dummyRPrev</span><span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="n">dummyR</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
+      <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>The total running time is <span class="math">\(O(M*N)\)</span>. We start from the inner most loop. We
+go through the result linkedList to search for the duplicate exponent term. The running
+time depends on the length of the linkedList. The result linkedList can have at most
+<span class="math">\(M*N\)</span> terms. Then, for the middle loop, we iterate through <span class="math">\(N\)</span> times and
+for the outer most loop, we iterate through <span class="math">\(M\)</span> times. So, the total running time
+is <span class="math">\(O(M*N*MN) = O(M^2N^2)\)</span>.</p>
+</div>
+<div class="section" id="question-2">
+<h3>Question 2</h3>
+<p>We can certainly do better than <span class="math">\(O(M^2N^2)\)</span>.</p>
+<div class="highlight"><pre><span></span><span class="n">Polynomial</span>
+<span class="nf">multiply2</span><span class="p">(</span><span class="n">Polynomial</span> <span class="n">A</span><span class="p">,</span> <span class="n">Polynomial</span> <span class="n">B</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">lenA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">lenB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="n">Polynomial</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+  <span class="n">PtrToNode</span> <span class="n">dummyTmp</span><span class="p">,</span> <span class="n">dummyShort</span><span class="p">,</span> <span class="n">dummyLong</span><span class="p">,</span> <span class="n">Long</span><span class="p">;</span>
+  <span class="n">Polynomial</span> <span class="n">Tmp</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">lenA</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">lenB</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">lenA</span> <span class="o">&lt;</span> <span class="n">lenB</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">dummyShort</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">Long</span> <span class="o">=</span> <span class="n">B</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="n">dummyShort</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">Long</span> <span class="o">=</span> <span class="n">A</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="n">dummyShort</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">dummyTmp</span> <span class="o">=</span> <span class="n">Tmp</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">dummyLong</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">coefficient</span> <span class="o">=</span> <span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">*</span> <span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="p">;</span>
+      <span class="kt">int</span> <span class="n">exponent</span> <span class="o">=</span> <span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">exponent</span> <span class="o">+</span> <span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="p">;</span>
+      <span class="n">insert</span><span class="p">(</span><span class="n">coefficient</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">dummyTmp</span><span class="p">);</span>
+      <span class="n">dummyTmp</span> <span class="o">=</span> <span class="n">dummyTmp</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+      <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Tmp</span><span class="p">);</span>
+    <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">Long</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">deletePolynomial</span><span class="p">(</span><span class="n">Tmp</span><span class="p">);</span>
+    <span class="n">dummyShort</span> <span class="o">=</span> <span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>Suppose polynomials <span class="math">\(A\)</span> has <span class="math">\(M\)</span> terms, and polynomials
+<span class="math">\(B\)</span> has <span class="math">\(N\)</span> terms. <span class="math">\(M &lt; N\)</span>.
+Instead of updating the result after each multiply, we multiply one term
+from <span class="math">\(A\)</span> (the polynomials with fewer terms) by all the terms from
+<span class="math">\(B\)</span> (the polynomials with more terms). Then we add this with the output
+linkedList using <tt class="docutils literal">Polynomial <span class="pre">add(...)</span></tt> function I implemented (can be found under
+<a class="reference external" href="https://github.com/xxks-kkk/algo/blob/master/linkedList/polynomial/polynomial.c">polynomial.c</a>).
+The <tt class="docutils literal">add</tt> function has a runtime <span class="math">\(O(max(M,N))\)</span> and thus we can get our runtime for <tt class="docutils literal">multiply2</tt>:</p>
+<div class="math">
+\begin{equation*}
+O(max(N,0)) + O(max(N,N)) + O(max(N,2N)) + ... + O(max(N, N(M-1))) = O(M^2N)
+\end{equation*}
+</div>
+<p>Also, we calculate the length of <span class="math">\(A\)</span> taking <span class="math">\(O(M)\)</span>; we calculate the length of <span class="math">\(B\)</span>
+taking <span class="math">\(O(N)\)</span>; and we do <cite>deleteList</cite> during the while loop taking <span class="math">\(O(MN)\)</span>. So, the total runtime is:</p>
+<div class="math">
+\begin{equation*}
+O(M^2 N) + O(M) + O(N) + O(MN) = O(M^2 N)
+\end{equation*}
+</div>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">For this implementation, I kind of using an interface within the function. The logic
+begins with <tt class="docutils literal">while (dummyShort != NULL)</tt> are the same for both <span class="math">\(M&lt;N\)</span> and <span class="math">\(M&gt;N\)</span>.
+So, there is potential to write the same logic twice for these two cases respectively. The solution
+I use is to provide an interface using <tt class="docutils literal">dummyLong</tt> and <tt class="docutils literal">dummyShort</tt> variables.</p>
+</div>
+</div>
+<div class="section" id="question-3-4">
+<h3>Question 3 &amp; 4</h3>
+<p>I haven't coded up for question 3 because I want to wait for finishing sorting chapter. However, I can see how we
+can get <span class="math">\(O(MNlog(MN))\)</span>. This solution is very similar to Question 1. We first multiply all terms out using
+<span class="math">\(O(MN)\)</span>. Then, we sort resulting <span class="math">\(MN\)</span> terms by exponent. Then, we run through the linked list merging any
+summing any terms with the same exponent (which will be contiguous). The sort takes <span class="math">\(O(MNlog(MN))\)</span> time.
+The multipies and the merging of duplicates can be performed in <span class="math">\(O(MN)\)</span> time.
+So, we have:</p>
+<div class="math">
+\begin{equation*}
+O(MN) + O(MNlog(MN)) + O(MN) = O(MNlog(MN))
+\end{equation*}
+</div>
+<p>When we actually compare the runtime of three solutions, we can see 1st one is the worst among the three. However,
+for 2nd one and 3rd one, the comparison result depends on the size of <span class="math">\(M\)</span> and <span class="math">\(N\)</span>. If <span class="math">\(M\)</span> and
+<span class="math">\(N\)</span> are close in size, then <span class="math">\(O(MNlog(MN))\approx O(MNlog(M^2))=O(MNlog(M))\)</span>, which is better than <span class="math">\(O(M^2N)\)</span>.
+However, if <span class="math">\(M\)</span> is very small in comparison to <span class="math">\(N\)</span>, then <span class="math">\(M\)</span> is less than <span class="math">\(log(MN)\)</span> and in this case,
+2nd one is better than 3rd one.</p>
+</div>
+</div>
+<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article></aside><!-- /#featured -->
+                <h1><i class="fa fa-bars"></i> Other articles</h1>
+                <hr />
+                    <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="../posts/2016/Dec/03/reverse-singly-linked-list/" rel="bookmark" title="Permalink to Reverse Singly Linked List">Reverse Singly Linked List</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-03T20:34:00+08:00">Sat 03 Dec 2016, 20:34</abbr></p>
 
@@ -55,278 +314,10 @@ extra space.</li>
 </div>
 <div class="section" id="solution">
 <h2>Solution</h2>
-<p>Essentially, this is just one problem: reverse a singly linked list with various
-constraints. There are a couple of ways doing so. All of them satisfy 3.12.a and
-3.12.b</p>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p class="last">Solution 2 &amp; 3 are probably most people will expect, particularly during an
-interview.</p>
-</div>
-<div class="section" id="solution-1">
-<h3>Solution 1</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">List</span>
- <span class="nf">reverseList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">Pos</span> <span class="n">dummyL</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-   <span class="n">List</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-
-   <span class="k">while</span> <span class="p">(</span><span class="n">dummyL</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="n">Pos</span> <span class="n">tmpNode</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-     <span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Element</span> <span class="o">=</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">;</span>
-     <span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-     <span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">tmpNode</span><span class="p">;</span>
-     <span class="n">dummyL</span> <span class="o">=</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-   <span class="p">}</span>
-   <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
- <span class="p">}</span>
-</pre></div>
-</td></tr></table><p>Solution 1 is pretty straightforward. We first create a new list. Then, we walk
-through the original list and insert node we visit at the very beginning of the
-new list. Once we finish the traversal of the original list, we return the new list.</p>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p class="last">You can use a stack to reverse the list. This will require O(N) extra space.</p>
-</div>
-<p>This solution shows one of the reasons why we use a <em>header</em> node or <em>dummy</em> node
-in our linked list implementation (instead of just use a pointer directly pointing
-towards the first element in the list):</p>
-<blockquote>
-Without the dummy node, there is no really obvious way to insert at the
-front of the list.</blockquote>
-<p>This can be seen from Line[12]. Also, this routine has a return type <tt class="docutils literal">List</tt> instead of
-<tt class="docutils literal">void</tt>.</p>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p class="last">The definition for using or not using <em>dummy</em> node is the same. However,
-implementation difference can be seen by observing how the program construct
-a list: in my case, <a class="reference external" href="../posts/2016/Nov/28/printlots/">initializeList</a>.</p>
-</div>
-<p>However, this solution wastes a ton of memory space and too many <tt class="docutils literal">malloc</tt> operations,
-which basically duplicate the data. This is the place where the algorithm can be improved.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">List</span>
- <span class="nf">reverseList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">Pos</span> <span class="n">dummyL</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-   <span class="n">List</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-
-   <span class="k">while</span> <span class="p">(</span><span class="n">dummyL</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="c1">// Remove element from old list.</span>
-     <span class="n">Pos</span> <span class="n">tmpNode</span> <span class="o">=</span> <span class="n">dummyL</span><span class="p">;</span>
-     <span class="n">dummyL</span> <span class="o">=</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-
-     <span class="c1">// Insert element in new list.</span>
-     <span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-     <span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">tmpNode</span><span class="p">;</span>
-   <span class="p">}</span>
-   <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
- <span class="p">}</span>
-</pre></div>
-</td></tr></table><div class="note">
-<p class="first admonition-title">Note</p>
-<p>This solution has two interesting points:</p>
-<ul class="last simple">
-<li>It's obvious that it's correct: there are no corner cases to worry about
-and both two-line operations are familiar to anyone who's manipulated a
-linked list.</li>
-<li>It's pretty much identical to the Solution 2 (same number of temporary variables,
-same assignments in slightly different order).</li>
-</ul>
-</div>
-</div>
-<div class="section" id="solution-2">
-<h3>Solution 2</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kt">void</span>
- <span class="nf">reverseListIterative</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">Pos</span> <span class="n">dummyCurrent</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">,</span>
-       <span class="n">dummyPrev</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">,</span>
-       <span class="n">dummyNext</span><span class="p">;</span>
-
-   <span class="k">while</span> <span class="p">(</span><span class="n">dummyCurrent</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="n">dummyNext</span> <span class="o">=</span> <span class="n">dummyCurrent</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-     <span class="n">dummyCurrent</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">dummyPrev</span><span class="p">;</span>
-     <span class="n">dummyPrev</span> <span class="o">=</span> <span class="n">dummyCurrent</span><span class="p">;</span>
-     <span class="n">dummyCurrent</span> <span class="o">=</span> <span class="n">dummyNext</span><span class="p">;</span>
-   <span class="p">}</span>
-   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">dummyPrev</span><span class="p">;</span>
- <span class="p">}</span>
-</pre></div>
-</td></tr></table><p>The 2nd solution is an iterative approach. The logic itself is quite straightforward.
-But, please always remember we assume <em>dummy</em> node exists. You can see both from
-Line[4] and Line[15].</p>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p class="last">This actually not the solution I come up initially. My initial implementation
-works but is not as nice as this one. You can check it out in my
-<a class="reference external" href="https://github.com/xxks-kkk/algo/blob/master/linkedList/linkedList.c">linkedList.c</a></p>
-</div>
-</div>
-<div class="section" id="solution-3">
-<h3>Solution 3</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="k">static</span> <span class="n">List</span> <span class="n">P</span><span class="p">;</span>
- <span class="k">static</span> <span class="kt">void</span>
- <span class="nf">reverseListRecursiveHelper</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="n">P</span> <span class="o">=</span> <span class="n">L</span><span class="p">;</span>
-     <span class="k">return</span><span class="p">;</span>
-   <span class="p">}</span>
-   <span class="n">reverseListRecursiveHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
-   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">L</span><span class="p">;</span>
-   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
- <span class="p">}</span>
-
- <span class="kt">void</span>
- <span class="nf">reverseListRecursive</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">reverseListRecursiveHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
-   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">P</span><span class="p">;</span>
- <span class="p">}</span>
-</pre></div>
-</td></tr></table><p>This solution is a recursive solution. This causes me much time to think about
-because we have a <em>dummy</em> node to be taken care of. That's why I use a private
-helper function. There is a couple important points to be noticed here:</p>
-<ul>
-<li><p class="first">Use a static List variable <tt class="docutils literal">P</tt> is necessary because we need to keep track of
-where is our first node after reverse (i.e. the last node in the original list
-will become the first node after reversal). This is important because without
-<tt class="docutils literal">P</tt>, we cannot access the first node because all the links are reversed and
-we can no longer traverse the list from our <em>dummy</em> node.</p>
-</li>
-<li><p class="first">Inside <tt class="docutils literal">reverseListRecursiveHelper</tt>, I don't have to check if <tt class="docutils literal">L</tt> is <tt class="docutils literal">NULL</tt>
-(You need to do this for no <em>dummy</em> node implementation style). Essentially, this
-is the base case where I got passed in an empty list. Since in our implementation,
-<em>dummy</em> node always exists even when the list is empty (check out <tt class="docutils literal">deleteList</tt> routine),
-<tt class="docutils literal"><span class="pre">L-&gt;Next</span></tt> is always valid (we don't want to reference <tt class="docutils literal">L</tt>, which is <tt class="docutils literal">NULL</tt> already).</p>
-</li>
-<li><p class="first">We use a private function mainly because we have <em>dummy</em> node in our implementation.
-This is a special case that cannot be handled inside the recusive call. That's
-also why the first data node in the original list is passed into the helper function.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">List</span> <span class="n">P</span><span class="p">;</span>
-<span class="kt">void</span>
-<span class="nf">reverseListRecursive</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="c1">// empty list base case</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">return</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="c1">// only one node (tail node) base case</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">P</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-    <span class="k">return</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="n">reverseListRecursive</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
-  <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-  <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">P</span><span class="p">;</span>
- <span class="p">}</span>
-</pre></div>
-</td></tr></table><p>The above code shows a perfect example why <em>dummy</em> node case cannot be handled
-in recursive call. This is because, when we do recursion, we always assume
-there is <em>dummy</em> node exists in the sub list we passed in. However, that is not
-what our list acutally is. You can see why our recursion assumes the <em>dummy</em> node exists by
-reading Line[6] &amp; Line[11] &amp; Line[16].</p>
-</li>
-</ul>
-</div>
-</div>
-
-        </article></aside><!-- /#featured -->
-                <h1><i class="fa fa-bars"></i> Other articles</h1>
-                <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>Essentially, this is just one problem: reverse a singly linked list ...</p></div>
+                <a class="readmore" href="../posts/2016/Dec/03/reverse-singly-linked-list/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="../posts/2016/Nov/28/printlots/" rel="bookmark" title="Permalink to PrintLots">PrintLots</a></h1>
@@ -387,7 +378,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li class="active"><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (3)</a></li>
+                           <li class="active"><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (4)</a></li>
                            <li ><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
                            <li ><a href="../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (3)</a></li>
                         </ul>
