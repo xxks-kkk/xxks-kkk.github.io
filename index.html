@@ -203,10 +203,12 @@ O(M^2 N) + O(M) + O(N) + O(MN) = O(M^2 N)
 </div>
 <div class="note">
 <p class="first admonition-title">Note</p>
-<p class="last">For this implementation, I kind of using an interface within the function. The logic
+<p>For this implementation, I kind of using an interface within the function. The logic
 begins with <tt class="docutils literal">while (dummyShort != NULL)</tt> are the same for both <span class="math">\(M&lt;N\)</span> and <span class="math">\(M&gt;N\)</span>.
 So, there is potential to write the same logic twice for these two cases respectively. The solution
 I use is to provide an interface using <tt class="docutils literal">dummyLong</tt> and <tt class="docutils literal">dummyShort</tt> variables.</p>
+<p class="last">Please note we need to multiply one term from the polynomials with fewer terms by all the terms from
+the polynomial with more terms. If we do the other way around, the runtime will be <span class="math">\(O(MN^2)\)</span>.</p>
 </div>
 </div>
 <div class="section" id="question-3-4">
