@@ -37,7 +37,56 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="./posts/2016/Dec/18/polynomial-multiplication/">Polynomial Multiplication</a></h1>
+                <h1 class="entry-title"><a href="./posts/2016/Dec/20/whats-the-difference-between-sourcing-a-script-and-executing-a-script/">What's the difference between sourcing a script and executing a script?</a></h1>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-20T21:49:00+08:00">Tue 20 Dec 2016, 21:49</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/tools.html">tools</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/shell.html">shell</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>I run across the question in the title when I take a break from the work
+today. Then I did a little bit googling, and the explanation is not quite satisfying
+to me. So, I decide to answer this question by a simplied example from my work.</p>
+<p>For me, this question appears frequently when you try to install some software.
+Some software, like the product I'm working on, depends on a set of environment variables
+in order to setup itself properly. Usually, this may inovlve manual editing of the environment
+variables in order to make the product work. However, we can do much better.
+We can somehow let a setup program to edit the environment variable for the user and finish
+the whole product setup process automatically.</p>
+<p>Suppose a software relies on an environment variable <tt class="docutils literal">TEST_SOURCE</tt> and
+we don't have such an environment variable initially.</p>
+<div class="highlight"><pre><span></span>$ <span class="nb">echo</span> <span class="nv">$TEST_SOURCE</span>
+$
+</pre></div>
+<p>If we create a test script <tt class="docutils literal">test.sh</tt> like the following:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+
+<span class="nb">export</span> <span class="nv">TEST_SOURCE</span><span class="o">=</span>HELLO
+</pre></div>
+<p>Then we can have two way to execute this script: either by <tt class="docutils literal">./test.sh</tt> or
+by <tt class="docutils literal">source test.sh</tt> and they two have different outcome:</p>
+<div class="highlight"><pre><span></span>$ ./test.sh
+$ <span class="nb">echo</span> <span class="nv">$TEST_SOURCE</span>
+$
+$ <span class="nb">source</span> test.sh
+$ <span class="nb">echo</span> <span class="nv">$TEST_SOURCE</span>
+HELLO
+</pre></div>
+<p>So, the conclusion is that when we execute in <tt class="docutils literal">source</tt>, we actually run program
+in the current shell. However, if we execute in <tt class="docutils literal">./</tt>, then we run the program
+in a separately shell and the execution (i.e. modify environment variable) doesn't
+impact our current shell.</p>
+<!-- http://www.theeggeadventure.com/wikimedia/index.php/Interview_Questions -->
+
+        </article></aside><!-- /#featured -->
+                <h1><i class="fa fa-bars"></i> Other articles</h1>
+                <hr />
+                    <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="./posts/2016/Dec/18/polynomial-multiplication/" rel="bookmark" title="Permalink to Polynomial Multiplication">Polynomial Multiplication</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-18T18:53:00+08:00">Sun 18 Dec 2016, 18:53</abbr></p>
 
@@ -47,252 +96,10 @@
 <div class="section" id="problem">
 <h2>Problem</h2>
 <p>Write a function to multiply two polynomials, using a linked list implementation. You must make sure that
-the output polynomial is sorted by exponent and has at most one term of any power.</p>
-<blockquote>
-<ol class="loweralpha simple">
-<li>Give an algorithm to solve this problem in <span class="math">\(O(M^2N^2)\)</span> time.</li>
-<li>Write a program to perform the multiplication in <span class="math">\(O(M^2N)\)</span> time, where <span class="math">\(M\)</span> is the number
-of terms in the polynomiial of fewer terms.</li>
-<li>Write a program to perform the multiplication in <span class="math">\(O(MNlog(MN))\)</span> time.</li>
-<li>Which time bound above is the best?</li>
-</ol>
-</blockquote>
-</div>
-<div class="section" id="solution">
-<h2>Solution</h2>
-<div class="section" id="question-1">
-<h3>Question 1</h3>
-<p>The first question is quite straightforward. We keep the result in a linked list with
-exponent sorted in descending order. Each time a multiply is performed, we search through
-the result linkedlist for the term with the same exponent as ours. If so, we simply add
-coefficients together. If not, we add our product as a new term.</p>
-<div class="highlight"><pre><span></span><span class="n">Polynomial</span>
-<span class="nf">multiply1</span><span class="p">(</span><span class="n">Polynomial</span> <span class="n">A</span><span class="p">,</span> <span class="n">Polynomial</span> <span class="n">B</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="n">Polynomial</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-<span class="n">PtrToNode</span> <span class="n">dummyRPrev</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
-<span class="n">PtrToNode</span> <span class="n">dummyR</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
-<span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-<span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-
-<span class="kt">int</span> <span class="n">tmpExponent</span><span class="p">,</span> <span class="n">tmpCoefficient</span><span class="p">;</span>
-
-<span class="k">while</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">while</span> <span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-    <span class="p">{</span>
-      <span class="n">tmpExponent</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">exponent</span> <span class="o">+</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="p">;</span>
-      <span class="n">tmpCoefficient</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">*</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="p">;</span>
-
-      <span class="c1">// we go through the output polynomial to see if there is</span>
-      <span class="c1">// a term with the same exponent as our tmpExponent.</span>
-      <span class="k">while</span> <span class="p">(</span><span class="n">dummyR</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-      <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">exponent</span> <span class="o">==</span> <span class="n">tmpExponent</span><span class="p">)</span>
-        <span class="p">{</span>
-          <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">+</span> <span class="n">tmpCoefficient</span><span class="p">;</span>
-          <span class="k">break</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="k">else</span>
-        <span class="p">{</span>
-          <span class="n">dummyRPrev</span> <span class="o">=</span> <span class="n">dummyR</span><span class="p">;</span>
-          <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-        <span class="p">}</span>
-      <span class="p">}</span>
-
-      <span class="c1">// We couldn&#39;t find the term with the same exponent, so we create</span>
-      <span class="c1">// a new term in our output polynomial.</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">dummyR</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-      <span class="p">{</span>
-        <span class="n">insert</span><span class="p">(</span><span class="n">tmpCoefficient</span><span class="p">,</span> <span class="n">tmpExponent</span><span class="p">,</span> <span class="n">dummyRPrev</span><span class="p">);</span>
-      <span class="p">}</span>
-
-      <span class="n">dummyR</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
-      <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-    <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-<p>The total running time is <span class="math">\(O(M*N)\)</span>. We start from the inner most loop. We
-go through the result linkedList to search for the duplicate exponent term. The running
-time depends on the length of the linkedList. The result linkedList can have at most
-<span class="math">\(M*N\)</span> terms. Then, for the middle loop, we iterate through <span class="math">\(N\)</span> times and
-for the outer most loop, we iterate through <span class="math">\(M\)</span> times. So, the total running time
-is <span class="math">\(O(M*N*MN) = O(M^2N^2)\)</span>.</p>
-</div>
-<div class="section" id="question-2">
-<h3>Question 2</h3>
-<p>We can certainly do better than <span class="math">\(O(M^2N^2)\)</span>.</p>
-<div class="highlight"><pre><span></span><span class="n">Polynomial</span>
-<span class="nf">multiply2</span><span class="p">(</span><span class="n">Polynomial</span> <span class="n">A</span><span class="p">,</span> <span class="n">Polynomial</span> <span class="n">B</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">lenA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">lenB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="n">Polynomial</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyTmp</span><span class="p">,</span> <span class="n">dummyShort</span><span class="p">,</span> <span class="n">dummyLong</span><span class="p">,</span> <span class="n">Long</span><span class="p">;</span>
-  <span class="n">Polynomial</span> <span class="n">Tmp</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-
-  <span class="k">while</span><span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">lenA</span><span class="o">++</span><span class="p">;</span>
-    <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">while</span><span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">lenB</span><span class="o">++</span><span class="p">;</span>
-    <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">if</span> <span class="p">(</span><span class="n">lenA</span> <span class="o">&lt;</span> <span class="n">lenB</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">dummyShort</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-    <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-    <span class="n">Long</span> <span class="o">=</span> <span class="n">B</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">else</span>
-  <span class="p">{</span>
-    <span class="n">dummyShort</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-    <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-    <span class="n">Long</span> <span class="o">=</span> <span class="n">A</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">while</span><span class="p">(</span><span class="n">dummyShort</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">dummyTmp</span> <span class="o">=</span> <span class="n">Tmp</span><span class="p">;</span>
-    <span class="k">while</span><span class="p">(</span><span class="n">dummyLong</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-    <span class="p">{</span>
-      <span class="kt">int</span> <span class="n">coefficient</span> <span class="o">=</span> <span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">*</span> <span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="p">;</span>
-      <span class="kt">int</span> <span class="n">exponent</span> <span class="o">=</span> <span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">exponent</span> <span class="o">+</span> <span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="p">;</span>
-      <span class="n">insert</span><span class="p">(</span><span class="n">coefficient</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">dummyTmp</span><span class="p">);</span>
-      <span class="n">dummyTmp</span> <span class="o">=</span> <span class="n">dummyTmp</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-      <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Tmp</span><span class="p">);</span>
-    <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">Long</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-    <span class="n">deletePolynomial</span><span class="p">(</span><span class="n">Tmp</span><span class="p">);</span>
-    <span class="n">dummyShort</span> <span class="o">=</span> <span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-<p>Suppose polynomials <span class="math">\(A\)</span> has <span class="math">\(M\)</span> terms, and polynomials
-<span class="math">\(B\)</span> has <span class="math">\(N\)</span> terms. <span class="math">\(M &lt; N\)</span>.
-Instead of updating the result after each multiply, we multiply one term
-from <span class="math">\(A\)</span> (the polynomials with fewer terms) by all the terms from
-<span class="math">\(B\)</span> (the polynomials with more terms). Then we add this with the output
-linkedList using <tt class="docutils literal">Polynomial <span class="pre">add(...)</span></tt> function I implemented (can be found under
-<a class="reference external" href="https://github.com/xxks-kkk/algo/blob/master/linkedList/polynomial/polynomial.c">polynomial.c</a>).
-The <tt class="docutils literal">add</tt> function has a runtime <span class="math">\(O(max(M,N))\)</span> and thus we can get our runtime for <tt class="docutils literal">multiply2</tt>:</p>
-<div class="math">
-\begin{equation*}
-O(max(N,0)) + O(max(N,N)) + O(max(N,2N)) + ... + O(max(N, N(M-1))) = O(M^2N)
-\end{equation*}
-</div>
-<p>Also, we calculate the length of <span class="math">\(A\)</span> taking <span class="math">\(O(M)\)</span>; we calculate the length of <span class="math">\(B\)</span>
-taking <span class="math">\(O(N)\)</span>; and we do <tt class="docutils literal">deleteList</tt> during the while loop taking <span class="math">\(O(MN)\)</span>. So, the total runtime is:</p>
-<div class="math">
-\begin{equation*}
-O(M^2 N) + O(M) + O(N) + O(MN) = O(M^2 N)
-\end{equation*}
-</div>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p>For this implementation, I kind of using an interface within the function. The logic
-begins with <tt class="docutils literal">while (dummyShort != NULL)</tt> are the same for both <span class="math">\(M&lt;N\)</span> and <span class="math">\(M&gt;N\)</span>.
-So, there is potential to write the same logic twice for these two cases respectively. The solution
-I use is to provide an interface using <tt class="docutils literal">dummyLong</tt> and <tt class="docutils literal">dummyShort</tt> variables.</p>
-<p class="last">Please note we need to multiply one term from the polynomials with fewer terms by all the terms from
-the polynomial with more terms. If we do the other way around, the runtime will be <span class="math">\(O(MN^2)\)</span>.</p>
-</div>
-</div>
-<div class="section" id="question-3-4">
-<h3>Question 3 &amp; 4</h3>
-<p>I haven't coded up for question 3 because I want to wait for finishing sorting chapter. However, I can see how we
-can get <span class="math">\(O(MNlog(MN))\)</span>. This solution is very similar to Question 1. We first multiply all terms out using
-<span class="math">\(O(MN)\)</span>. Then, we sort resulting <span class="math">\(MN\)</span> terms by exponent. Then, we run through the linked list merging any
-summing any terms with the same exponent (which will be contiguous). The sort takes <span class="math">\(O(MNlog(MN))\)</span> time.
-The multipies and the merging of duplicates can be performed in <span class="math">\(O(MN)\)</span> time.
-So, we have:</p>
-<div class="math">
-\begin{equation*}
-O(MN) + O(MNlog(MN)) + O(MN) = O(MNlog(MN))
-\end{equation*}
-</div>
-<p>When we actually compare the runtime of three solutions, we can see 1st one is the worst among the three. However,
-for 2nd one and 3rd one, the comparison result depends on the size of <span class="math">\(M\)</span> and <span class="math">\(N\)</span>. If <span class="math">\(M\)</span> and
-<span class="math">\(N\)</span> are close in size, then <span class="math">\(O(MNlog(MN))\approx O(MNlog(M^2))=O(MNlog(M))\)</span>, which is better than <span class="math">\(O(M^2N)\)</span>.
-However, if <span class="math">\(M\)</span> is very small in comparison to <span class="math">\(N\)</span>, then <span class="math">\(M\)</span> is less than <span class="math">\(log(MN)\)</span> and in this case,
-2nd one is better than 3rd one.</p>
-</div>
-</div>
-<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-</script>
-        </article></aside><!-- /#featured -->
-                <h1><i class="fa fa-bars"></i> Other articles</h1>
-                <hr />
-                    <ol id="posts-list" class="hfeed">
+the output polynomial is sorted by exponent and has at most one term of any ...</p></div>
+                <a class="readmore" href="./posts/2016/Dec/18/polynomial-multiplication/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="./posts/2016/Dec/17/pelican-hack-day/" rel="bookmark" title="Permalink to Pelican Hack Day">Pelican Hack Day</a></h1>
@@ -501,7 +308,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         <ul>
                            <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (4)</a></li>
                            <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
-                           <li ><a href="./category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (3)</a></li>
+                           <li ><a href="./category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (4)</a></li>
                         </ul>
                 </div>
                 <div class="widget social">
@@ -554,7 +361,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             pelican
                         </a>
                     </li>
-                    <li class="list-group-item tag-4">
+                    <li class="list-group-item tag-2">
                         <a href="./tag/shell.html">
                             shell
                         </a>
