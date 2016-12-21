@@ -108,6 +108,13 @@ This also matches the regular expression regexp, but allows one to use a differe
 <p>so, I decide to use <tt class="docutils literal">|</tt> as the delimiter:</p>
 <div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s|INSTHOME|</span><span class="nv">$HOME</span><span class="s2">|g&quot;</span> config.ini
 </pre></div>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p>I can also use single quote <tt class="docutils literal">'</tt> but the command should be modified like the below
+by leaving out to-be-expanded variable name outside of single quotes.</p>
+<div class="last"><div class="highlight"><pre><span></span>sed -i <span class="s1">&#39;s|INSTHOME|&#39;</span><span class="nv">$HOME</span><span class="s1">&#39;|g&#39;</span> config.ini
+</pre></div>
+</div></div>
 <p>Now, everything works nice and clean.</p>
 
         </div><!-- /.entry-content -->
