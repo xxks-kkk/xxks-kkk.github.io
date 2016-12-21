@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <title>Automatically publish Tinkerer bld output to GitHub with Travis CI</title>
+        <title>Environment variable substitution using Sed</title>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="../../../../../theme/css/main.css" type="text/css" />
         <link rel="stylesheet" href="../../../../../theme/css/font-awesome.min.css" type="text/css" />
@@ -36,136 +36,79 @@
 
 <section id="content" class="body">
 <article>
-      <header> <h1 class="entry-title"><a href="../../../../../posts/2016/Nov/27/automatically-publish-tinkerer-bld-output-to-github-with-travis-ci/"
-        rel="bookmark" title="Permalink to Automatically publish Tinkerer bld output to GitHub with Travis CI">Automatically publish Tinkerer bld output to GitHub with Travis CI</a></h1>  </header>
+      <header> <h1 class="entry-title"><a href="../../../../../posts/2016/Dec/21/environment-variable-substitution-using-sed/"
+        rel="bookmark" title="Permalink to Environment variable substitution using Sed">Environment variable substitution using <tt class="docutils literal">Sed</tt></a></h1>  </header>
         <div class="entry-content">
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-11-27T22:00:00+08:00">Sun 27 Nov 2016, 22:00</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-21T12:07:00+08:00">Wed 21 Dec 2016, 12:07</abbr></p>
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/tools.html">tools</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/github.html">github</a> <a href="../../../../../tag/travis-ci.html">travis-ci</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-        <div class="section" id="perface">
-<h2>Perface</h2>
-<p>I saw a comment from <a class="reference external" href="https://www.notionsandnotes.org/tech/web-development/pelican-static-blog-setup.html">a web</a>
-that talks about auto deployment with Travis CI</p>
-<blockquote>
-<p>As an aside, you can also use GitHub Pages for hosting, which is free,
-and then integrate it with Travis-CI to automatically publish the blog
-(basically run pelican to generate the output and push the changes back online)
-in order to decouple the actual writing of blog posts from the publishing part.</p>
-<p>The above also has the advantage of enabling a history of changes done
-(both for the articles themselves and the output), as well as simplifying things
-if you want to have guest posts and so on.</p>
-</blockquote>
-<p>That's the place where I start to explore Travis CI.</p>
-</div>
-<div class="section" id="travis-ci">
-<h2>Travis CI</h2>
-<p>Travis CI part isn't hard to figure out. I referenced the following articles to get
-me started with this great tool, particularly with Sphinx-doc:</p>
-<blockquote>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/sed.html">sed</a> <a href="../../../../../tag/shell.html">shell</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+        <p>Suppose we have a text file <tt class="docutils literal">config.ini</tt> looks something like this:</p>
+<pre class="literal-block">
+[MSSQLSERVER]
+Driver=INSTHOME/foo/foo.so
+
+[SYBASE]
+Driver=INSTHOME/bar/bar.so
+
+...
+</pre>
+<p>We want to replace all the appearance of <tt class="docutils literal">INSTHOME</tt> with the
+value we hold in <tt class="docutils literal">$HOME</tt>. Here is what I do initially:</p>
+<div class="highlight"><pre><span></span>sed -i -e <span class="s2">&quot;s/INSTHOME/</span><span class="nv">$HOME</span><span class="s2">/g&quot;</span> config.ini
+</pre></div>
 <ul class="simple">
-<li><a class="reference external" href="https://github.com/dwyl/learn-travis">learn-travis</a></li>
-<li><a class="reference external" href="https://github.com/sphinx-doc/sphinx/blob/master/.travis.yml">Sphinx-doc repo .travis.yml</a></li>
-<li><a class="reference external" href="https://coderwall.com/p/wws2uq/have-travis-ci-test-your-sphinx-docs">Have Travis-CI test your Sphinx docs</a></li>
+<li><tt class="docutils literal">s</tt> is used to replace the found expression <tt class="docutils literal">INSTHOME</tt> with <tt class="docutils literal">$HOME</tt></li>
+<li><tt class="docutils literal">g</tt> stands for &quot;global&quot;, which means to do this find &amp; replace
+for the whole line. If you leave off the <tt class="docutils literal">g</tt> and <tt class="docutils literal">INSTHOME</tt> appears
+twice on the same line, only the first <tt class="docutils literal">INSTHOME</tt> is changed to <tt class="docutils literal">$HOME</tt></li>
+<li><tt class="docutils literal"><span class="pre">-i</span></tt> is used to edit in place on filename</li>
+<li><tt class="docutils literal"><span class="pre">-e</span></tt> is to indicate the expression/command to run</li>
 </ul>
-</blockquote>
-<p>The basic idea of Travis CI is quite simple. Once you commit something, it will
-trigger Travis CI to clone your repository, and run the command you specified in
-<tt class="docutils literal">.travis.yml</tt> and then it will tell you the result of this commit (i.e.
-Whether you pass all the test specified in <tt class="docutils literal">.travis.yml</tt>)</p>
-</div>
-<div class="section" id="work-with-tinkerer">
-<h2>Work with Tinkerer</h2>
 <div class="note">
 <p class="first admonition-title">Note</p>
-<p class="last">Tinkerer is built upon Sphinx-doc. Any Sphinx-doc-ish tool should have similar
-setup when work with Travis CI.</p>
+<p class="last">I use double quotes <tt class="docutils literal">&quot;</tt> to expand any variable appeard
+inside <tt class="docutils literal">&quot;</tt>. In this case, <tt class="docutils literal">$HOME</tt>.</p>
 </div>
-<p>The setup for me is that I don't use <tt class="docutils literal"><span class="pre">gh-pages</span></tt>. Instead, I directly use <tt class="docutils literal">master</tt>
-branch as the source for my github page. The reason is that Tinkerer will generate
-<tt class="docutils literal">index.html</tt> directly inside root directory of the repo, which will redirect the
-visit to <tt class="docutils literal">index.html</tt> under <tt class="docutils literal">blog</tt>. <tt class="docutils literal">blog</tt> is the default output directory.</p>
-<p>Here are the tutorials I referenced. However, all of them talk about working with <tt class="docutils literal"><span class="pre">gh-pages</span></tt>:</p>
-<blockquote>
-<ul class="simple">
-<li><a class="reference external" href="https://gist.github.com/domenic/ec8b0fc8ab45f39403dd">Auto-deploying built products to gh-pages with Travis</a></li>
-<li><a class="reference external" href="https://benlimmer.com/2013/12/26/automatically-publish-javadoc-to-gh-pages-with-travis-ci/">Automatically Publish Javadoc to GitHub Pages with Travis CI</a></li>
-</ul>
-</blockquote>
-<p>The first link above offers a framework of how you should get everything working and
-the second link's bottom script offers some intuition.</p>
-<p>I'm not going to redo the work. I just want to point out something you need to be careful:</p>
-<ul class="simple">
-<li><strong>DO NOT use personal token.</strong> As mentioned by the first link, using a GitHub personal
-access token offers the full access to all your git repo. That's a very high risk.</li>
-<li><strong>Be Careful with Public/Private.</strong> You need to use the Travis client to encrypt
-the <em>private</em> ssh key and upload the corresponding <em>public</em> ssh key to your repository.</li>
-<li><strong>Don't put passphrase for your ssh key.</strong> If you do, Travis CI will ask for the passphrase
-during the automation process, which will lead to build hang. If this happens, regenerate
-the ssh key.</li>
-<li><strong>Be careful only upload your .enc file.</strong> Don't upload your ssh private key to your repo.</li>
-</ul>
-</div>
-<div class="section" id="decode-the-script">
-<h2>Decode the script</h2>
-<div class="section" id="travis-yml">
-<h3>.travis.yml</h3>
-<p>This is my <a class="reference external" href="https://github.com/xxks-kkk/blog/blob/master/.travis.yml">.travis.yml</a>:</p>
+<p>However, when I type this in and I got the following error:</p>
 <pre class="literal-block">
-language: python
-python:
-  - &quot;2.7&quot;
-
-install:
-  - pip install tinkerer
-  - pip install sphinxjp.themes.tinkerturquoise
-
-script:
-  - tinker -b
-
-env:
-  global:
-  - ENCRYPTION_LABEL: &quot;8c1ec1f6b778&quot;
-  - COMMIT_AUTHOR_EMAIL: &quot;ferrishu3886&#64;gmail.com&quot;
-
-after_success:
-  - bash ./deploy.sh
-
-notifications:
-  email:
-    recipients:
-      - ferrishu3886&#64;gmail.com
-    on_success: change # option [alway|never|change]
-    on_failure: always
+sed: -e expression #1, char 13: unknown option to `s'
 </pre>
+<p>Why did this error happen? That confused me for a while. Then, I try to
+simulate what the program will do for the above expression:</p>
+<div class="highlight"><pre><span></span>sed -i -e <span class="s2">&quot;s/INSTHOME//home/iidev20/g&quot;</span> config.ini
+</pre></div>
+<p>Ah! This expansion result doesn't make sense at all because <tt class="docutils literal">sed</tt> expression
+inside <tt class="docutils literal">&quot;</tt> needs to follow:</p>
+<pre class="literal-block">
+&quot;s/[target_expression]/[replace_expression/g&quot;
+</pre>
+<p>So, the first thought comes to me is to escape all <tt class="docutils literal">/</tt> in the expression:</p>
+<div class="highlight"><pre><span></span>sed -i -e <span class="s2">&quot;s/INSTHOME/\/home\/iidev20/g&quot;</span> config.ini
+</pre></div>
+<p>This can work but it has two severe drawbacks:</p>
 <ul class="simple">
-<li><tt class="docutils literal">install</tt> section asks Travis CI to install the necessary packages to build our
-doc.</li>
-<li><tt class="docutils literal">script</tt> section contains our doc build command.</li>
-<li><tt class="docutils literal">env</tt> section contains environment variables required for our <tt class="docutils literal">deploy.sh</tt>. They
-are used to authorize a user on Travis CI to make <tt class="docutils literal">git clone</tt>, <tt class="docutils literal">git push</tt>, etc.</li>
-<li><tt class="docutils literal">after_success</tt> tells Travis CI what to do once the <tt class="docutils literal">script</tt> section is done
-successfully.</li>
-<li><tt class="docutils literal">notifications</tt> customize the email notification.</li>
+<li>I'm hardcoding the value. If <tt class="docutils literal">$HOME</tt> no longer holds <tt class="docutils literal">/home/iidev20</tt>,
+then my command breaks again, and this hinders portability.</li>
+<li>The readability of this code is too bad. Probably okay for Perl programmer but
+still, not quite friendly.</li>
 </ul>
-</div>
-<div class="section" id="deploy-sh">
-<h3>deploy.sh</h3>
-<p>For <a class="reference external" href="https://github.com/xxks-kkk/blog/blob/master/deploy.sh">deploy.sh</a> is easy to
-understand if you take a look at the Travis CI log for a build.</p>
-<p>Travis CI first perform basic the environment setup. Then, it clones the git repository.
-Next, it builds our doc. If the build is success, it executes our <tt class="docutils literal">deploy.sh</tt>.</p>
-<p>Inside <tt class="docutils literal">deploy.sh</tt>, the main idea is to first clone the same repo (i.e. <tt class="docutils literal"><span class="pre">travis-dup</span></tt>)
-and copy the bld output pages (under <tt class="docutils literal"><span class="pre">/xxks-kkk/blog/blog</span></tt>) to the bld directory
-of the same repo we just cloned (i.e. <tt class="docutils literal"><span class="pre">travis-dup/blog</span></tt>). If there is nothing
-changed in the bld output pages, we exit. Else, we commit the changes and
-use the authencation we just added (i.e. <tt class="docutils literal"><span class="pre">ssh-add</span> travis</tt>) and push the change to the repo.</p>
-<p>To keep it simpler, you can imagine Travis CI is a remote server that you can do anything you
-want. Thus, we can let bld result to be pushed to our repo by asking user (i.e. travis) from
-the remote server to do so.</p>
-</div>
-</div>
+<p>To address these two issues, I find the following about <a class="reference external" href="https://www.gnu.org/software/sed/manual/html_node/Addresses.html#Addresses">GNU sed</a>:</p>
+<blockquote>
+<dl class="docutils">
+<dt>%regexp%</dt>
+<dd><p class="first">(The % may be replaced by any other single character.)</p>
+<blockquote class="last">
+This also matches the regular expression regexp, but allows one to use a different delimiter than /. This is particularly useful if the regexp itself contains a lot of slashes, since it avoids the tedious escaping of every /. If regexp itself includes any delimiter characters, each must be escaped by a backslash ().</blockquote>
+</dd>
+</dl>
+</blockquote>
+<p>Essentially, we don't have to use <tt class="docutils literal">/</tt> as our delimiter for the expression, especially when the pattern itself contains a lot of slashes (i.e. file path in my case).</p>
+<p>so, I decide to use <tt class="docutils literal">|</tt> as the delimiter:</p>
+<div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s|INSTHOME|</span><span class="nv">$HOME</span><span class="s2">|g&quot;</span> config.ini
+</pre></div>
+<p>Now, everything works nice and clean.</p>
 
         </div><!-- /.entry-content -->
 
