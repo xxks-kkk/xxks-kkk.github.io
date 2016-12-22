@@ -37,7 +37,83 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="./posts/2016/Dec/21/environment-variable-substitution-using-sed/">Environment variable substitution using <tt class="docutils literal">Sed</tt></a></h1>
+                <h1 class="entry-title"><a href="./posts/2016/Dec/23/print-singly-linked-list-in-reverse-order/">Print singly linked list in reverse order</a></h1>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-23T00:05:00+08:00">Fri 23 Dec 2016, 00:05</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/singly-linked-list.html">singly-linked-list</a> <a href="./tag/recursion.html">recursion</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>Today, during the lunch break, I take a look at the following problem:</p>
+<blockquote>
+Print a singly linked list in reverse order.</blockquote>
+<p>This is actually one of the interview questions I got at SAP for ABAP developer position
+(luckily, they didn't offer me the position). I didn't get the correct answer at that time
+and I think the problem may help me to kill some time during the break.</p>
+<p>The question itself is not hard if you're familar with linked list and recursion philosophy:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span>
+<span class="nf">printListReverseHelper</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">L</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">printListReverseHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d-&gt;&quot;</span><span class="p">,</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">printListReverse</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">Pos</span> <span class="n">dummyL</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="n">printListReverseHelper</span><span class="p">(</span><span class="n">dummyL</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<p>Again, in our implementation of linked list, we use header node. Given the simiplicity of the problem,
+I think it is a good time to revisit some basic rules in recursion.</p>
+<p>To be honest, recursion always gives me a hard time because I always try to mentally expand all the call
+stack and then work backwards to see if the recursion function gives what I expect. This is super energy
+consuming and error-prone.</p>
+<p>However, things start to get better since I start to read MAW. Here are the four basic rules of recursion
+he emphasizes:</p>
+<blockquote>
+<ol class="arabic simple">
+<li><em>Base cases.</em> You must always have some base cases, which can be solved without recursion.</li>
+<li><em>Making progress.</em> For the cases that are to be solved recursively, the recursive call must always
+be to a case that makes progress toward a base case.</li>
+<li><em>Design rule.</em> Assume that all the recursive calls work.</li>
+<li><em>Compound interest rule.</em> Never duplicate work by solving the same instance of a problem in separate
+recursive calls.</li>
+</ol>
+</blockquote>
+<p>Among the four rules, No.3 rule is easily my most faviroite one. It is stated very simple but it has huge
+impact on how you think about recursion.</p>
+<p>Let's use first three rules to analyze this problem a little bit.</p>
+<ol class="arabic simple">
+<li><em>Base cases.</em> This problem is quite simple. The base case is the case when the list is empty. In this case,
+we have nothing to do and simply return.</li>
+<li><em>Making progress.</em> This is reflected when we call <tt class="docutils literal"><span class="pre">printListReverseHelper(L-&gt;Next)</span></tt>. Each time we make the
+recursive call, we pass in <tt class="docutils literal"><span class="pre">L-&gt;Next</span></tt>, which makes the list shorter. This eventually will make the whole list
+empty, which is the base case.</li>
+<li><em>Design rule.</em> I use this rule to design the whole recursion function. Just imagaine a scenario like the following:
+Suppose you have a list of <tt class="docutils literal"><span class="pre">1-&gt;2-&gt;3</span></tt>. Then, by the rule, we assume that the number <tt class="docutils literal">2</tt> and <tt class="docutils literal">3</tt> are already printed
+in reverse order. What we left to do is to print out <tt class="docutils literal">1</tt> and then we done. We follow this thought process closely
+when we actually write the recursion function. After we write out the base case, we first write <tt class="docutils literal"><span class="pre">printListReverseHelper(L-&gt;Next);</span></tt>
+This is saying that the rest of list (except the first one) is already printed in reverse order (i.e. <tt class="docutils literal">2</tt> and <tt class="docutils literal">3</tt> in our case).
+Then we write <tt class="docutils literal"><span class="pre">printf(&quot;%d-&gt;&quot;,</span> <span class="pre">L-&gt;Element);</span></tt>. This says, ok, since we are only left with the first node, let's print it out and the
+job is done (i.e. <tt class="docutils literal">1</tt> in our case).</li>
+</ol>
+<p>See, how simple the recursion can be if we can actually get over psychological obstacle to expand the call stack mentally and directly apply
+four rules (especially the third rule) to design our function.</p>
+
+        </article></aside><!-- /#featured -->
+                <h1><i class="fa fa-bars"></i> Other articles</h1>
+                <hr />
+                    <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="./posts/2016/Dec/21/environment-variable-substitution-using-sed/" rel="bookmark" title="Permalink to Environment variable substitution using Sed">Environment variable substitution using <tt class="docutils literal">Sed</tt></a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-21T12:07:00+08:00">Wed 21 Dec 2016, 12:07</abbr></p>
 
@@ -55,71 +131,10 @@ Driver=INSTHOME/bar/bar.so
 </pre>
 <p>We want to replace all the appearance of <tt class="docutils literal">INSTHOME</tt> with the
 value we hold in <tt class="docutils literal">$HOME</tt>. Here is what I do initially:</p>
-<div class="highlight"><pre><span></span>sed -i -e <span class="s2">&quot;s/INSTHOME/</span><span class="nv">$HOME</span><span class="s2">/g&quot;</span> config.ini
-</pre></div>
-<ul class="simple">
-<li><tt class="docutils literal">s</tt> is used to replace the found expression <tt class="docutils literal">INSTHOME</tt> with <tt class="docutils literal">$HOME</tt></li>
-<li><tt class="docutils literal">g</tt> stands for &quot;global&quot;, which means to do this find &amp; replace
-for the whole line. If you leave off the <tt class="docutils literal">g</tt> and <tt class="docutils literal">INSTHOME</tt> appears
-twice on the same line, only the first <tt class="docutils literal">INSTHOME</tt> is changed to <tt class="docutils literal">$HOME</tt></li>
-<li><tt class="docutils literal"><span class="pre">-i</span></tt> is used to edit in place on filename</li>
-<li><tt class="docutils literal"><span class="pre">-e</span></tt> is to indicate the expression/command to run</li>
-</ul>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p class="last">I use double quotes <tt class="docutils literal">&quot;</tt> to expand any variable appeard
-inside <tt class="docutils literal">&quot;</tt>. In this case, <tt class="docutils literal">$HOME</tt>.</p>
-</div>
-<p>However, when I type this in and I got the following error:</p>
-<pre class="literal-block">
-sed: -e expression #1, char 13: unknown option to `s'
-</pre>
-<p>Why did this error happen? That confused me for a while. Then, I try to
-simulate what the program will do for the above expression:</p>
-<div class="highlight"><pre><span></span>sed -i -e <span class="s2">&quot;s/INSTHOME//home/iidev20/g&quot;</span> config.ini
-</pre></div>
-<p>Ah! This expansion result doesn't make sense at all because <tt class="docutils literal">sed</tt> expression
-inside <tt class="docutils literal">&quot;</tt> needs to follow:</p>
-<pre class="literal-block">
-&quot;s/[target_expression]/[replace_expression/g&quot;
-</pre>
-<p>So, the first thought comes to me is to escape all <tt class="docutils literal">/</tt> in the expression:</p>
-<div class="highlight"><pre><span></span>sed -i -e <span class="s2">&quot;s/INSTHOME/\/home\/iidev20/g&quot;</span> config.ini
-</pre></div>
-<p>This can work but it has two severe drawbacks:</p>
-<ul class="simple">
-<li>I'm hardcoding the value. If <tt class="docutils literal">$HOME</tt> no longer holds <tt class="docutils literal">/home/iidev20</tt>,
-then my command breaks again, and this hinders portability.</li>
-<li>The readability of this code is too bad. Probably okay for Perl programmer but
-still, not quite friendly.</li>
-</ul>
-<p>To address these two issues, I find the following about <a class="reference external" href="https://www.gnu.org/software/sed/manual/html_node/Addresses.html#Addresses">GNU sed</a>:</p>
-<blockquote>
-<dl class="docutils">
-<dt>%regexp%</dt>
-<dd><p class="first">(The % may be replaced by any other single character.)</p>
-<blockquote class="last">
-This also matches the regular expression regexp, but allows one to use a different delimiter than /. This is particularly useful if the regexp itself contains a lot of slashes, since it avoids the tedious escaping of every /. If regexp itself includes any delimiter characters, each must be escaped by a backslash ().</blockquote>
-</dd>
-</dl>
-</blockquote>
-<p>Essentially, we don't have to use <tt class="docutils literal">/</tt> as our delimiter for the expression, especially when the pattern itself contains a lot of slashes (i.e. file path in my case).</p>
-<p>so, I decide to use <tt class="docutils literal">|</tt> as the delimiter:</p>
-<div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s|INSTHOME|</span><span class="nv">$HOME</span><span class="s2">|g&quot;</span> config.ini
-</pre></div>
-<div class="note">
-<p class="first admonition-title">Note</p>
-<p>I can also use single quote <tt class="docutils literal">'</tt> but the command should be modified like the below
-by leaving out to-be-expanded variable name outside of single quotes.</p>
-<div class="last"><div class="highlight"><pre><span></span>sed -i <span class="s1">&#39;s|INSTHOME|&#39;</span><span class="nv">$HOME</span><span class="s1">&#39;|g&#39;</span> config.ini
-</pre></div>
-</div></div>
-<p>Now, everything works nice and clean.</p>
-
-        </article></aside><!-- /#featured -->
-                <h1><i class="fa fa-bars"></i> Other articles</h1>
-                <hr />
-                    <ol id="posts-list" class="hfeed">
+<div class="highlight"><pre><span></span>sed -i -e <span class="s2">&quot;s ...</span></pre></div>
+                <a class="readmore" href="./posts/2016/Dec/21/environment-variable-substitution-using-sed/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="./posts/2016/Dec/20/whats-the-difference-between-sourcing-a-script-and-executing-a-script/" rel="bookmark" title="Permalink to What's the difference between sourcing a script and executing a script?">What's the difference between sourcing a script and executing a script?</a></h1>
@@ -204,7 +219,7 @@ stuff into different platforms. However, this is not the case anymore during the
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-03T20:34:00+08:00">Sat 03 Dec 2016, 20:34</abbr></p>
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/c.html">c</a> <a href="./tag/singly-linked-list.html">singly-linked-list</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/singly-linked-list.html">singly-linked-list</a> <a href="./tag/recursion.html">recursion</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
                 <div class="section" id="problem">
 <h2>Problem</h2>
 <p>This problem is MAW 3.12:</p>
@@ -289,24 +304,6 @@ and then integrate it with Travis-CI to automatically publish the blog
                 <a class="readmore" href="./posts/2016/Nov/27/generate-a-linked-list-from-a-given-array/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Nov/23/hello-world/" rel="bookmark" title="Permalink to Hello World">Hello World</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-11-23T23:00:00+08:00">Wed 23 Nov 2016, 23:00</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/misc.html">misc</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/meta.html">meta</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>This blog will focus entirely on posts that involve either source code or
-mathematical expression. If you are looking for my posts about life reflection,
-book review, and many other non-technical posts, please check out <a class="reference external" href="https://zeyuanhu.wordpress.com/">my blog on wordpress</a>.</p>
-
-                <a class="readmore" href="./posts/2016/Nov/23/hello-world/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
         <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
         <hr />
@@ -333,7 +330,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (4)</a></li>
+                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (5)</a></li>
                            <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
                            <li ><a href="./category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>
@@ -386,6 +383,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                     <li class="list-group-item tag-4">
                         <a href="./tag/pelican.html">
                             pelican
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="./tag/recursion.html">
+                            recursion
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
