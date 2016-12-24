@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <title>Lesson Learned: Portability</title>
+        <title>A small C trick I learned today</title>
         <meta charset="utf-8" />
         <meta content="This is the homepage of Zeyuan (Jerry) Hu" name="description">
         <meta content="Zeyuan Hu, Zeyuan, Jerry Hu, Jerry, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, Zeyuan wisc, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
@@ -39,62 +39,81 @@
 
 <section id="content" class="body">
 <article>
-      <header> <h1 class="entry-title"><a href="../../../../../posts/2016/Dec/16/lesson-learned-portability/"
-        rel="bookmark" title="Permalink to Lesson Learned: Portability">Lesson Learned: Portability</a></h1>  </header>
+      <header> <h1 class="entry-title"><a href="../../../../../posts/2016/Dec/24/a-small-c-trick-i-learned-today/"
+        rel="bookmark" title="Permalink to A small C trick I learned today">A small C trick I learned today</a></h1>  </header>
         <div class="entry-content">
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-16T23:20:00+08:00">Fri 16 Dec 2016, 23:20</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-24T23:11:00+08:00">Sat 24 Dec 2016, 23:11</abbr></p>
 
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/misc.html">misc</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/software-engineering.html">software engineering</a> <a href="../../../../../tag/shell.html">shell</a> <a href="../../../../../tag/aix.html">AIX</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-        <p>Portability is a kind of issue that people always talk about in software engineering field.
-I never have been through such problem on my own probably because I don't have to port my
-stuff into different platforms. However, this is not the case anymore during the work.</p>
-<p>Recently, I revisit the first task I owned when I joined the team, which is to develop a lightweight
-configuration tool to improve product usability. Lightweight is the key of this task as we originally
-have a Java-based GUI setup tool involving lots of point &amp; click. This solution is fairly unpopular among
-our customers mainly because the program itself takes lots of space for DB2 image and it doesn't fit well
-with his peers, which all are scripts that can be executed directly from shell.</p>
-<p>So, in my iteration, I decide to follow the format of majority of utility tools in DB2 image - using scripting language.
-The language I choose is, unfortunately, Shell. The whole task goes amazingly well. With the help of my tool, product configuration
-time is reduced by 75%. Everyone in my team loves it until someone decides to run it on AIX.</p>
-<p>The environment I develop the tool is SUSE with <tt class="docutils literal">ksh</tt> installed. The AIX that my colleague tries to test my tool on also has <tt class="docutils literal">ksh</tt> configured
-but there are some quirky behavior difference on different platform.</p>
-<p>For instance, when I try to split an array, say <tt class="docutils literal">tmp2</tt> with delimiter <tt class="docutils literal">:</tt>, the following code works great on SUSE:</p>
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/programming-languages.html">programming languages</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/c.html">c</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+        <p>Today I learned a C trick. Here is my original <tt class="docutils literal">printList</tt>:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">printList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">Pos</span> <span class="n">dummy</span><span class="p">;</span> <span class="c1">// creates a dummy node to traverse the list</span>
+
+  <span class="n">dummy</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="n">dummy</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d-&gt;&quot;</span><span class="p">,</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
+    <span class="n">dummy</span> <span class="o">=</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>It works but there is a small caveat in this routine. This is
+part of print out for the <tt class="docutils literal">linkedListTestMain</tt>:</p>
 <pre class="literal-block">
-saveIFS=$IFS
-IFS=&quot;:&quot;
-local tmp2=($tmp) # split tmp with &quot;:&quot; and stored into tmp2 as array
-IFS=$saveIFS
+TEST: printList
+23-&gt;44-&gt;45-&gt;57-&gt;89-&gt;-1-&gt;
 </pre>
-<p>However, on AIX, only the following way will work:</p>
-<pre class="literal-block">
-#!/bin/sh
-tmp=a:b:c:d
-saveIFS=$IFS
-IFS=&quot;:&quot;
-local tmp2
-n=0
-for i in $tmp; do tmp2[$n]=$i; ((n=n+1)); done
-IFS=$saveIFS
-echo ${tmp2[0]}
-echo ${tmp2[1]}
-echo ${tmp2[2]}
-echo ${tmp2[3]}
-</pre>
-<p>As you can see, I need a for loop to split the array on AIX.</p>
-<p>For another example, when I try to increment counter inside a loop, on SUSE,
-I can do <tt class="docutils literal"><span class="pre">((n++))</span></tt> but on AIX, I need to do <tt class="docutils literal">((n=n+1))</tt>.</p>
-<p>This makes me realize why most of our development scripts (i.e. to help build the source code)
-use perl instead of shell. I have to rewrite the whole script in Perl.</p>
-<p>This is a very important lesson for a fresh college graduate by that time.</p>
+<p>As you can see, there is a little <tt class="docutils literal"><span class="pre">-&gt;</span></tt> at the end of linked list, which
+is not supposed to be there because there is no next element after <tt class="docutils literal"><span class="pre">-1</span></tt>.</p>
+<p>I try to solve this problem but the solution is not succint and I don't want to
+do complicated stuff just to remove this <tt class="docutils literal"><span class="pre">-&gt;</span></tt>. Howver, I finally get a solution
+today that is very clean to eliminate <tt class="docutils literal"><span class="pre">-&gt;</span></tt> without adding additional complexity to
+the routine.</p>
+<p>In C, we know we can use if-else shorthand likes the following:</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>is equivalent with</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+<span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
+</pre></div>
+<p>We can use this shorthand inside our routine <tt class="docutils literal">printf</tt> statement to solve our problem:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">printList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">Pos</span> <span class="n">dummy</span><span class="p">;</span> <span class="c1">// creates a dummy node to traverse the list</span>
+
+  <span class="n">dummy</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="n">dummy</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d%s&quot;</span><span class="p">,</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">,</span> <span class="p">(</span><span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="s">&quot;-&gt;&quot;</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">));</span>
+    <span class="n">dummy</span> <span class="o">=</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>As you can see, inside <tt class="docutils literal">printf</tt> statement, we don't printout <tt class="docutils literal"><span class="pre">-&gt;</span></tt> by default, we check
+if <tt class="docutils literal"><span class="pre">dummy-&gt;Next</span></tt> is <tt class="docutils literal">NULL</tt>, then that means we are at the last element of the list, and
+we don't append anything (i.e. <tt class="docutils literal"><span class="pre">(&quot;&quot;)</span></tt>). However, if this is not the case, we print <tt class="docutils literal"><span class="pre">-&gt;</span></tt>.</p>
 
         </div><!-- /.entry-content -->
         <div class="comments">
         <h2>Comments !</h2>
             <div id="disqus_thread"></div>
             <script type="text/javascript">
-               var disqus_identifier = "posts/2016/Dec/16/lesson-learned-portability/";
+               var disqus_identifier = "posts/2016/Dec/24/a-small-c-trick-i-learned-today/";
                (function() {
                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                dsq.src = 'https://zhu45-org.disqus.com/embed.js';
@@ -119,8 +138,8 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
                            <li ><a href="../../../../../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (5)</a></li>
-                           <li class="active"><a href="../../../../../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
-                           <li ><a href="../../../../../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (1)</a></li>
+                           <li ><a href="../../../../../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
+                           <li class="active"><a href="../../../../../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (1)</a></li>
                            <li ><a href="../../../../../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>
                 </div>

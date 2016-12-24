@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <title>Tech Stuff - recursion</title>
+        <title>Tech Stuff - programming languages</title>
         <meta charset="utf-8" />
         <meta content="This is the homepage of Zeyuan (Jerry) Hu" name="description">
         <meta content="Zeyuan Hu, Zeyuan, Jerry Hu, Jerry, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, Zeyuan wisc, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
@@ -37,14 +37,79 @@
                 </ul></nav>
         </header><!-- /#banner -->
 
-<section id="content" class="body">
 
-<h1>Archives by tag 'recursion'</h1>
+     <section id="content" class="body">
+        <aside id="featured"><article>
+                <h1 class="entry-title"><a href="../posts/2016/Dec/24/a-small-c-trick-i-learned-today/">A small C trick I learned today</a></h1>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-24T23:11:00+08:00">Sat 24 Dec 2016, 23:11</abbr></p>
 
-        <li>Dec.23.16: <a href="../posts/2016/Dec/23/print-singly-linked-list-in-reverse-order/">Print singly linked list in reverse order</a></li>
-        <li>Dec.03.16: <a href="../posts/2016/Dec/03/reverse-singly-linked-list/">Reverse Singly Linked List</a></li>
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/programming-languages.html">programming languages</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/c.html">c</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>Today I learned a C trick. Here is my original <tt class="docutils literal">printList</tt>:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">printList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">Pos</span> <span class="n">dummy</span><span class="p">;</span> <span class="c1">// creates a dummy node to traverse the list</span>
 
-</section>
+  <span class="n">dummy</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="n">dummy</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d-&gt;&quot;</span><span class="p">,</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
+    <span class="n">dummy</span> <span class="o">=</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>It works but there is a small caveat in this routine. This is
+part of print out for the <tt class="docutils literal">linkedListTestMain</tt>:</p>
+<pre class="literal-block">
+TEST: printList
+23-&gt;44-&gt;45-&gt;57-&gt;89-&gt;-1-&gt;
+</pre>
+<p>As you can see, there is a little <tt class="docutils literal"><span class="pre">-&gt;</span></tt> at the end of linked list, which
+is not supposed to be there because there is no next element after <tt class="docutils literal"><span class="pre">-1</span></tt>.</p>
+<p>I try to solve this problem but the solution is not succint and I don't want to
+do complicated stuff just to remove this <tt class="docutils literal"><span class="pre">-&gt;</span></tt>. Howver, I finally get a solution
+today that is very clean to eliminate <tt class="docutils literal"><span class="pre">-&gt;</span></tt> without adding additional complexity to
+the routine.</p>
+<p>In C, we know we can use if-else shorthand likes the following:</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>is equivalent with</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+<span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
+</pre></div>
+<p>We can use this shorthand inside our routine <tt class="docutils literal">printf</tt> statement to solve our problem:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">printList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">Pos</span> <span class="n">dummy</span><span class="p">;</span> <span class="c1">// creates a dummy node to traverse the list</span>
+
+  <span class="n">dummy</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="n">dummy</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d%s&quot;</span><span class="p">,</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">,</span> <span class="p">(</span><span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="s">&quot;-&gt;&quot;</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">));</span>
+    <span class="n">dummy</span> <span class="o">=</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>As you can see, inside <tt class="docutils literal">printf</tt> statement, we don't printout <tt class="docutils literal"><span class="pre">-&gt;</span></tt> by default, we check
+if <tt class="docutils literal"><span class="pre">dummy-&gt;Next</span></tt> is <tt class="docutils literal">NULL</tt>, then that means we are at the last element of the list, and
+we don't append anything (i.e. <tt class="docutils literal"><span class="pre">(&quot;&quot;)</span></tt>). However, if this is not the case, we print <tt class="docutils literal"><span class="pre">-&gt;</span></tt>.</p>
+
+        </article></aside><!-- /#featured -->
+</ol><!-- /#posts-list -->
+</section><!-- /#content -->
 
         <aside id="sidebar">
           <!-- <div class="widget" id="book" role="book">
@@ -60,7 +125,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         <ul>
                            <li ><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (5)</a></li>
                            <li ><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
-                           <li ><a href="../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (1)</a></li>
+                           <li class="active"><a href="../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (1)</a></li>
                            <li ><a href="../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>
                 </div>
