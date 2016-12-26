@@ -239,8 +239,17 @@ seems redundant (we could directly call <tt class="docutils literal">malloc</tt>
 However, the key for this routine is <tt class="docutils literal"><span class="pre">R-&gt;NextDigit</span> = NULL;</tt>. This step can be easily omitted. However,
 without this step, we don't have fully control on what our newly-allocated empty list (i.e. a list with only
 header node) will look like. In other words, our header node will point to somewhere (i.e. <tt class="docutils literal"><span class="pre">R-&gt;NextDigit</span></tt>) randomly without
-our key step. This can cause serious trouble for the following routine debug. So, the important lesson is to
-always clear out the pointer by setting it to <tt class="docutils literal">NULL</tt> whenever we do initialization.</p>
+our key step. This can cause serious trouble for the following routine debug. For example, we could have <tt class="docutils literal"><span class="pre">R-&gt;NextDigit</span></tt>
+holds some address value that happens to have a node structure there with a value in it. For instance, <tt class="docutils literal"><span class="pre">dummy-&gt;1</span></tt>.
+This can usually happen when you OS try to reuse the memory chunk you previously freed. For example, try the following experiment:</p>
+<ol class="arabic simple">
+<li>replace <tt class="docutils literal">makeEmpty</tt> on Line[7] &amp; line[10] in <tt class="docutils literal">multiply</tt> function</li>
+<li><tt class="docutils literal">multiply</tt> works fine with <tt class="docutils literal">test_multiply()</tt> solely in the test program.</li>
+<li><tt class="docutils literal">multiply</tt> won't work if we do <tt class="docutils literal">test_intializeInteger()</tt> and <tt class="docutils literal">test_add()</tt> before <tt class="docutils literal">test_multiply()</tt>
+because the integer we construct will no longer be <tt class="docutils literal">342</tt> in the test case but something like <tt class="docutils literal">3425</tt>, where
+<tt class="docutils literal">5</tt> is some value pointed by <tt class="docutils literal"><span class="pre">R-&gt;NextDigit</span></tt>.</li>
+</ol>
+<p>So, always clear out the pointer by setting it to <tt class="docutils literal">NULL</tt> whenever we do initialization.</p>
 </div>
 <script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
