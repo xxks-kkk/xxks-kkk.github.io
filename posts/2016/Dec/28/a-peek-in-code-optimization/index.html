@@ -1,52 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <title>Tech Stuff</title>
+        <title>A peek in code optimization</title>
         <meta charset="utf-8" />
         <meta content="This is the homepage of Zeyuan (Jerry) Hu" name="description">
         <meta content="Zeyuan Hu, Zeyuan, Jerry Hu, Jerry, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, Zeyuan wisc, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
         <meta content="Zeyuan Hu" name="author">
-        <link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
-        <link rel="stylesheet" href="./theme/css/font-awesome.min.css" type="text/css" />
-        <link href='./theme/images/favicon.ico' rel='icon' type='image/x-icon'/>
-        <link href="./None" type="application/atom+xml" rel="alternate" title="Tech Stuff ATOM Feed" />
+        <link rel="stylesheet" href="../../../../../theme/css/main.css" type="text/css" />
+        <link rel="stylesheet" href="../../../../../theme/css/font-awesome.min.css" type="text/css" />
+        <link href='../../../../../theme/images/favicon.ico' rel='icon' type='image/x-icon'/>
+        <link href="../../../../../None" type="application/atom+xml" rel="alternate" title="Tech Stuff ATOM Feed" />
 
 
         <!--[if IE]>
                 <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 
         <!--[if lte IE 7]>
-                <link rel="stylesheet" type="text/css" media="all" href="./css/ie.css"/>
-                <script src="./js/IE8.js" type="text/javascript"></script><![endif]-->
+                <link rel="stylesheet" type="text/css" media="all" href="../../../../../css/ie.css"/>
+                <script src="../../../../../js/IE8.js" type="text/javascript"></script><![endif]-->
 
         <!--[if lt IE 7]>
-                <link rel="stylesheet" type="text/css" media="all" href="./css/ie6.css"/><![endif]-->
+                <link rel="stylesheet" type="text/css" media="all" href="../../../../../css/ie6.css"/><![endif]-->
 
 </head>
 
 <body id="index" class="home">
         <header id="banner" class="body">
-          <!-- <h1><a href="./index.html"><img src="./theme/images/logo2.png" alt="Tech Stuff" /><br /><strong>A tmp place to rest</strong></a></h1> -->
-          <!-- <h1><a href="./index.html">Tech Stuff<br /><strong>A tmp place to rest</strong></a></h1> -->
+          <!-- <h1><a href="../../../../../index.html"><img src="../../../../../theme/images/logo2.png" alt="Tech Stuff" /><br /><strong>A tmp place to rest</strong></a></h1> -->
+          <!-- <h1><a href="../../../../../index.html">Tech Stuff<br /><strong>A tmp place to rest</strong></a></h1> -->
                 <nav><ul>
-                    <li ><a href="./about-zeyuan.html">About Zeyuan</a></li>
-                    <li ><a href="./projects.html">Projects</a></li>
-                    <li ><a href="./quotes.html">Quotes</a></li>
-                <li><a href=".">Blog</a></li>
-                <li><a href="./archives/index.html">Archives</a></li>
+                    <li ><a href="../../../../../about-zeyuan.html">About Zeyuan</a></li>
+                    <li ><a href="../../../../../projects.html">Projects</a></li>
+                    <li ><a href="../../../../../quotes.html">Quotes</a></li>
+                <li><a href="../../../../..">Blog</a></li>
+                <li><a href="../../../../../archives/index.html">Archives</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
-
-     <section id="content" class="body">
-        <aside id="featured"><article>
-                <h1 class="entry-title"><a href="./posts/2016/Dec/28/a-peek-in-code-optimization/">A peek in code optimization</a></h1>
+<section id="content" class="body">
+<article>
+      <header> <h1 class="entry-title"><a href="../../../../../posts/2016/Dec/28/a-peek-in-code-optimization/"
+        rel="bookmark" title="Permalink to A peek in code optimization">A peek in code optimization</a></h1>  </header>
+        <div class="entry-content">
 <footer class="post-info">
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-28T13:21:00+08:00">Wed 28 Dec 2016, 13:21</abbr></p>
 
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/singly-linked-list.html">singly-linked-list</a> <a href="./tag/software-engineering.html">software engineering</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>Quite often, when I take a look at a programming
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/singly-linked-list.html">singly-linked-list</a> <a href="../../../../../tag/software-engineering.html">software engineering</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+        <p>Quite often, when I take a look at a programming
 question solution, I'm amazed by how succint the provided
 solution is. However, it is also known that getting an &quot;optimized&quot;
 solution is often taking iterative approach. This is something
@@ -55,7 +56,7 @@ that I didn't realize until I start to work in the industry.</p>
 We don't have to give a perfect solution right away. We can provide a
 solution and gradually make it better.</p>
 <p>The example I show here is <tt class="docutils literal">integerList add(integerList A, integerList B)</tt>,
-which is part of <a class="reference external" href="./posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">MAW 3.9 integer arithmetic package question</a></p>
+which is part of <a class="reference external" href="../../../../../posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">MAW 3.9 integer arithmetic package question</a></p>
 <div class="highlight"><pre><span></span><span class="n">integerList</span>
 <span class="nf">add</span><span class="p">(</span><span class="n">integerList</span> <span class="n">A</span><span class="p">,</span> <span class="n">integerList</span> <span class="n">B</span><span class="p">)</span>
 <span class="p">{</span>
@@ -168,227 +169,27 @@ loop in the original solution.</p>
 <span class="p">}</span>
 </pre></div>
 
-        </article></aside><!-- /#featured -->
-                <h1><i class="fa fa-bars"></i> Other articles</h1>
-                <hr />
-                    <ol id="posts-list" class="hfeed">
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/" rel="bookmark" title="Permalink to Reflection on integer arithmetic package problem">Reflection on integer arithmetic package problem</a></h1>
-                </header>
+        </div><!-- /.entry-content -->
+        <div class="comments">
+        <h2>Comments !</h2>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+               var disqus_identifier = "posts/2016/Dec/28/a-peek-in-code-optimization/";
+               (function() {
+               var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+               dsq.src = 'https://zhu45-org.disqus.com/embed.js';
+               (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+              })();
+            </script>
+        </div>
 
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-26T23:03:00+08:00">Mon 26 Dec 2016, 23:03</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/software-engineering.html">software-engineering</a> <a href="./tag/c.html">c</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>This weekend, I'm working on MAW 3.9. The single problem results
-in almost 500 lines of code. This is quite unexpected. The problem
-is stated as the following:</p>
-<blockquote>
-Write an arbitrary-precision integer arithmetic package. You should
-use a strategy similar to polynomial arithmetic. Compute the distribution
-of the ...</blockquote>
-                <a class="readmore" href="./posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Dec/24/a-small-c-trick-i-learned-today/" rel="bookmark" title="Permalink to A small C trick I learned today">A small C trick I learned today</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-24T23:11:00+08:00">Sat 24 Dec 2016, 23:11</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/programming-languages.html">programming languages</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/c.html">c</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>Today I learned a C trick. Here is my original <tt class="docutils literal">printList</tt>:</p>
-<div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="nf">printList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">Pos</span> <span class="n">dummy</span><span class="p">;</span> <span class="c1">// creates a dummy node to traverse the list</span>
-
-  <span class="n">dummy</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-
-  <span class="k">while</span> <span class="p">(</span><span class="n">dummy</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d-&gt;&quot;</span><span class="p">,</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
-    <span class="n">dummy</span> <span class="o">=</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-<p>It works but there is a small caveat in this routine. This ...</p>
-                <a class="readmore" href="./posts/2016/Dec/24/a-small-c-trick-i-learned-today/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Dec/23/print-singly-linked-list-in-reverse-order/" rel="bookmark" title="Permalink to Print singly linked list in reverse order">Print singly linked list in reverse order</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-23T00:05:00+08:00">Fri 23 Dec 2016, 00:05</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/singly-linked-list.html">singly-linked-list</a> <a href="./tag/recursion.html">recursion</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>Today, during the lunch break, I take a look at the following problem:</p>
-<blockquote>
-Print a singly linked list in reverse order.</blockquote>
-<p>This is actually one of the interview questions I got at SAP for ABAP developer position
-(luckily, they didn't offer me the position). I didn't get the ...</p>
-                <a class="readmore" href="./posts/2016/Dec/23/print-singly-linked-list-in-reverse-order/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Dec/21/environment-variable-substitution-using-sed/" rel="bookmark" title="Permalink to Environment variable substitution using Sed">Environment variable substitution using <tt class="docutils literal">Sed</tt></a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-21T12:07:00+08:00">Wed 21 Dec 2016, 12:07</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/tools.html">tools</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/sed.html">sed</a> <a href="./tag/shell.html">shell</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>Suppose we have a text file <tt class="docutils literal">config.ini</tt> looks something like this:</p>
-<pre class="literal-block">
-[MSSQLSERVER]
-Driver=INSTHOME/foo/foo.so
-
-[SYBASE]
-Driver=INSTHOME/bar/bar.so
-
-...
-</pre>
-<p>We want to replace all the appearance of <tt class="docutils literal">INSTHOME</tt> with the
-value we hold in <tt class="docutils literal">$HOME</tt>. Here is what I do initially:</p>
-<div class="highlight"><pre><span></span>sed -i -e <span class="s2">&quot;s ...</span></pre></div>
-                <a class="readmore" href="./posts/2016/Dec/21/environment-variable-substitution-using-sed/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Dec/20/whats-the-difference-between-sourcing-a-script-and-executing-a-script/" rel="bookmark" title="Permalink to What's the difference between sourcing a script and executing a script?">What's the difference between sourcing a script and executing a script?</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-20T21:49:00+08:00">Tue 20 Dec 2016, 21:49</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/tools.html">tools</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/shell.html">shell</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>I run across the question in the title when I take a break from the work
-today. Then I did a little bit googling, and the explanation is not quite satisfying
-to me. So, I decide to answer this question by a simplied example from my work.</p>
-<p>For me, this ...</p>
-                <a class="readmore" href="./posts/2016/Dec/20/whats-the-difference-between-sourcing-a-script-and-executing-a-script/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Dec/18/polynomial-multiplication/" rel="bookmark" title="Permalink to Polynomial Multiplication">Polynomial Multiplication</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-18T18:53:00+08:00">Sun 18 Dec 2016, 18:53</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/singly-linked-list.html">singly-linked-list</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>I finally got time to continue working through MAW. The problem 3.7 relates to polynomial multiplication.</p>
-<div class="section" id="problem">
-<h2>Problem</h2>
-<p>Write a function to multiply two polynomials, using a linked list implementation. You must make sure that
-the output polynomial is sorted by exponent and has at most one term of any ...</p></div>
-                <a class="readmore" href="./posts/2016/Dec/18/polynomial-multiplication/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Dec/17/pelican-hack-day/" rel="bookmark" title="Permalink to Pelican Hack Day">Pelican Hack Day</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-17T22:44:00+08:00">Sat 17 Dec 2016, 22:44</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/tools.html">tools</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/pelican.html">pelican</a> <a href="./tag/jinja.html">Jinja</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>I have been using Sphinx since 2012 and I spend quite a amount of time to customize
-my old Sphinx-based websites
-(<a class="reference external" href="https://zeyuanhu.wordpress.com/2016/11/24/under-construction-part-12/">This article revisits all my past website construction effort</a>).
-However, most of the time I'm tweaking the CSS and content organization of the site.
-I never get my ...</p>
-                <a class="readmore" href="./posts/2016/Dec/17/pelican-hack-day/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Dec/16/lesson-learned-portability/" rel="bookmark" title="Permalink to Lesson Learned: Portability">Lesson Learned: Portability</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-16T23:20:00+08:00">Fri 16 Dec 2016, 23:20</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/misc.html">misc</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/software-engineering.html">software-engineering</a> <a href="./tag/shell.html">shell</a> <a href="./tag/aix.html">AIX</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>Portability is a kind of issue that people always talk about in software engineering field.
-I never have been through such problem on my own probably because I don't have to port my
-stuff into different platforms. However, this is not the case anymore during the work.</p>
-<p>Recently, I ...</p>
-                <a class="readmore" href="./posts/2016/Dec/16/lesson-learned-portability/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Dec/03/reverse-singly-linked-list/" rel="bookmark" title="Permalink to Reverse Singly Linked List">Reverse Singly Linked List</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-03T20:34:00+08:00">Sat 03 Dec 2016, 20:34</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/singly-linked-list.html">singly-linked-list</a> <a href="./tag/recursion.html">recursion</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <div class="section" id="problem">
-<h2>Problem</h2>
-<p>This problem is MAW 3.12:</p>
-<blockquote>
-<ol class="loweralpha simple">
-<li>Write a nonrecursive procedure to reverse a singly linked list in O(N) time.</li>
-<li>Write a procedure to reverse a singly linked list in O(N) time using constant
-extra space.</li>
-</ol>
-</blockquote>
-</div>
-<div class="section" id="solution">
-<h2>Solution</h2>
-<p>Essentially, this is just one problem: reverse a singly linked list ...</p></div>
-                <a class="readmore" href="./posts/2016/Dec/03/reverse-singly-linked-list/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
-</ol><!-- /#posts-list -->
-        <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
-        <hr />
-        <ul class="pagination">
-                <li class="prev disabled"><i class="fa fa-arrow-left fa-fw"></i>&nbsp;</li>
-                    <li class="active"><a
-                            href="./index.html">1</a>&nbsp;</li>
-                    <li class=""><a
-                            href="./index2.html">2</a>&nbsp;</li>
-                <li class="next"><a
-                        href="./index2.html"><i class="fa fa-arrow-right fa-fw"></i></a></li>
-        </ul>
-</section><!-- /#content -->
+</article>
+</section>
 
         <aside id="sidebar">
           <!-- <div class="widget" id="book" role="book">
 <h2><i class="fa fa-book fa-lg"></i> MySQL 5.1 Plugins Development</h2>
-<a href="https://www.packtpub.com/mysql-5-1-plugins-development/book"><img border="0" style="float:left" src="./theme/images/0608OS_MockupCover_sm.png" />
+<a href="https://www.packtpub.com/mysql-5-1-plugins-development/book"><img border="0" style="float:left" src="../../../../../theme/images/0608OS_MockupCover_sm.png" />
 MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now available from Packt Publishing.</a>
 <br style="clear:left;" />
 </div> -->
@@ -397,16 +198,16 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (7)</a></li>
-                           <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
-                           <li ><a href="./category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (1)</a></li>
-                           <li ><a href="./category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
+                           <li class="active"><a href="../../../../../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (7)</a></li>
+                           <li ><a href="../../../../../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
+                           <li ><a href="../../../../../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (1)</a></li>
+                           <li ><a href="../../../../../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>
                 </div>
                 <div class="widget social">
                         <h2><i class="fa fa-comments fa-lg"></i> Social</h2>
                         <ul>
-                            <!-- <li><a href="./None" rel="alternate"><i class="fa fa-rss-square fa-lg"></i> RSS feed</a></li> -->
+                            <!-- <li><a href="../../../../../None" rel="alternate"><i class="fa fa-rss-square fa-lg"></i> RSS feed</a></li> -->
                             <!--  -->
 
                             <li><a href="http://github.com/xxks-kkk"><i class="fa fa-github fa-lg"></i> GitHub</a></li>
@@ -419,72 +220,72 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
             <h2><i class="fa fa-tags fa-lg"></i>Tags</h2>
                 <ul class="list-group list-inline tagcloud" id="tags">
                     <li class="list-group-item tag-4">
-                        <a href="./tag/aix.html">
+                        <a href="../../../../../tag/aix.html">
                             AIX
                         </a>
                     </li>
                     <li class="list-group-item tag-1">
-                        <a href="./tag/c.html">
+                        <a href="../../../../../tag/c.html">
                             c
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
-                        <a href="./tag/emacs.html">
+                        <a href="../../../../../tag/emacs.html">
                             emacs
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
-                        <a href="./tag/github.html">
+                        <a href="../../../../../tag/github.html">
                             github
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
-                        <a href="./tag/jinja.html">
+                        <a href="../../../../../tag/jinja.html">
                             Jinja
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
-                        <a href="./tag/meta.html">
+                        <a href="../../../../../tag/meta.html">
                             meta
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
-                        <a href="./tag/pelican.html">
+                        <a href="../../../../../tag/pelican.html">
                             pelican
                         </a>
                     </li>
                     <li class="list-group-item tag-2">
-                        <a href="./tag/recursion.html">
+                        <a href="../../../../../tag/recursion.html">
                             recursion
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
-                        <a href="./tag/sed.html">
+                        <a href="../../../../../tag/sed.html">
                             sed
                         </a>
                     </li>
                     <li class="list-group-item tag-2">
-                        <a href="./tag/shell.html">
+                        <a href="../../../../../tag/shell.html">
                             shell
                         </a>
                     </li>
                     <li class="list-group-item tag-0">
-                        <a href="./tag/singly-linked-list.html">
+                        <a href="../../../../../tag/singly-linked-list.html">
                             singly-linked-list
                         </a>
                     </li>
                     <li class="list-group-item tag-2">
-                        <a href="./tag/software-engineering.html">
+                        <a href="../../../../../tag/software-engineering.html">
                             software engineering
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
-                        <a href="./tag/travis-ci.html">
+                        <a href="../../../../../tag/travis-ci.html">
                             travis-ci
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
-                        <a href="./tag/tutorial.html">
+                        <a href="../../../../../tag/tutorial.html">
                             tutorial
                         </a>
                     </li>
