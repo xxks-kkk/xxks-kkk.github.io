@@ -40,7 +40,393 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="./posts/2016/Dec/28/a-peek-in-code-optimization/">A peek in code optimization</a></h1>
+                <h1 class="entry-title"><a href="./posts/2016/Dec/31/josephus-problem/">Josephus Problem</a></h1>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-31T20:24:00+08:00">Sat 31 Dec 2016, 20:24</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/recursion.html">recursion</a> <a href="./tag/dynamic-programming.html">dynamic-programming</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <h2>Preface</h2>
+<p>This is actually MAW 3.10. I gradually realize how dense MAW is.
+In the <a href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">previous problem</a>,
+I write almost 500 lines of code. For this one, the problem is not really diffcult to solve if we implement a program 
+that follows the game rule exactly. However, I figure it is a good chance to dig a little deeper to learn somewhat
+fully from the question.</p>
+<p>Let's start to dive in.</p>
+<h2>Overview</h2>
+<p>I first describe the <em>Josephus problem</em> in general. Then, I present a closed form solution to 
+solve a special case of the original problem.
+Afterwards, I present a recurrence solution to solve the general problem. </p>
+<h2>Josephus problem</h2>
+<p>The <em>Josephus problem</em> is the following game: <span class="math">\(N\)</span> people, numbered <span class="math">\(1\)</span> to <span class="math">\(N\)</span>, are
+sitting in a circle. Starting at person 1, a hot potato is passed. After <span class="math">\(M\)</span> passes,
+the person holding the hot potato is eliminated, the circle closes ranks, and the
+game continues with the person who was sitting after the eliminated person picking
+up the hot potato. The last remaining person wins. Thus, if <span class="math">\(M = 0\)</span> and <span class="math">\(N = 5\)</span>, players
+are eliminated in order, and player 5 wins. If <span class="math">\(M = 1\)</span> and <span class="math">\(N = 5\)</span>, the order of elimination
+is <span class="math">\(2\)</span>,<span class="math">\(4\)</span>,<span class="math">\(1\)</span>,<span class="math">\(5\)</span>.</p>
+<h2>Josephus problem with <span class="math">\(M = 2\)</span></h2>
+<p>Let's first discuss a special case of the Josephus Problem: <span class="math">\(M = 2\)</span>.</p>
+<p>In the following, <span class="math">\(n\)</span> denotes the number of 
+people in the initial circle, and <span class="math">\(m\)</span> denotes the count for each step. In other words, <span class="math">\(m-1\)</span> people
+are skipped and the <span class="math">\(m\)</span>-th is eliminated. The people in the circle are numbered from <span class="math">\(1\)</span> to <span class="math">\(n\)</span>. Our goal
+is to find <span class="math">\(J(n,m)\)</span>, which denotes the survivor's number (i.e. <span class="math">\(J(5,1) = 3\)</span>). For simplicity, let <span class="math">\(F(n) = J(n,2)\)</span>.</p>
+<p><img alt="" src="./images/josephus-1.png" /> </p>
+<p>One quick observation is that after the first go-round, we are left with the same problem but for a different
+number of people. For instance, when <span class="math">\(n = 10\)</span>, after the first go-round, we eliminate <span class="math">\(2\)</span>, <span class="math">\(4\)</span>, <span class="math">\(6\)</span>, <span class="math">\(8\)</span>, <span class="math">\(10\)</span>
+and then we go to the second-round beginning with <span class="math">\(3\)</span>, which is the same problem as the original one. 
+The only difference is that the person with number <span class="math">\(3\)</span> in the first-round now becomes number <span class="math">\(2\)</span> in the second-round.</p>
+<p><em>Case 1: When <span class="math">\(n\)</span> is even ...</em></p>
+<p>Let <span class="math">\(n = 2k\)</span>. After the first-round we are left with <span class="math">\(k\)</span> people, and we try to find out what is <span class="math">\(F(k)\)</span>. In addition, by
+our observation, the numbering of people is changed. If <span class="math">\(3\)</span> is actually the answer (i.e. <span class="math">\(F(2k) = 3\)</span>), then in the second-round
+the original person with <span class="math">\(3\)</span> now becomes <span class="math">\(2\)</span> (i.e. <span class="math">\(F(k) = 2\)</span>). So, we have</p>
+<div class="math">$$
+\begin{equation}
+F(2k) = 2F(k) - 1, \text{ for } k &gt;= 1 \label{eq:1}
+\end{equation}
+$$</div>
+<p><em>Case 2: When <span class="math">\(n\)</span> is odd ...</em></p>
+<p>Let <span class="math">\(n = 2k+1\)</span>. By the same reasoning as case 1, after the first-round, we still eliminate <span class="math">\(k\)</span> people. For instance, when <span class="math">\(n = 9\)</span>,
+after the first-round, we elminate <span class="math">\(2\)</span>, <span class="math">\(4\)</span>, <span class="math">\(6\)</span>, <span class="math">\(8\)</span>, <span class="math">\(1\)</span>. In other words, <span class="math">\(1\)</span> is eliminate just after person number <span class="math">\(2k\)</span>. So, we 
+have</p>
+<div class="math">$$
+\begin{equation}
+F(2k+1) = 2F(k) + 1, \text{ for } k &gt;= 1\label{eq:2}
+\end{equation}
+$$</div>
+<p>So now our goal is to solve the recurrence equations \ref{eq:1} and \ref{eq:2} given <span class="math">\(F(1) = 1\)</span> to find a closed form. Let's do
+this by building a table of small values:</p>
+<div class="highlight"><pre><span></span>| n    | 1 | 2   3 | 4   5   6   7 | 8   9   10   11   12   13   14   15 | 16 |
+|------|---|-------|---------------|-------------------------------------|----|
+| F(n) | 1 | 1   3 | 1   3   5   7 | 1   3   5    7    9    11   13   15 | 1  |
+</pre></div>
+
+
+<p>We can group the columns by powers of <span class="math">\(2\)</span> (marked by vertical lines in the table); Inside each group,
+<span class="math">\(F(n)\)</span> is always <span class="math">\(1\)</span> at the beginning and then it increases by <span class="math">\(2\)</span> until the next group, which is 
+the next power of <span class="math">\(2\)</span>. So, for every number <span class="math">\(n\)</span>, there exists an integer <span class="math">\(a\)</span> such that <span class="math">\(2^a &lt;= n &lt; 2^{a+1}\)</span>.
+For some <span class="math">\(0 &lt;= l &lt;= 2^a\)</span>, then <span class="math">\(n = 2^a + l\)</span>. In other words, <span class="math">\(2^a\)</span> is the largest power of 2 not exceeding <span class="math">\(n\)</span>
+and <span class="math">\(l\)</span> is what's left. Then, from the table above, we may have the formula:</p>
+<div class="math">$$
+\begin{equation}
+F(n) = F(2^a + l) = 2l + 1 \label{eq:3}
+\end{equation}
+$$</div>
+<p>Now, let's prove equation \ref{eq:3} by induction on <span class="math">\(a\)</span>.</p>
+<ul>
+<li><em>Base case.</em> When <span class="math">\(a = 0\)</span>, we must have <span class="math">\(l = 1\)</span>; thus we have <span class="math">\(F(1) = 1\)</span>, which is true.</li>
+<li>
+<p><em>Induction.</em> We use <a href="https://en.wikipedia.org/wiki/Mathematical_induction#Complete_induction">strong induction</a> by
+assuming that the equation holds for all <span class="math">\(a\)</span> up to certain value. Let's consider this value of <span class="math">\(a\)</span>. The induction 
+steps has two parts, depending on whether <span class="math">\(n\)</span> (and thus <span class="math">\(l\)</span>) is even or odd.</p>
+<ul>
+<li>
+<p>If <span class="math">\(2^a + l = 2k\)</span>, then</p>
+<p>
+<div class="math">$$
+\begin{align*}
+F(2^a + l) &amp;= 2F(2^{a-1} + l/2) - 1 &amp;&amp;\text{(by equation 1)} \\
+        &amp;= 2(2l/2 + 1) - 1      &amp;&amp;\text{(by induction hypothesis)} \\
+        &amp;= 2l + 1
+\end{align*}
+$$</div>
+</p>
+</li>
+<li>
+<p>If <span class="math">\(2^a + l = 2k+1\)</span>, then</p>
+<p>
+<div class="math">$$
+\begin{align*}
+F(2^a + l) &amp;= 2F(2^{a-1} + (l-1)/2) + 1 &amp;&amp;\text{(by equation 2)} \\
+        &amp;= 2(2(l-1)/2 + 1) + 1      &amp;&amp;\text{(by induction hypothesis)} \\
+        &amp;= 2l + 1
+\end{align*}
+$$</div>
+</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>This completes induction step.</p>
+<p>Let's revisit our closed form solution \ref{eq:3} again. Let's rewrite it into the form:</p>
+<div class="math">$$F(n) = 2 (n - 2^a) + 1$$</div>
+<p><span class="math">\(n - 2^a\)</span> is the same as zeroing the most significant bit of <span class="math">\(n\)</span>. Then, we multiply the result
+with <span class="math">\(2\)</span>, which is the same as shifting left one place, and adding <span class="math">\(1\)</span> is the same as setting the lowest
+bit to <span class="math">\(1\)</span>. In other words, equation \ref{eq:3} is essentially do a one-bit cyclic shift left. Let's try to write this 
+out formally. Let <span class="math">\(n = (b_ab_{a-1}..b_1b_0)_2\)</span>, then we have:</p>
+<div class="math">$$ F(n) = F((b_ab_{a-1}..b_1b_0)_2) = (b_{a-1}...b_1b_0b_a)_2 \text{ and } b_a = 1$$</div>
+<p>For a more rigorous derivation of this cyclic shift property, please reference <em>Concrete Mathematics: A Foundation for Computer Science</em>.</p>
+<p>The way we solve Josephus problem with <span class="math">\(M = 2\)</span> is unlikely to be generalized for arbitrary <span class="math">\(m\)</span>. Let's take <span class="math">\(n = 10\)</span>, <span class="math">\(m = 2\)</span> example again. The
+reason we can derive the nice recurrence equations \ref{eq:1} and \ref{eq:2} is because our observation. Let's present our
+observation is a different way. <span class="math">\(F(2k)\)</span> denotes the old numbering before the first-round. <span class="math">\(F(k)\)</span> denotes the new numbering 
+after the first-round.</p>
+<div class="highlight"><pre><span></span>      m = 2               m = 3
++-------+------+    +-------+------+
+| F(2k) | F(k) |    | F(2k) | F(k) |
++-------+------+    +-------+------+
+| 1     | 1    |    | 1     | 1    |
++-------+------+    +-------+------+
+| 3     | 2    |    | 2     | 2    |
++-------+------+    +-------+------+
+| 5     | 3    |    | 4     | 3    |
++-------+------+    +-------+------+
+| 7     | 4    |    | 5     | 4    |
++-------+------+    +-------+------+
+| 9     | 5    |    | 7     | 5    |
++-------+------+    +-------+------+
+                    | 8     | 6    |
+                    +-------+------+
+                    | 10    | 7    |
+                    +-------+------+
+</pre></div>
+
+
+<p>By looking at the table on the left, we can easily see that <span class="math">\(F(2k) = 2F(k) - 1\)</span>. 
+However, there is no nice clean linear relation that we can get between <span class="math">\(F(2k)\)</span> and <span class="math">\(F(k)\)</span> 
+when <span class="math">\(n = 10\)</span>, <span class="math">\(m = 3\)</span>.</p>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>Inside <em>Concrete Mathematics: A Foundation for Computer Science</em>, after talking about the
+solution to the Josephus problem, the author shift their focus to solve a generalized
+recurrence of \ref{eq:1} and \ref{eq:2}, which is (1.11) in the book. This has nothing to do
+with the Josephus problem and I'm guessing the reason why the author want to talk about 
+the solution to the generalized recurrence is to illustrate dynamic programming philosophy.</p>
+</blockquote>
+<h2>General solution</h2>
+<p>The general solution utilitizes the dynamic programming paradigm by performing the first step
+and using the solution of the subproblem we create to solve the initial problem. 
+In terms of the solution, there is a difference when we start with the first person as <span class="math">\(1\)</span> or <span class="math">\(0\)</span>.</p>
+<h3>Starting from 1</h3>
+<p>The key insight is the following: the result of <span class="math">\(J(n,m)\)</span> is best NOT thought of as the <em>number</em> that is the 
+Josephus survivor, but rather as the <em>index</em> of the number that is the Josephus survivor. </p>
+<p>Let's first take a look an example when <span class="math">\(n = 6\)</span> and <span class="math">\(m = 2\)</span>.</p>
+<div class="highlight"><pre><span></span>fig.1
+
+  1 2      1 X      1 X      1 X      1 X      X X
+ 6   3 -&gt; 6   3 -&gt; 6   3 -&gt; X   3 -&gt; X   X -&gt; X   X
+  5 4      5 4      5 X      5 X      5 X      5 X
+
+fig.2
+
+| index | 1 | 2 | 3 | 4 | 5 | 6 |
+|-------|---|---|---|---|---|---|
+| n = 6 | 1 | 2 | 3 | 4 | 5 | 6 | J(6,2) = 5
+| n = 5 | 3 | 4 | 5 | 6 | 1 | 3 | J(5,2) = 3
+| n = 4 | 5 | 6 | 1 | 3 | 5 | 6 | J(4,2) = 1
+| n = 3 | 1 | 3 | 5 | 1 | 3 | 5 | J(3,2) = 3
+| n = 2 | 5 | 1 | 5 | 1 | 5 | 1 | J(2,2) = 1
+| n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 1
+
+fig.3
+
+| index | 1 | 2 | 3 | 4 | 5 | 6 |
+|-------|---|---|---|---|---|---|
+| n = 6 | 1 | X | 3 | 4 | 5 | 6 | J(6,2) = 5 = (2-1 + 3) mod 6 + 1
+| n = 5 | 3 | X | 5 | 6 | 1 | 3 | J(5,2) = 3 = (2-1 + 1) mod 5 + 1
+| n = 4 | 5 | X | 1 | 3 | 5 | X | J(4,2) = 1 = (2-1 + 3) mod 4 + 1
+| n = 3 | 1 | X | 5 | 1 | X | 5 | J(3,2) = 3 = (2-1 + 1) mod 3 + 1
+| n = 2 | 5 | X | 5 | X | 5 | X | J(2,2) = 1 = (2-1 + 1) mod 2 + 1
+| n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 1
+</pre></div>
+
+
+<p>By looking at fig.1, we know that <span class="math">\(J(6,2) = 5\)</span>. Now, if we take a look at fig.2, the row with <span class="math">\(n = 5% shows that $J(5,2) = 3\)</span>. By the insight,
+<span class="math">\(3\)</span> here means the <em>index</em> not the <em>number</em>. So, our final survivor is <span class="math">\(5\)</span>, which is positioned on <span class="math">\(3\)</span> in this row.</p>
+<p>Let's generalize the example a little bit. Suppose we want to know <span class="math">\(J(n,2)\)</span>. You can imagine 
+we have <span class="math">\(n\)</span> people lined up like this: </p>
+<div class="highlight"><pre><span></span>1 2 3 4 5 ... n
+</pre></div>
+
+
+<p>The first thing that happens is that person <span class="math">\(2\)</span> get eliminated, as shown here:</p>
+<div class="highlight"><pre><span></span>1 X 3 4 5 ... n
+</pre></div>
+
+
+<p>Now, we are left with a subproblem of the following form: there are <span class="math">\(n - 1\)</span> people remaining, every other
+person is going to be eliminated, and the first person who will start to pass potato is person <span class="math">\(3\)</span>. In other 
+words, the subproblem <span class="math">\(J(n-1, 2)\)</span> now looks like:</p>
+<div class="highlight"><pre><span></span>3 4 5 ... n 1
+</pre></div>
+
+
+<p><span class="math">\(J(n-1, 2)\)</span> will be the <em>index</em> of who survives in a line of <span class="math">\(n - 1\)</span> of people. Given that we have the <em>index</em>
+of the person who will survive, and we also know who the starting person is, we can determine which person 
+will be left. Here's how we'll do it.</p>
+<p>The starting person in this line is the person who comes right after the person who was last executed. This will 
+be person <span class="math">\(3\)</span>. The 1-indexed position in the ring of <span class="math">\(n-1\)</span> people is given by <span class="math">\(J(n-1, 2)\)</span>. We can then walk 
+forward <span class="math">\(J(n-1, 2)\)</span> positions, wrapping around the ring if necessary, to get our final position. In other words, the 
+survivor is given by position</p>
+<div class="math">$$
+\begin{equation}
+(3 + J(n-1, 2) - 1) \bmod n \label{eq:4}
+\end{equation}
+$$</div>
+<p>Let's take a look at <span class="math">\(n = 5\)</span> in fig.2 again. Now, the starting position is <span class="math">\(3\)</span> and we walk forward by <span class="math">\(J(5,2) - 1\)</span> steps (i.e. <span class="math">\(2\)</span> steps) 
+and we get the final survivor, which is <span class="math">\(5\)</span>. The reason we doing <span class="math">\(\bmod n\)</span> is because we want to keep final survivor within the bounds of the circle.</p>
+<p>However, there is a problem with our equation \ref{eq:4}. If we are indeed using one-indexing, what happens if the final survivor is at position <span class="math">\(n\)</span>?
+In that case, we would accidentally get back position <span class="math">\(0\)</span> as our answer, but we really want position <span class="math">\(n\)</span>. For example, suppose <span class="math">\(J(5,2) = 4\)</span>. In other words,
+the final survivor is <span class="math">\(6\)</span>, which is positioned at <span class="math">\(4\)</span> when <span class="math">\(n = 5\)</span>. Then, to apply equation \ref{eq:4}, we get <span class="math">\(0\)</span>, which is not <span class="math">\(6\)</span>.</p>
+<p>To fix this issue, we'll use a trick for using mod to wrap around with one-indexing: we'll take the inside quantity (the one-indexed position) and 
+subtract one to get the zero-indexed position. We'll mod that quantity by <span class="math">\(n\)</span> to get the zero-indexed position wrapped around. Finally, we'll add 
+back one to get the one-indexed position, wrapped around. That looks like:</p>
+<div class="math">$$(3 + J(n-1, 2) - 2) \bmod n + 1$$</div>
+<p>In other words, <span class="math">\(-2\)</span> term comes from two independent <span class="math">\(-1\)</span>'s: the first <span class="math">\(-1\)</span> is because <span class="math">\(J(n-1, 2)\)</span> returns a one-indexed index, so to step forward by
+the right number of positions we have to take <span class="math">\(J(n-1,2) - 1\)</span> steps forward. The second <span class="math">\(-1\)</span> comes from the fact that we're using one-indexing rather than
+zero-indexing.</p>
+<p>Now, we're finally ready to generalize the solution to arbitrary <span class="math">\(m\)</span>, not just <span class="math">\(m = 2\)</span>. After person <span class="math">\(m\)</span> get eliminated, we have an array like this:</p>
+<div class="highlight"><pre><span></span>1 2 3 ... m-1 X m+1 ... n
+</pre></div>
+
+
+<p>We now essentailly need to solve a subproblem where person <span class="math">\(m+1\)</span> comes first:</p>
+<div class="highlight"><pre><span></span>m+1 m+2 ... n 1 2 ... m-1
+</pre></div>
+
+
+<p>So we compute <span class="math">\(J(n-1, m) to get the one-indexed survivor of a ring of $n-1\)</span> people, then shift forward by that many steps:</p>
+<div class="math">$$(m+1 + J(n-1, m) - 1)$$</div>
+<p>We need to worry about the case where we wrap around, so we need to mod by <span class="math">\(n\)</span>:</p>
+<div class="math">$$(m+1 + J(n-1, m) - 1) \bmod n$$</div>
+<p>However, we're one-indexed, so we need to use the trick of subtracing <span class="math">\(1\)</span> from the inside quantity and then adding <span class="math">\(1\)</span> at the end:</p>
+<div class="math">$$(m+1 + J(n-1, m) - 2) \bmod n + 1$$</div>
+<p>which simplifies to:</p>
+<div class="math">$$(m-1 + J(n-1, m)) \bmod n + 1$$</div>
+<p>Notice that <span class="math">\(J(1,m) = 1\)</span>, which indicates that we're one-indexed.</p>
+<h3>Starting from 0</h3>
+<p>Since we are not in zero-indexed. Our <span class="math">\(J(6,2)\)</span> example looks like the following:</p>
+<div class="highlight"><pre><span></span>| index | 0 | 1 | 2 | 3 | 4 | 5 |
+|-------|---|---|---|---|---|---|
+| n = 6 | 1 | 2 | 3 | 4 | 5 | 6 | J(6,2) = 4 = (2 + 2 ) mod 6
+| n = 5 | 3 | 4 | 5 | 6 | 1 | 3 | J(5,2) = 2 = (0 + 2 ) mod 5
+| n = 4 | 5 | 6 | 1 | 3 | 5 | 6 | J(4,2) = 0 = (2 + 2 ) mod 4
+| n = 3 | 1 | 3 | 5 | 1 | 3 | 5 | J(3,2) = 2 = (0 + 2 ) mod 3
+| n = 2 | 5 | 1 | 5 | 1 | 5 | 1 | J(2,2) = 0 = (0 + 2 ) mod 2 
+| n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 0
+</pre></div>
+
+
+<p>Let's apply the same logic from the <a href="#starting-from-1">Stating from 1 section</a> to this case. After person <span class="math">\(m-1\)</span> get eliminated, we have an array like this:</p>
+<div class="highlight"><pre><span></span>0 1 2 ... m-2 X m ... n-1
+</pre></div>
+
+
+<p>We now essentailly need to solve a subproblem where person <span class="math">\(m\)</span> comes first:</p>
+<div class="highlight"><pre><span></span>m m+1 ... n-1 0 1 2 ... m-2
+</pre></div>
+
+
+<p>So, we compute <span class="math">\(J(n-1,m)\)</span> to giive us the zero-indexed survivor of a ring of <span class="math">\(n-1\)</span> people and we shfit forward by that many steps:</p>
+<div class="math">$$(m + J(n-1,m))$$</div>
+<p>We take care of wrapping around by mod <span class="math">\(n\)</span>:</p>
+<div class="math">$$(m + J(n-1,m)) \bmod n$$</div>
+<p>Since we are zero-indexed, we are done. If we want to transform our answer to one-indexed, we can do:</p>
+<div class="math">$$(m + J(n-1,m) \bmod n + 1$$</div>
+<p>Note that <span class="math">\(J(1,m) = 0\)</span> in this case, which indicates that we're zero-indexed.</p>
+<!-- ### Implementation -->
+
+<!-- There are many ways to solve this question. -->
+
+<!-- *Brute force* -->
+
+<!-- We can use a cricular double linked list to implement the solution. -->
+
+<!-- *Recurrence* -->
+
+<!-- Use the recurrence relation we just derived. -->
+
+<h2>What's left out</h2>
+<ul>
+<li><a href="http://blue.butler.edu/~phenders/InRoads/MathCounts8.pdf">Equivalence Class Solution</a> is interesting to check out.</li>
+<li><a href="https://www.scribd.com/document/3567390/Rank-Trees">Rank tree</a> as a data sturcture is worth to check out to solve this problem. <a href="http://www.imt.ro/romjist/Volum12/Number12_1/pdf/02-MCosulschi.pdf">This paper</a> gives a more detailed analysis.</li>
+</ul>
+<!-- ## Reference -->
+
+<!-- - https://en.wikipedia.org/wiki/Josephus_problem -->
+
+<!-- - Graham, R.L.; Knuth, D.E.; Patashnik, O. (1989), Concrete Mathematics: A Foundation for Computer Science, Addison Wesley, p. 8, ISBN 978-0-201-14236-5 -->
+
+<!-- - http://www.cut-the-knot.org/recurrence/r_solution.shtml -->
+
+<!-- - http://www.exploringbinary.com/powers-of-two-in-the-josephus-problem -->
+
+<!-- - http://www.math.northwestern.edu/~mlerma/problem_solving/solutions/josephus.pdf -->
+
+<!-- - http://blue.butler.edu/~phenders/InRoads/MathCounts8.pdf -->
+
+<!-- - http://stackoverflow.com/questions/31775604/explanation-for-recursive-implementation-of-josephus-prob?answertab=active#tab-top -->
+
+<!-- - http://stackoverflow.com/questions/21737771/can-someone-please-explain-the-use-of-modulus-in-this-code?rq=1 -->
+
+<!-- - https://rosettacode.org/wiki/Josephus_problem -->
+
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article></aside><!-- /#featured -->
+                <h1><i class="fa fa-bars"></i> Other articles</h1>
+                <hr />
+                    <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="./posts/2016/Dec/28/a-peek-in-code-optimization/" rel="bookmark" title="Permalink to A peek in code optimization">A peek in code optimization</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-28T13:21:00+08:00">Wed 28 Dec 2016, 13:21</abbr></p>
 
@@ -50,128 +436,10 @@
 question solution, I'm amazed by how succint the provided
 solution is. However, it is also known that getting an &quot;optimized&quot;
 solution is often taking iterative approach. This is something
-that I didn't realize until I start to work in the industry.</p>
-<p>This post is mainly a reminder to keep reminding myself about this point:
-We don't have to give a perfect solution right away. We can provide a
-solution and gradually make it better.</p>
-<p>The example I show here is <tt class="docutils literal">integerList add(integerList A, integerList B)</tt>,
-which is part of <a class="reference external" href="./posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">MAW 3.9 integer arithmetic package question</a></p>
-<div class="highlight"><pre><span></span><span class="n">integerList</span>
-<span class="nf">add</span><span class="p">(</span><span class="n">integerList</span> <span class="n">A</span><span class="p">,</span> <span class="n">integerList</span> <span class="n">B</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="n">integerList</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyR</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">digitSum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-  <span class="k">while</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">digitSum</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span> <span class="o">+</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Digit</span> <span class="o">+</span> <span class="n">carry</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">digitSum</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)</span>
-    <span class="p">{</span>
-      <span class="n">addDigit</span><span class="p">(</span><span class="n">digitSum</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-      <span class="n">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">else</span>
-    <span class="p">{</span>
-      <span class="n">carry</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="n">addDigit</span><span class="p">(</span><span class="n">digitSum</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span> <span class="o">-&gt;</span> <span class="n">NextDigit</span><span class="p">;</span>
-    <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span> <span class="o">-&gt;</span> <span class="n">NextDigit</span><span class="p">;</span>
-    <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span> <span class="o">-&gt;</span> <span class="n">NextDigit</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="c1">// example case: 342 + 706</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">carry</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">dummyA</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">dummyB</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">addDigit</span><span class="p">(</span><span class="n">carry</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-    <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">while</span><span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">addDigit</span><span class="p">(</span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span> <span class="o">+</span> <span class="n">carry</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-    <span class="n">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-    <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">while</span><span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">addDigit</span><span class="p">(</span><span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Digit</span> <span class="o">+</span> <span class="n">carry</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-    <span class="n">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-    <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-<p>The idea for this first iteration solution stems from MAW 3.5
-<a class="reference external" href="https://github.com/xxks-kkk/algo/blob/master/linkedList/generic/linkedList.c">List unionSortedLists(List L, List P)</a>:</p>
-<blockquote>
-Given two sorted lists, L and P, write a procedure to compute L1 union L2 using
-only the basic list operations.</blockquote>
-<p>Since we put the least significant digit as the very first data node and we
-put the most significant digit as the last data node, we walk through the list.
-If you compare this routine with <tt class="docutils literal">unionSortedLists</tt> routine, you can easily
-find that both routine structure is composed of three while loops. This makes sense
-because <tt class="docutils literal">union</tt> and <tt class="docutils literal">add</tt> are extremely similar mathematically.</p>
-<p>First we start by adding the unit digit. If both numbers have the same number of digits,
-then we are done afte the first while loop. There is a special case where we still have
-a carry after we processed all the digits. If number of digits for two numbers are not the same,
-then we just move extra digits to the result.</p>
-<p>Let's see how we can optimize this code.</p>
-<p>In the solution, we build the case around the number of digits that operands have.
-However, this is necessary because in the case that two numbers have different number of digits,
-we can add leading zeros to the beginning of the number with fewer digits. This will make
-adding two numbers with different number of digits the same as adding two numbers with the same
-number of digits. So, we eliminate the latter two while loops and only need to keep the first while
-loop in the original solution.</p>
-<p>Here is the final result.</p>
-<div class="highlight"><pre><span></span><span class="n">integerList</span>
-<span class="nf">add</span><span class="p">(</span><span class="n">integerList</span> <span class="n">A</span><span class="p">,</span> <span class="n">integerList</span> <span class="n">B</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="n">integerList</span> <span class="n">R</span> <span class="o">=</span> <span class="n">makeEmpty</span><span class="p">();</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyR</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">digitSum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span>
-
-  <span class="k">while</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
-    <span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
-
-    <span class="n">digitSum</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="n">carry</span><span class="p">;</span>
-    <span class="n">carry</span> <span class="o">=</span> <span class="n">digitSum</span> <span class="o">/</span> <span class="mi">10</span><span class="p">;</span>
-    <span class="n">addDigit</span><span class="p">(</span><span class="n">digitSum</span> <span class="o">%</span> <span class="mi">10</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span> <span class="o">-&gt;</span> <span class="n">NextDigit</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span> <span class="o">-&gt;</span> <span class="n">NextDigit</span><span class="p">;</span>
-    <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span> <span class="o">-&gt;</span> <span class="n">NextDigit</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="c1">// example case: 342 + 706</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">carry</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">addDigit</span><span class="p">(</span><span class="n">carry</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-    <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-        </article></aside><!-- /#featured -->
-                <h1><i class="fa fa-bars"></i> Other articles</h1>
-                <hr />
-                    <ol id="posts-list" class="hfeed">
+that I didn't realize until I start to work ...</p>
+                <a class="readmore" href="./posts/2016/Dec/28/a-peek-in-code-optimization/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="./posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/" rel="bookmark" title="Permalink to Reflection on integer arithmetic package problem">Reflection on integer arithmetic package problem</a></h1>
@@ -343,34 +611,6 @@ stuff into different platforms. However, this is not the case anymore during the
                 <a class="readmore" href="./posts/2016/Dec/16/lesson-learned-portability/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Dec/03/reverse-singly-linked-list/" rel="bookmark" title="Permalink to Reverse Singly Linked List">Reverse Singly Linked List</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-03T20:34:00+08:00">Sat 03 Dec 2016, 20:34</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/singly-linked-list.html">singly-linked-list</a> <a href="./tag/recursion.html">recursion</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <div class="section" id="problem">
-<h2>Problem</h2>
-<p>This problem is MAW 3.12:</p>
-<blockquote>
-<ol class="loweralpha simple">
-<li>Write a nonrecursive procedure to reverse a singly linked list in O(N) time.</li>
-<li>Write a procedure to reverse a singly linked list in O(N) time using constant
-extra space.</li>
-</ol>
-</blockquote>
-</div>
-<div class="section" id="solution">
-<h2>Solution</h2>
-<p>Essentially, this is just one problem: reverse a singly linked list ...</p></div>
-                <a class="readmore" href="./posts/2016/Dec/03/reverse-singly-linked-list/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
         <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
         <hr />
@@ -397,7 +637,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (7)</a></li>
+                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (8)</a></li>
                            <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
                            <li ><a href="./category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (1)</a></li>
                            <li ><a href="./category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
@@ -426,6 +666,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                     <li class="list-group-item tag-1">
                         <a href="./tag/c.html">
                             c
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="./tag/dynamic-programming.html">
+                            dynamic-programming
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
