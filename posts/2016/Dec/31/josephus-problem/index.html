@@ -67,11 +67,11 @@ solve a special case of the original problem.
 Afterwards, I present a recurrence solution to solve the general problem. </p>
 <h2>Josephus problem</h2>
 <p>The <em>Josephus problem</em> is the following game: <span class="math">\(N\)</span> people, numbered <span class="math">\(1\)</span> to <span class="math">\(N\)</span>, are
-sitting in a circle. Starting at person 1, a hot potato is passed. After <span class="math">\(M\)</span> passes,
-the person holding the hot potato is eliminated, the circle closes ranks, and the
+sitting in a circle. Starting at person 1, a hot potato is passed. the <span class="math">\(M\)</span>th person 
+holding the hot potato is eliminated, the circle closes ranks, and the
 game continues with the person who was sitting after the eliminated person picking
-up the hot potato. The last remaining person wins. Thus, if <span class="math">\(M = 0\)</span> and <span class="math">\(N = 5\)</span>, players
-are eliminated in order, and player 5 wins. If <span class="math">\(M = 1\)</span> and <span class="math">\(N = 5\)</span>, the order of elimination
+up the hot potato. The last remaining person wins. Thus, if <span class="math">\(M = 1\)</span> and <span class="math">\(N = 5\)</span>, players
+are eliminated in order, and player 5 wins. If <span class="math">\(M = 2\)</span> and <span class="math">\(N = 5\)</span>, the order of elimination
 is <span class="math">\(2\)</span>,<span class="math">\(4\)</span>,<span class="math">\(1\)</span>,<span class="math">\(5\)</span>.</p>
 <p>You can play with different <span class="math">\(M\)</span>, <span class="math">\(N\)</span> on this <a href="http://webspace.ship.edu/deensley/mathdl/Joseph.html">site</a> to get a better sense of the problem.</p>
 <p>* ---- Note ---- *</p>
@@ -80,7 +80,7 @@ is <span class="math">\(2\)</span>,<span class="math">\(4\)</span>,<span class="
 number of passes. However, in the following explanation, I will interpret it as the <span class="math">\(M\)</span>th person get eliminated. Here is an example to show the difference.
 In MAW description, <span class="math">\(M = 0\)</span> and <span class="math">\(N = 5\)</span>, players are eliminated in order. However, in our own intepretation, <span class="math">\(M\)</span> should be <span class="math">\(1\)</span> in order to achieve the same 
 elimination order. Similarly, <span class="math">\(M\)</span> should be <span class="math">\(2\)</span> in order to have <span class="math">\(2\)</span>, <span class="math">\(4\)</span>, <span class="math">\(1\)</span>, <span class="math">\(5\)</span> elimination order like MAW second example.  Mathematically, 
-<span class="math">\(M_new = M_MAW + 1\)</span>.</p>
+<span class="math">\(M_{new} = M_{MAW} + 1\)</span>.</p>
 </blockquote>
 <h2>Josephus problem with <span class="math">\(M = 2\)</span></h2>
 <p>Let's first discuss a special case of the Josephus Problem: <span class="math">\(M = 2\)</span>.</p>
