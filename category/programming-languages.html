@@ -53,10 +53,11 @@
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/programming-languages.html">programming languages</a> </p>
 <p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/c.html">c</a> <a href="../tag/circular-double-linked-list.html">circular-double-linked-list</a> <a href="../tag/double-linked-list.html">double-linked-list</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>This post is a reflection on the two problems (MAW 3.13 &amp; 3.10) I
+                
+<p>This post is a reflection on the two problems (MAW 3.13 &amp; 3.10) I
 have been working on for the past five days.</p>
 <div class="section" id="dynamic-arrays-in-c">
-<h2>Dynamic arrays in C</h2>
+<h2><a class="toc-backref" href="#id2">Dynamic arrays in C</a></h2>
 <p>One of the ways I try out to solve <a class="reference external" href="../posts/2016/Dec/31/josephus-problem/">Josephus Problem</a> is to use circular double linked list, which
 is implemented in <a class="reference external" href="https://github.com/xxks-kkk/algo/blob/master/linkedList/josephus/circularLinkedList.c">ET circularDoubleLinkedListJosephus(ET N, ET M)</a>,
 Inside the function, here is what I try to do initially:</p>
@@ -87,7 +88,7 @@ array of integers. In other words, <tt class="docutils literal">people = <span c
 gives an advantage to have more control on array content, especially useful when we debug.</p>
 </div>
 <div class="section" id="circularly-linked-lists">
-<h2>Circularly Linked Lists</h2>
+<h2><a class="toc-backref" href="#id3">Circularly Linked Lists</a></h2>
 <p>In MAW, author is kind of in-rush when talks about this section. When comes to implementation, how we deal with header node
 need to carefully think through. This is what stated in the book:</p>
 <blockquote>
@@ -95,14 +96,14 @@ A popular convention is to have the last cell keep a pointer back to the first. 
 a header (if the header is present, the last cell points to it) and can also be done with doubly linked lists (the
 first cell's previous pointer points to the last cell).</blockquote>
 <p>Here is my circularly double linked list in picture:</p>
-<img alt="" src="/images/circularly-double-linked-list-dummy.PNG" />
+<img alt="" src="/images/circularly-double-linked-list-dummy.PNG"/>
 <p>In words, our dummy node's <tt class="docutils literal">Next</tt> points to the the first data node and <tt class="docutils literal">Prev</tt> points to the last data node.
 With this setup, the head of the list can be accessed by <tt class="docutils literal">dummy.Next</tt> and tail by <tt class="docutils literal">dummy.Prev</tt>. In addition,
 there will never be <tt class="docutils literal">NULL</tt> pointers in the data structure.</p>
 <!-- http://www.cs.uwm.edu/~cs351/linked-list-variations.pdf -->
 </div>
 <div class="section" id="initialize-an-array-of-structs">
-<h2>Initialize an array of structs</h2>
+<h2><a class="toc-backref" href="#id4">Initialize an array of structs</a></h2>
 <p>When implement the radix sort solution, I need to construct an array of buckets,
 with each bucket is a single linked list with a dummy node. Here is what I do:</p>
 <div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">List</span>
@@ -137,7 +138,7 @@ However, if I want to use <tt class="docutils literal"><span class="pre">-&gt;</
 <!-- http://stackoverflow.com/questions/4173518/c-initialize-array-of-structs -->
 </div>
 <div class="section" id="for-loop-instead-of-while">
-<h2>For loop instead of while</h2>
+<h2><a class="toc-backref" href="#id5">For loop instead of while</a></h2>
 <p>I try to experiment different trick when I work on my algo. Here is what I try: use <tt class="docutils literal">for</tt> loop instead
 of <tt class="docutils literal">while</tt>:</p>
 <div class="highlight"><pre><span></span><span class="n">deleteNode</span><span class="p">(</span><span class="n">ET</span> <span class="n">elem</span><span class="p">,</span> <span class="n">List</span> <span class="n">L</span><span class="p">)</span>
@@ -160,7 +161,7 @@ of <tt class="docutils literal">while</tt>:</p>
 <!-- https://www.cs.bu.edu/teaching/ -->
 </div>
 <div class="section" id="use-system-implementation-if-find-otherwise-use-my-own-version">
-<h2>Use system implementation if find, otherwise use my own version</h2>
+<h2><a class="toc-backref" href="#id6">Use system implementation if find, otherwise use my own version</a></h2>
 <p>I'm trying to use <tt class="docutils literal">fls</tt> inside <a class="reference external" href="https://github.com/xxks-kkk/algo/blob/77a66a5e911252a93e44bfb6d9bc4c62d85cdffc/linkedList/josephus/nonLinkedListSol.c">int cyclicShiftJosephus(int N, int M)</a>,
 which return the last (most significant) bit set in value and return the index of that bit.
 However, not all system has <tt class="docutils literal">fls</tt> shipped by default. So, I implement my own version. But, I would prefer
