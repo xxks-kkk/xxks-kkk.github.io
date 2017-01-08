@@ -40,7 +40,352 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="../posts/2017/Jan/06/josephus-problem-radix-sort-reflection/">Josephus Problem &amp; Radix Sort Reflection</a></h1>
+                <h1 class="entry-title"><a href="../posts/2017/Jan/08/modify-array-inside-function-in-c/">Modify array inside function in C</a></h1>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-08T09:23:00+08:00">Sun 08 Jan 2017, 09:23</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/programming-languages.html">programming languages</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/c.html">c</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>In this post, I want to write down the lesson learned
+about modifying array inside a function in C with an example
+from MAW 3.15.a:</p>
+<blockquote>
+Write an array implementation of self-adjusting lists.
+A self-adjusting list is like a regular list, except that
+all insertions are performed at the front, and when an element
+is accessed by a Find, it is moved to the front of the list
+without changing the relative order of the other items.</blockquote>
+<p>In general, there are two cases when we need to use functions to work with array. Let's
+examine accordingly.</p>
+<div class="section" id="modify-the-array-content">
+<h2>Modify the array content</h2>
+<p>Let's take a look at the following sample function first:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">change</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">array</span><span class="p">,</span><span class="kt">int</span> <span class="n">length</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;array address inside function: %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">array</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">length</span> <span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+      <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>and in our test function we do:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">test_change</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">test</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">};</span>
+
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Before:&quot;</span><span class="p">);</span>
+  <span class="n">print</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">length</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;before change, test address: %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">test</span><span class="p">);</span>
+  <span class="n">change</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;After:&quot;</span><span class="p">);</span>
+  <span class="n">print</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">length</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;after change, test address: %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">test</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<p>The output looks something like:</p>
+<pre class="literal-block">
+Before:1 2 3
+before change, test address: 0x7fffffffe050
+array address inside function: 0x7fffffffe050
+After:5 5 5
+after change, test address: 0x7fffffffe050
+</pre>
+<p>Let's examine our <tt class="docutils literal">change</tt> function under gdb.:</p>
+<pre class="literal-block">
+p array
+$1 = (int *) 0x7fffffffe050
+</pre>
+<p>shows us that actually <tt class="docutils literal">array</tt> is a pointer to int with the address <tt class="docutils literal">0x7fffffffe050</tt>.:</p>
+<pre class="literal-block">
+(gdb) p *0x7fffffffe050
+$3 = 1
+</pre>
+<p>If we take a look at what value hold the address, we can see that it's <tt class="docutils literal">1</tt>, which is the first element of
+our <tt class="docutils literal">int test[3]</tt> array. This leads to our very first important observation:</p>
+<ul class="simple">
+<li>When pass an array to a function, it will decay to a pointer pointing to the first element of the array.
+In other words, we can do <tt class="docutils literal">p *array</tt> in gdb and get <tt class="docutils literal">1</tt> as well.</li>
+</ul>
+<p>Since the size of int under my system is 4 bytes (check by <tt class="docutils literal">p sizeof(int)</tt> in gdb), and let's examine the four conseuctive
+bytes with starting address <tt class="docutils literal">0x7fffffffe050</tt>:</p>
+<pre class="literal-block">
+(gdb) x/4bx array
+0x7fffffffe050: 0x01    0x00    0x00    0x00
+</pre>
+<p>As you can see, this is integer <tt class="docutils literal">1</tt>. Now, let's start with the first iteration of the loop in <tt class="docutils literal">change</tt>. Once we finish the
+iteration, <tt class="docutils literal">i</tt> becomes <tt class="docutils literal">1</tt> and let's see what change to our <tt class="docutils literal">array</tt>:</p>
+<pre class="literal-block">
+(gdb) p array[0]
+$12 = 5
+
+(gdb) p array
+$13 = (int *) 0x7fffffffe050
+
+(gdb) p *0x7fffffffe050
+$10 = 5
+
+(gdb) x/4bx array
+0x7fffffffe050: 0x05    0x00    0x00    0x00
+</pre>
+<p>We can see that the first element of our <tt class="docutils literal">test</tt> array becomes <tt class="docutils literal">5</tt> and the starting address of our
+<tt class="docutils literal">array</tt> is still <tt class="docutils literal">0x7fffffffe050</tt>. In other words, the only thing changed is the value that
+address <tt class="docutils literal">0x7fffffffe050</tt> holds. In addition, if you take a look at the array address output, you can see
+that before the function call, during the function call, and after the function call, the array address
+doesn't change at all: <tt class="docutils literal">0x7fffffffe050</tt>. This leads to our second observation:</p>
+<ul>
+<li><p class="first">We can change the <strong>contents</strong> of array in the caller function (i.e. <tt class="docutils literal">test_change()</tt>) through callee function (i.e. <tt class="docutils literal">change</tt>)
+by passing the array itself to the function (i.e. <tt class="docutils literal">int *array</tt>) without any <tt class="docutils literal">return</tt> statement,</p>
+</li>
+<li><p class="first">However, doing so, we doesn't change the address of the array. It seems that array is a local variable inside both caller function
+and callee function. Its address is passed from <tt class="docutils literal">test_change</tt> to <tt class="docutils literal">change</tt>:</p>
+<pre class="literal-block">
+Inside change:
+
+                 +---+---+--+
+array -----&gt;  -&gt; | 1 | 2 | 3|
+             /-&gt; +---+---+--+
+test --------
+</pre>
+</li>
+</ul>
+<p>Let's verify above observation with another function <tt class="docutils literal">change2</tt>:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">change2</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">array</span><span class="p">,</span><span class="kt">int</span> <span class="n">length</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;array address inside function: %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">array</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">};</span>
+  <span class="n">array</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>With the similar test program <tt class="docutils literal">test_change2()</tt> we get the following output:</p>
+<pre class="literal-block">
+TEST: change2
+Before:1 2 3
+before change, test address: 0x7ffda5b41bc0
+array address inside function: 0x7ffda5b41bc0
+After:1 2 3
+after change, test address: 0x7ffda5b41bc0
+</pre>
+<p><tt class="docutils literal">change2</tt> is very tempting because we assign <tt class="docutils literal">array</tt> points to <tt class="docutils literal">tmp</tt>, which let <tt class="docutils literal">test</tt> inside <tt class="docutils literal">test_change2</tt> points to <tt class="docutils literal">tmp</tt> as well. However, this is wrong and
+the output confirms our observation above: array is local variable to the caller function and callee function, and when we pass a array into a function, the address is
+passed (copied) from caller to callee. After that, address inside callee can reassign and will have no effect on the array (address) in caller. In other words, even though
+the address inside <tt class="docutils literal">change2</tt> and <tt class="docutils literal">test_change2</tt> are the same, but they are independent with each other:</p>
+<pre class="literal-block">
+after change2:
+
+                 +---+---+--+
+test  ---------&gt; | 1 | 2 | 3|
+                 +---+---+--+
+
+                 +---+---+--+
+tmp   -----&gt;  -&gt; | 5 | 5 | 5|
+             /-&gt; +---+---+--+
+array -------
+</pre>
+<p>What if we want to modify <tt class="docutils literal">test</tt> itself inside <tt class="docutils literal">test_change2</tt> beyond the content of the array. What if we want to resize the array to make it hold more values?</p>
+</div>
+<div class="section" id="modify-the-array-itself">
+<h2>Modify the array itself</h2>
+<p>Before we start to answer the above question. Let me clear out an important concept: &quot;array on stack&quot; and &quot;array on heap&quot;.</p>
+<p>&quot;array on Stack&quot; with the declaration looks like <tt class="docutils literal">int test[3] = {1,2,3}</tt> in our test routines. The array declared like this stays on the stack and local to the
+function calls. &quot;array on heap&quot; is the dynamic array involving <tt class="docutils literal">malloc</tt>, which I mention in the <a class="reference external" href="../posts/2017/Jan/06/josephus-problem-radix-sort-reflection/">previous post</a>. When we talk about
+resize the array, we mean the latter case.</p>
+<p>Let's take a look at <tt class="docutils literal">change3</tt>:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">change3</span><span class="p">(</span><span class="kt">int</span> <span class="o">**</span><span class="n">array</span><span class="p">,</span> <span class="kt">int</span> <span class="n">length</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">int</span><span class="o">*</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="o">*</span><span class="p">(</span><span class="n">tmp</span><span class="o">+</span><span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">free</span><span class="p">(</span><span class="o">*</span><span class="n">array</span><span class="p">);</span>
+  <span class="o">*</span><span class="n">array</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>and our corresponding test routine <tt class="docutils literal">test_change3()</tt>:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">test_change3</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;TEST: change3</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+  <span class="kt">int</span><span class="o">*</span> <span class="n">test</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+  <span class="n">test</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">test</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="n">test</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Before:&quot;</span><span class="p">);</span>
+  <span class="n">print</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">length</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;before change, test address: %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">test</span><span class="p">);</span>
+  <span class="n">change3</span><span class="p">(</span><span class="o">&amp;</span><span class="n">test</span><span class="p">,</span> <span class="n">length</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;After:&quot;</span><span class="p">);</span>
+  <span class="n">print</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">length</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;after change, test address: %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">test</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<p>The first task is to understand <tt class="docutils literal">int **array</tt>. There is a template sentence when comes to C type declaration: &quot;&lt;VariableName&gt; is ... &lt;typeName&gt;&quot;. In our case,
+The template sentence becomes &quot;array is ... int&quot;. Now let's work out the &quot;...&quot; with &quot;right-left&quot; rule:</p>
+<blockquote>
+&quot;go right when you can, go left when you must&quot;</blockquote>
+<p>In our case, we start with &quot;array&quot; and go right, and nothing left with declaraiton. So, we must go left. the first symbol is <tt class="docutils literal">*</tt>, which reads as &quot;pointer to&quot;.
+So now our template sentence becomes &quot;array is pointer to ... int&quot;. Great! Let's continue to go left, we see another <tt class="docutils literal">*</tt>, which makes our sentence becomes
+&quot;array is pointer to pointer to ... int&quot;. Then we meet <tt class="docutils literal">int</tt>, which means all the symbol in the declaration is consumed and our sentence is complete:
+&quot;array is pointer to pointer to int&quot;. This means <tt class="docutils literal">array</tt> variable itself is a pointer containing an address of a pointer, which holds an address of a int.</p>
+<p>Let's see if this is true with gdb.:</p>
+<pre class="literal-block">
+(gdb) p array
+$1 = (int **) 0x7fffffffe070
+
+(gdb) p/a *0x7fffffffe070
+$8 = 0x601010
+
+(gdb) p *0x601010
+$7 = 1
+
+(gdb) p *array
+$2 = (int *) 0x601010
+
+(gdb) p **array
+$3 = 1
+</pre>
+<p>The address holds by <tt class="docutils literal">array</tt> is <tt class="docutils literal">0x7fffffffe070</tt>. We further examine the value holds by <tt class="docutils literal">0x7fffffffe070</tt> and by our assumption, it should be another address
+and it is: <tt class="docutils literal">0x601010</tt>. Then, we check the value hold by that address, which is expected <tt class="docutils literal">1</tt> the first element of our <tt class="docutils literal">test</tt> array.</p>
+<p>Our goal is to let <tt class="docutils literal">test</tt> array in <tt class="docutils literal">test_change3()</tt> be <tt class="docutils literal">5,5,5</tt>:</p>
+<pre class="literal-block">
+Before change3
+
+                 +---+---+--+
+test  ---------&gt; | 1 | 2 | 3|
+                 +---+---+--+
+
+                 +---+---+--+
+tmp   ---------&gt; | 5 | 5 | 5|
+                 +---+---+--+
+
+
+After change3
+
+                       +---+---+--+
+tmp   ---------------&gt; | 5 | 5 | 5|
+                   /-&gt; +---+---+--+
+test(array) -------
+</pre>
+<p>From the picture we can see that we want to modify <tt class="docutils literal">array</tt> inside <tt class="docutils literal">change3</tt> pointing to <tt class="docutils literal">5,5,5</tt> and this change will persist to the <tt class="docutils literal">test</tt> array in our caller function.
+In other words, we want both <tt class="docutils literal">test</tt> and <tt class="docutils literal">array</tt> no longer independent but want them &quot;tie up&quot; as the same pointer with different names. How do we do that?</p>
+<p>The solution is given by <tt class="docutils literal">change3</tt> but we really need to think about why it makes sense. Firstly, we want to use gdb to examine the address
+of key variables:</p>
+<pre class="literal-block">
+(gdb) p array
+$4 = (int **) 0x7fffffffe070
+(gdb) p *array
+$5 = (int *) 0x601010
+(gdb) p (*array)+1
+$14 = (int *) 0x601014
+(gdb) p (*array)+2
+$15 = (int *) 0x601018
+(gdb) p *(*array)
+$18 = 1
+(gdb) p *(*array)+1
+$16 = 2
+(gdb) p *(*array)+2
+$17 = 3
+
+(gdb) p tmp
+$7 = (int *) 0x601030
+(gdb) p tmp+1
+$8 = (int *) 0x601034
+(gdb) p tmp+2
+$9 = (int *) 0x601038
+(gdb) p *tmp
+$10 = 5
+(gdb) p *(tmp+1)
+$11 = 5
+(gdb) p *(tmp+2)
+$12 = 5
+</pre>
+<p>We first print out the <tt class="docutils literal">array</tt> address of each element and we print out the <tt class="docutils literal">tmp</tt> address of each element.
+With the information above, let's compose our conceptual picture:</p>
+<pre class="literal-block">
+Before *array = tmp;
+
+   4 bytes                                            4 bytes
++-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
+|  1        | 2         | 3        |   ...      |    5      |     5    |  5     |  ...  | 0x601010 | ...
++-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
+^           ^           ^                           ^           ^          ^                ^
+0x601010   0x601014     0x601018                   0x601030    0x601034   0x601048        0x7fffffffe070
+                                                   tmp                                    array
+</pre>
+<p>Now, let's execute <tt class="docutils literal">*array = tmp</tt>, we get the following:</p>
+<pre class="literal-block">
+(gdb) p *array
+$19 = (int *) 0x601010
+(gdb) p *array
+$20 = (int *) 0x601030
+</pre>
+<p>Now the picture looks like:</p>
+<pre class="literal-block">
+After *array = tmp;
+
+   4 bytes                                            4 bytes
++-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
+|  1        | 2         | 3        |   ...      |    5      |     5    |  5     |  ...  | 0x601030 | ...
++-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
+^           ^           ^                           ^           ^          ^                ^
+0x601010   0x601014     0x601018                   0x601030    0x601034   0x601048        0x7fffffffe070
+                                                   tmp                                    array
+</pre>
+<p>We don't modify the address of the <tt class="docutils literal">array</tt> itself (still <tt class="docutils literal">0x7fffffffe070</tt>) but the content that stored at <tt class="docutils literal">0x7fffffffe070</tt>
+which is no longer <tt class="docutils literal">0x601010</tt> but <tt class="docutils literal">0x601030</tt>, which is the starting address of the <tt class="docutils literal">tmp</tt>: <tt class="docutils literal">5,5,5</tt>.
+This may seem like magic. However, in C, a variable (i.e. <tt class="docutils literal">test</tt> in <tt class="docutils literal">test_change3()</tt>) is merely a synonym for address.
+by invoking <tt class="docutils literal">change3</tt> through <tt class="docutils literal">&amp;test</tt>, we pass in the address <tt class="docutils literal">0x601010</tt> via a carrier <tt class="docutils literal">0x7fffffffe070</tt>, and we modify the
+address to <tt class="docutils literal">0x601030</tt> and send the address back again through carrier.</p>
+<p>With this understanding, we can see why the output looks like:</p>
+<pre class="literal-block">
+TEST: change3
+Before:1 2 3
+before change, test address: 0x601010
+After:5 5 5
+after change, test address: 0x601030
+</pre>
+<p>Hoepfully, after our examination, we can understand <tt class="docutils literal">arrayInsert</tt> for MAW 3.15.a proposed at the beginning of the post:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">arrayInsert</span><span class="p">(</span><span class="kt">int</span> <span class="n">elem</span><span class="p">,</span> <span class="kt">int</span><span class="o">**</span> <span class="n">list</span><span class="p">,</span> <span class="kt">int</span> <span class="n">length</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="o">*</span><span class="n">list</span> <span class="o">=</span> <span class="n">realloc</span><span class="p">(</span><span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span><span class="o">+</span><span class="mi">1</span><span class="p">));</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="p">(</span><span class="o">*</span><span class="n">list</span><span class="p">)[</span><span class="n">length</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">list</span><span class="p">)[</span><span class="n">length</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+  <span class="p">}</span>
+  <span class="o">*</span><span class="p">((</span><span class="o">*</span><span class="n">list</span><span class="p">))</span> <span class="o">=</span> <span class="n">elem</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p><a class="reference external" href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/array-to-function/array-to-function.c">Get the complete source code</a>.</p>
+</div>
+<div class="section" id="reference">
+<h2>Reference</h2>
+<ol class="arabic simple">
+<li>If you would like to read more about decoding C type declarations. You can read more here:<ul>
+<li><a class="reference external" href="http://unixwiz.net/techtips/reading-cdecl.html">Reading C type declarations</a></li>
+<li><a class="reference external" href="http://ieng9.ucsd.edu/~cs30x/rt_lt.rule.html">Right-left rule to understand C type declaration</a></li>
+<li>Chapter 3 in &quot;Expert C Programming&quot; by Peter Van Der Linden</li>
+</ul>
+</li>
+</ol>
+<!-- http://stackoverflow.com/questions/34844003/changing-array-inside-function-in-c -->
+</div>
+
+        </article></aside><!-- /#featured -->
+                <h1><i class="fa fa-bars"></i> Other articles</h1>
+                <hr />
+                    <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="../posts/2017/Jan/06/josephus-problem-radix-sort-reflection/" rel="bookmark" title="Permalink to Josephus Problem & Radix Sort Reflection">Josephus Problem &amp; Radix Sort Reflection</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-06T00:34:00+08:00">Fri 06 Jan 2017, 00:34</abbr></p>
 
@@ -51,129 +396,10 @@ have been working on for the past five days.</p>
 <div class="section" id="dynamic-arrays-in-c">
 <h2>Dynamic arrays in C</h2>
 <p>One of the ways I try out to solve <a class="reference external" href="../posts/2016/Dec/31/josephus-problem/">Josephus Problem</a> is to use circular double linked list, which
-is implemented in <a class="reference external" href="https://github.com/xxks-kkk/algo/blob/master/linkedList/josephus/circularLinkedList.c">ET circularDoubleLinkedListJosephus(ET N, ET M)</a>,
-Inside the function, here is what I try to do initially:</p>
-<div class="highlight"><pre><span></span><span class="n">ET</span> <span class="n">people</span><span class="p">[</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">people</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-<p>I try to make an array of consecutive numbers based upon the input <tt class="docutils literal">N</tt>. However, this way doesn't work in C because compiler has no clue
-the size of array during compilation phase. This is what people called dynamic array in C. The following two pages offer execellent explanations
-to dynamic array specific and array in C in general:</p>
-<ul class="simple">
-<li><a class="reference external" href="http://www.mathcs.emory.edu/~cheung/Courses/255/Syllabus/2-C-adv-data/dyn-array.html">Dynamic arrays in C</a></li>
-<li><a class="reference external" href="https://www.cs.swarthmore.edu/~newhall/unixhelp/C_arrays.html">Arrays in C</a></li>
-</ul>
-<p>Here is what I've done eventually:</p>
-<div class="highlight"><pre><span></span><span class="n">people</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-
-<span class="k">for</span> <span class="p">(</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="o">*</span><span class="p">(</span><span class="n">people</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-<p>There is one thing to note about <tt class="docutils literal">calloc</tt>. It essentially the same as <tt class="docutils literal">malloc</tt> in terms of allocating a chunk of
-array. However, unlike <tt class="docutils literal">malloc</tt>, <tt class="docutils literal">calloc</tt> will zero-initlize the chunk, which is quite useful when we work with
-array of integers. In other words, <tt class="docutils literal">people = <span class="pre">malloc(N*sizeof(int));</span></tt> is perfectly fine in this case but <tt class="docutils literal">calloc</tt>
-gives an advantage to have more control on array content, especially useful when we debug.</p>
-</div>
-<div class="section" id="circularly-linked-lists">
-<h2>Circularly Linked Lists</h2>
-<p>In MAW, author is kind of in-rush when talks about this section. When comes to implementation, how we deal with header node
-need to carefully think through. This is what stated in the book:</p>
-<blockquote>
-A popular convention is to have the last cell keep a pointer back to the first. This can be done with or without
-a header (if the header is present, the last cell points to it) and can also be done with doubly linked lists (the
-first cell's previous pointer points to the last cell).</blockquote>
-<p>Here is my circularly double linked list in picture:</p>
-<img alt="" src="/images/circularly-double-linked-list-dummy.PNG" />
-<p>In words, our dummy node's <tt class="docutils literal">Next</tt> points to the the first data node and <tt class="docutils literal">Prev</tt> points to the last data node.
-With this setup, the head of the list can be accessed by <tt class="docutils literal">dummy.Next</tt> and tail by <tt class="docutils literal">dummy.Prev</tt>. In addition,
-there will never be <tt class="docutils literal">NULL</tt> pointers in the data structure.</p>
-<!-- http://www.cs.uwm.edu/~cs351/linked-list-variations.pdf -->
-</div>
-<div class="section" id="initialize-an-array-of-structs">
-<h2>Initialize an array of structs</h2>
-<p>When implement the radix sort solution, I need to construct an array of buckets,
-with each bucket is a single linked list with a dummy node. Here is what I do:</p>
-<div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">List</span>
-<span class="nf">makeEmptyArrayOfNodes</span><span class="p">(</span><span class="n">numBuckets</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">Pos</span> <span class="n">Buckets</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">numBuckets</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-
-  <span class="kt">int</span> <span class="n">k</span><span class="p">;</span>
-  <span class="k">for</span> <span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">numBuckets</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">Buckets</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="n">Next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="n">Buckets</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-<p>Here are two points worth noting:</p>
-<ul>
-<li><p class="first"><tt class="docutils literal">Pos</tt> is <tt class="docutils literal">struct Node*</tt> (can be checked by <tt class="docutils literal">ptype</tt> in GDB) when we allocate
-an array of <tt class="docutils literal">struct Node</tt>.</p>
-</li>
-<li><p class="first">There is difference between <tt class="docutils literal"><span class="pre">-&gt;</span></tt> and <tt class="docutils literal">.</tt>. In K&amp;R Page 131, it says that:</p>
-<blockquote>
-<p>If <tt class="docutils literal">p</tt> is a <strong>POINTER</strong> to a structure, then <tt class="docutils literal"><span class="pre">p-&gt;member-of-structure</span></tt>
-refers to the particular member.</p>
-</blockquote>
-<p>and <tt class="docutils literal">.</tt> is used to directly access a structure member.
-In my case, since <tt class="docutils literal">Buckets[k]</tt> with type <tt class="docutils literal">struct Node</tt>, then I need to use <tt class="docutils literal">.</tt>.
-However, if I want to use <tt class="docutils literal"><span class="pre">-&gt;</span></tt>, I need to use <tt class="docutils literal"><span class="pre">(&amp;Buckets[k])-&gt;Next</span></tt>.</p>
-</li>
-</ul>
-<!-- http://stackoverflow.com/questions/4173518/c-initialize-array-of-structs -->
-</div>
-<div class="section" id="for-loop-instead-of-while">
-<h2>For loop instead of while</h2>
-<p>I try to experiment different trick when I work on my algo. Here is what I try: use <tt class="docutils literal">for</tt> loop instead
-of <tt class="docutils literal">while</tt>:</p>
-<div class="highlight"><pre><span></span><span class="n">deleteNode</span><span class="p">(</span><span class="n">ET</span> <span class="n">elem</span><span class="p">,</span> <span class="n">List</span> <span class="n">L</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">Pos</span> <span class="n">dummyL</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="n">Pos</span> <span class="n">dummyPrev</span> <span class="o">=</span> <span class="n">L</span><span class="p">;</span>
-
-  <span class="k">for</span><span class="p">(;</span> <span class="n">dummyL</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="n">dummyPrev</span> <span class="o">=</span> <span class="n">dummyL</span><span class="p">,</span> <span class="n">dummyL</span> <span class="o">=</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Element</span> <span class="o">==</span> <span class="n">elem</span><span class="p">)</span>
-    <span class="p">{</span>
-      <span class="n">Pos</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">dummyL</span><span class="p">;</span>
-      <span class="n">dummyPrev</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-      <span class="n">free</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
-      <span class="k">return</span><span class="p">;</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-<!-- https://www.cs.bu.edu/teaching/ -->
-</div>
-<div class="section" id="use-system-implementation-if-find-otherwise-use-my-own-version">
-<h2>Use system implementation if find, otherwise use my own version</h2>
-<p>I'm trying to use <tt class="docutils literal">fls</tt> inside <a class="reference external" href="https://github.com/xxks-kkk/algo/blob/77a66a5e911252a93e44bfb6d9bc4c62d85cdffc/linkedList/josephus/nonLinkedListSol.c">int cyclicShiftJosephus(int N, int M)</a>,
-which return the last (most significant) bit set in value and return the index of that bit.
-However, not all system has <tt class="docutils literal">fls</tt> shipped by default. So, I implement my own version. But, I would prefer
-the program to use system version if it can find one. Otherwise, use mine.</p>
-<p>One solution is to use <tt class="docutils literal">#ifndef</tt> with the structure looks like</p>
-<div class="highlight"><pre><span></span><span class="cp">#ifndef fls</span>
-<span class="kt">int</span> <span class="nf">fls</span><span class="p">(</span><span class="kt">int</span> <span class="n">mask</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
-<span class="cp">#endi</span>
-</pre></div>
-<p>Another solution is to use <a class="reference external" href="https://en.wikipedia.org/wiki/Weak_symbol">weak symbol</a>. However, this solution may not be portable.
-Then, it looks something like this</p>
-<div class="highlight"><pre><span></span><span class="kt">int</span>  <span class="nf">__attribute__</span><span class="p">((</span><span class="n">weak</span><span class="p">))</span> <span class="n">fls</span><span class="p">(</span><span class="kt">int</span> <span class="n">mask</span><span class="p">){</span> <span class="p">..</span> <span class="p">}</span>
-</pre></div>
-<p>If system <tt class="docutils literal">fls</tt> is defined as strong, my <tt class="docutils literal">fls</tt> implementation will be overridden.</p>
-</div>
-
-        </article></aside><!-- /#featured -->
-                <h1><i class="fa fa-bars"></i> Other articles</h1>
-                <hr />
-                    <ol id="posts-list" class="hfeed">
+is implemented in ...</p></div>
+                <a class="readmore" href="../posts/2017/Jan/06/josephus-problem-radix-sort-reflection/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="../posts/2016/Dec/24/a-small-c-trick-i-learned-today/" rel="bookmark" title="Permalink to A small C trick I learned today">A small C trick I learned today</a></h1>
@@ -221,7 +447,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         <ul>
                            <li ><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (8)</a></li>
                            <li ><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
-                           <li class="active"><a href="../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (2)</a></li>
+                           <li class="active"><a href="../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (3)</a></li>
                            <li ><a href="../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>
                 </div>
@@ -245,7 +471,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             AIX
                         </a>
                     </li>
-                    <li class="list-group-item tag-1">
+                    <li class="list-group-item tag-0">
                         <a href="../tag/c.html">
                             c
                         </a>
