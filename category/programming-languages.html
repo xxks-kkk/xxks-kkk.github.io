@@ -312,9 +312,9 @@ Before *array = tmp;
 +-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
 |  1        | 2         | 3        |   ...      |    5      |     5    |  5     |  ...  | 0x601010 | ...
 +-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
-^           ^           ^                           ^           ^          ^                ^
-0x601010   0x601014     0x601018                   0x601030    0x601034   0x601048        0x7fffffffe070
-                                                   tmp                                    array
+^           ^           ^                       ^           ^          ^                ^
+0x601010   0x601014     0x601018                0x601030    0x601034   0x601048         0x7fffffffe070
+                                                tmp                                     array
 </pre>
 <p>Now, let's execute <tt class="docutils literal">*array = tmp</tt>, we get the following:</p>
 <pre class="literal-block">
@@ -331,9 +331,9 @@ After *array = tmp;
 +-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
 |  1        | 2         | 3        |   ...      |    5      |     5    |  5     |  ...  | 0x601030 | ...
 +-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
-^           ^           ^                           ^           ^          ^                ^
-0x601010   0x601014     0x601018                   0x601030    0x601034   0x601048        0x7fffffffe070
-                                                   tmp                                    array
+^           ^           ^                       ^           ^          ^                ^
+0x601010   0x601014     0x601018               0x601030    0x601034   0x601048        0x7fffffffe070
+                                               tmp                                    array
 </pre>
 <p>We don't modify the address of the <tt class="docutils literal">array</tt> itself (still <tt class="docutils literal">0x7fffffffe070</tt>) but the content that stored at <tt class="docutils literal">0x7fffffffe070</tt>
 which is no longer <tt class="docutils literal">0x601010</tt> but <tt class="docutils literal">0x601030</tt>, which is the starting address of the <tt class="docutils literal">tmp</tt>: <tt class="docutils literal">5,5,5</tt>.
