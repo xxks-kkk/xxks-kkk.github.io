@@ -136,10 +136,11 @@ that before the function call, during the function call, and after the function 
 doesn't change at all: <tt class="docutils literal">0x7fffffffe050</tt>. This leads to our second observation:</p>
 <ul>
 <li><p class="first">We can change the <strong>contents</strong> of array in the caller function (i.e. <tt class="docutils literal">test_change()</tt>) through callee function (i.e. <tt class="docutils literal">change</tt>)
-by passing the array itself to the function (i.e. <tt class="docutils literal">int *array</tt>) without any <tt class="docutils literal">return</tt> statement,</p>
+by passing the the value of array to the function (i.e. <tt class="docutils literal">int *array</tt>). This modification can be effective in the
+caller function without any <tt class="docutils literal">return</tt> statement.</p>
 </li>
 <li><p class="first">However, doing so, we doesn't change the address of the array. It seems that array is a local variable inside both caller function
-and callee function. Its address is passed from <tt class="docutils literal">test_change</tt> to <tt class="docutils literal">change</tt>:</p>
+and callee function. Its address is copied and passed from <tt class="docutils literal">test_change</tt> to <tt class="docutils literal">change</tt>:</p>
 <pre class="literal-block">
 Inside change:
 
@@ -191,7 +192,7 @@ array -------
 <p>Before we start to answer the above question. Let me clear out an important concept: &quot;array on stack&quot; and &quot;array on heap&quot;.</p>
 <p>&quot;array on Stack&quot; with the declaration looks like <tt class="docutils literal">int test[3] = {1,2,3}</tt> in our test routines. The array declared like this stays on the stack and local to the
 function calls. &quot;array on heap&quot; is the dynamic array involving <tt class="docutils literal">malloc</tt>, which I mention in the <a class="reference external" href="../../../../../posts/2017/Jan/06/josephus-problem-radix-sort-reflection/">previous post</a>. When we talk about
-resize the array, we mean the latter case.</p>
+resize the array, we mean the latter case. In other words, we can only change the array itself (number of elements) with dynamically allocated array in the heap.</p>
 <p>Let's take a look at <tt class="docutils literal">change3</tt>:</p>
 <div class="highlight"><pre><span></span><span class="kt">void</span>
 <span class="nf">change3</span><span class="p">(</span><span class="kt">int</span> <span class="o">**</span><span class="n">array</span><span class="p">,</span> <span class="kt">int</span> <span class="n">length</span><span class="p">)</span>
@@ -309,7 +310,7 @@ With the information above, let's compose our conceptual picture:</p>
 <pre class="literal-block">
 Before *array = tmp;
 
-   4 bytes                                            4 bytes
+   4 bytes                                         4 bytes
 +-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
 |  1        | 2         | 3        |   ...      |    5      |     5    |  5     |  ...  | 0x601010 | ...
 +-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
@@ -328,7 +329,7 @@ $20 = (int *) 0x601030
 <pre class="literal-block">
 After *array = tmp;
 
-   4 bytes                                            4 bytes
+   4 bytes                                         4 bytes
 +-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
 |  1        | 2         | 3        |   ...      |    5      |     5    |  5     |  ...  | 0x601030 | ...
 +-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
@@ -363,6 +364,12 @@ after change, test address: 0x601030
 <span class="p">}</span>
 </pre></div>
 <p><a class="reference external" href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/array-to-function/array-to-function.c">Get the complete source code</a>.</p>
+</div>
+<div class="section" id="tl-dr">
+<h2>TL; DR</h2>
+<ul class="simple">
+<li>in C, EVERYTHING is passed by value</li>
+</ul>
 </div>
 <div class="section" id="reference">
 <h2>Reference</h2>
