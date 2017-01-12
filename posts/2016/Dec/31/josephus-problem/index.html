@@ -47,19 +47,18 @@
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
 <p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/recursion.html">recursion</a> <a href="../../../../../tag/dynamic-programming.html">dynamic-programming</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-        
-<h2 id="preface">Preface</h2>
+        <h2>Preface</h2>
 <p>This is actually MAW 3.10. I gradually realize how dense MAW is.
 In the <a href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">previous problem</a>,
 I write almost 500 lines of code. For this one, the problem is not really diffcult to solve if we implement a program 
 that follows the game rule exactly. However, I figure it is a good chance to dig a little deeper to learn somewhat
 fully from the question.</p>
 <p>Let's start to dive in.</p>
-<h2 id="overview">Overview</h2>
+<h2>Overview</h2>
 <p>I first describe the <em>Josephus problem</em> in general. Then, I present a closed form solution to 
 solve a special case of the original problem.
 Afterwards, I present a recurrence solution to solve the general problem. </p>
-<h2 id="josephus-problem">Josephus problem</h2>
+<h2>Josephus problem</h2>
 <p>The <em>Josephus problem</em> is the following game: <span class="math">\(N\)</span> people, numbered <span class="math">\(1\)</span> to <span class="math">\(N\)</span>, are
 sitting in a circle. Starting at person 1, a hot potato is passed. the <span class="math">\(M\)</span>th person 
 holding the hot potato is eliminated, the circle closes ranks, and the
@@ -76,13 +75,13 @@ In MAW description, <span class="math">\(M = 0\)</span> and <span class="math">\
 elimination order. Similarly, in the book, <span class="math">\(M = 1\)</span> when we have <span class="math">\(2\)</span>, <span class="math">\(4\)</span>, <span class="math">\(1\)</span>, <span class="math">\(5\)</span> elimination order for the second example.  Mathematically, 
 <span class="math">\(M_{new} = M_{MAW} + 1\)</span>.</p>
 </blockquote>
-<h2 id="josephus-problem-with-m-2">Josephus problem with <span class="math">\(M = 2\)</span></h2>
+<h2>Josephus problem with <span class="math">\(M = 2\)</span></h2>
 <p>Let's first discuss a special case of the Josephus Problem: <span class="math">\(M = 2\)</span>.</p>
 <p>In the following, <span class="math">\(n\)</span> denotes the number of 
 people in the initial circle, and <span class="math">\(m\)</span> denotes the count for each step. In other words, <span class="math">\(m-1\)</span> people
 are skipped and the <span class="math">\(m\)</span>-th is eliminated. The people in the circle are numbered from <span class="math">\(1\)</span> to <span class="math">\(n\)</span>. Our goal
 is to find <span class="math">\(J(n,m)\)</span>, which denotes the survivor's number (i.e. <span class="math">\(J(5,1) = 3\)</span>). For simplicity, let <span class="math">\(F(n) = J(n,2)\)</span>.</p>
-<p><img alt="" src="../../../../../images/josephus-1.png"/> </p>
+<p><img alt="" src="../../../../../images/josephus-1.png" /> </p>
 <p>One quick observation is that after the first go-round, we are left with the same problem but for a different
 number of people. For instance, when <span class="math">\(n = 10\)</span>, after the first go-round, we eliminate <span class="math">\(2\)</span>, <span class="math">\(4\)</span>, <span class="math">\(6\)</span>, <span class="math">\(8\)</span>, <span class="math">\(10\)</span>
 and then we go to the second-round beginning with <span class="math">\(3\)</span>, which is the same problem as the original one. 
@@ -107,10 +106,12 @@ F(2k+1) = 2F(k) + 1, \text{ for } k &gt;= 1\label{eq:2}
 $$</div>
 <p>So now our goal is to solve the recurrence equations \ref{eq:1} and \ref{eq:2} given <span class="math">\(F(1) = 1\)</span> to find a closed form. Let's do
 this by building a table of small values:</p>
-<p><code>text
-| n    | 1 | 2   3 | 4   5   6   7 | 8   9   10   11   12   13   14   15 | 16 |
+<div class="highlight"><pre><span></span>| n    | 1 | 2   3 | 4   5   6   7 | 8   9   10   11   12   13   14   15 | 16 |
 |------|---|-------|---------------|-------------------------------------|----|
-| F(n) | 1 | 1   3 | 1   3   5   7 | 1   3   5    7    9    11   13   15 | 1  |</code></p>
+| F(n) | 1 | 1   3 | 1   3   5   7 | 1   3   5    7    9    11   13   15 | 1  |
+</pre></div>
+
+
 <p>We can group the columns by powers of <span class="math">\(2\)</span> (marked by vertical lines in the table); Inside each group,
 <span class="math">\(F(n)\)</span> is always <span class="math">\(1\)</span> at the beginning and then it increases by <span class="math">\(2\)</span> until the next group, which is 
 the next power of <span class="math">\(2\)</span>. So, for every number <span class="math">\(n\)</span>, there exists an integer <span class="math">\(a\)</span> such that <span class="math">\(2^a &lt;= n &lt; 2^{a+1}\)</span>.
@@ -169,8 +170,7 @@ out formally. Let <span class="math">\(n = (b_ab_{a-1}..b_1b_0)_2\)</span>, then
 reason we can derive the nice recurrence equations \ref{eq:1} and \ref{eq:2} is because our observation. Let's present our
 observation is a different way. <span class="math">\(F(2k)\)</span> denotes the old numbering before the first-round. <span class="math">\(F(k)\)</span> denotes the new numbering 
 after the first-round.</p>
-<p><code>text
-      m = 2               m = 3
+<div class="highlight"><pre><span></span>      m = 2               m = 3
 +-------+------+    +-------+------+
 | F(2k) | F(k) |    | F(2k) | F(k) |
 +-------+------+    +-------+------+
@@ -187,7 +187,10 @@ after the first-round.</p>
                     | 8     | 6    |
                     +-------+------+
                     | 10    | 7    |
-                    +-------+------+</code> </p>
+                    +-------+------+
+</pre></div>
+
+
 <p>By looking at the table on the left, we can easily see that <span class="math">\(F(2k) = 2F(k) - 1\)</span>. 
 However, there is no nice clean linear relation that we can get between <span class="math">\(F(2k)\)</span> and <span class="math">\(F(k)\)</span> 
 when <span class="math">\(n = 10\)</span>, <span class="math">\(m = 3\)</span>.</p>
@@ -199,32 +202,36 @@ recurrence of \ref{eq:1} and \ref{eq:2}, which is (1.11) in the book. This has n
 with the Josephus problem and I'm guessing the reason why the author want to talk about 
 the solution to the generalized recurrence is to illustrate dynamic programming philosophy.</p>
 </blockquote>
-<h2 id="general-solution">General solution</h2>
+<h2>General solution</h2>
 <p>/<em>The big picture here is we need to find out the relative position of the final survivor to the
 "first" person during each recursive call and then calculate the actual position for actual <span class="math">\(n\)</span></em>/</p>
 <p>The general solution utilitizes the dynamic programming paradigm by performing the first step
 and using the solution of the subproblem we create to solve the initial problem. 
 In terms of the solution, there is a difference when we start with the first person as <span class="math">\(1\)</span> or <span class="math">\(0\)</span>.</p>
-<h3 id="starting-from-1">Starting from 1</h3>
+<h3>Starting from 1</h3>
 <p>The key insight is the following: the result of <span class="math">\(J(n,m)\)</span> is best NOT thought of as the <em>number</em> that is the 
 Josephus survivor, but rather as the <em>index</em> of the number that is the Josephus survivor. </p>
 <p>Let's first take a look an example when <span class="math">\(n = 6\)</span> and <span class="math">\(m = 2\)</span>.</p>
-<p>```text</p>
-<p>fig.1</p>
-<p>1 2      1 X      1 X      1 X      1 X      X X
+<div class="highlight"><pre><span></span>fig.1
+
+  1 2      1 X      1 X      1 X      1 X      X X
  6   3 -&gt; 6   3 -&gt; 6   3 -&gt; X   3 -&gt; X   X -&gt; X   X
-  5 4      5 4      5 X      5 X      5 X      5 X</p>
-<p>fig.2</p>
-<p>| index | 1 | 2 | 3 | 4 | 5 | 6 |
+  5 4      5 4      5 X      5 X      5 X      5 X
+
+fig.2
+
+| index | 1 | 2 | 3 | 4 | 5 | 6 |
 |-------|---|---|---|---|---|---|
 | n = 6 | 1 | 2 | 3 | 4 | 5 | 6 | J(6,2) = 5
 | n = 5 | 3 | 4 | 5 | 6 | 1 | 3 | J(5,2) = 3
 | n = 4 | 5 | 6 | 1 | 3 | 5 | 6 | J(4,2) = 1
 | n = 3 | 1 | 3 | 5 | 1 | 3 | 5 | J(3,2) = 3
 | n = 2 | 5 | 1 | 5 | 1 | 5 | 1 | J(2,2) = 1
-| n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 1</p>
-<p>fig.3</p>
-<p>| index | 1 | 2 | 3 | 4 | 5 | 6 |
+| n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 1
+
+fig.3
+
+| index | 1 | 2 | 3 | 4 | 5 | 6 |
 |-------|---|---|---|---|---|---|
 | n = 6 | 1 | X | 3 | 4 | 5 | 6 | J(6,2) = 5 = (2-1 + 3) mod 6 + 1
 | n = 5 | 3 | X | 5 | 6 | 1 | 3 | J(5,2) = 3 = (2-1 + 1) mod 5 + 1
@@ -232,18 +239,29 @@ Josephus survivor, but rather as the <em>index</em> of the number that is the Jo
 | n = 3 | 1 | X | 5 | 1 | X | 5 | J(3,2) = 3 = (2-1 + 1) mod 3 + 1
 | n = 2 | 5 | X | 5 | X | 5 | X | J(2,2) = 1 = (2-1 + 1) mod 2 + 1
 | n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 1
-```</p>
+</pre></div>
+
+
 <p>By looking at fig.1, we know that <span class="math">\(J(6,2) = 5\)</span>. Now, if we take a look at fig.2, the row with <span class="math">\(n = 5% shows that $J(5,2) = 3\)</span>. By the insight,
 <span class="math">\(3\)</span> here means the <em>index</em> not the <em>number</em>. So, our final survivor is <span class="math">\(5\)</span>, which is positioned on <span class="math">\(3\)</span> in this row.</p>
 <p>Let's generalize the example a little bit. Suppose we want to know <span class="math">\(J(n,2)\)</span>. You can imagine 
 we have <span class="math">\(n\)</span> people lined up like this: </p>
-<p><code>1 2 3 4 5 ... n</code></p>
+<div class="highlight"><pre><span></span>1 2 3 4 5 ... n
+</pre></div>
+
+
 <p>The first thing that happens is that person <span class="math">\(2\)</span> get eliminated, as shown here:</p>
-<p><code>1 X 3 4 5 ... n</code></p>
+<div class="highlight"><pre><span></span>1 X 3 4 5 ... n
+</pre></div>
+
+
 <p>Now, we are left with a subproblem of the following form: there are <span class="math">\(n - 1\)</span> people remaining, every other
 person is going to be eliminated, and the first person who will start to pass potato is person <span class="math">\(3\)</span>. In other 
 words, the subproblem <span class="math">\(J(n-1, 2)\)</span> now looks like:</p>
-<p><code>3 4 5 ... n 1</code></p>
+<div class="highlight"><pre><span></span>3 4 5 ... n 1
+</pre></div>
+
+
 <p><span class="math">\(J(n-1, 2)\)</span> will be the <em>index</em> of who survives in a line of <span class="math">\(n - 1\)</span> of people. Given that we have the <em>index</em>
 of the person who will survive, and we also know who the starting person is, we can determine which person 
 will be left. Here's how we'll do it.</p>
@@ -269,9 +287,15 @@ back one to get the one-indexed position, wrapped around. That looks like:</p>
 the right number of positions we have to take <span class="math">\(J(n-1,2) - 1\)</span> steps forward. The second <span class="math">\(-1\)</span> comes from the fact that we're using one-indexing rather than
 zero-indexing.</p>
 <p>Now, we're finally ready to generalize the solution to arbitrary <span class="math">\(m\)</span>, not just <span class="math">\(m = 2\)</span>. After person <span class="math">\(m\)</span> get eliminated, we have an array like this:</p>
-<p><code>1 2 3 ... m-1 X m+1 ... n</code></p>
+<div class="highlight"><pre><span></span>1 2 3 ... m-1 X m+1 ... n
+</pre></div>
+
+
 <p>We now essentailly need to solve a subproblem where person <span class="math">\(m+1\)</span> comes first:</p>
-<p><code>m+1 m+2 ... n 1 2 ... m-1</code></p>
+<div class="highlight"><pre><span></span>m+1 m+2 ... n 1 2 ... m-1
+</pre></div>
+
+
 <p>So we compute <span class="math">\(J(n-1, m)\)</span> to get the one-indexed survivor of a ring of <span class="math">\(n-1\)</span> people, then shift forward by that many steps:</p>
 <div class="math">$$(m+1 + J(n-1, m) - 1)$$</div>
 <p>We need to worry about the case where we wrap around, so we need to mod by <span class="math">\(n\)</span>:</p>
@@ -281,21 +305,29 @@ zero-indexing.</p>
 <p>which simplifies to:</p>
 <div class="math">$$(m-1 + J(n-1, m)) \bmod n + 1$$</div>
 <p>Notice that <span class="math">\(J(1,m) = 1\)</span>, which indicates that we're one-indexed.</p>
-<h3 id="starting-from-0">Starting from 0</h3>
+<h3>Starting from 0</h3>
 <p>Since we are not in zero-indexed. Our <span class="math">\(J(6,2)\)</span> example looks like the following:</p>
-<p><code>text
-| index | 0 | 1 | 2 | 3 | 4 | 5 |
+<div class="highlight"><pre><span></span>| index | 0 | 1 | 2 | 3 | 4 | 5 |
 |-------|---|---|---|---|---|---|
 | n = 6 | 1 | 2 | 3 | 4 | 5 | 6 | J(6,2) = 4 = (2 + 2 ) mod 6
 | n = 5 | 3 | 4 | 5 | 6 | 1 | 3 | J(5,2) = 2 = (0 + 2 ) mod 5
 | n = 4 | 5 | 6 | 1 | 3 | 5 | 6 | J(4,2) = 0 = (2 + 2 ) mod 4
 | n = 3 | 1 | 3 | 5 | 1 | 3 | 5 | J(3,2) = 2 = (0 + 2 ) mod 3
 | n = 2 | 5 | 1 | 5 | 1 | 5 | 1 | J(2,2) = 0 = (0 + 2 ) mod 2 
-| n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 0</code></p>
+| n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 0
+</pre></div>
+
+
 <p>Let's apply the same logic from the one-indexed case. After person <span class="math">\(m-1\)</span> get eliminated, we have an array like this:</p>
-<p><code>0 1 2 ... m-2 X m ... n-1</code></p>
+<div class="highlight"><pre><span></span>0 1 2 ... m-2 X m ... n-1
+</pre></div>
+
+
 <p>We now essentailly need to solve a subproblem where person <span class="math">\(m\)</span> comes first:</p>
-<p><code>m m+1 ... n-1 0 1 2 ... m-2</code></p>
+<div class="highlight"><pre><span></span>m m+1 ... n-1 0 1 2 ... m-2
+</pre></div>
+
+
 <p>So, we compute <span class="math">\(J(n-1,m)\)</span> to give us the zero-indexed survivor of a ring of <span class="math">\(n-1\)</span> people and we shfit forward by that many steps:</p>
 <div class="math">$$(m + J(n-1,m))$$</div>
 <p>We take care of wrapping around by mod <span class="math">\(n\)</span>:</p>
@@ -304,26 +336,42 @@ zero-indexing.</p>
 <div class="math">$$(m + J(n-1,m) \bmod n + 1$$</div>
 <p>Note that <span class="math">\(J(1,m) = 0\)</span> in this case, which indicates that we're zero-indexed.</p>
 <!-- ### Implementation -->
+
 <!-- There are many ways to solve this question. -->
+
 <!-- *Brute force* -->
+
 <!-- We can use a cricular double linked list to implement the solution. -->
+
 <!-- *Recurrence* -->
+
 <!-- Use the recurrence relation we just derived. -->
-<h2 id="whats-left-out">What's left out</h2>
+
+<h2>What's left out</h2>
 <ul>
 <li><a href="http://blue.butler.edu/~phenders/InRoads/MathCounts8.pdf">Equivalence Class Solution</a> is interesting to check out.</li>
 <li><a href="https://www.scribd.com/document/3567390/Rank-Trees">Rank tree</a> as a data sturcture is worth to check out to solve this problem. <a href="http://www.imt.ro/romjist/Volum12/Number12_1/pdf/02-MCosulschi.pdf">This paper</a> gives a more detailed analysis.</li>
 </ul>
 <!-- ## Reference -->
+
 <!-- - https://en.wikipedia.org/wiki/Josephus_problem -->
+
 <!-- - Graham, R.L.; Knuth, D.E.; Patashnik, O. (1989), Concrete Mathematics: A Foundation for Computer Science, Addison Wesley, p. 8, ISBN 978-0-201-14236-5 -->
+
 <!-- - http://www.cut-the-knot.org/recurrence/r_solution.shtml -->
+
 <!-- - http://www.exploringbinary.com/powers-of-two-in-the-josephus-problem -->
+
 <!-- - http://www.math.northwestern.edu/~mlerma/problem_solving/solutions/josephus.pdf -->
+
 <!-- - http://blue.butler.edu/~phenders/InRoads/MathCounts8.pdf -->
+
 <!-- - http://stackoverflow.com/questions/31775604/explanation-for-recursive-implementation-of-josephus-prob?answertab=active#tab-top -->
+
 <!-- - http://stackoverflow.com/questions/21737771/can-someone-please-explain-the-use-of-modulus-in-this-code?rq=1 -->
+
 <!-- - https://rosettacode.org/wiki/Josephus_problem -->
+
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",

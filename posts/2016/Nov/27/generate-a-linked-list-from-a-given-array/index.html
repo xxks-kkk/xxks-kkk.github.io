@@ -59,7 +59,7 @@
 </ul>
 <p>I work on DB2 codebase but I don't play around the material I mentioned above a lot.
 Things can get rusty pretty quickly. So, I need a way to keep fresh.</p>
-<div class="important">
+<div class="admonition important">
 <p class="first admonition-title">Important</p>
 <p class="last">All the source code relates to this book can be found on <a class="reference external" href="https://github.com/xxks-kkk/algo">my git repo</a></p>
 </div>
@@ -128,7 +128,7 @@ generate a test linked list. So, that's what <code>List initializeList(ET A[], i
 <p><tt class="docutils literal">initializeList</tt> adds a dummy node and invokes <tt class="docutils literal">initializeNoHeaderList</tt> to
 actually generate linked list from a given array. Inside <tt class="docutils literal">initializeNoHeaderList</tt>,
 we use <em>recursion</em> to generate the list from array.</p>
-<div class="note">
+<div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">If we actually change <code>tmpNode-&gt;Next = initializeNoHeaderList(A+1, arrayLen-1);</code>
 to <code>tmpNode-&gt;Next = initializeList(A+1, arrayLen-1);</code>, this can lead to
@@ -146,7 +146,7 @@ pass in the subarray and the updated length. You can do so like I do
 the original array) and <tt class="docutils literal"><span class="pre">arrayLen-1</span></tt> for the updated length.</p>
 <p>For some reason, <tt class="docutils literal"><span class="pre">arrayLen--</span></tt> doesn't work here. If you do so, it
 will lead to infinite recursion call and segmentation fault eventually.</p>
-<div class="note">
+<div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>when array being passed to a function call, it actually got decayed into a
 pointer pointing to the first element of array. So,
