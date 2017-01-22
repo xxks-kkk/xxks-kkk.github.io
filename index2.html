@@ -43,6 +43,33 @@
 
         <li><article class="hentry">
                 <header>
+                        <h1><a href="./posts/2016/Dec/21/environment-variable-substitution-using-sed/" rel="bookmark" title="Permalink to Environment variable substitution using Sed">Environment variable substitution using <tt class="docutils literal">Sed</tt></a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-21T12:07:00+08:00">Wed 21 Dec 2016, 12:07</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/tools.html">tools</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/sed.html">sed</a> <a href="./tag/shell.html">shell</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>Suppose we have a text file <tt class="docutils literal">config.ini</tt> looks something like this:</p>
+<pre class="literal-block">
+[MSSQLSERVER]
+Driver=INSTHOME/foo/foo.so
+
+[SYBASE]
+Driver=INSTHOME/bar/bar.so
+
+...
+</pre>
+<p>We want to replace all the appearance of <tt class="docutils literal">INSTHOME</tt> with the
+value we hold in <tt class="docutils literal">$HOME</tt>. Here is what I do initially:</p>
+<div class="highlight"><pre><span></span>sed -i -e <span class="s2">&quot;s ...</span></pre></div>
+                <a class="readmore" href="./posts/2016/Dec/21/environment-variable-substitution-using-sed/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
+        <li><article class="hentry">
+                <header>
                         <h1><a href="./posts/2016/Dec/20/whats-the-difference-between-sourcing-a-script-and-executing-a-script/" rel="bookmark" title="Permalink to What's the difference between sourcing a script and executing a script?">What's the difference between sourcing a script and executing a script?</a></h1>
                 </header>
 
@@ -228,47 +255,6 @@ book review, and many other non-technical posts, please check out <a class="refe
                 <a class="readmore" href="./posts/2016/Nov/23/hello-world/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2015/Oct/18/minimal-emacs-tutorial/" rel="bookmark" title="Permalink to Minimal Emacs Tutorial">Minimal Emacs Tutorial</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2015-10-18T16:18:00+08:00">Sun 18 Oct 2015, 16:18</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/tools.html">tools</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/emacs.html">emacs</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <div class="section" id="learn-about-emacs">
-<h2>Learn about Emacs</h2>
-<p>Here I will cover some basic manipulation with text files using emacs. It should be enough to get started working with
-emacs.</p>
-<div class="section" id="terms-in-emacs">
-<h3>Terms in Emacs</h3>
-<ul class="simple">
-<li>Region: the highlighted area</li>
-<li>Kill: same as &quot;cut&quot;</li>
-<li>Yank: same as &quot;paste&quot;</li>
-</ul>
-</div>
-<div class="section" id="emacs-key-notation">
-<h3>Emacs Key Notation</h3>
-<table border="1" class="docutils">
-<colgroup>
-<col width="11%" />
-<col width="89%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Prefix</th>
-<th class="head">Meaning</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>C-</td>
-<td>(press and hold) the ...</td></tr></tbody></table></div></div>
-                <a class="readmore" href="./posts/2015/Oct/18/minimal-emacs-tutorial/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
         <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
         <hr />
@@ -279,7 +265,10 @@ emacs.</p>
                             href="./index.html">1</a>&nbsp;</li>
                     <li class="active"><a
                             href="./index2.html">2</a>&nbsp;</li>
-                <li class="next disabled"><i class="fa fa-arrow-right fa-fw"></i></li>
+                    <li class=""><a
+                            href="./index3.html">3</a>&nbsp;</li>
+                <li class="next"><a
+                        href="./index3.html"><i class="fa fa-arrow-right fa-fw"></i></a></li>
         </ul>
 </section><!-- /#content -->
 
@@ -295,7 +284,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (8)</a></li>
+                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (9)</a></li>
                            <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
                            <li ><a href="./category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
                            <li ><a href="./category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
@@ -327,6 +316,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
+                        <a href="./tag/call-stack.html">
+                            call-stack
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
                         <a href="./tag/circular-double-linked-list.html">
                             circular-double-linked-list
                         </a>
@@ -354,6 +348,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                     <li class="list-group-item tag-4">
                         <a href="./tag/jinja.html">
                             Jinja
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-3">
+                        <a href="./tag/math.html">
+                            math
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
