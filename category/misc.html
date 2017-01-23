@@ -40,7 +40,198 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="../posts/2016/Dec/16/lesson-learned-portability/">Lesson Learned: Portability</a></h1>
+                <h1 class="entry-title"><a href="../posts/2017/Jan/23/maw-chapter-3-reflection/">MAW: Chapter 3 Reflection</a></h1>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-23T10:45:00+08:00">Mon 23 Jan 2017, 10:45</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/misc.html">misc</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/meta.html">meta</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>I finally finish Chapter 3: List, Stacks, and Queues with almost all the problems
+solved. It's time to do some summary and reflection.</p>
+<div class="section" id="reflection">
+<h2>Reflection</h2>
+<p>One important philosophy in this chapter is the
+separation between the interface exposed to the user and the implementation details behind the scene.
+The interface exposed to the user is the Abstract Data Types (ADTs). In this chapter,
+the interface in this chapter is &quot;List&quot;. However, there are multiple implementations can meet the
+requirement of the interface, which are &quot;Array&quot; and &quot;Linked Lists&quot;. We can further
+categorize &quot;List&quot; interface into different subcategories &quot;Stack&quot;, &quot;Queue&quot;, &quot;Deque&quot;.
+In other words, even we talk about &quot;Stack&quot; ADT, &quot;Queue&quot; ADT, and &quot;Deque&quot; ADT, they are
+all essentially the &quot;List&quot; but with some restrictions in terms of list operations.
+Here is a picture that helps us to understand this concept better:</p>
+<img alt="" src="/images/maw-chap3.PNG" />
+<p>In terms of actual implementation, we can get a sense of what's the basic structure that a data structure
+should have. Take a linked list implementation of a queue as an example. The key characteristics
+of a queue is that it should have a <span class="math">\(O(1)\)</span> operation on both enqueue and dequeue. This leads us to
+the pointer to pointing both the front and rear of the list. Thus, our queue &quot;queue.h&quot; and &quot;queue.c&quot;
+look like respectively:</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">QueueRecord</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">QueueCDT</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">QueueRecord</span><span class="o">*</span> <span class="n">PtrToNode</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">QueueCDT</span><span class="o">*</span> <span class="n">QueueADT</span><span class="p">;</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">QueueRecord</span>
+<span class="p">{</span>
+  <span class="n">ET</span> <span class="n">Element</span><span class="p">;</span>
+  <span class="n">PtrToNode</span> <span class="n">Next</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">QueueCDT</span>
+<span class="p">{</span>
+  <span class="n">PtrToNode</span> <span class="n">Front</span><span class="p">;</span>
+  <span class="n">PtrToNode</span> <span class="n">Rear</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+<p>Here, our queue pointed by <tt class="docutils literal">QueueADT</tt> is defined by two pointers: <tt class="docutils literal">Front</tt> and <tt class="docutils literal">Rear</tt>.
+Then, Those two pointers are pointing to our actual <tt class="docutils literal">QueueRecord</tt>, which how we form our linked list implementation.
+So, when we implement a data structure, we can take a top-down view by first thinking about
+what characterizes our data structure. That's the very important first step we take. Then, we can think
+follow the flow naturally by defining what are the required elements to implement those characteristics.</p>
+</div>
+<div class="section" id="chapter-structure">
+<h2>Chapter Structure</h2>
+<p><strong>Linked List</strong></p>
+<ul class="simple">
+<li>Singly Linked List</li>
+<li>Doubly Linked List</li>
+<li>Circular Linked List</li>
+<li>Applications:<ul>
+<li>Polynomial ADT</li>
+<li>Raxi Sort</li>
+</ul>
+</li>
+</ul>
+<p><strong>Stacks</strong></p>
+<ul class="simple">
+<li>Linked List implementation</li>
+<li>Array implementation</li>
+<li>Applications:<ul>
+<li>Balancing Symbols</li>
+<li>Postfix Expression (Postfix expression evaluation; Infix to Postfix Conversion)</li>
+<li>Function Call Stack</li>
+</ul>
+</li>
+</ul>
+<p><strong>Queue</strong></p>
+<ul class="simple">
+<li>Array implementation</li>
+<li>Linked List implementation</li>
+</ul>
+</div>
+<div class="section" id="notable-questions">
+<h2>Notable Questions</h2>
+<ul>
+<li><p class="first">3.4, 3.5</p>
+<p>implement set operations using &quot;List&quot; interface. Especialy the union one
+provides insights on how we can implement addition of polynomials (3.6)
+and integer addition (3.9)</p>
+</li>
+<li><p class="first">3.6, 3.7, 3.8, 3.9</p>
+<p>a set of problems relating to Polynomial ADT</p>
+</li>
+<li><p class="first">3.10, 3.24</p>
+<p>problems to practice recurrence relation. Josephus problem is particular
+interesting because it's a good combination of mathematics, algorithm (dynamic programming)
+and data structures.</p>
+</li>
+<li><p class="first">3.12, 3.21, 3.23</p>
+<p>commonly-seen interview questions</p>
+</li>
+<li><p class="first">3.13</p>
+<p>require us to actually implement a radix sort in a real problem.</p>
+</li>
+<li><p class="first">3.18</p>
+<p>balancing symbols using Stack. A really cool problem that the end-product
+is a tool that you can use in your daily work.</p>
+</li>
+<li><p class="first">3.19, 3.20</p>
+<p>Postfix, Infix related problems. Learn about &quot;shunting yard&quot; algorithm
+and how left associate operators (i.e +, -) is different from
+right associate operators (i.e ^) in terms of implementation.</p>
+</li>
+<li><p class="first">3.25, 3.26</p>
+<p>Implement Queue and its variation, Deque, using different data structures.
+In particular, circular array implementation.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="left-out">
+<h2>Left Out</h2>
+<p>Some material I left out when I work through this chapter:</p>
+<ul class="simple">
+<li>function calls as an example of stack (this part is going to be covered from computer system point of view
+in the coming posts).</li>
+<li>cursor implementation of linked list (this part is not on the top priority for now).</li>
+<li>3.7.c, 3.14, 3.16, 3.18.a, 3.22.b</li>
+</ul>
+</div>
+<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article></aside><!-- /#featured -->
+                <h1><i class="fa fa-bars"></i> Other articles</h1>
+                <hr />
+                    <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="../posts/2016/Dec/16/lesson-learned-portability/" rel="bookmark" title="Permalink to Lesson Learned: Portability">Lesson Learned: Portability</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-16T23:20:00+08:00">Fri 16 Dec 2016, 23:20</abbr></p>
 
@@ -49,49 +240,10 @@
                 <p>Portability is a kind of issue that people always talk about in software engineering field.
 I never have been through such problem on my own probably because I don't have to port my
 stuff into different platforms. However, this is not the case anymore during the work.</p>
-<p>Recently, I revisit the first task I owned when I joined the team, which is to develop a lightweight
-configuration tool to improve product usability. Lightweight is the key of this task as we originally
-have a Java-based GUI setup tool involving lots of point &amp; click. This solution is fairly unpopular among
-our customers mainly because the program itself takes lots of space for DB2 image and it doesn't fit well
-with his peers, which all are scripts that can be executed directly from shell.</p>
-<p>So, in my iteration, I decide to follow the format of majority of utility tools in DB2 image - using scripting language.
-The language I choose is, unfortunately, Shell. The whole task goes amazingly well. With the help of my tool, product configuration
-time is reduced by 75%. Everyone in my team loves it until someone decides to run it on AIX.</p>
-<p>The environment I develop the tool is SUSE with <tt class="docutils literal">ksh</tt> installed. The AIX that my colleague tries to test my tool on also has <tt class="docutils literal">ksh</tt> configured
-but there are some quirky behavior difference on different platform.</p>
-<p>For instance, when I try to split an array, say <tt class="docutils literal">tmp2</tt> with delimiter <tt class="docutils literal">:</tt>, the following code works great on SUSE:</p>
-<pre class="literal-block">
-saveIFS=$IFS
-IFS=&quot;:&quot;
-local tmp2=($tmp) # split tmp with &quot;:&quot; and stored into tmp2 as array
-IFS=$saveIFS
-</pre>
-<p>However, on AIX, only the following way will work:</p>
-<pre class="literal-block">
-#!/bin/sh
-tmp=a:b:c:d
-saveIFS=$IFS
-IFS=&quot;:&quot;
-local tmp2
-n=0
-for i in $tmp; do tmp2[$n]=$i; ((n=n+1)); done
-IFS=$saveIFS
-echo ${tmp2[0]}
-echo ${tmp2[1]}
-echo ${tmp2[2]}
-echo ${tmp2[3]}
-</pre>
-<p>As you can see, I need a for loop to split the array on AIX.</p>
-<p>For another example, when I try to increment counter inside a loop, on SUSE,
-I can do <tt class="docutils literal"><span class="pre">((n++))</span></tt> but on AIX, I need to do <tt class="docutils literal">((n=n+1))</tt>.</p>
-<p>This makes me realize why most of our development scripts (i.e. to help build the source code)
-use perl instead of shell. I have to rewrite the whole script in Perl.</p>
-<p>This is a very important lesson for a fresh college graduate by that time.</p>
-
-        </article></aside><!-- /#featured -->
-                <h1><i class="fa fa-bars"></i> Other articles</h1>
-                <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>Recently, I ...</p>
+                <a class="readmore" href="../posts/2016/Dec/16/lesson-learned-portability/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="../posts/2016/Nov/23/hello-world/" rel="bookmark" title="Permalink to Hello World">Hello World</a></h1>
@@ -126,7 +278,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
                            <li ><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (9)</a></li>
-                           <li class="active"><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (2)</a></li>
+                           <li class="active"><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
                            <li ><a href="../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
                            <li ><a href="../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>
@@ -196,7 +348,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             math
                         </a>
                     </li>
-                    <li class="list-group-item tag-4">
+                    <li class="list-group-item tag-3">
                         <a href="../tag/meta.html">
                             meta
                         </a>
