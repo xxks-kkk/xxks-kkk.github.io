@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-        <title>Hello World</title>
+        <title>Tree Terminology</title>
         <meta charset="utf-8" />
         <meta content="This is the homepage of Zeyuan (Jerry) Hu" name="description">
         <meta content="Zeyuan Hu, Zeyuan, Jerry Hu, Jerry, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, Zeyuan wisc, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
@@ -39,24 +39,168 @@
 
 <section id="content" class="body">
 <article>
-      <header> <h1 class="entry-title"><a href="../../../../../posts/2016/Nov/23/hello-world/"
-        rel="bookmark" title="Permalink to Hello World">Hello World</a></h1>  </header>
+      <header> <h1 class="entry-title"><a href="../../../../../posts/2017/Jan/24/tree-terminology/"
+        rel="bookmark" title="Permalink to Tree Terminology">Tree Terminology</a></h1>  </header>
         <div class="entry-content">
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-11-23T23:00:00+08:00">Wed 23 Nov 2016, 23:00</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-24T20:23:00+08:00">Tue 24 Jan 2017, 20:23</abbr></p>
 
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/misc.html">misc</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/meta.html">meta</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-        <p>This blog will focus entirely on posts that involve either source code or
-mathematical expression. If you are looking for my posts about life reflection,
-book review, and many other non-technical posts, please check out <a class="reference external" href="https://zeyuanhu.wordpress.com/">my blog on wordpress</a>.</p>
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/trees.html">trees</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+        <div class="section" id="terminology">
+<h2>Terminology</h2>
+<p>Like &quot;list&quot; in Chapter 3, &quot;Trees&quot; is another type of abstraction.</p>
+<p><strong>tree</strong>, <strong>root</strong>, <strong>edge</strong></p>
+<p>We can define a tree recursively. A tree is a collection of nodes. The collection
+can be empty; otherwise, a tree consists of a distinguish node <em>r</em>, called the
+<em>root</em>, and zero or more nonempty (sub)tress <span class="math">\(T_1\)</span>, <span class="math">\(T_2\)</span>, ..., <span class="math">\(T_k\)</span>,
+each of whose roots are connected by a directed <em>edge</em> from <em>r</em>.</p>
+<img alt="" src="/images/subtree.PNG" />
+<p><strong>child</strong>, <strong>parent</strong></p>
+<p>The root of each subtree is said to be a <em>child</em> of <em>r</em>, and <em>r</em> is the <em>parent</em>
+of each subtree root.</p>
+<p><strong>leaves</strong></p>
+<p>Nodes with no children are known as <em>leaves</em>.</p>
+<p><strong>siblings</strong></p>
+<p>Nodes with the same parent are <em>siblings</em>.</p>
+<p><strong>path</strong></p>
+<p>A <em>path</em> from node <span class="math">\(n_1\)</span> to <span class="math">\(n_k\)</span> is defined as a sequence of nodes
+<span class="math">\(n_1\)</span>, <span class="math">\(n_2\)</span>, ..., <span class="math">\(n_k\)</span> such that <span class="math">\(n_i\)</span> is the parent of
+<span class="math">\(n_{i+1}\)</span> for <span class="math">\(1&lt;= i &lt; k\)</span>.</p>
+<p><strong>length</strong></p>
+<p>The <em>length</em> of this path is the number of edges on the path, namely <span class="math">\(k-1\)</span>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>There is a path of length zero from every node to itself.</li>
+<li>Notice that in a tree there is exactly one path from the root to each node.</li>
+</ul>
+</div>
+<p><strong>depth</strong></p>
+<p>For any node <span class="math">\(n_i\)</span>, the <em>depth</em> of <span class="math">\(n_i\)</span>, is the length of the unique
+path from the root to <span class="math">\(n_i\)</span>.</p>
+<p><strong>height</strong></p>
+<p>The <em>height</em> of <span class="math">\(n_i\)</span> is the length of the longest path from <span class="math">\(n_i\)</span> to
+a leaf.</p>
+<p><strong>ancestor</strong>, <strong>descendant</strong></p>
+<p>If there is a path from <span class="math">\(n_1\)</span> to <span class="math">\(n_2\)</span>, then <span class="math">\(n_1\)</span> is an <em>ancestor</em>
+of <span class="math">\(n_2\)</span> and <span class="math">\(n_2\)</span> is a <em>descendant</em> of <span class="math">\(n_1\)</span>. If <span class="math">\(n_1 \neq n_2\)</span>,
+then <span class="math">\(n_1\)</span> is a <em>proper ancestor</em> of <span class="math">\(n_2\)</span> and <span class="math">\(n_2\)</span> is a <em>proper descendant</em> of <span class="math">\(n_1\)</span>.</p>
+<p><strong>internal node</strong></p>
+<p>An <em>internal node</em>  is a node with at least one child. In other words, internal nodes are nodes other than leaves.</p>
+<p><strong>degree</strong></p>
+<p>The total number of children of a node is called as <em>degree</em> of that node. The highest
+degree of a node among all the nodes in a tree is called as <em>degree of tree</em>.</p>
+<p><strong>level</strong></p>
+<p>The root node is said to be at <em>level 0</em> and the children of root node are at <em>level 1</em>
+and the children of the nodes which are at <em>level 1</em> will be at <em>level 2</em> and so on ...
+In other words, in a tree each step from top to bottom is called as a <em>level</em> and the <em>level</em>
+count starts with '0' and incremented by one at each level (step).</p>
+<img alt="" src="/images/tree-level.PNG" />
+</div>
+<div class="section" id="some-properties">
+<h2>Some properties</h2>
+<ul class="simple">
+<li>A tree is a collection of N nodes, one of which is the root, and N-1 edges.
+(since each edge connects some node to its parent, and every node except
+the root has one parent.)</li>
+<li>The root is at depth 0.</li>
+<li>All leaves are at height 0.</li>
+<li>The height of a tree is equal to the height of the root.</li>
+<li>The depth of a tree is equal to the depth of the deepest leaf; this is always
+equal to the height of the tree.</li>
+</ul>
+</div>
+<div class="section" id="example">
+<h2>Example</h2>
+<p>Let's work through MAW 4.1, 4.2, and 4.3 to get the tree terminology clear.</p>
+<a class="reference external image-reference" href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/trees/graphviz-src/tree-terminology.gv"><img alt="" src="/images/tree-terminology.png" /></a>
+<ul class="simple">
+<li>&quot;A&quot; is the <em>root</em></li>
+<li>&quot;G&quot;, &quot;H&quot;, &quot;I&quot;, &quot;L&quot;, &quot;M&quot;, &quot;K&quot; are the <em>leaves</em></li>
+<li>&quot;A&quot;:
+- <em>children</em>: &quot;B&quot;, &quot;C&quot;
+- <em>depth</em>: 0
+- <em>height</em>: 4</li>
+<li>&quot;B&quot;:
+- <em>parent</em>: &quot;A&quot;
+- <em>children</em>: &quot;D&quot;, &quot;E&quot;
+- <em>siblings</em>: &quot;C&quot;
+- <em>depth</em>: 1
+- <em>height</em>: 3</li>
+<li>The depth of the tree is 4</li>
+</ul>
+</div>
+<div class="section" id="reference">
+<h2>Reference</h2>
+<ul class="simple">
+<li><a class="reference external" href="http://btechsmartclass.com/DS/U3_T1.html">Tree - Terminology</a></li>
+<li>MAW Chapter 4</li>
+</ul>
+</div>
+<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
 
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
         </div><!-- /.entry-content -->
         <div class="comments">
         <h2>Comments !</h2>
             <div id="disqus_thread"></div>
             <script type="text/javascript">
-               var disqus_identifier = "posts/2016/Nov/23/hello-world/";
+               var disqus_identifier = "posts/2017/Jan/24/tree-terminology/";
                (function() {
                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                dsq.src = 'https://zhu45-org.disqus.com/embed.js';
@@ -80,8 +224,8 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li ><a href="../../../../../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (10)</a></li>
-                           <li class="active"><a href="../../../../../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
+                           <li class="active"><a href="../../../../../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (10)</a></li>
+                           <li ><a href="../../../../../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
                            <li ><a href="../../../../../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
                            <li ><a href="../../../../../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>

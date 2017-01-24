@@ -40,139 +40,104 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="../posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/">Num of function calls in recursive Fibonacci routine</a></h1>
+                <h1 class="entry-title"><a href="../posts/2017/Jan/24/tree-terminology/">Tree Terminology</a></h1>
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-22T23:12:00+08:00">Sun 22 Jan 2017, 23:12</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-24T20:23:00+08:00">Tue 24 Jan 2017, 20:23</abbr></p>
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/math.html">math</a> <a href="../tag/call-stack.html">call-stack</a> <a href="../tag/recursion.html">recursion</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>This is MAW 3.24: </p>
-<blockquote>
-<p>If the recursive rotuine in Section 2.4 used to computeFibonacci numbers is run for N = 50, is stack space likely to run out?Why or why not?</p>
-</blockquote>
-<div class="highlight"><pre><span></span><span class="kt">unsigned</span> <span class="kt">long</span>
-<span class="nf">Fib</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">N</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="k">else</span>
-    <span class="k">return</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Let's first do an empirical experimentation. By running <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/numCalls/numCalls.c">our test program numCalls</a>
-and we can get the following output:</p>
-<div class="highlight"><pre><span></span>    i               Fib(i)          numCalls
-    i = 0           1               1
-    i = 1           1               1
-    i = 2           2               3
-    i = 3           3               5
-    i = 4           5               9
-    i = 5           8               15
-    i = 6           13              25
-    i = 7           21              41
-    i = 8           34              67
-    i = 9           55              109
-    i = 10          89              177
-    i = 11          144             287
-    i = 12          233             465
-    i = 13          377             753
-    i = 14          610             1219
-    i = 15          987             1973
-    i = 16          1597            3193
-    i = 17          2584            5167
-    i = 18          4181            8361
-    i = 19          6765            13529
-    ... snip ...
-    i = 50          20365011074     40730022147
-</pre></div>
-
-
-<p>We know that the Fibonacci numbers are defined by the following recurrence relation:</p>
-<div class="math">$$
-\begin{equation}
-F(n) = F(n-1) + F(n-2), \text{ for }n = 2, 3, ... \label{eq:1}
-\end{equation}
-$$</div>
-<p>We define <span class="math">\(F(0) = F(1) = 1\)</span>. Now, we want to find out the number of recursive calls made to calculate <span class="math">\(F(n)\)</span>. We use <span class="math">\(G(n)\)</span> to denote the number of calls made by the recursive program in calculating <span class="math">\(F(n)\)</span>. Let's examine the output above. We see that <span class="math">\(G(0) = G(1) = 1\)</span> and to compute <span class="math">\(G(n)\)</span> for arbitrary <span class="math">\(n\)</span>, we'll make an initial call, and then <span class="math">\(G(n-1)\)</span> calls to calculate <span class="math">\(F(n-1)\)</span> and <span class="math">\(G(n-2)\)</span> calls to calculate <span class="math">\(F(n-2)\)</span>. Thus, we have the following recurrence relation for <span class="math">\(G(n)\)</span>:
-</p>
-<div class="math">$$
-\begin{equation}
-G(n) = G(n-1) + G(n-2) + 1 \label{eq:2}
-\end{equation}
-$$</div>
-<p>
-Let's solve this recurrence relation by establish the relationship between <span class="math">\(F(n)\)</span> and <span class="math">\(G(n)\)</span> and then, we can get the closed form based upon the closed form of <span class="math">\(F(n)\)</span>. </p>
-<p>Let's suppose that <span class="math">\(G(n)\)</span> depends on <span class="math">\(F(n)\)</span> in some way. In other words, <span class="math">\(G(n)\)</span> is a function of <span class="math">\(F(n)\)</span>. Let's try linear form first:
-</p>
-<div class="math">$$
-\begin{equation}
-G(n) = a F(n) + b \text{ where a, b are unknown constants}  \label {eq:3}
-\end{equation}
-$$</div>
-<p>
-Since we know that <span class="math">\(G(0) = G(1) = 1​\)</span> and <span class="math">\(F(0) = F(1) = 1​\)</span>, then \ref{eq:3} becomes </p>
-<div class="math">$$
-\begin{eqnarray*}
-G(1)  &amp; = &amp; a F(1) + b \\
-1 &amp; = &amp; a + b
-\end{eqnarray*}
-$$</div>
-<p>Now let's plugin \ref{eq:3} into \ref{eq:2} and using the \ref{eq:1} and we have:</p>
-<div class="math">$$
-\begin{eqnarray*}
-G(n) &amp; = &amp; G(n-1) + G(n-2) + 1 \\
-a F(n) + b &amp; = &amp; G(n-1) + G(n-2) + 1 \\
-a (F(n-1) + F(n-2)) + b &amp; = &amp; G(n-1) + G(n-2) + 1 \\
-a (F(n-1) + F(n-2)) + b &amp; = &amp; a F(n-1) + b + a F(n-2)) + b + 1 \\
-b &amp; = &amp; -1
-\end{eqnarray*}
-$$</div>
-<p>Now, our \ref{eq:3} becomes <span class="math">\(G(n) = 2F(n) - 1\)</span>. That is, the number of function calls
-to calculate a Fibonacci number <span class="math">\(F(n)\)</span> is <span class="math">\(2F(n) - 1\)</span>.</p>
-<p>Then the question asks about "is the stack space likely to run out?". This actually confuses
-me because it seems like the author tries to indicate that there is a relationship between
-the number of recursive calls and the actual space the program is going to take in call stack.
-I have no clue so far. But, maybe we can find out the space of our <code>Fib</code> routine
-is going to take in call stack and how large the system call stack and we can compare the two
-to get some insights.</p>
-<p>We can use <code>ulimit -a</code> or <code>ulimit -s</code> to find out the size of stack that system allows:</p>
-<div class="highlight"><pre><span></span>$ <span class="nb">ulimit</span> -a
-... snip ...
-stack size              <span class="o">(</span>kbytes, -s<span class="o">)</span> 10240
-... snip ...
-</pre></div>
-
-
-<p>As you can see, the default stack size is <code>10 MB</code>. Let's see how large space our <code>Fib</code>
-is going to use on stack: as of <code>gcc 4.6</code>, there is an option <code>-fstack-usage</code> to allow
-us check the function max amount of stack use. <a href="https://gcc.gnu.org/onlinedocs/gnat_ugn/Static-Stack-Usage-Analysis.html&gt;">Read more info here</a>.</p>
-<div class="highlight"><pre><span></span>numCalls.c:17:1:Fib     48      static
-numCalls.c:27:1:main    64      static
-</pre></div>
-
-
-<p>As you can see, <code>Fib</code> only uses <code>48 bytes</code> and it's quite unlikely to drain out our stack space. 
-But, of course, the runing time is another thing. I mean it's going to be very slow to get the output
-for <span class="math">\(N = 50\)</span>.</p>
-<h2>Future work</h2>
-<ul>
-<li>
-<p><a href="http://vulms.vu.edu.pk/Courses/CS201/Downloads/p60-robertson.pdf">This paper</a> mentions that 
-  \ref{eq:1} and \ref{eq:2} with their initial conditions respectively form second-order 
-  Discrete Dynamical System (DDS). This offers some more mathematical insights. This actually reminds
-  me equation 1.11 in <em>Concrete Mathematics: A Foundation for Computer Science</em> working on 
-  a generalized Josephus problem recurrence relation with a system of three equations and three unknown
-  constant coefficients. In fact, this way of solving problem seems anywhere like differential equations,
-  calculating moments in statistics, and so on. Quite interesting.</p>
-</li>
-<li>
-<p>Lots of things can be said about call stack. In addition, "determine the amount of stack a program uses" is an interesting
-  question that I may dig in the future.</p>
-</li>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/trees.html">trees</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <div class="section" id="terminology">
+<h2>Terminology</h2>
+<p>Like &quot;list&quot; in Chapter 3, &quot;Trees&quot; is another type of abstraction.</p>
+<p><strong>tree</strong>, <strong>root</strong>, <strong>edge</strong></p>
+<p>We can define a tree recursively. A tree is a collection of nodes. The collection
+can be empty; otherwise, a tree consists of a distinguish node <em>r</em>, called the
+<em>root</em>, and zero or more nonempty (sub)tress <span class="math">\(T_1\)</span>, <span class="math">\(T_2\)</span>, ..., <span class="math">\(T_k\)</span>,
+each of whose roots are connected by a directed <em>edge</em> from <em>r</em>.</p>
+<img alt="" src="/images/subtree.PNG" />
+<p><strong>child</strong>, <strong>parent</strong></p>
+<p>The root of each subtree is said to be a <em>child</em> of <em>r</em>, and <em>r</em> is the <em>parent</em>
+of each subtree root.</p>
+<p><strong>leaves</strong></p>
+<p>Nodes with no children are known as <em>leaves</em>.</p>
+<p><strong>siblings</strong></p>
+<p>Nodes with the same parent are <em>siblings</em>.</p>
+<p><strong>path</strong></p>
+<p>A <em>path</em> from node <span class="math">\(n_1\)</span> to <span class="math">\(n_k\)</span> is defined as a sequence of nodes
+<span class="math">\(n_1\)</span>, <span class="math">\(n_2\)</span>, ..., <span class="math">\(n_k\)</span> such that <span class="math">\(n_i\)</span> is the parent of
+<span class="math">\(n_{i+1}\)</span> for <span class="math">\(1&lt;= i &lt; k\)</span>.</p>
+<p><strong>length</strong></p>
+<p>The <em>length</em> of this path is the number of edges on the path, namely <span class="math">\(k-1\)</span>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>There is a path of length zero from every node to itself.</li>
+<li>Notice that in a tree there is exactly one path from the root to each node.</li>
 </ul>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+</div>
+<p><strong>depth</strong></p>
+<p>For any node <span class="math">\(n_i\)</span>, the <em>depth</em> of <span class="math">\(n_i\)</span>, is the length of the unique
+path from the root to <span class="math">\(n_i\)</span>.</p>
+<p><strong>height</strong></p>
+<p>The <em>height</em> of <span class="math">\(n_i\)</span> is the length of the longest path from <span class="math">\(n_i\)</span> to
+a leaf.</p>
+<p><strong>ancestor</strong>, <strong>descendant</strong></p>
+<p>If there is a path from <span class="math">\(n_1\)</span> to <span class="math">\(n_2\)</span>, then <span class="math">\(n_1\)</span> is an <em>ancestor</em>
+of <span class="math">\(n_2\)</span> and <span class="math">\(n_2\)</span> is a <em>descendant</em> of <span class="math">\(n_1\)</span>. If <span class="math">\(n_1 \neq n_2\)</span>,
+then <span class="math">\(n_1\)</span> is a <em>proper ancestor</em> of <span class="math">\(n_2\)</span> and <span class="math">\(n_2\)</span> is a <em>proper descendant</em> of <span class="math">\(n_1\)</span>.</p>
+<p><strong>internal node</strong></p>
+<p>An <em>internal node</em>  is a node with at least one child. In other words, internal nodes are nodes other than leaves.</p>
+<p><strong>degree</strong></p>
+<p>The total number of children of a node is called as <em>degree</em> of that node. The highest
+degree of a node among all the nodes in a tree is called as <em>degree of tree</em>.</p>
+<p><strong>level</strong></p>
+<p>The root node is said to be at <em>level 0</em> and the children of root node are at <em>level 1</em>
+and the children of the nodes which are at <em>level 1</em> will be at <em>level 2</em> and so on ...
+In other words, in a tree each step from top to bottom is called as a <em>level</em> and the <em>level</em>
+count starts with '0' and incremented by one at each level (step).</p>
+<img alt="" src="/images/tree-level.PNG" />
+</div>
+<div class="section" id="some-properties">
+<h2>Some properties</h2>
+<ul class="simple">
+<li>A tree is a collection of N nodes, one of which is the root, and N-1 edges.
+(since each edge connects some node to its parent, and every node except
+the root has one parent.)</li>
+<li>The root is at depth 0.</li>
+<li>All leaves are at height 0.</li>
+<li>The height of a tree is equal to the height of the root.</li>
+<li>The depth of a tree is equal to the depth of the deepest leaf; this is always
+equal to the height of the tree.</li>
+</ul>
+</div>
+<div class="section" id="example">
+<h2>Example</h2>
+<p>Let's work through MAW 4.1, 4.2, and 4.3 to get the tree terminology clear.</p>
+<a class="reference external image-reference" href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/trees/graphviz-src/tree-terminology.gv"><img alt="" src="/images/tree-terminology.png" /></a>
+<ul class="simple">
+<li>&quot;A&quot; is the <em>root</em></li>
+<li>&quot;G&quot;, &quot;H&quot;, &quot;I&quot;, &quot;L&quot;, &quot;M&quot;, &quot;K&quot; are the <em>leaves</em></li>
+<li>&quot;A&quot;:
+- <em>children</em>: &quot;B&quot;, &quot;C&quot;
+- <em>depth</em>: 0
+- <em>height</em>: 4</li>
+<li>&quot;B&quot;:
+- <em>parent</em>: &quot;A&quot;
+- <em>children</em>: &quot;D&quot;, &quot;E&quot;
+- <em>siblings</em>: &quot;C&quot;
+- <em>depth</em>: 1
+- <em>height</em>: 3</li>
+<li>The depth of the tree is 4</li>
+</ul>
+</div>
+<div class="section" id="reference">
+<h2>Reference</h2>
+<ul class="simple">
+<li><a class="reference external" href="http://btechsmartclass.com/DS/U3_T1.html">Tree - Terminology</a></li>
+<li>MAW Chapter 4</li>
+</ul>
+</div>
+<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
         linebreak = "false";
@@ -233,6 +198,31 @@ for <span class="math">\(N = 50\)</span>.</p>
                 <h1><i class="fa fa-bars"></i> Other articles</h1>
                 <hr />
                     <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="../posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/" rel="bookmark" title="Permalink to Num of function calls in recursive Fibonacci routine">Num of function calls in recursive Fibonacci routine</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-22T23:12:00+08:00">Sun 22 Jan 2017, 23:12</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/math.html">math</a> <a href="../tag/call-stack.html">call-stack</a> <a href="../tag/recursion.html">recursion</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>This is MAW 3.24: </p>
+<blockquote>
+<p>If the recursive rotuine in Section 2.4 used to computeFibonacci numbers is run for N = 50, is stack space likely to run out?Why or why not?</p>
+</blockquote>
+<div class="highlight"><pre><span></span><span class="kt">unsigned</span> <span class="kt">long</span>
+<span class="nf">Fib</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">N</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">else</span>
+    <span class="k">return</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N ...</span></pre></div>
+                <a class="readmore" href="../posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="../posts/2016/Dec/31/josephus-problem/" rel="bookmark" title="Permalink to Josephus Problem">Josephus Problem</a></h1>
@@ -418,7 +408,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li class="active"><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (9)</a></li>
+                           <li class="active"><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (10)</a></li>
                            <li ><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
                            <li ><a href="../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
                            <li ><a href="../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
@@ -532,6 +522,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                     <li class="list-group-item tag-4">
                         <a href="../tag/travis-ci.html">
                             travis-ci
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="../tag/trees.html">
+                            trees
                         </a>
                     </li>
                 </ul>

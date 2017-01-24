@@ -43,6 +43,36 @@
 
         <li><article class="hentry">
                 <header>
+                        <h1><a href="./posts/2016/Dec/24/a-small-c-trick-i-learned-today/" rel="bookmark" title="Permalink to A small C trick I learned today">A small C trick I learned today</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-24T23:11:00+08:00">Sat 24 Dec 2016, 23:11</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/programming-languages.html">programming languages</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/c.html">c</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>Today I learned a C trick. Here is my original <tt class="docutils literal">printList</tt>:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">printList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">Pos</span> <span class="n">dummy</span><span class="p">;</span> <span class="c1">// creates a dummy node to traverse the list</span>
+
+  <span class="n">dummy</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="n">dummy</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d-&gt;&quot;</span><span class="p">,</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
+    <span class="n">dummy</span> <span class="o">=</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>It works but there is a small caveat in this routine. This ...</p>
+                <a class="readmore" href="./posts/2016/Dec/24/a-small-c-trick-i-learned-today/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
+        <li><article class="hentry">
+                <header>
                         <h1><a href="./posts/2016/Dec/23/print-singly-linked-list-in-reverse-order/" rel="bookmark" title="Permalink to Print singly linked list in reverse order">Print singly linked list in reverse order</a></h1>
                 </header>
 
@@ -233,29 +263,6 @@ and then integrate it with Travis-CI to automatically publish the blog
                 <a class="readmore" href="./posts/2016/Nov/27/automatically-publish-tinkerer-bld-output-to-github-with-travis-ci/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Nov/27/generate-a-linked-list-from-a-given-array/" rel="bookmark" title="Permalink to Generate a Linked List from a given array">Generate a Linked List from a given array</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-11-27T19:38:00+08:00">Sun 27 Nov 2016, 19:38</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/c.html">c</a> <a href="./tag/singly-linked-list.html">singly-linked-list</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <div class="section" id="perface">
-<h2>Perface</h2>
-<p>Well, I'm starting to work through
-<a class="reference external" href="https://www.amazon.com/Data-Structures-Algorithm-Analysis-2nd/dp/0201498405">Data Structures and Algorithm Analysis in C (2nd edition)</a>
-(referenced as MAW in the following posts) a couple of months agao to serve several purposes:</p>
-<ul class="simple">
-<li>to get enough familarity with C programming language</li>
-<li>to keep my computer science foundation knowledge fresh</li>
-<li>I ...</li></ul></div>
-                <a class="readmore" href="./posts/2016/Nov/27/generate-a-linked-list-from-a-given-array/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
         <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
         <hr />
@@ -285,7 +292,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (9)</a></li>
+                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (10)</a></li>
                            <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
                            <li ><a href="./category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
                            <li ><a href="./category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
@@ -399,6 +406,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                     <li class="list-group-item tag-4">
                         <a href="./tag/travis-ci.html">
                             travis-ci
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="./tag/trees.html">
+                            trees
                         </a>
                     </li>
                 </ul>
