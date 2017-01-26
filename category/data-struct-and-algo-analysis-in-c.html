@@ -40,98 +40,137 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="../posts/2017/Jan/24/tree-terminology/">Tree Terminology</a></h1>
+                <h1 class="entry-title"><a href="../posts/2017/Jan/26/maw-chapter-4-tree-proof-questions/">MAW Chapter 4: Tree proof questions</a></h1>
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-24T20:23:00+08:00">Tue 24 Jan 2017, 20:23</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-26T17:41:00+08:00">Thu 26 Jan 2017, 17:41</abbr></p>
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/trees.html">trees</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <div class="section" id="terminology">
-<h2>Terminology</h2>
-<p>Like &quot;list&quot; in Chapter 3, &quot;Trees&quot; is another type of abstraction.</p>
-<p><strong>tree</strong>, <strong>root</strong>, <strong>edge</strong></p>
-<p>We can define a tree recursively. A tree is a collection of nodes. The collection
-can be empty; otherwise, a tree consists of a distinguish node <em>r</em>, called the
-<em>root</em>, and zero or more nonempty (sub)tress <span class="math">\(T_1\)</span>, <span class="math">\(T_2\)</span>, ..., <span class="math">\(T_k\)</span>,
-each of whose roots are connected by a directed <em>edge</em> from <em>r</em>.</p>
-<img alt="" src="/images/subtree.PNG" />
-<p><strong>child</strong>, <strong>parent</strong></p>
-<p>The root of each subtree is said to be a <em>child</em> of <em>r</em>, and <em>r</em> is the <em>parent</em>
-of each subtree root.</p>
-<p><strong>leaves</strong></p>
-<p>Nodes with no children are known as <em>leaves</em>.</p>
-<p><strong>siblings</strong></p>
-<p>Nodes with the same parent are <em>siblings</em>.</p>
-<p><strong>path</strong></p>
-<p>A <em>path</em> from node <span class="math">\(n_1\)</span> to <span class="math">\(n_k\)</span> is defined as a sequence of nodes
-<span class="math">\(n_1\)</span>, <span class="math">\(n_2\)</span>, ..., <span class="math">\(n_k\)</span> such that <span class="math">\(n_i\)</span> is the parent of
-<span class="math">\(n_{i+1}\)</span> for <span class="math">\(1&lt;= i &lt; k\)</span>.</p>
-<p><strong>length</strong></p>
-<p>The <em>length</em> of this path is the number of edges on the path, namely <span class="math">\(k-1\)</span>.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<ul class="last simple">
-<li>There is a path of length zero from every node to itself.</li>
-<li>Notice that in a tree there is exactly one path from the root to each node.</li>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/trees.html">trees</a> <a href="../tag/proof.html">proof</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>There are a lot of written proof questions in Chapter 4. Those questions offer
+great insights on the general techniques in solving algorithmatic proving questions.
+So, I decide to record them in this single post. Of course, this post will be continually
+updated as I work through the chapter.</p>
+<h2>Insights</h2>
+<ul>
+<li>Recursive tree definition is a natural fit with induction (i.e., MAW 4.5, 4.6, 4.7).</li>
+<li>Usually there are two ways to prove a problem in tree, one direction is from induction
+  and the other one is from basic tree property (i.e., MAW 4.4, 4.6).</li>
 </ul>
-</div>
-<p><strong>depth</strong></p>
-<p>For any node <span class="math">\(n_i\)</span>, the <em>depth</em> of <span class="math">\(n_i\)</span>, is the length of the unique
-path from the root to <span class="math">\(n_i\)</span>.</p>
-<p><strong>height</strong></p>
-<p>The <em>height</em> of <span class="math">\(n_i\)</span> is the length of the longest path from <span class="math">\(n_i\)</span> to
+<h2>Solutions</h2>
+<h3>MAW 4.4</h3>
+<blockquote>
+<p>Show that in a binary tree of <span class="math">\(N\)</span> nodes, there are <span class="math">\(N + 1\)</span> <code>NULL</code> pointers
+representing children.</p>
+</blockquote>
+<p><strong>Proof:</strong>
+For a binary tree with <span class="math">\(N\)</span> nodes, there are two types of edges (pointers): </p>
+<ol>
+<li>edges that are doesn't exist (<code>NULL</code> pointers).</li>
+<li>edges that exist to connect nodes (not <code>NULL</code> pointers).</li>
+</ol>
+<p>Let's first calculate the number of pointers in total, regardless whether the pointer
+is <code>NULL</code> or not. Since each node has <span class="math">\(2\)</span> outgoing pointers, 
+there are <span class="math">\(2N\)</span> pointers in total. Next, we need to calculate the number of edges that actuall
+exist. Since each edge connects some node to its parent, and every node except 
+the root has one parent. In other words, each node, except the root node, has one incoming
+pointer from its parent. So, we have <span class="math">\(N-1\)</span> edges existing. Thus the remaining
+<span class="math">\(2N - (N-1) = N+1\)</span> edges are actually non-existing. Thus, we have <span class="math">\(N+1\)</span> <code>NULL</code> pointers.</p>
+<h3>MAW 4.5</h3>
+<blockquote>
+<p>Show that the maximum number of nodes in a binary tree of height <span class="math">\(H\)</span> is <span class="math">\(2^{H+1}-1\)</span>.</p>
+</blockquote>
+<p><strong>Proof:</strong> 
+Let's prove this by induction.</p>
+<p><em>Base case:</em> <span class="math">\(H = 0\)</span>. A binary tree of height <span class="math">\(0\)</span> has only one node, root. <span class="math">\(2^{H+1}-1\)</span> equals
+one for <span class="math">\(H = 0\)</span>. Therefore ture for <span class="math">\(H = 0\)</span>.</p>
+<p><em>Inductive Hypothesis:</em> Assume that the maximum number of nodes in a binary tree of height <span class="math">\(H\)</span> is
+<span class="math">\(2^{H+1}-1\)</span> for <span class="math">\(H = 1, 2, ..., k\)</span>. Consider a tree <span class="math">\(T\)</span> of height <span class="math">\(k+1\)</span>. The root of <span class="math">\(T\)</span> has 
+a left subtree and a right subtree each of which has height at most <span class="math">\(k\)</span>. These can have
+at most <span class="math">\(2^{k+1}-1\)</span> nodes each by the inductive hypothesis. Adding the root node gives the 
+maximum number of nodes in a binary tree of height <span class="math">\(k+1\)</span>, </p>
+<div class="math">$$
+\begin{equation} 
+2(2^{k+1} - 1) + 1 = 2^{(k+1)+1} - 1 
+\end{equation}
+$$</div>
+<h3>MAW 4.6</h3>
+<blockquote>
+<p>A <em>full node</em> is a node with two children. Prove that the number of full nodes
+plus one is equal to the number of leaves in a nonempty binary tree.</p>
+</blockquote>
+<p>Let's use two methods to prove this question.</p>
+<p><em>Method 1:</em></p>
+<p><strong>Proof:</strong>
+Let's use the following notation for our proof:</p>
+<div class="math">$$
+\begin{eqnarray*}
+N &amp; = &amp; \text{number of nodes in a nonempty binary tree} \\
+F &amp; = &amp; \text{number of full nodes} \\
+H &amp; = &amp; \text{number of nodes with one child} \\
+L &amp; = &amp; \text{number of leaves}
+\end{eqnarray*}
+$$</div>
+<p>Then, we have <span class="math">\(N = F + H + L \label{eq:1}\)</span>. We can get another equation based on the number of 
+edges: <span class="math">\(N - 1 = 2F + H \label{eq:2}\)</span>. <span class="math">\(N-1\)</span> is the number of edges for a <span class="math">\(N\)</span> node binary tree 
+and <span class="math">\(2F + H\)</span> is another way to calculate the number of edges. Now based on these 
+two euqations we have:</p>
+<div class="math">$$
+\begin{eqnarray*}
+2F + H + 1 &amp; = &amp; F + H + L \\
+F + 1 &amp; = &amp; L
+\end{eqnarray*}
+$$</div>
+<p><em>Method 2:</em></p>
+<p><strong>Proof:</strong>
+Let's prove by induction. If there are <span class="math">\(N\)</span> full nodes in a non-empty binary tree
+then there are <span class="math">\(N+1\)</span> leaves.</p>
+<p><em>Base case:</em> <span class="math">\(N = 0\)</span> This is ture because the tree has one node and the root is 
 a leaf.</p>
-<p><strong>ancestor</strong>, <strong>descendant</strong></p>
-<p>If there is a path from <span class="math">\(n_1\)</span> to <span class="math">\(n_2\)</span>, then <span class="math">\(n_1\)</span> is an <em>ancestor</em>
-of <span class="math">\(n_2\)</span> and <span class="math">\(n_2\)</span> is a <em>descendant</em> of <span class="math">\(n_1\)</span>. If <span class="math">\(n_1 \neq n_2\)</span>,
-then <span class="math">\(n_1\)</span> is a <em>proper ancestor</em> of <span class="math">\(n_2\)</span> and <span class="math">\(n_2\)</span> is a <em>proper descendant</em> of <span class="math">\(n_1\)</span>.</p>
-<p><strong>internal node</strong></p>
-<p>An <em>internal node</em>  is a node with at least one child. In other words, internal nodes are nodes other than leaves.</p>
-<p><strong>degree</strong></p>
-<p>The total number of children of a node is called as <em>degree</em> of that node. The highest
-degree of a node among all the nodes in a tree is called as <em>degree of tree</em>.</p>
-<p><strong>level</strong></p>
-<p>The root node is said to be at <em>level 0</em> and the children of root node are at <em>level 1</em>
-and the children of the nodes which are at <em>level 1</em> will be at <em>level 2</em> and so on ...
-In other words, in a tree each step from top to bottom is called as a <em>level</em> and the <em>level</em>
-count starts with '0' and incremented by one at each level (step).</p>
-<img alt="" src="/images/tree-level.PNG" />
-</div>
-<div class="section" id="some-properties">
-<h2>Some properties</h2>
-<ul class="simple">
-<li>A tree is a collection of N nodes, one of which is the root, and N-1 edges.
-(since each edge connects some node to its parent, and every node except
-the root has one parent.)</li>
-<li>The root is at depth 0.</li>
-<li>All leaves are at height 0.</li>
-<li>The height of a tree is equal to the height of the root.</li>
-<li>The depth of a tree is equal to the depth of the deepest leaf; this is always
-equal to the height of the tree.</li>
-</ul>
-</div>
-<div class="section" id="example">
-<h2>Example</h2>
-<p>Let's work through MAW 4.1, 4.2, and 4.3 to get the tree terminology clear.</p>
-<a class="reference external image-reference" href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/trees/graphviz-src/tree-terminology.gv"><img alt="" src="/images/tree-terminology.png" /></a>
-<ul class="simple">
-<li>&quot;A&quot; is the <em>root</em></li>
-<li>&quot;G&quot;, &quot;H&quot;, &quot;I&quot;, &quot;L&quot;, &quot;M&quot;, &quot;K&quot; are the <em>leaves</em></li>
-<li>&quot;A&quot;:
-- <em>children</em>: &quot;B&quot;, &quot;C&quot;
-- <em>depth</em>: 0
-- <em>height</em>: 4</li>
-<li>&quot;B&quot;:
-- <em>parent</em>: &quot;A&quot;
-- <em>children</em>: &quot;D&quot;, &quot;E&quot;
-- <em>siblings</em>: &quot;C&quot;
-- <em>depth</em>: 1
-- <em>height</em>: 3</li>
-<li>The depth of the tree is 4</li>
-</ul>
-<!-- `Tree - Terminology <http://btechsmartclass.com/DS/U3_T1.html>`_ -->
-</div>
-<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+<p><em>Inductive hypothesis:</em> Suppose the theorem holds for <span class="math">\(N = 1, 2, ..., k\)</span>. Then we 
+want to show that if there are <span class="math">\(k+1\)</span> full nodes in a non-empty binary tree then there 
+are <span class="math">\(k+2\)</span> leaves. Pick a leaf node and keep removing its parent recursively 
+(i.e., remove its parent and then parent's parent and so on) until a full node
+is reached. That is, you are traversing from a leaf along the path towards the root,
+while removing the nodes along the path before a full node is reached. This full node
+becomes a non-full node because one of its child node is removed. At this point the
+tree will have one less leaf and one less full node.</p>
+<p><img alt="" src="../images/maw-4-6.PNG" /></p>
+<p>Therefore, the tree has <span class="math">\(k\)</span> full nodes after the nodes are removed. By the inductive
+hypothesis there are <span class="math">\(k+1\)</span> leaves. Add all the nodes that were removed back into the 
+tree the same way to create the original tree. We are adding one full node and 
+one leaf node. Therefore, we have <span class="math">\(k+1\)</span> full nodes with <span class="math">\(k+2\)</span> leaves.</p>
+<h3>MAW 4.7</h3>
+<blockquote>
+<p>Suppose a binary tree has leaves <span class="math">\(l_{1}, l_{2}, ..., l_{M}\)</span> at depths
+<span class="math">\(d_{1}, d_{2}, ...,d_{M}\)</span>, repectively. Prove that <span class="math">\(\sum_{i=1}^M 2^{-d_{i}} \leq 1\)</span>
+and determine when the quality is true.</p>
+</blockquote>
+<p><strong>Proof:</strong>
+Let's prove this by induction. </p>
+<p><em>Base case:</em> when <span class="math">\(M = 1\)</span>, there is one node: the root is a leaf wit depth zero. Then
+the sum is one, and claim holds.</p>
+<p><em>Inductive hypothesis:</em> Suppose the theorem is true for all trees with at most <span class="math">\(k\)</span> nodes.
+Consider any tree with <span class="math">\(k+1\)</span> nodes. Such a tree consists of an <span class="math">\(i\)</span> node left subtree and 
+a <span class="math">\(k-i\)</span> node right subtree. By the inductive hypothesis, the sum for the left subtree
+leaves is at most one with respect to the left tree root. Because all leaves are one deeper
+with respect to the original tree than with respect to the subtree, the sum is at
+most <span class="math">\(1/2\)</span> with respect to the root. Similar logic implies that the sum for leaves 
+in the right subtree is at most <span class="math">\(1/2\)</span> proving the theorem.</p>
+<p>The equality is true if and only if every internal node is a full node. In other words,
+no nodes have one child. Suppose there is a node with one child, and the equality still
+holds. Each time we remove two nodes to create a new tree that has a node with no child.
+This new tree has the same property has the previous one, and by the statement we proved
+above, we should have the same sum as the old, which is one. Eventually, we are left
+with two node, one of them is root. Now, we calculate the sum, which gives <span class="math">\(1/2\)</span>. This 
+is contradiction to the equality.</p>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>This problem is called <a href="https://en.wikipedia.org/wiki/Kraft%E2%80%93McMillan_inequality">Kraft–McMillan inequality</a>,
+  which is one of fundamental theorem in Information theory. I find <a href="https://www.youtube.com/playlist?list=PLE125425EC837021F">this youtube playlist about information theory</a>
+  is really good as an intro to the field because it doesn't make the material look very daunting and super technical,
+  which some <a href="http://circuit.ucsd.edu/~yhk/ece154c-spr16/pdfs/LectureNotes01.pdf">lecture note</a> manages to achieve.</p>
+</blockquote>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
         linebreak = "false";
@@ -192,6 +231,27 @@ equal to the height of the tree.</li>
                 <h1><i class="fa fa-bars"></i> Other articles</h1>
                 <hr />
                     <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="../posts/2017/Jan/24/tree-terminology/" rel="bookmark" title="Permalink to Tree Terminology">Tree Terminology</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-24T20:23:00+08:00">Tue 24 Jan 2017, 20:23</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/trees.html">trees</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <div class="section" id="terminology">
+<h2>Terminology</h2>
+<p>Like &quot;list&quot; in Chapter 3, &quot;Trees&quot; is another type of abstraction.</p>
+<p><strong>tree</strong>, <strong>root</strong>, <strong>edge</strong></p>
+<p>We can define a tree recursively. A tree is a collection of nodes. The collection
+can be empty; otherwise, a tree consists of a distinguish node <em>r</em>, called the
+<em>root</em>, and zero or more nonempty ...</p></div>
+                <a class="readmore" href="../posts/2017/Jan/24/tree-terminology/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="../posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/" rel="bookmark" title="Permalink to Num of function calls in recursive Fibonacci routine">Num of function calls in recursive Fibonacci routine</a></h1>
@@ -364,30 +424,18 @@ For instance ...</blockquote></div>
                 <a class="readmore" href="../posts/2016/Nov/28/printlots/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="../posts/2016/Nov/27/generate-a-linked-list-from-a-given-array/" rel="bookmark" title="Permalink to Generate a Linked List from a given array">Generate a Linked List from a given array</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-11-27T19:38:00+08:00">Sun 27 Nov 2016, 19:38</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/c.html">c</a> <a href="../tag/singly-linked-list.html">singly-linked-list</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <div class="section" id="perface">
-<h2>Perface</h2>
-<p>Well, I'm starting to work through
-<a class="reference external" href="https://www.amazon.com/Data-Structures-Algorithm-Analysis-2nd/dp/0201498405">Data Structures and Algorithm Analysis in C (2nd edition)</a>
-(referenced as MAW in the following posts) a couple of months agao to serve several purposes:</p>
-<ul class="simple">
-<li>to get enough familarity with C programming language</li>
-<li>to keep my computer science foundation knowledge fresh</li>
-<li>I ...</li></ul></div>
-                <a class="readmore" href="../posts/2016/Nov/27/generate-a-linked-list-from-a-given-array/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
+        <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
+        <hr />
+        <ul class="pagination">
+                <li class="prev disabled"><i class="fa fa-arrow-left fa-fw"></i>&nbsp;</li>
+                    <li class="active"><a
+                            href="../category/data-struct-and-algo-analysis-in-c.html">1</a>&nbsp;</li>
+                    <li class=""><a
+                            href="../category/data-struct-and-algo-analysis-in-c2.html">2</a>&nbsp;</li>
+                <li class="next"><a
+                        href="../category/data-struct-and-algo-analysis-in-c2.html"><i class="fa fa-arrow-right fa-fw"></i></a></li>
+        </ul>
 </section><!-- /#content -->
 
         <aside id="sidebar">
@@ -402,7 +450,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li class="active"><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (10)</a></li>
+                           <li class="active"><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (11)</a></li>
                            <li ><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
                            <li ><a href="../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
                            <li ><a href="../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
@@ -488,6 +536,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             pointer
                         </a>
                     </li>
+                    <li class="list-group-item tag-4">
+                        <a href="../tag/proof.html">
+                            proof
+                        </a>
+                    </li>
                     <li class="list-group-item tag-2">
                         <a href="../tag/recursion.html">
                             recursion
@@ -518,7 +571,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             travis-ci
                         </a>
                     </li>
-                    <li class="list-group-item tag-4">
+                    <li class="list-group-item tag-3">
                         <a href="../tag/trees.html">
                             trees
                         </a>
