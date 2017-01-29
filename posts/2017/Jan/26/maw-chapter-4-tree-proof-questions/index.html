@@ -216,7 +216,7 @@ Y_n     &amp;=&amp; 2 \cdot max(Y_{i-1}, Y_{n-i})
 $$</div>
 <p>Now, let's calculate <span class="math">\(E[Y_n]\)</span>. Here, <span class="math">\(I=i\)</span> means we pick <span class="math">\(i_{th}\)</span> element as our 
 first element inserting into the empty tree.Since, we pick the first insertion element equally
-likely, then <span class="math">\(P(I=i) = 1/n\)</span>.</p>
+likely, then <span class="math">\(P(I=i) = \frac{1}{n}\)</span>.</p>
 <div class="math">$$
 \begin{eqnarray*}
 E[Y_n] &amp;=&amp; \sum_{i=1}^n E[Y_n|I=i]P(I=i) \\
@@ -288,7 +288,7 @@ E[Y_n] &amp;\le&amp; \frac{4}{n}\sum_{i=0}^{n-1}E[Y_i] \\
        &amp;=&amp;   \frac{1}{n}\dbinom{n+3}{4} \\
        &amp;=&amp;   \frac{1}{n}\frac{(n+3)!}{4!(n-1)!} \\
        &amp;=&amp;   \frac{1}{4}\frac{(n+3)!}{3!n!} \\
-       &amp;=&amp;   \frac{1}{4}\frac{n+3}{3}
+       &amp;=&amp;   \frac{1}{4}\dbinom{n+3}{3}
 \end{eqnarray*}
 $$</div>
 <p>* ---- Note ---- *</p>
