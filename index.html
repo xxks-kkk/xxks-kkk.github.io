@@ -40,136 +40,50 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="./posts/2017/Jan/26/maw-chapter-4-tree-proof-questions/">MAW Chapter 4: Tree proof questions</a></h1>
+                <h1 class="entry-title"><a href="./posts/2017/Jan/29/binary-tree-binary-search-tree/">Binary Tree & Binary Search Tree</a></h1>
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-26T17:41:00+08:00">Thu 26 Jan 2017, 17:41</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-29T13:20:00+08:00">Sun 29 Jan 2017, 13:20</abbr></p>
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/trees.html">trees</a> <a href="./tag/proof.html">proof</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>There are a lot of written proof questions in Chapter 4. Those questions offer
-great insights on the general techniques in solving algorithmatic proving questions.
-So, I decide to record them in this single post. Of course, this post will be continually
-updated as I work through the chapter.</p>
-<h2>Insights</h2>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/trees.html">trees</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>This is the summary of <em>binary tree</em> and <em>binary search tree</em> part in MAW Chapter 4.</p>
+<h2>Concept</h2>
 <ul>
-<li>Recursive tree definition is a natural fit with induction (i.e., MAW 4.5, 4.6, 4.7).</li>
-<li>Usually there are two ways to prove a problem in tree, one direction is from induction
-  and the other one is from basic tree property (i.e., MAW 4.4, 4.6).</li>
+<li>A <em>binary tree</em> is a tree in which no node can have more than two children. </li>
+<li>An important application of binary trees is <em>binary search tree</em>: for every node,
+  <span class="math">\(X\)</span>, in the tree, the values of all the keys in its left subtree are smaller than
+  the key value in <span class="math">\(X\)</span>, and the values of all the keys in its right subtree are larger
+  than the key value in <span class="math">\(X\)</span> (<em>BST-property</em>).</li>
 </ul>
-<h2>Solutions</h2>
-<h3>MAW 4.4</h3>
-<blockquote>
-<p>Show that in a binary tree of <span class="math">\(N\)</span> nodes, there are <span class="math">\(N + 1\)</span> <code>NULL</code> pointers
-representing children.</p>
-</blockquote>
-<p><strong>Proof:</strong>
-For a binary tree with <span class="math">\(N\)</span> nodes, there are two types of edges (pointers): </p>
-<ol>
-<li>edges that are doesn't exist (<code>NULL</code> pointers).</li>
-<li>edges that exist to connect nodes (not <code>NULL</code> pointers).</li>
-</ol>
-<p>Let's first calculate the number of pointers in total, regardless whether the pointer
-is <code>NULL</code> or not. Since each node has <span class="math">\(2\)</span> outgoing pointers, 
-there are <span class="math">\(2N\)</span> pointers in total. Next, we need to calculate the number of edges that actuall
-exist. Since each edge connects some node to its parent, and every node except 
-the root has one parent. In other words, each node, except the root node, has one incoming
-pointer from its parent. So, we have <span class="math">\(N-1\)</span> edges existing. Thus the remaining
-<span class="math">\(2N - (N-1) = N+1\)</span> edges are actually non-existing. Thus, we have <span class="math">\(N+1\)</span> <code>NULL</code> pointers.</p>
-<h3>MAW 4.5</h3>
-<blockquote>
-<p>Show that the maximum number of nodes in a binary tree of height <span class="math">\(H\)</span> is <span class="math">\(2^{H+1}-1\)</span>.</p>
-</blockquote>
-<p><strong>Proof:</strong> 
-Let's prove this by induction.</p>
-<p><em>Base case:</em> <span class="math">\(H = 0\)</span>. A binary tree of height <span class="math">\(0\)</span> has only one node, root. <span class="math">\(2^{H+1}-1\)</span> equals
-one for <span class="math">\(H = 0\)</span>. Therefore ture for <span class="math">\(H = 0\)</span>.</p>
-<p><em>Inductive Hypothesis:</em> Assume that the maximum number of nodes in a binary tree of height <span class="math">\(H\)</span> is
-<span class="math">\(2^{H+1}-1\)</span> for <span class="math">\(H = 1, 2, ..., k\)</span>. Consider a tree <span class="math">\(T\)</span> of height <span class="math">\(k+1\)</span>. The root of <span class="math">\(T\)</span> has 
-a left subtree and a right subtree each of which has height at most <span class="math">\(k\)</span>. These can have
-at most <span class="math">\(2^{k+1}-1\)</span> nodes each by the inductive hypothesis. Adding the root node gives the 
-maximum number of nodes in a binary tree of height <span class="math">\(k+1\)</span>, </p>
-<div class="math">$$
-\begin{equation} 
-2(2^{k+1} - 1) + 1 = 2^{(k+1)+1} - 1 
-\end{equation}
-$$</div>
-<h3>MAW 4.6</h3>
-<blockquote>
-<p>A <em>full node</em> is a node with two children. Prove that the number of full nodes
-plus one is equal to the number of leaves in a nonempty binary tree.</p>
-</blockquote>
-<p>Let's use two methods to prove this question.</p>
-<p><em>Method 1:</em></p>
-<p><strong>Proof:</strong>
-Let's use the following notation for our proof:</p>
-<div class="math">$$
-\begin{eqnarray*}
-N &amp; = &amp; \text{number of nodes in a nonempty binary tree} \\
-F &amp; = &amp; \text{number of full nodes} \\
-H &amp; = &amp; \text{number of nodes with one child} \\
-L &amp; = &amp; \text{number of leaves}
-\end{eqnarray*}
-$$</div>
-<p>Then, we have <span class="math">\(N = F + H + L \label{eq:1}\)</span>. We can get another equation based on the number of 
-edges: <span class="math">\(N - 1 = 2F + H \label{eq:2}\)</span>. <span class="math">\(N-1\)</span> is the number of edges for a <span class="math">\(N\)</span> node binary tree 
-and <span class="math">\(2F + H\)</span> is another way to calculate the number of edges. Now based on these 
-two euqations we have:</p>
-<div class="math">$$
-\begin{eqnarray*}
-2F + H + 1 &amp; = &amp; F + H + L \\
-F + 1 &amp; = &amp; L
-\end{eqnarray*}
-$$</div>
-<p><em>Method 2:</em></p>
-<p><strong>Proof:</strong>
-Let's prove by induction. If there are <span class="math">\(N\)</span> full nodes in a non-empty binary tree
-then there are <span class="math">\(N+1\)</span> leaves.</p>
-<p><em>Base case:</em> <span class="math">\(N = 0\)</span> This is ture because the tree has one node and the root is 
-a leaf.</p>
-<p><em>Inductive hypothesis:</em> Suppose the theorem holds for <span class="math">\(N = 1, 2, ..., k\)</span>. Then we 
-want to show that if there are <span class="math">\(k+1\)</span> full nodes in a non-empty binary tree then there 
-are <span class="math">\(k+2\)</span> leaves. Pick a leaf node and keep removing its parent recursively 
-(i.e., remove its parent and then parent's parent and so on) until a full node
-is reached. That is, you are traversing from a leaf along the path towards the root,
-while removing the nodes along the path before a full node is reached. This full node
-becomes a non-full node because one of its child node is removed. At this point the
-tree will have one less leaf and one less full node.</p>
-<p><img alt="" src="./images/maw-4-6.PNG" /></p>
-<p>Therefore, the tree has <span class="math">\(k\)</span> full nodes after the nodes are removed. By the inductive
-hypothesis there are <span class="math">\(k+1\)</span> leaves. Add all the nodes that were removed back into the 
-tree the same way to create the original tree. We are adding one full node and 
-one leaf node. Therefore, we have <span class="math">\(k+1\)</span> full nodes with <span class="math">\(k+2\)</span> leaves.</p>
-<h3>MAW 4.7</h3>
-<blockquote>
-<p>Suppose a binary tree has leaves <span class="math">\(l_{1}, l_{2}, ..., l_{M}\)</span> at depths
-<span class="math">\(d_{1}, d_{2}, ...,d_{M}\)</span>, repectively. Prove that <span class="math">\(\sum_{i=1}^M 2^{-d_{i}} \leq 1\)</span>
-and determine when the quality is true.</p>
-</blockquote>
-<p><strong>Proof:</strong>
-Let's prove this by induction. </p>
-<p><em>Base case:</em> when <span class="math">\(M = 1\)</span>, there is one node: the root is a leaf wit depth zero. Then
-the sum is one, and claim holds.</p>
-<p><em>Inductive hypothesis:</em> Suppose the theorem is true for all trees with at most <span class="math">\(k\)</span> nodes.
-Consider any tree with <span class="math">\(k+1\)</span> nodes. Such a tree consists of an <span class="math">\(i\)</span> node left subtree and 
-a <span class="math">\(k-i\)</span> node right subtree. By the inductive hypothesis, the sum for the left subtree
-leaves is at most one with respect to the left tree root. Because all leaves are one deeper
-with respect to the original tree than with respect to the subtree, the sum is at
-most <span class="math">\(1/2\)</span> with respect to the root. Similar logic implies that the sum for leaves 
-in the right subtree is at most <span class="math">\(1/2\)</span> proving the theorem.</p>
-<p>The equality is true if and only if every internal node is a full node. In other words,
-no nodes have one child. Suppose there is a node with one child, and the equality still
-holds. Each time we remove two nodes to create a new tree that has a node with no child.
-This new tree has the same property has the previous one, and by the statement we proved
-above, we should have the same sum as the old, which is one. Eventually, we are left
-with two node, one of them is root. Now, we calculate the sum, which gives <span class="math">\(1/2\)</span>. This 
-is contradiction to the equality.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>This problem is called <a href="https://en.wikipedia.org/wiki/Kraft%E2%80%93McMillan_inequality">Kraft–McMillan inequality</a>,
-  which is one of fundamental theorem in Information theory. I find <a href="https://www.youtube.com/playlist?list=PLE125425EC837021F">this youtube playlist about information theory</a>
-  is really good as an intro to the field because it doesn't make the material look very daunting and super technical,
-  which some <a href="http://circuit.ucsd.edu/~yhk/ece154c-spr16/pdfs/LectureNotes01.pdf">lecture note</a> manages to achieve.</p>
-</blockquote>
+<h2>Classification of binary trees</h2>
+<ul>
+<li>A <em>full</em> binary tree (proper binary tree or 2-tree) is a binary tree in which each node
+  has exactly zero or two children.</li>
+<li>A <em>complete</em> binary tree is a binary tree, which is completely filled, with the possible
+  exception of the bottom level, which is filled from left to right.</li>
+</ul>
+<p><img alt="full-complete-binary-tree" src="./images/full-complete-binary-tree.PNG" /></p>
+<ul>
+<li>A <em>perfect</em> binary tree: A binary tree in which all internal nodes have exactly two children 
+  and all leaves are at the same level. It has property: each level has exactly twice as many 
+  nodes as the previous level (since each internal node has exactly two children).</li>
+</ul>
+<p><img alt="perfect-binary-tree" src="./images/perfect-binary-tree.png" /></p>
+<h2>Properties</h2>
+<ul>
+<li>The average depth of binary tree is <span class="math">\(O(\sqrt{n})\)</span></li>
+<li>A binary tree of <span class="math">\(N\)</span> nodes, there are <span class="math">\(N+1\)</span> <code>NULL</code> pointers representing children (MAW 4.4)</li>
+<li>The maximum number of nodes in a binary tree of height <span class="math">\(H\)</span> is <span class="math">\(2^{H+1}-1\)</span> (MAW 4.5)</li>
+<li>The number of full nodes plus one is equal to the number of leaves in a nonempty binary tree</li>
+<li>The average depth of a node in a binary search tree constructed from random data is <span class="math">\(O(\log n)\)</span></li>
+<li>The average of height of a random binary search tree is <span class="math">\(O(\log n)\)</span> (i.e., <span class="math">\(E[h] = O(\log n)\)</span>) (MAW 4.14)</li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li>MAW Chapter 4</li>
+<li>https://en.wikipedia.org/wiki/Binary_tree</li>
+<li>https://www.cs.cmu.edu/~adamchik/15-121/lectures/Trees/trees.html</li>
+</ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -231,6 +145,25 @@ is contradiction to the equality.</p>
                 <h1><i class="fa fa-bars"></i> Other articles</h1>
                 <hr />
                     <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="./posts/2017/Jan/26/maw-chapter-4-tree-proof-questions/" rel="bookmark" title="Permalink to MAW Chapter 4: Tree proof questions">MAW Chapter 4: Tree proof questions</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-26T17:41:00+08:00">Thu 26 Jan 2017, 17:41</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/trees.html">trees</a> <a href="./tag/proof.html">proof</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>There are a lot of written proof questions in Chapter 4. Those questions offer
+great insights on the general techniques in solving algorithmatic proving questions.
+So, I decide to record them in this single post. Of course, this post will be continually
+updated as I work through the chapter.</p>
+<h2>Insights ...</h2>
+                <a class="readmore" href="./posts/2017/Jan/26/maw-chapter-4-tree-proof-questions/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="./posts/2017/Jan/24/tree-terminology/" rel="bookmark" title="Permalink to Tree Terminology">Tree Terminology</a></h1>
@@ -398,25 +331,6 @@ that follows the game rule exactly. However, I figure ...</p>
                 <a class="readmore" href="./posts/2016/Dec/31/josephus-problem/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2016/Dec/28/a-peek-in-code-optimization/" rel="bookmark" title="Permalink to A peek in code optimization">A peek in code optimization</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-28T13:21:00+08:00">Wed 28 Dec 2016, 13:21</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/singly-linked-list.html">singly-linked-list</a> <a href="./tag/software-engineering.html">software-engineering</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>Quite often, when I take a look at a programming
-question solution, I'm amazed by how succint the provided
-solution is. However, it is also known that getting an &quot;optimized&quot;
-solution is often taking iterative approach. This is something
-that I didn't realize until I start to work ...</p>
-                <a class="readmore" href="./posts/2016/Dec/28/a-peek-in-code-optimization/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
         <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
         <hr />
@@ -445,7 +359,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (11)</a></li>
+                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (12)</a></li>
                            <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
                            <li ><a href="./category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
                            <li ><a href="./category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
@@ -566,7 +480,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             travis-ci
                         </a>
                     </li>
-                    <li class="list-group-item tag-3">
+                    <li class="list-group-item tag-2">
                         <a href="./tag/trees.html">
                             trees
                         </a>
