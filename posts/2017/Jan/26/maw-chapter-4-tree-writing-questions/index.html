@@ -57,9 +57,12 @@ updated as I work through the chapter.</p>
 <li>Usually there are two ways to prove a problem in tree, one direction is from induction
   and the other one is from basic tree property (i.e., MAW 4.4, 4.6).</li>
 <li>Combinatorics (relating to binomials) and Probability theory (discrete part) are important to look at (i.e., MAW 4.14)</li>
+<li>We can usually study some specific examples, and try to generalize them to form induction proof. 
+  In addition, always remember we want to convert the problem for <span class="math">\(n+1\)</span> into the same problem but 
+  with the inductive step on <span class="math">\(n\)</span>. (MAW 4.17)</li>
 </ul>
 <h2>Solutions</h2>
-<p>including: MAW 4.4, 4.5, 4.6, 4.7, 4.14, 4.15</p>
+<p>including: MAW 4.4, 4.5, 4.6, 4.7, 4.14, 4.15, 4.16, 4.17</p>
 <h3>MAW 4.4</h3>
 <blockquote>
 <p>Show that in a binary tree of <span class="math">\(N\)</span> nodes, there are <span class="math">\(N + 1\)</span> <code>NULL</code> pointers
@@ -281,7 +284,7 @@ $$</div>
 1 = Y_1 = E[Y_1] \le \frac{1}{4}\dbinom{1+3}{3} = 1.
 \end{equation}
 $$</div>
-<p><em>Inductive Hypothesis:</em> Assume that <span class="math">\(E[Y_i]\le\frac{1}{4}\dbinom{i+3}{3}\)</span> for all <span class="math">\(i&lt;n\)</span>. Then,</p>
+<p><em>Inductive hypothesis:</em> Assume that <span class="math">\(E[Y_i]\le\frac{1}{4}\dbinom{i+3}{3}\)</span> for all <span class="math">\(i&lt;n\)</span>. Then,</p>
 <div class="math">$$
 \begin{eqnarray*}
 E[Y_n] &amp;\le&amp; \frac{4}{n}\sum_{i=0}^{n-1}E[Y_i] \\
@@ -345,6 +348,48 @@ We need to wait until the whole solution (homogeneous part + particular part).</
 </a></p>
 <!--[![maw-4-16](/images/maw-4-16.png)](https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/trees/graphviz-src/maw-4-16.gv)-->
 
+<h3>MAW 4.17</h3>
+<blockquote>
+<p>Keys <span class="math">\(1, 2, \dots, 2^k-1\)</span> are inserted in order into an initially empty AVL tree. Prove that the resulting tree
+is perfectly balanced.</p>
+</blockquote>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>The solution and corresponding figures are majorly taken from https://cseweb.ucsd.edu/classes/su05/cse100/cse100hw1.pdf
+with minor wording tweak to allow easy understanding for myself.</p>
+</blockquote>
+<p><strong>Proof:</strong>
+Let's use induction on <span class="math">\(k\)</span> to prove the following statement:</p>
+<p>The result of inserting any increasing sequence of <span class="math">\(2^k - 1\)</span> numbers into an 
+  initially empty AVL tree results in a perfectly balanced tree of height 
+  <span class="math">\(k-1\)</span>.</p>
+<p><em>Base case:</em> <span class="math">\(k = 1\)</span>. Tree has only one node. This is clearly perfectly balanced.
+<em>Inductive hypothesis:</em> Assume hypothesis is true for <span class="math">\(k = 1, 2, \dots, h\)</span>. We want to prove that it is true for <span class="math">\(k = h + 1\)</span>, i.e., 
+for sequence <span class="math">\(1, 2, \dots, 2^{h+1}-1\)</span>.</p>
+<p>After the first <span class="math">\(2^h - 1\)</span> insertions, by the induction hypothesis, the tree is perfectly balanced, with height <span class="math">\(h-1\)</span>. <span class="math">\(2^{h-1}\)</span> is at the root
+(can be observed for <span class="math">\(1 \ge k \le 3\)</span> situation, where the roots are <span class="math">\(1\)</span>, <span class="math">\(2\)</span>, <span class="math">\(4\)</span> respectively). The left subtree is a perfectly balanced
+tree of height <span class="math">\(h-2\)</span>, and the right subtree is a perfectly balanced tree containing the numbers <span class="math">\(2^{h-1}+1\)</span> through <span class="math">\(2^h-1\)</span>, also of height <span class="math">\(h-2\)</span>.
+See the following picture:</p>
+<p><img alt="maw-4-17-1" src="/images/maw-4-17-1.PNG" /></p>
+<p>Each of the next <span class="math">\(2^{h-1}\)</span> insertions (<span class="math">\(2^h\)</span> through <span class="math">\(2^h + 2^{h-1} - 1\)</span>) are inserted into the 
+right subtree, and the entire sequence of numbers in the right subtree (now <span class="math">\(2^{h-1}+1\)</span> through <span class="math">\(2^h + 2^{h-1}-1\)</span>)
+were inserted in order and are a sequence of <span class="math">\(2^h - 1\)</span> nodes (i.e. <span class="math">\(2^h + 2^{h-1}-1 - (2^{h-1}+1) + 1 = 2^h -1\)</span>).
+By induction hypothesis, they form a perfectly balanced tree of height <span class="math">\(h-1\)</span>. See the following picture:</p>
+<p><img alt="maw-4-17-2" src="/images/maw-4-17-2.PNG" /></p>
+<p>The next insertion, of the number <span class="math">\(2^h + 2^{h-1}\)</span>, imbalances the tree at the root because now the height of the right subtree
+is <span class="math">\(h\)</span> and the height of the left subtree is <span class="math">\(h-2\)</span>. Now, we do a single rotation and form a tree with root <span class="math">\(2^h\)</span>, and 
+a perfectly balanced left subtree of height <span class="math">\(h-1\)</span>. The right subtree consists of a perfectly balanced tree 
+(of height <span class="math">\(h-2\)</span>), with the new node: <span class="math">\(2^h + 2^{h-1}\)</span>. See the following picture:</p>
+<p><img alt="maw-4-17-3" src="/images/maw-4-17-3.PNG" /></p>
+<p>Thus, the right subtree is as if the numbers <span class="math">\(2^h+1, \dots, 2^h + 2^{h-1}\)</span> had been 
+inserted in order. We subsequently insert the numbers <span class="math">\(2^h + 2^{h-1} + 1\)</span> through
+<span class="math">\(2^{h+1} - 1\)</span> nodes. In other words, we form the right subtree by inserting the 
+numbers <span class="math">\(2^{h} + 1, \dots, 2^{h+1} - 1\)</span>, which have <span class="math">\(2^{h} - 1\)</span> numbers. Then, by
+the inductive hypothesis, these <span class="math">\(2^{h} - 1\)</span> insertions form a perfectly balanced
+subtree of height <span class="math">\(h-1\)</span>. See the following picture:</p>
+<p><img alt="maw-4-17-4" src="/images/maw-4-17-4.PNG" /></p>
+<p>Since the left and right subtrees are perfectly balanced (height <span class="math">\(h-1\)</span>), the whole
+tree is perfectly balanced.</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
