@@ -40,65 +40,120 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="../posts/2017/Jan/29/binary-tree-binary-search-tree/">Binary Tree & Binary Search Tree</a></h1>
+                <h1 class="entry-title"><a href="../posts/2017/Feb/05/avl-tree/">AVL Tree</a></h1>
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-29T13:20:00+08:00">Sun 29 Jan 2017, 13:20</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-05T10:43:00+08:00">Sun 05 Feb 2017, 10:43</abbr></p>
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
 <p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/trees.html">trees</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>This is the summary of <em>binary tree</em> and <em>binary search tree</em> part in MAW Chapter 4.</p>
+                <p>This is the summary of <em>AVL tree</em> part in MAW Chapter 4.</p>
+<h2>Motivation</h2>
+<p>All BST operations are <span class="math">\(O(H)\)</span> time, where <span class="math">\(H\)</span> is the height of the tree. In the worst case
+scenario, when the tree is degenerated, <span class="math">\(H = N\)</span>, where <span class="math">\(N\)</span> is the number of nodes.
+Thus, the problem with BST is that it can get unbalanced and lead to the worst running time.
+AVL tree is one of algorithms for keeping BST balanced (others including red-black trees, splay trees, B-trees).
+Its approach to balancing tree is that we want a pretty good balance (allow a little out of balance).</p>
 <h2>Concept</h2>
+<p>AVL tree is a <em>guaranteed</em> <span class="math">\(O(log N)\)</span> binary search tree. It is identical to a BST, except 
+that for every node in the tree, the height of the left and right subtrees can differ by at most 1.
+(The height of an empty tree is defined to be -1).</p>
+<p><img src="/images/AVL.PNG" alt="AVL-tree-concept" style="width: 700px;"/></p>
+<h2>Insertion</h2>
+<p>AVL tree insertion is based upon BST insertion with two addition treatments:</p>
 <ul>
-<li>A <em>binary tree</em> is a tree in which no node can have more than two children. </li>
-<li>An important application of binary trees is <em>binary search tree</em>: for every node,
-  <span class="math">\(X\)</span>, in the tree, the values of all the keys in its left subtree are smaller than
-  the key value in <span class="math">\(X\)</span>, and the values of all the keys in its right subtree are larger
-  than the key value in <span class="math">\(X\)</span> (<em>BST-property</em>).</li>
+<li>Update the height information of the nodes on the path from the root to the insertion point.</li>
+<li>Restores the AVL property when find the node that violates it on the road through <em>rotation</em> operations.</li>
 </ul>
-<h2>Classification of binary trees</h2>
+<p>There are four cases inside the insertion (see MAW p.111) and we handle "outside" cases (i.e. left-left or right-right)
+and "inside" cases (i.e. left-right or right-left) using single rotation and double rotation respectively.</p>
+<p>To remember single rotation, you can pick a case, say left-left and remember its picture. (right-right is a mirror case)</p>
+<p><img alt="AVL-single-rotation-left" src="../images/AVL-single-rotation-left.PNG" /></p>
+<p>In the picture, we need to rebalance the tree at <span class="math">\(k_2\)</span>. This picture shows how we can implement <code>singleRotateWithLeft</code> routine as well.
+(Here, "left" means the inbalance is caused by the insertion into the left subtree of the inbalance node.)</p>
+<p>Similarly, to remember double rotation, we pick a case, say right-left and remember its picture. (left-right is a mirror case)</p>
+<p><img alt="AVL-double-rotation-right" src="../images/AVL-double-rotation-right.PNG" /></p>
+<p>In the picture, we need to rebalance the tree at <span class="math">\(k_3\)</span>. The picture shows how we can implement <code>doubleRotateWithRight</code> routine as well.
+As you can see from the picture, "double rotation" is essentially the same as two "single rotation": rotate <span class="math">\(k_2\)</span> and <span class="math">\(k_1\)</span>, then <span class="math">\(k_2\)</span> and <span class="math">\(k_3\)</span>.</p>
+<p>Identifying which rotation to use by strictly based upon these four cases can work but time-consuming. Here is how I think about 
+this issue from practical point of view: you may compare the insertion value with the inbalance node value to determine which node to use.
+Here is the detail steps:</p>
+<ol>
+<li>
+<p>Compare the insertion value with the inbalance node value:
+   if comparison result is <span class="math">\(&lt;\)</span>, then we insert into the left subtree of inbalance node. <span class="math">\(&gt;\)</span> otherwise.</p>
+</li>
+<li>
+<p>If the insertion value is <span class="math">\(&lt;\)</span> (or <span class="math">\(&gt;\)</span>) than the left (or right) child value of the inbalance node, we are doing single rotation.</p>
+</li>
+<li>
+<p>If the insertion value is in-between, then we are doing double rotation. </p>
+</li>
+</ol>
+<p>See MAW p.117 insertion 13 for an example.</p>
+<h2>Deletion</h2>
+<p>Deletion, in fact, is extremely similar to the insertion in the sense that: </p>
 <ul>
-<li>A <em>full</em> binary tree (proper binary tree or 2-tree) is a binary tree in which each node
-  has exactly zero or two children.</li>
-<li>A <em>complete</em> binary tree is a binary tree, which is completely filled, with the possible
-  exception of the bottom level, which is filled from left to right.</li>
+<li>It is based upon BST deletion with extra treatment towards node height information and AVL property</li>
+<li>There are the same rotation cases we need to consider when we ensure the AVL property satisfied for the nodes.</li>
 </ul>
-<p><img alt="full-complete-binary-tree" src="../images/full-complete-binary-tree.PNG" /></p>
-<ul>
-<li>A <em>perfect</em> binary tree: A binary tree in which all internal nodes have exactly two children 
-  and all leaves are at the same level. It has property: each level has exactly twice as many 
-  nodes as the previous level (since each internal node has exactly two children).</li>
-</ul>
-<p><img alt="perfect-binary-tree" src="../images/perfect-binary-tree.png" /></p>
+<p>There is only one difference than insertion, which is there can be more than unbalanced node needed to be taken care of when we walk
+through the deletion point to the root.</p>
+<p>There is nuance in terms of how we think about which rotation to use. In insertion, we think about in terms of insertion point. For instance,
+if the insert value is smaller than unbalanced node value, and smaller than the unbalanced node's child value, we know we are in left-left case, which is 
+single rotation. However, when we deal with deletion, we actually think about the height of the subtree: a left-left insertion is equivalent as 
+we make the the left subtree of unbalanced node's child taller than its right subtree. In deletion, there is no way we can use a specific element value 
+to decide what rotation we should use (like insertion). Thus, we have the following code in our <code>deletion</code> routine:</p>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> 
+      <span class="n">T</span> <span class="o">=</span> <span class="n">singleRotateWithLeft</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Left Left case</span>
+    <span class="k">else</span>
+      <span class="n">T</span> <span class="o">=</span> <span class="n">doubleRotateWithLeft</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Left Right case</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="n">T</span> <span class="o">=</span> <span class="n">singleRotateWithRight</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Right Right case</span>
+    <span class="k">else</span>
+      <span class="n">T</span> <span class="o">=</span> <span class="n">doubleRotateWithRight</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Right Left case</span>
+  <span class="p">}</span>
+</pre></div>
+
+
+<p>Of course, the following simple example may help you understand the code chunk above:</p>
+<p><img alt="AVL-deletion" src="../images/AVL-deletion.PNG" /></p>
 <h2>Properties</h2>
 <ul>
-<li>The average depth of binary tree is <span class="math">\(O(\sqrt{n})\)</span></li>
-<li>A binary tree of <span class="math">\(N\)</span> nodes, there are <span class="math">\(N+1\)</span> <code>NULL</code> pointers representing children (MAW 4.4)</li>
-<li>The maximum number of nodes in a binary tree of height <span class="math">\(H\)</span> is <span class="math">\(2^{H+1}-1\)</span> (MAW 4.5)</li>
-<li>The number of full nodes plus one is equal to the number of leaves in a nonempty binary tree</li>
-<li>The average depth of a node in a binary search tree constructed from random data is <span class="math">\(O(\log n)\)</span></li>
-<li>The average of height of a random binary search tree is <span class="math">\(O(\log n)\)</span> (i.e., <span class="math">\(E[h] = O(\log n)\)</span>) (MAW 4.14)</li>
-<li>All the basic operations <code>find</code>, <code>findMin</code>, <code>findMax</code>, <code>insert</code>, and <code>delete</code>
-  <span class="math">\(O(H)\)</span> time, where <span class="math">\(H\)</span> is the height of the tree.<ul>
-<li>worst case: height <span class="math">\(H = n - 1\)</span></li>
-<li>base case: height <span class="math">\(H = \log N\)</span>, where the tree is a complete binary tree.</li>
+<li>For every node of the AVL tree, <span class="math">\(|Height(left child) - Height(right child)| \le 1\)</span>.</li>
+<li>Running time for "find", "insert", "delete" is <em>guaranteed</em> to be <span class="math">\(O(\log N)\)</span>.</li>
+<li>The height of AVL tree <span class="math">\(H\)</span> is at most <span class="math">\(1.44\log _2 N\)</span>. 
+  (see <a href="../posts/2017/Jan/26/maw-chapter-4-tree-writing-questions/">this post</a> for the proof)</li>
+<li>For an insertion, there is <em>at most one</em> rotation (used in non-recursive insertion routine).</li>
 </ul>
-</li>
-<li>Randomly built binary search trees:<ul>
-<li>The <em>average height</em> is much closer to the best case.</li>
-<li>Little is known about the average height when <em>both insertion and deletion</em> are used.</li>
-<li>characteristics<ul>
-<li>Keys inserting in <em>random order</em> into an initially empty tree.</li>
-<li>Each of the <span class="math">\(n!\)</span> <em>permutations</em> of the input keys is <em>equally likely</em>.</li>
+<h2>Pros &amp; Cons of data structure</h2>
+<p>Pros:</p>
+<ul>
+<li>Search is <span class="math">\(O(\log N)\)</span> since AVL trees are always balanced.</li>
+<li>Insertion and deletions are also <span class="math">\(O(\log N)\)</span>.</li>
+<li>The height balancing adds no more than a constant factor to the speed of insertion.</li>
 </ul>
-</li>
-</ul>
-</li>
+<p>Cons:</p>
+<ul>
+<li>Difficult to program &amp; debug; more space for height information.</li>
+<li>Asymptotically faster but rebalancing costs time.</li>
+<li>Most large searches are done in database systems on disk and use
+  other structures (e.g. B-trees).</li>
+<li>May be OK to have <span class="math">\(O(N)\)</span> for a single operation if total run time for
+  many consecutive operations is fast (e.g. Splay trees). In other words,
+  If <em>amortized</em> logarithmic time is enough, use splay trees.</li>
 </ul>
 <h2>Reference</h2>
 <ul>
 <li>MAW Chapter 4</li>
-<li>https://en.wikipedia.org/wiki/Binary_tree</li>
-<li>https://www.cs.cmu.edu/~adamchik/15-121/lectures/Trees/trees.html</li>
+<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture12.pdf </li>
+<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf</li>
+<li>http://www.geeksforgeeks.org/avl-tree-set-2-deletion/</li>
+<li>http://www.mathcs.emory.edu/~cheung/Courses/323/Syllabus/Trees/AVL-delete.html</li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
@@ -161,6 +216,26 @@
                 <h1><i class="fa fa-bars"></i> Other articles</h1>
                 <hr />
                     <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="../posts/2017/Jan/29/binary-tree-binary-search-tree/" rel="bookmark" title="Permalink to Binary Tree & Binary Search Tree">Binary Tree & Binary Search Tree</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-29T13:20:00+08:00">Sun 29 Jan 2017, 13:20</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/trees.html">trees</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>This is the summary of <em>binary tree</em> and <em>binary search tree</em> part in MAW Chapter 4.</p>
+<h2>Concept</h2>
+<ul>
+<li>A <em>binary tree</em> is a tree in which no node can have more than two children. </li>
+<li>An important application of binary trees is <em>binary search tree</em>: for every node,
+  <span class="math">\(X\)</span>, in the tree ...</li></ul>
+                <a class="readmore" href="../posts/2017/Jan/29/binary-tree-binary-search-tree/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="../posts/2017/Jan/26/maw-chapter-4-tree-writing-questions/" rel="bookmark" title="Permalink to MAW Chapter 4: Tree writing questions">MAW Chapter 4: Tree writing questions</a></h1>
@@ -323,34 +398,6 @@ the output polynomial is sorted by exponent and has at most one term of any ...<
                 <a class="readmore" href="../posts/2016/Dec/18/polynomial-multiplication/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="../posts/2016/Dec/03/reverse-singly-linked-list/" rel="bookmark" title="Permalink to Reverse Singly Linked List">Reverse Singly Linked List</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-03T20:34:00+08:00">Sat 03 Dec 2016, 20:34</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/singly-linked-list.html">singly-linked-list</a> <a href="../tag/recursion.html">recursion</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <div class="section" id="problem">
-<h2>Problem</h2>
-<p>This problem is MAW 3.12:</p>
-<blockquote>
-<ol class="loweralpha simple">
-<li>Write a nonrecursive procedure to reverse a singly linked list in O(N) time.</li>
-<li>Write a procedure to reverse a singly linked list in O(N) time using constant
-extra space.</li>
-</ol>
-</blockquote>
-</div>
-<div class="section" id="solution">
-<h2>Solution</h2>
-<p>Essentially, this is just one problem: reverse a singly linked list ...</p></div>
-                <a class="readmore" href="../posts/2016/Dec/03/reverse-singly-linked-list/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
         <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
         <hr />
@@ -377,7 +424,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li class="active"><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (12)</a></li>
+                           <li class="active"><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (13)</a></li>
                            <li ><a href="../category/mathematics.html"><i class="fa fa-folder-open fa-lg"></i> Mathematics (1)</a></li>
                            <li ><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
                            <li ><a href="../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>

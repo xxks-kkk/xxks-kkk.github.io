@@ -40,326 +40,121 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="./posts/2017/Feb/02/solving-recurrence-relations-in-a-nutshell/">Solving recurrence relations in a nutshell</a></h1>
+                <h1 class="entry-title"><a href="./posts/2017/Feb/05/avl-tree/">AVL Tree</a></h1>
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-02T01:05:00+08:00">Thu 02 Feb 2017, 01:05</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-05T10:43:00+08:00">Sun 05 Feb 2017, 10:43</abbr></p>
 
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/mathematics.html">Mathematics</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/recursion.html">recursion</a> <a href="./tag/combinatorics.html">combinatorics</a> <a href="./tag/math.html">math</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>Able to solve recurrence relation is a very important skill when we study data structures
-and algorithm. This is a ability that I used to be familar with when I took combinatorics
-class when I was an undergraduate. However, by that time, I didn't realize how important 
-this skill is from computer science point of view. But, thanks to MAW, I do now.</p>
-<p>This post is a study summary note on this very important subject. The aim of this note 
-is to help at least me quickly solve any types of recurrence relation in the future.
-The content closely follows Chapter 7
-"Recurrence Relations and Generating Functions" of 
-<a href="https://www.amazon.com/Introductory-Combinatorics-5th-Richard-Brualdi/dp/0136020402">"Introductory Combinatorics"</a>,
-which is the textbook I used.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>This note is practical-oriented. I will skip the proof of the theorem whenever possible.
-If you are interested in the proof side of the universe, please read the book.</p>
-</blockquote>
-<h2>TOC</h2>
-<p>The post will be organized in the following format:</p>
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/trees.html">trees</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>This is the summary of <em>AVL tree</em> part in MAW Chapter 4.</p>
+<h2>Motivation</h2>
+<p>All BST operations are <span class="math">\(O(H)\)</span> time, where <span class="math">\(H\)</span> is the height of the tree. In the worst case
+scenario, when the tree is degenerated, <span class="math">\(H = N\)</span>, where <span class="math">\(N\)</span> is the number of nodes.
+Thus, the problem with BST is that it can get unbalanced and lead to the worst running time.
+AVL tree is one of algorithms for keeping BST balanced (others including red-black trees, splay trees, B-trees).
+Its approach to balancing tree is that we want a pretty good balance (allow a little out of balance).</p>
+<h2>Concept</h2>
+<p>AVL tree is a <em>guaranteed</em> <span class="math">\(O(log N)\)</span> binary search tree. It is identical to a BST, except 
+that for every node in the tree, the height of the left and right subtrees can differ by at most 1.
+(The height of an empty tree is defined to be -1).</p>
+<p><img src="/images/AVL.PNG" alt="AVL-tree-concept" style="width: 700px;"/></p>
+<h2>Insertion</h2>
+<p>AVL tree insertion is based upon BST insertion with two addition treatments:</p>
 <ul>
-<li>Linear homogeneous recurrence relation with constant coefficients<ul>
-<li>Method 1: Characteristic equation<ul>
-<li>distinct roots (theorem 7.4.1)</li>
-<li>roots with multiplicities (theorem 7.4.2)</li>
+<li>Update the height information of the nodes on the path from the root to the insertion point.</li>
+<li>Restores the AVL property when find the node that violates it on the road through <em>rotation</em> operations.</li>
 </ul>
+<p>There are four cases inside the insertion (see MAW p.111) and we handle "outside" cases (i.e. left-left or right-right)
+and "inside" cases (i.e. left-right or right-left) using single rotation and double rotation respectively.</p>
+<p>To remember single rotation, you can pick a case, say left-left and remember its picture. (right-right is a mirror case)</p>
+<p><img alt="AVL-single-rotation-left" src="./images/AVL-single-rotation-left.PNG" /></p>
+<p>In the picture, we need to rebalance the tree at <span class="math">\(k_2\)</span>. This picture shows how we can implement <code>singleRotateWithLeft</code> routine as well.
+(Here, "left" means the inbalance is caused by the insertion into the left subtree of the inbalance node.)</p>
+<p>Similarly, to remember double rotation, we pick a case, say right-left and remember its picture. (left-right is a mirror case)</p>
+<p><img alt="AVL-double-rotation-right" src="./images/AVL-double-rotation-right.PNG" /></p>
+<p>In the picture, we need to rebalance the tree at <span class="math">\(k_3\)</span>. The picture shows how we can implement <code>doubleRotateWithRight</code> routine as well.
+As you can see from the picture, "double rotation" is essentially the same as two "single rotation": rotate <span class="math">\(k_2\)</span> and <span class="math">\(k_1\)</span>, then <span class="math">\(k_2\)</span> and <span class="math">\(k_3\)</span>.</p>
+<p>Identifying which rotation to use by strictly based upon these four cases can work but time-consuming. Here is how I think about 
+this issue from practical point of view: you may compare the insertion value with the inbalance node value to determine which node to use.
+Here is the detail steps:</p>
+<ol>
+<li>
+<p>Compare the insertion value with the inbalance node value:
+   if comparison result is <span class="math">\(&lt;\)</span>, then we insert into the left subtree of inbalance node. <span class="math">\(&gt;\)</span> otherwise.</p>
 </li>
-<li>Method 2: Generating function</li>
-</ul>
+<li>
+<p>If the insertion value is <span class="math">\(&lt;\)</span> (or <span class="math">\(&gt;\)</span>) than the left (or right) child value of the inbalance node, we are doing single rotation.</p>
 </li>
-<li>Linear nonhomogeneous recurrence relation with constant coefficients<ul>
-<li>Method 1: Characteristic equation</li>
-<li>Method 2: Generating functions</li>
-</ul>
+<li>
+<p>If the insertion value is in-between, then we are doing double rotation. </p>
 </li>
-</ul>
-<h2>Linear homogeneous recurrence relation with constant coefficients</h2>
-<p><em>Definition:</em> Let <span class="math">\(h_0, h_1, h_2, \dots, h_n, \dots\)</span> be a sequence of numbers. This sequence is 
-said to satisfy a <strong>linear recurrence relation of order <span class="math">\(k\)</span></strong>, provided that there
-exist quantities <span class="math">\(a_1, a_2, \dots, a_k,\)</span> with <span class="math">\(a_k \ne 0\)</span>, and a quantity <span class="math">\(b_n\)</span>
-(each of these quantities <span class="math">\(a_1,a_2,\dots,a_k,b_n\)</span> may depend on <span class="math">\(n\)</span>) such that </p>
-<div class="math">$$
-\begin{equation}
-h_n = a_1h_{n-1} + a_2h_{n-2} + \dots + a_kh_{n-k} + b_n, (n\ge k) \label{eq:1}
-\end{equation}
-$$</div>
-<p><em>Example:</em> The Fabonacci sequence <span class="math">\(f_0, f_1, f_2, \dots, f_n, \dots\)</span> satisfies
-the linear recurrence relation</p>
-<div class="math">$$
-\begin{equation}
-f_n = f_{n-1} + f_{n-2} (n\ge 2)
-\end{equation}
-$$</div>
-<p>of order 2 with <span class="math">\(a_1 = 1, a_2 = 1,\)</span> and <span class="math">\(b_n = 0\)</span>.</p>
-<p><em>Definition:</em> The linear recurrence relation \ref{eq:1} is called <strong>homogeneous</strong> 
-provided that <span class="math">\(b_n\)</span> is zero and is said to have <strong>constant coefficients</strong> provided that
-<span class="math">\(a_1, a_2, \dots, a_k\)</span> are constants.</p>
-<h3>Method 1: Characteristic equation</h3>
-<p><em>Theorem 7.4.1:</em> Let <span class="math">\(q\)</span> be a nonzero number. Then <span class="math">\(h_n = q^n\)</span> is a solution of the
-linear homogeneous recurrence relation</p>
-<div class="math">$$
-\begin{equation}
-h_n - a_1h_{n-1}-a_2h_{n-2}- \dots - a_kh_{n-k} = 0, (a_k \ne 0, n \ge k) \label{eq:2}
-\end{equation}
-$$</div>
-<p>with constant coefficients iff <span class="math">\(q\)</span> is a root of the polynomial equation (called <strong>characteristic equation</strong>) </p>
-<div class="math">$$
-\begin{equation}
-x_k-a_1x^{k-1}-a_2x^{k-2}- \dots - a_k = 0 \label{eq:3}
-\end{equation}
-$$</div>
-<p>If the polynomial equation has <span class="math">\(k\)</span> <em>distinct</em> roots <span class="math">\(q_1, q_2, \dots, q_k\)</span>, then</p>
-<div class="math">$$
-\begin{equation}
-h_n = c_1q_1^{n}+c_2q_2^n+ \dots + c_kq_k^n \label{eq:4}
-\end{equation}
-$$</div>
-<p>is the general solution of \ref{eq:2} in the following sense: No matter what initial
-values for <span class="math">\(h_0, h_1, \dots, h_{k-1}\)</span> are given, there are constants <span class="math">\(c_1, c_2, \dots, c_k\)</span>
-so that \ref{eq:4} is the unique sequence which satisfies both the recurrence relation 
-\ref{eq:2} and the initial values.</p>
-<p><em>Example:</em> Solve the Fabonacci recurrence relation</p>
-<div class="math">$$
-\begin{equation*}
-f_n = f_{n-1} + f_{n-2} (n\ge 2)
-\end{equation*}
-$$</div>
-<p>subject to the initial values <span class="math">\(f_0 = 0\)</span>, and <span class="math">\(f_1\)</span> = 1.</p>
-<p>We rewrite reccurrence relation into <span class="math">\(f(n) - f(n-1) - f(n-2) = 0\)</span> and the characteristic 
-equation of this recurrence relation is</p>
-<div class="math">$$
-\begin{equation*}
-x^2 - x - 1 = 0
-\end{equation*}
-$$</div>
-<p>and its two roots are <span class="math">\(\frac{1+\sqrt 5}{2}\)</span>, <span class="math">\(\frac{1-\sqrt 5}{2}\)</span>, and by theorem 7.4.1,</p>
-<div class="math">$$
-\begin{equation*}
-f_n = c_1 \Big(\frac{1+\sqrt 5}{2}\Big)^n + c_2 \Big(\frac{1-\sqrt 5}{2}\Big)^n
-\end{equation*}
-$$</div>
-<p>is the general solution. We now want constants c_1, and c_2 so that </p>
-<div class="math">$$
-\begin{equation*}
-\begin{cases}
-c_1 \Big(\frac{1+\sqrt 5}{2}\Big) + c_2 \Big(\frac{1-\sqrt 5}{2}\Big) &amp;=&amp; 1 \qquad (n=1)\\
-c_1 + c_2 &amp;=&amp; 0 \qquad (n=0)\\
-\end{cases}
-\end{equation*}
-$$</div>
-<p>and we have <span class="math">\(c_1 = \frac{1}{\sqrt 5}\)</span>, and <span class="math">\(c_2 = -\frac{1}{\sqrt 5}\)</span>. Thus,</p>
-<div class="math">$$
-\begin{equation*}
-f_n = \frac{1}{\sqrt 5}\Big(\frac{1+\sqrt 5}{2}\Big)^n - \frac{1}{\sqrt 5}\Big(\frac{1-\sqrt 5}{2}\Big)^n
-\end{equation*}
-$$</div>
-<p>is the solution of the Fabonacci recurrence relation.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>As you might notice, theorem 7.4.1 explicitly requires that the roots of the characteristic equation have 
-to be distinct. However, that's not always the case and theorem 7.4.1 will not work (see book for an example).
-That's why we need theorem 7.4.2.</p>
-</blockquote>
-<p><em>Theorem 7.4.2:</em> Let <span class="math">\(q_1, q_2, \dots, q_n\)</span> be the distinct roots of the following characteristic equation of the 
-linear homogeneous recurrence relation with constant coefficients:</p>
-<div class="math">$$
-\begin{equation}
-h_n = a_1h_{n-1}+a_2h_{n-2}+ \dots + a_kh_{n-k}, a_k \ne 0, \qquad (n \ge k) \label{eq:5}
-\end{equation}
-$$</div>
-<p>If <span class="math">\(q_i\)</span> is an <span class="math">\(s_i\)</span>-fold root fo the characteristic equation of \ref{eq:5}, the part of the general solution of this recurrence 
-relation corresponding to <span class="math">\(q_i\)</span> is </p>
-<div class="math">$$
-\begin{equation*}
-H_{n}^{(i)} = c_1q_i^n + c_2nq_i^n + \dots + c_{s_i}n^{s_i-1}q_i^n
-\end{equation*}
-$$</div>
-<p>The general solution of the recurrence relation is </p>
-<div class="math">$$
-\begin{equation*}
-h_n = H_n^{(1)} + H_n^{(2)} + \dots + H_n^{(t)}
-\end{equation*}
-$$</div>
-<p><em>Example:</em> Solve the recurrence relation</p>
-<div class="math">$$
-\begin{equation*}
-h_n = -h_{n-1} + 3h_{n-2}+5h_{n-3}+2h_{n-4} \qquad (n \ge 4)
-\end{equation*}
-$$</div>
-<p>subject to the initial values <span class="math">\(h_0=1\)</span>, <span class="math">\(h_1 = 0\)</span>, <span class="math">\(h_2 = 1\)</span>, and <span class="math">\(h_3 = 2\)</span>.</p>
-<p>The characteristic equation of this recurrence relation is <span class="math">\(x^4 + x^3 -3x^2 - 5x - 2 = 0\)</span>, which has roots <span class="math">\(-1\)</span>, <span class="math">\(-1\)</span>, <span class="math">\(-1\)</span>, <span class="math">\(-2\)</span>.
-Thus, the part of the general solution corresponding to the root <span class="math">\(-1\)</span> is</p>
-<div class="math">$$
-\begin{equation*}
-H_n^{(1)} = c_1(-1)^n + c_2n(-1)^n + c_3n^2(-1)^n
-\end{equation*}
-$$</div>
-<p>while the part of a general solution corresponding to the root <span class="math">\(2\)</span> is <span class="math">\(H_n^{(2)} = c_42^n\)</span>. The general solution is </p>
-<div class="math">$$
-\begin{equation*}
-h_n = H_n^{(1)} + H_n^{(2)} = c_1(-1)^n + c_2n(-1)^n + c_3n^2(-1)^n + c_42^n
-\end{equation*}
-$$</div>
-<p>Then we can use initial values to determine <span class="math">\(c1\)</span>, <span class="math">\(c2\)</span>, <span class="math">\(c3\)</span>, <span class="math">\(c4\)</span> and we have <span class="math">\(h_n = \frac{7}{9} (-1)^n - \frac{3}{9}n(-1)^n + \frac{2}{9}2^n\)</span>.</p>
-<!--\* ---- Note ---- *
-
-> You probably already notice from the previous example that "characteristic equation" method really depends on the diffculty in finding all roots
-> of a polynomial equation. Sometimes finding the roots of characteristic equation can be quite diffcult. That's what second method tries to address.
-> If you find out that characteristic equation is really diffcult to solve, you can always use "generating function" method.-->
-
-<h3>Method 2: Generating function</h3>
-<p><em>Definition:</em> Let <span class="math">\(h_0, h_1, h_2, \dots, h_n, \dots\)</span> be an infinite sequence of numbers. Its <strong>generating function</strong> is defined to be the infinite
-series</p>
-<div class="math">$$
-\begin{equation}
-g(x) = h_0 + h_1x + h_2x^2 + \dots + h_nx^n + \cdots
-\end{equation}
-$$</div>
-<p>The coefficient of <span class="math">\(x^n\)</span> in <span class="math">\(g(x)\)</span> is the general solution to <span class="math">\(h_n\)</span>. As you can see, generating functions are Taylor series (power series expansion)
-of infinitely differentiable functions. If we can find the function (i.e. <span class="math">\(g(x)\)</span>) and its Taylor series, then the coefficients of the Taylor series give the solution 
-to the problem.</p>
-<p>Let's illustrate this method using an example.</p>
-<p><em>Example:</em> Solve the recurrence relation </p>
-<div class="math">$$
-\begin{equation*}
-h_n = 5h_{n-1} - 6h_{n-2} \qquad (n \ge 2) 
-\end{equation*}
-$$</div>
-<p>subject to the initial values <span class="math">\(h_0 = 1\)</span> and <span class="math">\(h_1 = -2\)</span>.</p>
-<p>We first rewrite the recurrence relation into <span class="math">\(h_n -5h_{n-1} + 6h_{n-2} = 0 \quad (n \ge 2)\)</span>. Let <span class="math">\(g(x) = h_0 + h_1x + h_2x^2 + \dots + h_nx^n + \cdots\)</span>
-be the generating function for the sequence <span class="math">\(h_0, h_1, \dots, h_n, \dots\)</span>. We then form the following system of equations with the multipliers chosen based 
-upon our rewritten recurrence relation initially.</p>
-<div class="math">$$
-\begin{eqnarray*}
-g(x) &amp;=&amp; h_0 + h_1x + h_2x^2 + \dots + h_nx^n + \cdots \\
--5xg(x) &amp;=&amp;   -5h_0x - 5h_1x^2 - \dots - 5h_{n-1}x^n - \cdots \\
-6x^2g(x) &amp;=&amp;         6h_0x^2 + \dots + 6h_{n-2}x^n + \cdots
-\end{eqnarray*}
-$$</div>
-<p>If you look at the coefficients of <span class="math">\(x^n\)</span> term vertically of all these three equations, you can see that they match our recurrence relation exactly.
-Now, we add these three equations together, we obtain</p>
-<div class="math">$$
-\begin{equation*}
-(1-5x+6x^2)g(x) = h_0 + (h_1-5h_0)x + (h_2 - 5h_1 + 6h_0)x^2 + \dots + (h_n - 5h_{n-1} + 6h_{n-2})x^n + \cdots .
-\end{equation*}
-$$</div>
-<p>since <span class="math">\($h_n - 5h_{n-1} + 6h_{n-2} = 0 \quad (n \ge 2)\)</span> and our initial condition, we have</p>
-<div class="math">$$
-\begin{equation*}
-(1-5x+6x^2)g(x) = h_0 + (h_1 - 5h_0)x = 1 -7x
-\end{equation*}
-$$</div>
-<p>Thus,</p>
-<div class="math">$$
-\begin{equation*}
-g(x) = \frac{1-7x}{1-5x+6x^2}
-\end{equation*}
-$$</div>
-<p>Now, we need to expand <span class="math">\(g(x)\)</span> in order to get the coefficient of <span class="math">\(h_n\)</span>. Since <span class="math">\(1-5x+6x^2 = (1-2x)(1-3x)\)</span>, we can write</p>
-<div class="math">$$
-\begin{equation*}
-\frac{1-7x}{1-5x+6x^2} = \frac{c_1}{1-2x} + \frac{c_2}{1-3x}
-\end{equation*}
-$$</div>
-<p>for some constants <span class="math">\(c1\)</span> and <span class="math">\(c2\)</span>. We can determine <span class="math">\(c1\)</span> and <span class="math">\(c2\)</span> by multiplying both sides of this equation by <span class="math">\(1-5x+6x^2\)</span> to get</p>
-<div class="math">$$
-\begin{equation*}
-1 - 7x = (c_1 + c_2) + (-3c_1 -2c_2)x
-\end{equation*}
-$$</div>
-<p>We can get <span class="math">\(c_1 = 5\)</span> and <span class="math">\(c_2 = -4\)</span>. Since </p>
-<div class="math">$$
-\begin{equation*}
-\frac{1}{(1-rx)^n} = \sum_{k=0}^\infty\dbinom{n+k-1}{k}r^kx^k \qquad \Big(|x| &lt; \frac{1}{|r|}\Big)
-\end{equation*}
-$$</div>
-<p>We have </p>
-<div class="math">$$
-\begin{equation*}
-\frac{1}{1-2x} = 1 + 2x + 2^2x^2 + \dots + 2^nx^n + \cdots
-\end{equation*}
-$$</div>
-<div class="math">$$
-\begin{equation*}
-\frac{1}{1-3x} = 1 + 3x + 3^2x^2 + \dots + 3^nx^n + \cdots
-\end{equation*}
-$$</div>
-<p>So</p>
-<div class="math">$$
-\begin{eqnarray*}
-g(x) &amp;=&amp; 5(1 + 2x + 2^2x^2 + \dots + 2^nx^n + \cdots) -4(1 + 3x + 3^2x^2 + \dots + 3^nx^n + \cdots) \\
-&amp;=&amp; 1 + (-2)x + (-15)x^2 + \dots + (5\times2^n - 4\times3^n)x^n + \cdots
-\end{eqnarray*}
-$$</div>
-<p>Thus, <span class="math">\(h_n = 5\times2^n - 4\times3^n\)</span>.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>Getting the polynomial expansion of <span class="math">\(g(x)\)</span> is the hardest part of this method. For instance, factoring the 
-denominator of <span class="math">\(g(x)\)</span> can be tricky for high degree polynomials. I need more practice on solving recurrence
-relation to decide which method is superior under what kind of situation.</p>
-</blockquote>
-<h2>Linear nonhomogeneous recurrence relation with constant coefficients</h2>
-<p><strong>nonhomogeneous</strong> means <span class="math">\(b_n\)</span> in \ref{eq:1} is no longer zero constant.</p>
-<h3>Method 1: Characteristic equation</h3>
-<p><em>Steps:</em></p>
-<p>1) Find the general solution of the homogeneous relation.</p>
-<p>2) Find a particular solution of the nonhomogeneous relation.</p>
+</ol>
+<p>See MAW p.117 insertion 13 for an example.</p>
+<h2>Deletion</h2>
+<p>Deletion, in fact, is extremely similar to the insertion in the sense that: </p>
 <ul>
-<li>If <span class="math">\(b_n\)</span> is a polynomial of degree <span class="math">\(k\)</span> in <span class="math">\(n\)</span>, then look for a particular solution <span class="math">\(h_n\)</span> that is also a polynomial of degree <span class="math">\(k\)</span> in <span class="math">\(n\)</span>. Thus, try <ul>
-<li><span class="math">\(h_n = r\)</span> (a constant) if <span class="math">\(b_n = d\)</span> (a constant)</li>
-<li><span class="math">\(h_n = rn + s\)</span> if <span class="math">\(b_n = dn + e\)</span></li>
-<li><span class="math">\(h_n = rn^2 + sn + t\)</span> if <span class="math">\(b_n = dn^2 + en + f\)</span></li>
+<li>It is based upon BST deletion with extra treatment towards node height information and AVL property</li>
+<li>There are the same rotation cases we need to consider when we ensure the AVL property satisfied for the nodes.</li>
 </ul>
-</li>
-<li>If <span class="math">\(b_n\)</span> is an exponential, then look for a particular solution that is also an exponential. Thus, try <span class="math">\(h_n = pd^n\)</span> if <span class="math">\(b_n = d^n\)</span> or <span class="math">\(h_n = pnd^n\)</span> if 
-  the first try doesn't work.</li>
+<p>There is only one difference than insertion, which is there can be more than unbalanced node needed to be taken care of when we walk
+through the deletion point to the root.</p>
+<p>There is nuance in terms of how we think about which rotation to use. In insertion, we think about in terms of insertion point. For instance,
+if the insert value is smaller than unbalanced node value, and smaller than the unbalanced node's child value, we know we are in left-left case, which is 
+single rotation. However, when we deal with deletion, we actually think about the height of the subtree: a left-left insertion is equivalent as 
+we make the the left subtree of unbalanced node's child taller than its right subtree. In deletion, there is no way we can use a specific element value 
+to decide what rotation we should use (like insertion). Thus, we have the following code in our <code>deletion</code> routine:</p>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> 
+      <span class="n">T</span> <span class="o">=</span> <span class="n">singleRotateWithLeft</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Left Left case</span>
+    <span class="k">else</span>
+      <span class="n">T</span> <span class="o">=</span> <span class="n">doubleRotateWithLeft</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Left Right case</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="n">T</span> <span class="o">=</span> <span class="n">singleRotateWithRight</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Right Right case</span>
+    <span class="k">else</span>
+      <span class="n">T</span> <span class="o">=</span> <span class="n">doubleRotateWithRight</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Right Left case</span>
+  <span class="p">}</span>
+</pre></div>
+
+
+<p>Of course, the following simple example may help you understand the code chunk above:</p>
+<p><img alt="AVL-deletion" src="./images/AVL-deletion.PNG" /></p>
+<h2>Properties</h2>
+<ul>
+<li>For every node of the AVL tree, <span class="math">\(|Height(left child) - Height(right child)| \le 1\)</span>.</li>
+<li>Running time for "find", "insert", "delete" is <em>guaranteed</em> to be <span class="math">\(O(\log N)\)</span>.</li>
+<li>The height of AVL tree <span class="math">\(H\)</span> is at most <span class="math">\(1.44\log _2 N\)</span>. 
+  (see <a href="./posts/2017/Jan/26/maw-chapter-4-tree-writing-questions/">this post</a> for the proof)</li>
+<li>For an insertion, there is <em>at most one</em> rotation (used in non-recursive insertion routine).</li>
 </ul>
-<p>3) Combine the general solution and the particular solution so that the combined solution satisfies the initial conditions.</p>
-<p><em>Example:</em> Solve </p>
-<div class="math">$$
-\begin{eqnarray*}
-h_n &amp;=&amp; 3h_{n-1} - 4n, \qquad (n \ge 1) \\
-h_0 &amp;=&amp; 2
-\end{eqnarray*}
-$$</div>
-<p>We first consider corresponding homogeneous recurrence relation <span class="math">\(h_n = 3h_{n-1}\)</span> and its characteristic equation is <span class="math">\(x - 3 = 0\)</span>. and thus
-we have the general solution <span class="math">\(h_n = c3^n, \quad (n \ge 1)\)</span>.</p>
-<p>Now we seek a particular solution of the nonhomogeneous recurrence relation <span class="math">\(h_n = 3h_{n-1}-4n, \quad (n \ge 1)\)</span>. We try to find a solution of the 
-form <span class="math">\(h_n = rn + s\)</span> for some constant number <span class="math">\(r\)</span> and <span class="math">\(s\)</span>. We plug in our conjecture into the recurrence relation and get</p>
-<div class="math">$$
-\begin{equation*}
-rn + s = 3(r(n-1)+s) - 4n = (3r-4)n + (-3r+3s)
-\end{equation*}
-$$</div>
-<p>Thus, <span class="math">\(r = 2\)</span> and <span class="math">\(s = 3\)</span> and <span class="math">\(h_n = 2n + 3\)</span>. Now, we combine the general solution of the homogeneous relation with the particular solution 
-of the nonhomogeneous relation to obtain</p>
-<div class="math">$$
-\begin{equation*}
-h_n = c3^n + 2n + 3
-\end{equation*}
-$$</div>
-<p>Now, let's use inital condition to solve for <span class="math">\(c\)</span> and we have <span class="math">\(c = -1\)</span>. So, <span class="math">\(h_n = -3^n + 2n + 3\)</span>.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>As you can see, solving recurrence relation using characteristic equation has strong connection with solving differential equations (both homogeneous and
-nonhomogeneous). </p>
-</blockquote>
-<h3>Method 2: Generating function</h3>
-<p>There is nothing difference in using "generating function" method to solve nonhomogeneous than solve homogeneous recurrence relation. That's actually 
-a beauty of this method: nothing needs to tweak in order to work under different situation.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>Certainly, not all recurrence relation appeard in computer science can be easily solved by the method described in this post. For instance,
-inside <a href="./posts/2016/Dec/31/josephus-problem/">Josephus problem</a>, recurrence relation may depend on whether <span class="math">\(n\)</span> is odd or even and 
-methods may not apply nicely. This implies another type of technique to solve recurrence relation is to guess the solution and prove it by induction.
-Also, in the book, solving <span class="math">\(h_n = h_{n-1} + n^3\)</span> on p. 250 is not standard as well.</p>
-</blockquote>
+<h2>Pros &amp; Cons of data structure</h2>
+<p>Pros:</p>
+<ul>
+<li>Search is <span class="math">\(O(\log N)\)</span> since AVL trees are always balanced.</li>
+<li>Insertion and deletions are also <span class="math">\(O(\log N)\)</span>.</li>
+<li>The height balancing adds no more than a constant factor to the speed of insertion.</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>Difficult to program &amp; debug; more space for height information.</li>
+<li>Asymptotically faster but rebalancing costs time.</li>
+<li>Most large searches are done in database systems on disk and use
+  other structures (e.g. B-trees).</li>
+<li>May be OK to have <span class="math">\(O(N)\)</span> for a single operation if total run time for
+  many consecutive operations is fast (e.g. Splay trees). In other words,
+  If <em>amortized</em> logarithmic time is enough, use splay trees.</li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li>MAW Chapter 4</li>
+<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture12.pdf </li>
+<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf</li>
+<li>http://www.geeksforgeeks.org/avl-tree-set-2-deletion/</li>
+<li>http://www.mathcs.emory.edu/~cheung/Courses/323/Syllabus/Trees/AVL-delete.html</li>
+</ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -421,6 +216,24 @@ Also, in the book, solving <span class="math">\(h_n = h_{n-1} + n^3\)</span> on 
                 <h1><i class="fa fa-bars"></i> Other articles</h1>
                 <hr />
                     <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="./posts/2017/Feb/02/solving-recurrence-relations-in-a-nutshell/" rel="bookmark" title="Permalink to Solving recurrence relations in a nutshell">Solving recurrence relations in a nutshell</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-02T01:05:00+08:00">Thu 02 Feb 2017, 01:05</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/mathematics.html">Mathematics</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/recursion.html">recursion</a> <a href="./tag/combinatorics.html">combinatorics</a> <a href="./tag/math.html">math</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>Able to solve recurrence relation is a very important skill when we study data structures
+and algorithm. This is a ability that I used to be familar with when I took combinatorics
+class when I was an undergraduate. However, by that time, I didn't realize how important 
+this skill ...</p>
+                <a class="readmore" href="./posts/2017/Feb/02/solving-recurrence-relations-in-a-nutshell/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="./posts/2017/Jan/29/binary-tree-binary-search-tree/" rel="bookmark" title="Permalink to Binary Tree & Binary Search Tree">Binary Tree & Binary Search Tree</a></h1>
@@ -588,26 +401,6 @@ all insertions are performed at the ...</blockquote>
                 <a class="readmore" href="./posts/2017/Jan/08/modify-array-inside-function-in-c/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2017/Jan/06/josephus-problem-radix-sort-reflection/" rel="bookmark" title="Permalink to Josephus Problem & Radix Sort Reflection">Josephus Problem &amp; Radix Sort Reflection</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-06T00:34:00+08:00">Fri 06 Jan 2017, 00:34</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/programming-languages.html">programming languages</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/c.html">c</a> <a href="./tag/double-linked-list.html">double-linked-list</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>This post is a reflection on the two problems (MAW 3.13 &amp; 3.10) I
-have been working on for the past five days.</p>
-<div class="section" id="dynamic-arrays-in-c">
-<h2>Dynamic arrays in C</h2>
-<p>One of the ways I try out to solve <a class="reference external" href="./posts/2016/Dec/31/josephus-problem/">Josephus Problem</a> is to use circular double linked list, which
-is implemented in ...</p></div>
-                <a class="readmore" href="./posts/2017/Jan/06/josephus-problem-radix-sort-reflection/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
         <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
         <hr />
@@ -636,7 +429,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (12)</a></li>
+                           <li ><a href="./category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (13)</a></li>
                            <li ><a href="./category/mathematics.html"><i class="fa fa-folder-open fa-lg"></i> Mathematics (1)</a></li>
                            <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
                            <li ><a href="./category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-        <title>Num of function calls in recursive Fibonacci routine</title>
+        <title>AVL Tree</title>
         <meta charset="utf-8" />
         <meta content="This is the homepage of Zeyuan (Jerry) Hu" name="description">
         <meta content="Zeyuan Hu, Zeyuan, Jerry Hu, Jerry, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, Zeyuan wisc, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
@@ -39,139 +39,122 @@
 
 <section id="content" class="body">
 <article>
-      <header> <h1 class="entry-title"><a href="../../../../../posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/"
-        rel="bookmark" title="Permalink to Num of function calls in recursive Fibonacci routine">Num of function calls in recursive Fibonacci routine</a></h1>  </header>
+      <header> <h1 class="entry-title"><a href="../../../../../posts/2017/Feb/05/avl-tree/"
+        rel="bookmark" title="Permalink to AVL Tree">AVL Tree</a></h1>  </header>
         <div class="entry-content">
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-22T23:12:00+08:00">Sun 22 Jan 2017, 23:12</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-05T10:43:00+08:00">Sun 05 Feb 2017, 10:43</abbr></p>
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/math.html">math</a> <a href="../../../../../tag/call-stack.html">call-stack</a> <a href="../../../../../tag/recursion.html">recursion</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-        <p>This is MAW 3.24: </p>
-<blockquote>
-<p>If the recursive rotuine in Section 2.4 used to computeFibonacci numbers is run for N = 50, is stack space likely to run out?Why or why not?</p>
-</blockquote>
-<div class="highlight"><pre><span></span><span class="kt">unsigned</span> <span class="kt">long</span>
-<span class="nf">Fib</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">N</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="k">else</span>
-    <span class="k">return</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Let's first do an empirical experimentation. By running <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/numCalls/numCalls.c">our test program numCalls</a>
-and we can get the following output:</p>
-<div class="highlight"><pre><span></span>    i               Fib(i)          numCalls
-    i = 0           1               1
-    i = 1           1               1
-    i = 2           2               3
-    i = 3           3               5
-    i = 4           5               9
-    i = 5           8               15
-    i = 6           13              25
-    i = 7           21              41
-    i = 8           34              67
-    i = 9           55              109
-    i = 10          89              177
-    i = 11          144             287
-    i = 12          233             465
-    i = 13          377             753
-    i = 14          610             1219
-    i = 15          987             1973
-    i = 16          1597            3193
-    i = 17          2584            5167
-    i = 18          4181            8361
-    i = 19          6765            13529
-    ... snip ...
-    i = 50          20365011074     40730022147
-</pre></div>
-
-
-<p>We know that the Fibonacci numbers are defined by the following recurrence relation:</p>
-<div class="math">$$
-\begin{equation}
-F(n) = F(n-1) + F(n-2), \text{ for }n = 2, 3, ... \label{eq:1}
-\end{equation}
-$$</div>
-<p>We define <span class="math">\(F(0) = F(1) = 1\)</span>. Now, we want to find out the number of recursive calls made to calculate <span class="math">\(F(n)\)</span>. We use <span class="math">\(G(n)\)</span> to denote the number of calls made by the recursive program in calculating <span class="math">\(F(n)\)</span>. Let's examine the output above. We see that <span class="math">\(G(0) = G(1) = 1\)</span> and to compute <span class="math">\(G(n)\)</span> for arbitrary <span class="math">\(n\)</span>, we'll make an initial call, and then <span class="math">\(G(n-1)\)</span> calls to calculate <span class="math">\(F(n-1)\)</span> and <span class="math">\(G(n-2)\)</span> calls to calculate <span class="math">\(F(n-2)\)</span>. Thus, we have the following recurrence relation for <span class="math">\(G(n)\)</span>:
-</p>
-<div class="math">$$
-\begin{equation}
-G(n) = G(n-1) + G(n-2) + 1 \label{eq:2}
-\end{equation}
-$$</div>
-<p>
-Let's solve this recurrence relation by establish the relationship between <span class="math">\(F(n)\)</span> and <span class="math">\(G(n)\)</span> and then, we can get the closed form based upon the closed form of <span class="math">\(F(n)\)</span>. </p>
-<p>Let's suppose that <span class="math">\(G(n)\)</span> depends on <span class="math">\(F(n)\)</span> in some way. In other words, <span class="math">\(G(n)\)</span> is a function of <span class="math">\(F(n)\)</span>. Let's try linear form first:
-</p>
-<div class="math">$$
-\begin{equation}
-G(n) = a F(n) + b \text{ where a, b are unknown constants}  \label {eq:3}
-\end{equation}
-$$</div>
-<p>
-Since we know that <span class="math">\(G(0) = G(1) = 1​\)</span> and <span class="math">\(F(0) = F(1) = 1​\)</span>, then \ref{eq:3} becomes </p>
-<div class="math">$$
-\begin{eqnarray*}
-G(1)  &amp; = &amp; a F(1) + b \\
-1 &amp; = &amp; a + b
-\end{eqnarray*}
-$$</div>
-<p>Now let's plugin \ref{eq:3} into \ref{eq:2} and using the \ref{eq:1} and we have:</p>
-<div class="math">$$
-\begin{eqnarray*}
-G(n) &amp; = &amp; G(n-1) + G(n-2) + 1 \\
-a F(n) + b &amp; = &amp; G(n-1) + G(n-2) + 1 \\
-a (F(n-1) + F(n-2)) + b &amp; = &amp; G(n-1) + G(n-2) + 1 \\
-a (F(n-1) + F(n-2)) + b &amp; = &amp; a F(n-1) + b + a F(n-2)) + b + 1 \\
-b &amp; = &amp; -1
-\end{eqnarray*}
-$$</div>
-<p>Now, our \ref{eq:3} becomes <span class="math">\(G(n) = 2F(n) - 1\)</span>. That is, the number of function calls
-to calculate a Fibonacci number <span class="math">\(F(n)\)</span> is <span class="math">\(2F(n) - 1\)</span>.</p>
-<p>Then the question asks about "is the stack space likely to run out?". This actually confuses
-me because it seems like the author tries to indicate that there is a relationship between
-the number of recursive calls and the actual space the program is going to take in call stack.
-I have no clue so far. But, maybe we can find out the space of our <code>Fib</code> routine
-is going to take in call stack and how large the system call stack and we can compare the two
-to get some insights.</p>
-<p>We can use <code>ulimit -a</code> or <code>ulimit -s</code> to find out the size of stack that system allows:</p>
-<div class="highlight"><pre><span></span>$ <span class="nb">ulimit</span> -a
-... snip ...
-stack size              <span class="o">(</span>kbytes, -s<span class="o">)</span> 10240
-... snip ...
-</pre></div>
-
-
-<p>As you can see, the default stack size is <code>10 MB</code>. Let's see how large space our <code>Fib</code>
-is going to use on stack: as of <code>gcc 4.6</code>, there is an option <code>-fstack-usage</code> to allow
-us check the function max amount of stack use. <a href="https://gcc.gnu.org/onlinedocs/gnat_ugn/Static-Stack-Usage-Analysis.html&gt;">Read more info here</a>.</p>
-<div class="highlight"><pre><span></span>numCalls.c:17:1:Fib     48      static
-numCalls.c:27:1:main    64      static
-</pre></div>
-
-
-<p>As you can see, <code>Fib</code> only uses <code>48 bytes</code> and it's quite unlikely to drain out our stack space. 
-But, of course, the runing time is another thing. I mean it's going to be very slow to get the output
-for <span class="math">\(N = 50\)</span>.</p>
-<h2>Future work</h2>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/trees.html">trees</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+        <p>This is the summary of <em>AVL tree</em> part in MAW Chapter 4.</p>
+<h2>Motivation</h2>
+<p>All BST operations are <span class="math">\(O(H)\)</span> time, where <span class="math">\(H\)</span> is the height of the tree. In the worst case
+scenario, when the tree is degenerated, <span class="math">\(H = N\)</span>, where <span class="math">\(N\)</span> is the number of nodes.
+Thus, the problem with BST is that it can get unbalanced and lead to the worst running time.
+AVL tree is one of algorithms for keeping BST balanced (others including red-black trees, splay trees, B-trees).
+Its approach to balancing tree is that we want a pretty good balance (allow a little out of balance).</p>
+<h2>Concept</h2>
+<p>AVL tree is a <em>guaranteed</em> <span class="math">\(O(log N)\)</span> binary search tree. It is identical to a BST, except 
+that for every node in the tree, the height of the left and right subtrees can differ by at most 1.
+(The height of an empty tree is defined to be -1).</p>
+<p><img src="/images/AVL.PNG" alt="AVL-tree-concept" style="width: 700px;"/></p>
+<h2>Insertion</h2>
+<p>AVL tree insertion is based upon BST insertion with two addition treatments:</p>
 <ul>
+<li>Update the height information of the nodes on the path from the root to the insertion point.</li>
+<li>Restores the AVL property when find the node that violates it on the road through <em>rotation</em> operations.</li>
+</ul>
+<p>There are four cases inside the insertion (see MAW p.111) and we handle "outside" cases (i.e. left-left or right-right)
+and "inside" cases (i.e. left-right or right-left) using single rotation and double rotation respectively.</p>
+<p>To remember single rotation, you can pick a case, say left-left and remember its picture. (right-right is a mirror case)</p>
+<p><img alt="AVL-single-rotation-left" src="../../../../../images/AVL-single-rotation-left.PNG" /></p>
+<p>In the picture, we need to rebalance the tree at <span class="math">\(k_2\)</span>. This picture shows how we can implement <code>singleRotateWithLeft</code> routine as well.
+(Here, "left" means the inbalance is caused by the insertion into the left subtree of the inbalance node.)</p>
+<p>Similarly, to remember double rotation, we pick a case, say right-left and remember its picture. (left-right is a mirror case)</p>
+<p><img alt="AVL-double-rotation-right" src="../../../../../images/AVL-double-rotation-right.PNG" /></p>
+<p>In the picture, we need to rebalance the tree at <span class="math">\(k_3\)</span>. The picture shows how we can implement <code>doubleRotateWithRight</code> routine as well.
+As you can see from the picture, "double rotation" is essentially the same as two "single rotation": rotate <span class="math">\(k_2\)</span> and <span class="math">\(k_1\)</span>, then <span class="math">\(k_2\)</span> and <span class="math">\(k_3\)</span>.</p>
+<p>Identifying which rotation to use by strictly based upon these four cases can work but time-consuming. Here is how I think about 
+this issue from practical point of view: you may compare the insertion value with the inbalance node value to determine which node to use.
+Here is the detail steps:</p>
+<ol>
 <li>
-<p><a href="http://vulms.vu.edu.pk/Courses/CS201/Downloads/p60-robertson.pdf">This paper</a> mentions that 
-  \ref{eq:1} and \ref{eq:2} with their initial conditions respectively form second-order 
-  Discrete Dynamical System (DDS). This offers some more mathematical insights. This actually reminds
-  me equation 1.11 in <em>Concrete Mathematics: A Foundation for Computer Science</em> working on 
-  a generalized Josephus problem recurrence relation with a system of three equations and three unknown
-  constant coefficients. In fact, this way of solving problem seems anywhere like differential equations,
-  calculating moments in statistics, and so on. Quite interesting.</p>
+<p>Compare the insertion value with the inbalance node value:
+   if comparison result is <span class="math">\(&lt;\)</span>, then we insert into the left subtree of inbalance node. <span class="math">\(&gt;\)</span> otherwise.</p>
 </li>
 <li>
-<p>Lots of things can be said about call stack. In addition, "determine the amount of stack a program uses" is an interesting
-  question that I may dig in the future.</p>
+<p>If the insertion value is <span class="math">\(&lt;\)</span> (or <span class="math">\(&gt;\)</span>) than the left (or right) child value of the inbalance node, we are doing single rotation.</p>
 </li>
+<li>
+<p>If the insertion value is in-between, then we are doing double rotation. </p>
+</li>
+</ol>
+<p>See MAW p.117 insertion 13 for an example.</p>
+<h2>Deletion</h2>
+<p>Deletion, in fact, is extremely similar to the insertion in the sense that: </p>
+<ul>
+<li>It is based upon BST deletion with extra treatment towards node height information and AVL property</li>
+<li>There are the same rotation cases we need to consider when we ensure the AVL property satisfied for the nodes.</li>
+</ul>
+<p>There is only one difference than insertion, which is there can be more than unbalanced node needed to be taken care of when we walk
+through the deletion point to the root.</p>
+<p>There is nuance in terms of how we think about which rotation to use. In insertion, we think about in terms of insertion point. For instance,
+if the insert value is smaller than unbalanced node value, and smaller than the unbalanced node's child value, we know we are in left-left case, which is 
+single rotation. However, when we deal with deletion, we actually think about the height of the subtree: a left-left insertion is equivalent as 
+we make the the left subtree of unbalanced node's child taller than its right subtree. In deletion, there is no way we can use a specific element value 
+to decide what rotation we should use (like insertion). Thus, we have the following code in our <code>deletion</code> routine:</p>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> 
+      <span class="n">T</span> <span class="o">=</span> <span class="n">singleRotateWithLeft</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Left Left case</span>
+    <span class="k">else</span>
+      <span class="n">T</span> <span class="o">=</span> <span class="n">doubleRotateWithLeft</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Left Right case</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="n">T</span> <span class="o">=</span> <span class="n">singleRotateWithRight</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Right Right case</span>
+    <span class="k">else</span>
+      <span class="n">T</span> <span class="o">=</span> <span class="n">doubleRotateWithRight</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Right Left case</span>
+  <span class="p">}</span>
+</pre></div>
+
+
+<p>Of course, the following simple example may help you understand the code chunk above:</p>
+<p><img alt="AVL-deletion" src="../../../../../images/AVL-deletion.PNG" /></p>
+<h2>Properties</h2>
+<ul>
+<li>For every node of the AVL tree, <span class="math">\(|Height(left child) - Height(right child)| \le 1\)</span>.</li>
+<li>Running time for "find", "insert", "delete" is <em>guaranteed</em> to be <span class="math">\(O(\log N)\)</span>.</li>
+<li>The height of AVL tree <span class="math">\(H\)</span> is at most <span class="math">\(1.44\log _2 N\)</span>. 
+  (see <a href="../../../../../posts/2017/Jan/26/maw-chapter-4-tree-writing-questions/">this post</a> for the proof)</li>
+<li>For an insertion, there is <em>at most one</em> rotation (used in non-recursive insertion routine).</li>
+</ul>
+<h2>Pros &amp; Cons of data structure</h2>
+<p>Pros:</p>
+<ul>
+<li>Search is <span class="math">\(O(\log N)\)</span> since AVL trees are always balanced.</li>
+<li>Insertion and deletions are also <span class="math">\(O(\log N)\)</span>.</li>
+<li>The height balancing adds no more than a constant factor to the speed of insertion.</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>Difficult to program &amp; debug; more space for height information.</li>
+<li>Asymptotically faster but rebalancing costs time.</li>
+<li>Most large searches are done in database systems on disk and use
+  other structures (e.g. B-trees).</li>
+<li>May be OK to have <span class="math">\(O(N)\)</span> for a single operation if total run time for
+  many consecutive operations is fast (e.g. Splay trees). In other words,
+  If <em>amortized</em> logarithmic time is enough, use splay trees.</li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li>MAW Chapter 4</li>
+<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture12.pdf </li>
+<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf</li>
+<li>http://www.geeksforgeeks.org/avl-tree-set-2-deletion/</li>
+<li>http://www.mathcs.emory.edu/~cheung/Courses/323/Syllabus/Trees/AVL-delete.html</li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
@@ -235,7 +218,7 @@ for <span class="math">\(N = 50\)</span>.</p>
         <h2>Comments !</h2>
             <div id="disqus_thread"></div>
             <script type="text/javascript">
-               var disqus_identifier = "posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/";
+               var disqus_identifier = "posts/2017/Feb/05/avl-tree/";
                (function() {
                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                dsq.src = 'https://zhu45-org.disqus.com/embed.js';
