@@ -47,7 +47,7 @@
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
 <p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/trees.html">trees</a> <a href="../../../../../tag/proof.html">proof</a> <a href="../../../../../tag/math.html">math</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-        <p>There are a lot of written proof questions in Chapter 4. Those questions offer
+        <p>There are a lot of writing questions in Chapter 4. Some questions offer
 great insights on the general techniques in solving algorithmatic proving questions.
 So, I decide to record them in this single post. Of course, this post will be continually
 updated as I work through the chapter.</p>
@@ -62,7 +62,7 @@ updated as I work through the chapter.</p>
   with the inductive step on <span class="math">\(n\)</span>. (MAW 4.17)</li>
 </ul>
 <h2>Solutions</h2>
-<p>including: MAW 4.4, 4.5, 4.6, 4.7, 4.14, 4.15, 4.16, 4.17</p>
+<p>including: MAW 4.4, 4.5, 4.6, 4.7, 4.14, 4.15, 4.16, 4.17, 4.23</p>
 <h3>MAW 4.4</h3>
 <blockquote>
 <p>Show that in a binary tree of <span class="math">\(N\)</span> nodes, there are <span class="math">\(N + 1\)</span> <code>NULL</code> pointers
@@ -375,26 +375,28 @@ for sequence <span class="math">\(1, 2, \dots, 2^{h+1}-1\)</span>.</p>
 (can be observed for <span class="math">\(1 \ge k \le 3\)</span> situation, where the roots are <span class="math">\(1\)</span>, <span class="math">\(2\)</span>, <span class="math">\(4\)</span> respectively). The left subtree is a perfectly balanced
 tree of height <span class="math">\(h-2\)</span>, and the right subtree is a perfectly balanced tree containing the numbers <span class="math">\(2^{h-1}+1\)</span> through <span class="math">\(2^h-1\)</span>, also of height <span class="math">\(h-2\)</span>.
 See the following picture:</p>
-<p><img alt="maw-4-17-1" src="/images/maw-4-17-1.PNG" /></p>
+<p><img src="/images/maw-4-17-1.PNG" alt="maw-4-17-1" style="height: 400px;"/></p>
 <p>Each of the next <span class="math">\(2^{h-1}\)</span> insertions (<span class="math">\(2^h\)</span> through <span class="math">\(2^h + 2^{h-1} - 1\)</span>) are inserted into the 
 right subtree, and the entire sequence of numbers in the right subtree (now <span class="math">\(2^{h-1}+1\)</span> through <span class="math">\(2^h + 2^{h-1}-1\)</span>)
 were inserted in order and are a sequence of <span class="math">\(2^h - 1\)</span> nodes (i.e. <span class="math">\(2^h + 2^{h-1}-1 - (2^{h-1}+1) + 1 = 2^h -1\)</span>).
 By induction hypothesis, they form a perfectly balanced tree of height <span class="math">\(h-1\)</span>. See the following picture:</p>
-<p><img alt="maw-4-17-2" src="/images/maw-4-17-2.PNG" /></p>
+<p><img src="/images/maw-4-17-2.PNG" alt="maw-4-17-2" style="height: 400px;"/></p>
 <p>The next insertion, of the number <span class="math">\(2^h + 2^{h-1}\)</span>, imbalances the tree at the root because now the height of the right subtree
 is <span class="math">\(h\)</span> and the height of the left subtree is <span class="math">\(h-2\)</span>. Now, we do a single rotation and form a tree with root <span class="math">\(2^h\)</span>, and 
 a perfectly balanced left subtree of height <span class="math">\(h-1\)</span>. The right subtree consists of a perfectly balanced tree 
 (of height <span class="math">\(h-2\)</span>), with the new node: <span class="math">\(2^h + 2^{h-1}\)</span>. See the following picture:</p>
-<p><img alt="maw-4-17-3" src="/images/maw-4-17-3.PNG" /></p>
+<p><img src="/images/maw-4-17-3.PNG" alt="maw-4-17-3" style="height: 400px;"/></p>
 <p>Thus, the right subtree is as if the numbers <span class="math">\(2^h+1, \dots, 2^h + 2^{h-1}\)</span> had been 
 inserted in order. We subsequently insert the numbers <span class="math">\(2^h + 2^{h-1} + 1\)</span> through
 <span class="math">\(2^{h+1} - 1\)</span> nodes. In other words, we form the right subtree by inserting the 
 numbers <span class="math">\(2^{h} + 1, \dots, 2^{h+1} - 1\)</span>, which have <span class="math">\(2^{h} - 1\)</span> numbers. Then, by
 the inductive hypothesis, these <span class="math">\(2^{h} - 1\)</span> insertions form a perfectly balanced
 subtree of height <span class="math">\(h-1\)</span>. See the following picture:</p>
-<p><img alt="maw-4-17-4" src="/images/maw-4-17-4.PNG" /></p>
+<p><img src="/images/maw-4-17-4.PNG" alt="maw-4-17-4" style="height: 400px;"/></p>
 <p>Since the left and right subtrees are perfectly balanced (height <span class="math">\(h-1\)</span>), the whole
 tree is perfectly balanced.</p>
+<h3>MAW 4.23</h3>
+<p><img src="/images/maw-4-23.JPG" alt="maw-4-23" style="width: 700px;"/></p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
