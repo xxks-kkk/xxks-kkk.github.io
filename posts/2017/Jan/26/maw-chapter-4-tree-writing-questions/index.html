@@ -62,7 +62,7 @@ updated as I work through the chapter.</p>
   with the inductive step on <span class="math">\(n\)</span>. (MAW 4.17)</li>
 </ul>
 <h2>Solutions</h2>
-<p>including: MAW 4.4, 4.5, 4.6, 4.7, 4.14, 4.15, 4.16, 4.17, 4.23, 4.24</p>
+<p>including: MAW 4.4, 4.5, 4.6, 4.7, 4.14, 4.15, 4.16, 4.17, 4.23, 4.24, 4.25, 4.26.a, </p>
 <h3>MAW 4.4</h3>
 <blockquote>
 <p>Show that in a binary tree of <span class="math">\(N\)</span> nodes, there are <span class="math">\(N + 1\)</span> <code>NULL</code> pointers
@@ -399,6 +399,28 @@ tree is perfectly balanced.</p>
 <p><img src="/images/maw-4-23.JPG" alt="maw-4-23" style="width: 700px;"/></p>
 <h3>MAW 4.24</h3>
 <p><img src="/images/maw-4-24.PNG" alt="maw-4-24" style="width: 700px;"/></p>
+<h3>MAW 4.25</h3>
+<p>This problem is solved through brute-force calculation. You can reference the example
+from figure 4.46 to figure 4.55. I calculate for internal path length of the 
+tree and <code>find(1)</code>, <code>find(2)</code>. The answer is slightly off than the solution manual.
+May need to double check.</p>
+<p><img src="/images/maw-4-26.JPG" alt="maw-4-26" style="width: 700px; height: 400px;"/></p>
+<h3>MAW 4.26</h3>
+<blockquote>
+<p>a. Show that if all nodes in a splay tree are accessed in sequential order, 
+the resulting tree consists of a chain of left children.</p>
+</blockquote>
+<p><strong>Proof:</strong>
+Let's prove by induction. Let <span class="math">\(N\)</span> denote the number of nodes in a splay tree.</p>
+<p><em>Base case:</em> When <span class="math">\(N = 1\)</span>, the claim holds.</p>
+<p><em>Inductive hypothesis:</em> all nodes <span class="math">\(1, \dots, N\)</span> in a splay tree are accessed in sequential
+order, the resulting tree consists of a chain of left children. We want to show that 
+this holds for <span class="math">\(N+1\)</span>. Once we access first <span class="math">\(N\)</span> nodes, there are only one
+position for <span class="math">\(N+1\)</span> node: the right child of the root. The rest of positions are impossible because if the 
+<span class="math">\(N+1\)</span> node is the right child of any node between the left most node and the root of the resulting tree,
+then by BST, <span class="math">\(N+1\)</span> node's value is smaller than root's value and bigger than left most node's value.
+This violates the induction hypothesis because we are no longer access a splay tree in sequential order.
+Now we simply swap the right child of the root with root and we get a chain of left children. </p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
