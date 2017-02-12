@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-        <title>Binary Tree & Binary Search Tree</title>
+        <title>Splay Tree</title>
         <meta charset="utf-8" />
         <meta content="This is the homepage of Zeyuan (Jerry) Hu" name="description">
         <meta content="Zeyuan Hu, Zeyuan, Jerry Hu, Jerry, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, Zeyuan wisc, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
@@ -39,67 +39,124 @@
 
 <section id="content" class="body">
 <article>
-      <header> <h1 class="entry-title"><a href="../../../../../posts/2017/Jan/29/binary-tree-binary-search-tree/"
-        rel="bookmark" title="Permalink to Binary Tree & Binary Search Tree">Binary Tree & Binary Search Tree</a></h1>  </header>
+      <header> <h1 class="entry-title"><a href="../../../../../posts/2017/Feb/11/splay-tree/"
+        rel="bookmark" title="Permalink to Splay Tree">Splay Tree</a></h1>  </header>
         <div class="entry-content">
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-29T13:20:00+08:00">Sun 29 Jan 2017, 13:20</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-11T22:43:00+08:00">Sat 11 Feb 2017, 22:43</abbr></p>
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
 <p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/trees.html">trees</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-        <p>This is the summary of <em>binary tree</em> and <em>binary search tree</em> part in MAW Chapter 4.</p>
+        <p>This is the summary of <em>Splay tree</em> part in MAW Chapter 4.</p>
+<h2>Motivation</h2>
+<p>Ordinary BST has no balance conditions and thus, it is possible for a whole sequnece of <span class="math">\(O(N)\)</span> accesses to take place. This cumulative running time 
+then becomes noticeable. So, we introduce the balance condition on BST to improve our running time. One way to do so is to enforce a balance condition
+when nodes change (i.e. insert or delete) like AVL. However, this data structure is hard to code and rebalancing costs time. In addition, sometimes it is 
+OK for us to have <span class="math">\(O(N)\)</span> operation as long as it occurs infrequently. In other words, A search data structure with <span class="math">\(O(N)\)</span> worst-case time, but a <em>guarantee</em>
+of at most <span class="math">\(O(M \log N)\)</span> for any <span class="math">\(M\)</span> consecutive operations, is good enough. Splay tree meets our needs. It is a data structure that 
+lies right in-between BST (no balance condition) and AVL (very strict balance condition).</p>
 <h2>Concept</h2>
-<ul>
-<li>A <em>binary tree</em> is a tree in which no node can have more than two children. </li>
-<li>An important application of binary trees is <em>binary search tree</em>: for every node,
-  <span class="math">\(X\)</span>, in the tree, the values of all the keys in its left subtree are smaller than
-  the key value in <span class="math">\(X\)</span>, and the values of all the keys in its right subtree are larger
-  than the key value in <span class="math">\(X\)</span> (<em>BST-property</em>).</li>
-</ul>
-<h2>Classification of binary trees</h2>
-<ul>
-<li>A <em>full</em> binary tree (proper binary tree or 2-tree) is a binary tree in which each node
-  has exactly zero or two children.</li>
-<li>A <em>complete</em> binary tree is a binary tree, which is completely filled, with the possible
-  exception of the bottom level, which is filled from left to right.</li>
-</ul>
-<p><img alt="full-complete-binary-tree" src="../../../../../images/full-complete-binary-tree.PNG" /></p>
-<ul>
-<li>A <em>perfect</em> binary tree: A binary tree in which all internal nodes have exactly two children 
-  and all leaves are at the same level. It has property: each level has exactly twice as many 
-  nodes as the previous level (since each internal node has exactly two children).</li>
-</ul>
-<p><img alt="perfect-binary-tree" src="../../../../../images/perfect-binary-tree.png" /></p>
+<p>A splay tree is a type of balanced binary search tree. Structurally, it is identical to an ordinary binary search tree; the only difference is in the 
+algorithms for finding, inserting, and deleting entries. Specifically, splay tree is a self-adjusting tree, which the structure get organized over time
+as nodes are accessed (i.e., insert, delete, or find). This makes sense because if we don't re-structure the tree each time we access an node, then 
+the amortized time bound should be <span class="math">\(O(M N)\)</span> for a sequence of <span class="math">\(M\)</span> accesses instead of <span class="math">\(O(M \log N)\)</span>.</p>
+<p>The way we restructure the tree is called <em>splaying</em>. Chapter 4 talks about bottom-up splaying algorithms. Every time a node is accessed in a splay tree,
+it is moved to the root of the tree. The amortized cost of the operation is <span class="math">\(O(\log N)\)</span>. As shown by MAW, simply moving the element to the root by
+rotating it up the trees does not have this property. However, the following three structuring rules do guarantee this amortized bound.</p>
+<div class="highlight"><pre><span></span>                             y             x
+   Zig (terminal case):     /     ====&gt;     \
+                           x                 y
+
+                    z              z
+                   /              /             x
+   Zig-zag:       y     ====&gt;    x   ====&gt;     / \
+                   \            /             y   z
+                    x          y
+
+                    z                         x
+                   /            y              \
+   Zig-zig:       y     ====&gt;  / \   ====&gt;      y
+                 /            x   z              \
+                x                                 z
+</pre></div>
+
+
+<p>In the above pictures, x is the node that was accessed (that will
+eventually be at the root of the tree).  By looking at the local
+structure of the tree defined by x, x's parent, and x's grandparent we
+decide which of three rules to follow.  We continue to
+apply the rules until x is at the root of the tree.</p>
+<div class="highlight"><pre><span></span>Splay(1)
+
+              7                    7                   7               1
+             /                    /                   /                 \
+            6                    6                   6                   6
+           /                    /                   /                   / \
+          5                    5                   1                   4   7 
+         /      =======&gt;      /        =======&gt;     \    ======&gt;      / \
+        4                    4                       4               2   5
+       /                    /                       / \               \
+      3                    1                       2   5               3
+     /                      \                       \
+    2                        2                       3
+   /                          \
+  1                            3
+</pre></div>
+
+
+<h2>Implementation details</h2>
+<p>Splay tree is really a flexible data structure in the sense that there are many options to implement 
+the "splay" rules and corresponding tree operations and still have the property hold. Reference <a href="https://en.wikipedia.org/wiki/Splay_tree">wiki</a>
+for complete summary. Here, I only mention some of my findings. Please note that depends on how you implement your operations, the resulting tree
+may be different (i.e. different insert algorithm may result in different tree structure but there root will be the same).</p>
+<h3>Insertion (bottom-up)</h3>
+<p>There are two ways to do this. The first way is to use "split" to split the tree based upon the insertion value. By the property of splaying, 
+we will either have the insertion value (already inside the tree) or the parent of the insertion point at the root. Then we can make our insertion 
+value as the new root and adjust the orginal tree to form the new tree. For example,  if the insertion value <code>elem</code> smaller than the root, we do</p>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">elem</span> <span class="o">&lt;</span> <span class="n">T</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">newT</span><span class="o">-&gt;</span><span class="n">Right</span> <span class="o">=</span> <span class="n">T</span><span class="p">;</span>
+  <span class="n">newT</span><span class="o">-&gt;</span><span class="n">Left</span> <span class="o">=</span> <span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">;</span> <span class="c1">// we can do this b/c the result of splaying is the parent node of where we should insert.</span>
+  <span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The code is straightforward but <code>newT-&gt;Left = T-&gt;Left</code> is worth a remark. Here, when <code>T</code> is the parent of the insertion point, 
+we know <code>T</code>'s left subtree's values are smaller than <code>elem</code> as well. This is because 
+if there is any node <span class="math">\(x\)</span> greater than <code>elem</code> but smaller than <code>T</code>'s value, then <code>T</code> should be <span class="math">\(x\)</span> instead (by splaying), which is a contradiction.</p>
+<p>The second way is to do BST insertion first and then splay the insertion value, which is really straightforward and easy to code. </p>
+<h2>Deletion (bottom-up)</h2>
+<p>Correspondingly there are two methods to deletion as well. The first way is to splay the to-be-deleted node. This puts the node at the root. If it is
+deleted, we get two subtrees <span class="math">\(T_L\)</span> and <span class="math">\(T_R\)</span>. If we find the largest element in <span class="math">\(T_L\)</span>, then this element is rotated to the root of <span class="math">\(T_L\)</span>, and 
+<span class="math">\(T_L\)</span> will now have a root with no right child. We can finish the deletion by making <span class="math">\(T_R\)</span> the right child.</p>
+<p>The second way is to do BST deletion first, and then splay the parent of the deletion point to the root. I find this way is less efficient than 
+method 1 because of extra space used by either using
+a pointer pointing to the parent node or using a stack to keep track of accessing path.</p>
 <h2>Properties</h2>
 <ul>
-<li>The average depth of binary tree is <span class="math">\(O(\sqrt{n})\)</span></li>
-<li>A binary tree of <span class="math">\(N\)</span> nodes, there are <span class="math">\(N+1\)</span> <code>NULL</code> pointers representing children (MAW 4.4)</li>
-<li>The maximum number of nodes in a binary tree of height <span class="math">\(H\)</span> is <span class="math">\(2^{H+1}-1\)</span> (MAW 4.5)</li>
-<li>The number of full nodes plus one is equal to the number of leaves in a nonempty binary tree</li>
-<li>The average depth of a node in a binary search tree constructed from random data is <span class="math">\(O(\log n)\)</span></li>
-<li>The average of height of a random binary search tree is <span class="math">\(O(\log n)\)</span> (i.e., <span class="math">\(E[h] = O(\log n)\)</span>) (MAW 4.14)</li>
-<li>All the basic operations <code>find</code>, <code>findMin</code>, <code>findMax</code>, <code>insert</code>, and <code>delete</code>
-  <span class="math">\(O(H)\)</span> time, where <span class="math">\(H\)</span> is the height of the tree.<ul>
-<li>worst case: height <span class="math">\(H = n - 1\)</span></li>
-<li>base case: height <span class="math">\(H = \log N\)</span>, where the tree is a complete binary tree.</li>
+<li>any <span class="math">\(M\)</span> consecutive tree operations starting from an empty tree take at most <span class="math">\(O(M \log N)\)</span> time.</li>
+<li>Even though the worst-case running time is <span class="math">\(O(N)\)</span> for operation, the amortized cost of the operation is <span class="math">\(O(\log N)\)</span>.</li>
+<li>if all nodes in a splay tree are accessed in sequential order, the resulting tree consists of a chain of left children. (MAW 4.26.a)</li>
+<li>if all nodes in a splay tree are accessed in sequential order, then the total access time is <span class="math">\(O(N)\)</span>, regardless of the initial tree.</li>
 </ul>
-</li>
-<li>Randomly built binary search trees:<ul>
-<li>The <em>average height</em> is much closer to the best case.</li>
-<li>Little is known about the average height when <em>both insertion and deletion</em> are used.</li>
-<li>characteristics<ul>
-<li>Keys inserting in <em>random order</em> into an initially empty tree.</li>
-<li>Each of the <span class="math">\(n!\)</span> <em>permutations</em> of the input keys is <em>equally likely</em>.</li>
-</ul>
-</li>
-</ul>
-</li>
+<h2>Pros &amp; Cons of data structure</h2>
+<p>Splay tree is simpler and easier to program. Because of its implicity, splay tree insertion and deletion is typically faster in practice.
+Find operation can be faster or slower, depending on circumstances. Splay trees are designed to give especially fast access to nodes that 
+have been accessed recently, so they really excel in applications where a small fraction of the nodes are the targets of most of the find operation.</p>
+<h2>Todo</h2>
+<p>This post does not cover every part of the splay tree. This post will be updated once I complete the following two parts study:</p>
+<ul>
+<li>MAW Chapter 11 gives a thorough study of the amortized cost of the splay tree operations <span class="math">\(O( \log N)\)</span>.</li>
+<li>MAW Chapter 12 gives implementation details on top-down splay tree.  </li>
 </ul>
 <h2>Reference</h2>
 <ul>
-<li>MAW Chapter 4</li>
-<li>https://en.wikipedia.org/wiki/Binary_tree</li>
-<li>https://www.cs.cmu.edu/~adamchik/15-121/lectures/Trees/trees.html</li>
+<li>http://www.cs.cmu.edu/afs/cs/academic/class/15859-f05/www/documents/splay-trees.txt</li>
+<li>http://web.stanford.edu/class/archive/cs/cs166/cs166.1146/lectures/08/Small08.pdf (proof of properties in a concise structure)</li>
+<li>http://digital.cs.usu.edu/~allan/DS/Notes/Ch22.pdf</li>
+<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture14.pdf</li>
+<li>https://people.eecs.berkeley.edu/~jrs/61b/lec/36</li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
@@ -163,7 +220,7 @@
         <h2>Comments !</h2>
             <div id="disqus_thread"></div>
             <script type="text/javascript">
-               var disqus_identifier = "posts/2017/Jan/29/binary-tree-binary-search-tree/";
+               var disqus_identifier = "posts/2017/Feb/11/splay-tree/";
                (function() {
                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                dsq.src = 'https://zhu45-org.disqus.com/embed.js';

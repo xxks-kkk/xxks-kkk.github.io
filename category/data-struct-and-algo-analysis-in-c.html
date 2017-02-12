@@ -40,120 +40,122 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="../posts/2017/Feb/05/avl-tree/">AVL Tree</a></h1>
+                <h1 class="entry-title"><a href="../posts/2017/Feb/11/splay-tree/">Splay Tree</a></h1>
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-05T10:43:00+08:00">Sun 05 Feb 2017, 10:43</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-11T22:43:00+08:00">Sat 11 Feb 2017, 22:43</abbr></p>
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
 <p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/trees.html">trees</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>This is the summary of <em>AVL tree</em> part in MAW Chapter 4.</p>
+                <p>This is the summary of <em>Splay tree</em> part in MAW Chapter 4.</p>
 <h2>Motivation</h2>
-<p>All BST operations are <span class="math">\(O(H)\)</span> time, where <span class="math">\(H\)</span> is the height of the tree. In the worst case
-scenario, when the tree is degenerated, <span class="math">\(H = N\)</span>, where <span class="math">\(N\)</span> is the number of nodes.
-Thus, the problem with BST is that it can get unbalanced and lead to the worst running time.
-AVL tree is one of algorithms for keeping BST balanced (others including red-black trees, splay trees, B-trees).
-Its approach to balancing tree is that we want a pretty good balance (allow a little out of balance).</p>
+<p>Ordinary BST has no balance conditions and thus, it is possible for a whole sequnece of <span class="math">\(O(N)\)</span> accesses to take place. This cumulative running time 
+then becomes noticeable. So, we introduce the balance condition on BST to improve our running time. One way to do so is to enforce a balance condition
+when nodes change (i.e. insert or delete) like AVL. However, this data structure is hard to code and rebalancing costs time. In addition, sometimes it is 
+OK for us to have <span class="math">\(O(N)\)</span> operation as long as it occurs infrequently. In other words, A search data structure with <span class="math">\(O(N)\)</span> worst-case time, but a <em>guarantee</em>
+of at most <span class="math">\(O(M \log N)\)</span> for any <span class="math">\(M\)</span> consecutive operations, is good enough. Splay tree meets our needs. It is a data structure that 
+lies right in-between BST (no balance condition) and AVL (very strict balance condition).</p>
 <h2>Concept</h2>
-<p>AVL tree is a <em>guaranteed</em> <span class="math">\(O(log N)\)</span> binary search tree. It is identical to a BST, except 
-that for every node in the tree, the height of the left and right subtrees can differ by at most 1.
-(The height of an empty tree is defined to be -1).</p>
-<p><img src="/images/AVL.PNG" alt="AVL-tree-concept" style="width: 700px;"/></p>
-<h2>Insertion</h2>
-<p>AVL tree insertion is based upon BST insertion with two addition treatments:</p>
-<ul>
-<li>Update the height information of the nodes on the path from the root to the insertion point.</li>
-<li>Restores the AVL property when find the node that violates it on the road through <em>rotation</em> operations.</li>
-</ul>
-<p>There are four cases inside the insertion (see MAW p.111) and we handle "outside" cases (i.e. left-left or right-right)
-and "inside" cases (i.e. left-right or right-left) using single rotation and double rotation respectively.</p>
-<p>To remember single rotation, you can pick a case, say left-left and remember its picture. (right-right is a mirror case)</p>
-<p><img alt="AVL-single-rotation-left" src="../images/AVL-single-rotation-left.PNG" /></p>
-<p>In the picture, we need to rebalance the tree at <span class="math">\(k_2\)</span>. This picture shows how we can implement <code>singleRotateWithLeft</code> routine as well.
-(Here, "left" means the inbalance is caused by the insertion into the left subtree of the inbalance node.)</p>
-<p>Similarly, to remember double rotation, we pick a case, say right-left and remember its picture. (left-right is a mirror case)</p>
-<p><img alt="AVL-double-rotation-right" src="../images/AVL-double-rotation-right.PNG" /></p>
-<p>In the picture, we need to rebalance the tree at <span class="math">\(k_3\)</span>. The picture shows how we can implement <code>doubleRotateWithRight</code> routine as well.
-As you can see from the picture, "double rotation" is essentially the same as two "single rotation": rotate <span class="math">\(k_2\)</span> and <span class="math">\(k_1\)</span>, then <span class="math">\(k_2\)</span> and <span class="math">\(k_3\)</span>.</p>
-<p>Identifying which rotation to use by strictly based upon these four cases can work but time-consuming. Here is how I think about 
-this issue from practical point of view: you may compare the insertion value with the inbalance node value to determine which node to use.
-Here is the detail steps:</p>
-<ol>
-<li>
-<p>Compare the insertion value with the inbalance node value:
-   if comparison result is <span class="math">\(&lt;\)</span>, then we insert into the left subtree of inbalance node. <span class="math">\(&gt;\)</span> otherwise.</p>
-</li>
-<li>
-<p>If the insertion value is <span class="math">\(&lt;\)</span> (or <span class="math">\(&gt;\)</span>) than the left (or right) child value of the inbalance node, we are doing single rotation.</p>
-</li>
-<li>
-<p>If the insertion value is in-between, then we are doing double rotation. </p>
-</li>
-</ol>
-<p>See MAW p.117 insertion 13 for an example.</p>
-<h2>Deletion</h2>
-<p>Deletion, in fact, is extremely similar to the insertion in the sense that: </p>
-<ul>
-<li>It is based upon BST deletion with extra treatment towards node height information and AVL property</li>
-<li>There are the same rotation cases we need to consider when we ensure the AVL property satisfied for the nodes.</li>
-</ul>
-<p>There is only one difference than insertion, which is there can be more than unbalanced node needed to be taken care of when we walk
-through the deletion point to the root.</p>
-<p>There is nuance in terms of how we think about which rotation to use. In insertion, we think about in terms of insertion point. For instance,
-if the insert value is smaller than unbalanced node value, and smaller than the unbalanced node's child value, we know we are in left-left case, which is 
-single rotation. However, when we deal with deletion, we actually think about the height of the subtree: a left-left insertion is equivalent as 
-we make the the left subtree of unbalanced node's child taller than its right subtree. In deletion, there is no way we can use a specific element value 
-to decide what rotation we should use (like insertion). Thus, we have the following code in our <code>deletion</code> routine:</p>
-<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> 
-      <span class="n">T</span> <span class="o">=</span> <span class="n">singleRotateWithLeft</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Left Left case</span>
-    <span class="k">else</span>
-      <span class="n">T</span> <span class="o">=</span> <span class="n">doubleRotateWithLeft</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Left Right case</span>
-  <span class="p">}</span>
-  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Right</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
-      <span class="n">T</span> <span class="o">=</span> <span class="n">singleRotateWithRight</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Right Right case</span>
-    <span class="k">else</span>
-      <span class="n">T</span> <span class="o">=</span> <span class="n">doubleRotateWithRight</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Right Left case</span>
-  <span class="p">}</span>
+<p>A splay tree is a type of balanced binary search tree. Structurally, it is identical to an ordinary binary search tree; the only difference is in the 
+algorithms for finding, inserting, and deleting entries. Specifically, splay tree is a self-adjusting tree, which the structure get organized over time
+as nodes are accessed (i.e., insert, delete, or find). This makes sense because if we don't re-structure the tree each time we access an node, then 
+the amortized time bound should be <span class="math">\(O(M N)\)</span> for a sequence of <span class="math">\(M\)</span> accesses instead of <span class="math">\(O(M \log N)\)</span>.</p>
+<p>The way we restructure the tree is called <em>splaying</em>. Chapter 4 talks about bottom-up splaying algorithms. Every time a node is accessed in a splay tree,
+it is moved to the root of the tree. The amortized cost of the operation is <span class="math">\(O(\log N)\)</span>. As shown by MAW, simply moving the element to the root by
+rotating it up the trees does not have this property. However, the following three structuring rules do guarantee this amortized bound.</p>
+<div class="highlight"><pre><span></span>                             y             x
+   Zig (terminal case):     /     ====&gt;     \
+                           x                 y
+
+                    z              z
+                   /              /             x
+   Zig-zag:       y     ====&gt;    x   ====&gt;     / \
+                   \            /             y   z
+                    x          y
+
+                    z                         x
+                   /            y              \
+   Zig-zig:       y     ====&gt;  / \   ====&gt;      y
+                 /            x   z              \
+                x                                 z
 </pre></div>
 
 
-<p>Of course, the following simple example may help you understand the code chunk above:</p>
-<p><img alt="AVL-deletion" src="../images/AVL-deletion.PNG" /></p>
+<p>In the above pictures, x is the node that was accessed (that will
+eventually be at the root of the tree).  By looking at the local
+structure of the tree defined by x, x's parent, and x's grandparent we
+decide which of three rules to follow.  We continue to
+apply the rules until x is at the root of the tree.</p>
+<div class="highlight"><pre><span></span>Splay(1)
+
+              7                    7                   7               1
+             /                    /                   /                 \
+            6                    6                   6                   6
+           /                    /                   /                   / \
+          5                    5                   1                   4   7 
+         /      =======&gt;      /        =======&gt;     \    ======&gt;      / \
+        4                    4                       4               2   5
+       /                    /                       / \               \
+      3                    1                       2   5               3
+     /                      \                       \
+    2                        2                       3
+   /                          \
+  1                            3
+</pre></div>
+
+
+<h2>Implementation details</h2>
+<p>Splay tree is really a flexible data structure in the sense that there are many options to implement 
+the "splay" rules and corresponding tree operations and still have the property hold. Reference <a href="https://en.wikipedia.org/wiki/Splay_tree">wiki</a>
+for complete summary. Here, I only mention some of my findings. Please note that depends on how you implement your operations, the resulting tree
+may be different (i.e. different insert algorithm may result in different tree structure but there root will be the same).</p>
+<h3>Insertion (bottom-up)</h3>
+<p>There are two ways to do this. The first way is to use "split" to split the tree based upon the insertion value. By the property of splaying, 
+we will either have the insertion value (already inside the tree) or the parent of the insertion point at the root. Then we can make our insertion 
+value as the new root and adjust the orginal tree to form the new tree. For example,  if the insertion value <code>elem</code> smaller than the root, we do</p>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">elem</span> <span class="o">&lt;</span> <span class="n">T</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">newT</span><span class="o">-&gt;</span><span class="n">Right</span> <span class="o">=</span> <span class="n">T</span><span class="p">;</span>
+  <span class="n">newT</span><span class="o">-&gt;</span><span class="n">Left</span> <span class="o">=</span> <span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">;</span> <span class="c1">// we can do this b/c the result of splaying is the parent node of where we should insert.</span>
+  <span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The code is straightforward but <code>newT-&gt;Left = T-&gt;Left</code> is worth a remark. Here, when <code>T</code> is the parent of the insertion point, 
+we know <code>T</code>'s left subtree's values are smaller than <code>elem</code> as well. This is because 
+if there is any node <span class="math">\(x\)</span> greater than <code>elem</code> but smaller than <code>T</code>'s value, then <code>T</code> should be <span class="math">\(x\)</span> instead (by splaying), which is a contradiction.</p>
+<p>The second way is to do BST insertion first and then splay the insertion value, which is really straightforward and easy to code. </p>
+<h2>Deletion (bottom-up)</h2>
+<p>Correspondingly there are two methods to deletion as well. The first way is to splay the to-be-deleted node. This puts the node at the root. If it is
+deleted, we get two subtrees <span class="math">\(T_L\)</span> and <span class="math">\(T_R\)</span>. If we find the largest element in <span class="math">\(T_L\)</span>, then this element is rotated to the root of <span class="math">\(T_L\)</span>, and 
+<span class="math">\(T_L\)</span> will now have a root with no right child. We can finish the deletion by making <span class="math">\(T_R\)</span> the right child.</p>
+<p>The second way is to do BST deletion first, and then splay the parent of the deletion point to the root. I find this way is less efficient than 
+method 1 because of extra space used by either using
+a pointer pointing to the parent node or using a stack to keep track of accessing path.</p>
 <h2>Properties</h2>
 <ul>
-<li>For every node of the AVL tree, <span class="math">\(|Height(left child) - Height(right child)| \le 1\)</span>.</li>
-<li>Running time for "find", "insert", "delete" is <em>guaranteed</em> to be <span class="math">\(O(\log N)\)</span>.</li>
-<li>The height of AVL tree <span class="math">\(H\)</span> is at most <span class="math">\(1.44\log _2 N\)</span>. 
-  (see <a href="../posts/2017/Jan/26/maw-chapter-4-tree-writing-questions/">this post</a> for the proof)</li>
-<li>For an insertion, there is <em>at most one</em> rotation (used in non-recursive insertion routine).</li>
+<li>any <span class="math">\(M\)</span> consecutive tree operations starting from an empty tree take at most <span class="math">\(O(M \log N)\)</span> time.</li>
+<li>Even though the worst-case running time is <span class="math">\(O(N)\)</span> for operation, the amortized cost of the operation is <span class="math">\(O(\log N)\)</span>.</li>
+<li>if all nodes in a splay tree are accessed in sequential order, the resulting tree consists of a chain of left children. (MAW 4.26.a)</li>
+<li>if all nodes in a splay tree are accessed in sequential order, then the total access time is <span class="math">\(O(N)\)</span>, regardless of the initial tree.</li>
 </ul>
 <h2>Pros &amp; Cons of data structure</h2>
-<p>Pros:</p>
+<p>Splay tree is simpler and easier to program. Because of its implicity, splay tree insertion and deletion is typically faster in practice.
+Find operation can be faster or slower, depending on circumstances. Splay trees are designed to give especially fast access to nodes that 
+have been accessed recently, so they really excel in applications where a small fraction of the nodes are the targets of most of the find operation.</p>
+<h2>Todo</h2>
+<p>This post does not cover every part of the splay tree. This post will be updated once I complete the following two parts study:</p>
 <ul>
-<li>Search is <span class="math">\(O(\log N)\)</span> since AVL trees are always balanced.</li>
-<li>Insertion and deletions are also <span class="math">\(O(\log N)\)</span>.</li>
-<li>The height balancing adds no more than a constant factor to the speed of insertion.</li>
-</ul>
-<p>Cons:</p>
-<ul>
-<li>Difficult to program &amp; debug; more space for height information.</li>
-<li>Asymptotically faster but rebalancing costs time.</li>
-<li>Most large searches are done in database systems on disk and use
-  other structures (e.g. B-trees).</li>
-<li>May be OK to have <span class="math">\(O(N)\)</span> for a single operation if total run time for
-  many consecutive operations is fast (e.g. Splay trees). In other words,
-  If <em>amortized</em> logarithmic time is enough, use splay trees.</li>
+<li>MAW Chapter 11 gives a thorough study of the amortized cost of the splay tree operations <span class="math">\(O( \log N)\)</span>.</li>
+<li>MAW Chapter 12 gives implementation details on top-down splay tree.  </li>
 </ul>
 <h2>Reference</h2>
 <ul>
-<li>MAW Chapter 4</li>
-<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture12.pdf </li>
-<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf</li>
-<li>http://www.geeksforgeeks.org/avl-tree-set-2-deletion/</li>
-<li>http://www.mathcs.emory.edu/~cheung/Courses/323/Syllabus/Trees/AVL-delete.html</li>
+<li>http://www.cs.cmu.edu/afs/cs/academic/class/15859-f05/www/documents/splay-trees.txt</li>
+<li>http://web.stanford.edu/class/archive/cs/cs166/cs166.1146/lectures/08/Small08.pdf (proof of properties in a concise structure)</li>
+<li>http://digital.cs.usu.edu/~allan/DS/Notes/Ch22.pdf</li>
+<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture14.pdf</li>
+<li>https://people.eecs.berkeley.edu/~jrs/61b/lec/36</li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
@@ -216,6 +218,25 @@ to decide what rotation we should use (like insertion). Thus, we have the follow
                 <h1><i class="fa fa-bars"></i> Other articles</h1>
                 <hr />
                     <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="../posts/2017/Feb/05/avl-tree/" rel="bookmark" title="Permalink to AVL Tree">AVL Tree</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-05T10:43:00+08:00">Sun 05 Feb 2017, 10:43</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/trees.html">trees</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>This is the summary of <em>AVL tree</em> part in MAW Chapter 4.</p>
+<h2>Motivation</h2>
+<p>All BST operations are <span class="math">\(O(H)\)</span> time, where <span class="math">\(H\)</span> is the height of the tree. In the worst case
+scenario, when the tree is degenerated, <span class="math">\(H = N\)</span>, where <span class="math">\(N\)</span> is the number of nodes.
+Thus, the problem ...</p>
+                <a class="readmore" href="../posts/2017/Feb/05/avl-tree/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="../posts/2017/Jan/29/binary-tree-binary-search-tree/" rel="bookmark" title="Permalink to Binary Tree & Binary Search Tree">Binary Tree & Binary Search Tree</a></h1>
@@ -381,25 +402,6 @@ Print a singly linked list in reverse order.</blockquote>
                 <a class="readmore" href="../posts/2016/Dec/23/print-singly-linked-list-in-reverse-order/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="../posts/2016/Dec/18/polynomial-multiplication/" rel="bookmark" title="Permalink to Polynomial Multiplication">Polynomial Multiplication</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-18T18:53:00+08:00">Sun 18 Dec 2016, 18:53</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/singly-linked-list.html">singly-linked-list</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>I finally got time to continue working through MAW. The problem 3.7 relates to polynomial multiplication.</p>
-<div class="section" id="problem">
-<h2>Problem</h2>
-<p>Write a function to multiply two polynomials, using a linked list implementation. You must make sure that
-the output polynomial is sorted by exponent and has at most one term of any ...</p></div>
-                <a class="readmore" href="../posts/2016/Dec/18/polynomial-multiplication/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
         <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
         <hr />
@@ -426,7 +428,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li class="active"><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (13)</a></li>
+                           <li class="active"><a href="../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (14)</a></li>
                            <li ><a href="../category/mathematics.html"><i class="fa fa-folder-open fa-lg"></i> Mathematics (1)</a></li>
                            <li ><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
                            <li ><a href="../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
@@ -548,7 +550,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             travis-ci
                         </a>
                     </li>
-                    <li class="list-group-item tag-2">
+                    <li class="list-group-item tag-1">
                         <a href="../tag/trees.html">
                             trees
                         </a>
