@@ -16,12 +16,12 @@ the amortized time bound should be &lt;span class="math"&gt;\(O(M N)\)&lt;/span&
 it is moved to the root of the tree. The amortized cost of the operation is &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;. As shown by MAW, simply moving the element to the root by
 rotating it up the trees does not have this property. However, the following three structuring rules do guarantee this amortized bound.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;                             y             x
-   Zig (terminal case):     /     ====&amp;gt;     \
+   Zig (terminal case):     /     ====&amp;gt;     \               (same as AVL single rotation)
                            x                 y
 
                     z              z
                    /              /             x
-   Zig-zag:       y     ====&amp;gt;    x   ====&amp;gt;     / \
+   Zig-zag:       y     ====&amp;gt;    x   ====&amp;gt;     / \          (same as AVL double rotation)
                    \            /             y   z
                     x          y
 
@@ -82,9 +82,8 @@ if there is any node &lt;span class="math"&gt;\(x\)&lt;/span&gt; greater than &l
 &lt;p&gt;Correspondingly there are two methods to deletion as well. The first way is to splay the to-be-deleted node. This puts the node at the root. If it is
 deleted, we get two subtrees &lt;span class="math"&gt;\(T_L\)&lt;/span&gt; and &lt;span class="math"&gt;\(T_R\)&lt;/span&gt;. If we find the largest element in &lt;span class="math"&gt;\(T_L\)&lt;/span&gt;, then this element is rotated to the root of &lt;span class="math"&gt;\(T_L\)&lt;/span&gt;, and 
 &lt;span class="math"&gt;\(T_L\)&lt;/span&gt; will now have a root with no right child. We can finish the deletion by making &lt;span class="math"&gt;\(T_R\)&lt;/span&gt; the right child.&lt;/p&gt;
-&lt;p&gt;The second way is to do BST deletion first, and then splay the parent of the deletion point to the root. I find this way is less efficient than 
-method 1 because of extra space used by either using
-a pointer pointing to the parent node or using a stack to keep track of accessing path.&lt;/p&gt;
+&lt;p&gt;The second way is to do BST deletion first, and then splay the parent of the deletion point to the root. It is quite similar to BST deletion and see
+the implementation &lt;a href="https://github.com/xxks-kkk/algo/blob/master/trees/splay/splay.c"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;h2&gt;Properties&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;any &lt;span class="math"&gt;\(M\)&lt;/span&gt; consecutive tree operations starting from an empty tree take at most &lt;span class="math"&gt;\(O(M \log N)\)&lt;/span&gt; time.&lt;/li&gt;
@@ -714,6 +713,12 @@ Also, in the book, solving &lt;span class="math"&gt;\(h_n = h_{n-1} + n^3\)&lt;/
 &lt;ul&gt;
 &lt;li&gt;A &lt;em&gt;full&lt;/em&gt; binary tree (proper binary tree or 2-tree) is a binary tree in which each node
   has exactly zero or two children.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A &lt;em&gt;full node&lt;/em&gt; in a binary tree is a node that has exactly two non-null children.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
 &lt;li&gt;A &lt;em&gt;complete&lt;/em&gt; binary tree is a binary tree, which is completely filled, with the possible
   exception of the bottom level, which is filled from left to right.&lt;/li&gt;
 &lt;/ul&gt;

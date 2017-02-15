@@ -64,12 +64,12 @@ the amortized time bound should be <span class="math">\(O(M N)\)</span> for a se
 it is moved to the root of the tree. The amortized cost of the operation is <span class="math">\(O(\log N)\)</span>. As shown by MAW, simply moving the element to the root by
 rotating it up the trees does not have this property. However, the following three structuring rules do guarantee this amortized bound.</p>
 <div class="highlight"><pre><span></span>                             y             x
-   Zig (terminal case):     /     ====&gt;     \
+   Zig (terminal case):     /     ====&gt;     \               (same as AVL single rotation)
                            x                 y
 
                     z              z
                    /              /             x
-   Zig-zag:       y     ====&gt;    x   ====&gt;     / \
+   Zig-zag:       y     ====&gt;    x   ====&gt;     / \          (same as AVL double rotation)
                    \            /             y   z
                     x          y
 
@@ -130,9 +130,8 @@ if there is any node <span class="math">\(x\)</span> greater than <code>elem</co
 <p>Correspondingly there are two methods to deletion as well. The first way is to splay the to-be-deleted node. This puts the node at the root. If it is
 deleted, we get two subtrees <span class="math">\(T_L\)</span> and <span class="math">\(T_R\)</span>. If we find the largest element in <span class="math">\(T_L\)</span>, then this element is rotated to the root of <span class="math">\(T_L\)</span>, and 
 <span class="math">\(T_L\)</span> will now have a root with no right child. We can finish the deletion by making <span class="math">\(T_R\)</span> the right child.</p>
-<p>The second way is to do BST deletion first, and then splay the parent of the deletion point to the root. I find this way is less efficient than 
-method 1 because of extra space used by either using
-a pointer pointing to the parent node or using a stack to keep track of accessing path.</p>
+<p>The second way is to do BST deletion first, and then splay the parent of the deletion point to the root. It is quite similar to BST deletion and see
+the implementation <a href="https://github.com/xxks-kkk/algo/blob/master/trees/splay/splay.c">here</a>.</p>
 <h2>Properties</h2>
 <ul>
 <li>any <span class="math">\(M\)</span> consecutive tree operations starting from an empty tree take at most <span class="math">\(O(M \log N)\)</span> time.</li>
