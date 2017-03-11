@@ -1,5 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tech Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-03-11T21:32:00+08:00</updated><entry><title>B-Tree</title><link href="http://zhu45.org/posts/2017/Mar/11/b-tree/" rel="alternate"></link><published>2017-03-11T21:32:00+08:00</published><updated>2017-03-11T21:32:00+08:00</updated><author><name></name></author><id>tag:zhu45.org,2017-03-11:posts/2017/Mar/11/b-tree/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;B tree&lt;/em&gt; part in MAW Chapter 4.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tech Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-03-12T10:45:00+08:00</updated><entry><title>MAW: Chapter 4 Reflection</title><link href="http://zhu45.org/posts/2017/Mar/12/maw-chapter-4-reflection/" rel="alternate"></link><published>2017-03-12T10:45:00+08:00</published><updated>2017-03-12T10:45:00+08:00</updated><author><name></name></author><id>tag:zhu45.org,2017-03-12:posts/2017/Mar/12/maw-chapter-4-reflection/</id><summary type="html">&lt;div class="section" id="reflection"&gt;
+&lt;h2&gt;Reflection&lt;/h2&gt;
+&lt;p&gt;In Chapter 4, we learn about the tree data structure. If we take a look from ADT
+perspective, the ADT we learn about is called Dictionary (a.k.a Map) ADT, which
+represented by a set of (key, value) pairs that support insert, find, delete operations.
+The core idea for this ADT, as you can imagine, is to store information according to
+some key and be able to retrieve it efficiently.&lt;/p&gt;
+&lt;p&gt;Implementing dictionary ADT with tree structure brings following advantages:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Trees reflect structural relationships in the data&lt;/li&gt;
+&lt;li&gt;Trees are used to represent hierarchies&lt;/li&gt;
+&lt;li&gt;Trees provide an efficient insertion and searching&lt;/li&gt;
+&lt;li&gt;Trees are very flexible data, allowing to move subtrees around with minumum effort&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Many different tree structures get presented in this chapter. Most fundamental ones are:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="http://zhu45.org/posts/2017/Jan/29/binary-tree-binary-search-tree/"&gt;Binary Search Tree&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="http://zhu45.org/posts/2017/Feb/05/avl-tree/"&gt;AVL tree&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="http://zhu45.org/posts/2017/Feb/13/splay-tree/"&gt;Splay tree&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="http://zhu45.org/posts/2017/Mar/11/b-tree/"&gt;B-tree&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Some variations to the above structures are Order Statistic Tree (MAW 4.44), Threaded Tree (MAW 4.45),
+k-d Tree (MAW 4.46), and B*-tree (MAW 4.38).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="left-out"&gt;
+&lt;h2&gt;Left Out&lt;/h2&gt;
+&lt;p&gt;Some material I left out when I work through this chapter:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;4.11 (cursor implementation of trees is not top priority)&lt;/li&gt;
+&lt;li&gt;4.33, 4.34 (Form a nice tree drawing project; don't have time to do them now)&lt;/li&gt;
+&lt;li&gt;4.12, 4.13, 4.14, 4.26.b, 4.37.b;c, 4.38 (interesting but may require too much effort)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="reference"&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture6.pdf"&gt;https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture6.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</summary><category term="meta"></category><category term="maw"></category></entry><entry><title>B-Tree</title><link href="http://zhu45.org/posts/2017/Mar/11/b-tree/" rel="alternate"></link><published>2017-03-11T21:32:00+08:00</published><updated>2017-03-11T21:32:00+08:00</updated><author><name></name></author><id>tag:zhu45.org,2017-03-11:posts/2017/Mar/11/b-tree/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;B tree&lt;/em&gt; part in MAW Chapter 4.&lt;/p&gt;
 &lt;h2&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;So far we have assumed that an entire data structure can be stored in the main memory. 
 However, this is not true in reality because if we have more data than can fit in main 

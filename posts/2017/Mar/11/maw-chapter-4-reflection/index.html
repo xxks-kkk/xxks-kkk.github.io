@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-        <title>What's the difference between sourcing a script and executing a script?</title>
+        <title>MAW: Chapter 4 Reflection</title>
         <meta charset="utf-8" />
         <meta content="This is the homepage of Zeyuan (Jerry) Hu" name="description">
         <meta content="Zeyuan Hu, Zeyuan, Jerry Hu, Jerry, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, Zeyuan wisc, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
@@ -39,54 +39,61 @@
 
 <section id="content" class="body">
 <article>
-      <header> <h1 class="entry-title"><a href="../../../../../posts/2016/Dec/20/whats-the-difference-between-sourcing-a-script-and-executing-a-script/"
-        rel="bookmark" title="Permalink to What's the difference between sourcing a script and executing a script?">What's the difference between sourcing a script and executing a script?</a></h1>  </header>
+      <header> <h1 class="entry-title"><a href="../../../../../posts/2017/Mar/11/maw-chapter-4-reflection/"
+        rel="bookmark" title="Permalink to MAW: Chapter 4 Reflection">MAW: Chapter 4 Reflection</a></h1>  </header>
         <div class="entry-content">
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-20T21:49:00+08:00">Tue 20 Dec 2016, 21:49</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-11T10:45:00+08:00">Sat 11 Mar 2017, 10:45</abbr></p>
 
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/tools.html">tools</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/shell.html">shell</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-        <p>I run across the question in the title when I take a break from the work
-today. Then I did a little bit googling, and the explanation is not quite satisfying
-to me. So, I decide to answer this question by a simplied example from my work.</p>
-<p>For me, this question appears frequently when you try to install some software.
-Some software, like the product I'm working on, depends on a set of environment variables
-in order to setup itself properly. Usually, this may inovlve manual editing of the environment
-variables in order to make the product work. However, we can do much better.
-We can somehow let a setup program to edit the environment variable for the user and finish
-the whole product setup process automatically.</p>
-<p>Suppose a software relies on an environment variable <tt class="docutils literal">TEST_SOURCE</tt> and
-we don't have such an environment variable initially.</p>
-<div class="highlight"><pre><span></span>$ <span class="nb">echo</span> <span class="nv">$TEST_SOURCE</span>
-$
-</pre></div>
-<p>If we create a test script <tt class="docutils literal">test.sh</tt> like the following:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
-
-<span class="nb">export</span> <span class="nv">TEST_SOURCE</span><span class="o">=</span>HELLO
-</pre></div>
-<p>Then we can have two way to execute this script: either by <tt class="docutils literal">./test.sh</tt> or
-by <tt class="docutils literal">source test.sh</tt> and they two have different outcome:</p>
-<div class="highlight"><pre><span></span>$ ./test.sh
-$ <span class="nb">echo</span> <span class="nv">$TEST_SOURCE</span>
-$
-$ <span class="nb">source</span> test.sh
-$ <span class="nb">echo</span> <span class="nv">$TEST_SOURCE</span>
-HELLO
-</pre></div>
-<p>So, the conclusion is that when we execute in <tt class="docutils literal">source</tt>, we actually run program
-in the current shell. However, if we execute in <tt class="docutils literal">./</tt>, then we run the program
-in a separately shell and the execution (i.e. modify environment variable) doesn't
-impact our current shell.</p>
-<!-- http://www.theeggeadventure.com/wikimedia/index.php/Interview_Questions -->
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/misc.html">misc</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/meta.html">meta</a> <a href="../../../../../tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+        <div class="section" id="reflection">
+<h2>Reflection</h2>
+<p>In Chapter 4, we learn about the tree data structure. If we take a look from ADT
+perspective, the ADT we learn about is called Dictionary (a.k.a Map) ADT, which
+represented by a set of (key, value) pairs that support insert, find, delete operations.
+The core idea for this ADT, as you can imagine, is to store information according to
+some key and be able to retrieve it efficiently.</p>
+<p>Implementing dictionary ADT with tree structure brings following advantages:</p>
+<ul class="simple">
+<li>Trees reflect structural relationships in the data</li>
+<li>Trees are used to represent hierarchies</li>
+<li>Trees provide an efficient insertion and searching</li>
+<li>Trees are very flexible data, allowing to move subtrees around with minumum effort</li>
+</ul>
+<p>Many different tree structures get presented in this chapter. They are:</p>
+<ul class="simple">
+<li><a class="reference external" href="../../../../../posts/2017/Jan/29/binary-tree-binary-search-tree/">Binary Search Tree</a></li>
+<li><a class="reference external" href="../../../../../posts/2017/Feb/05/avl-tree/">AVL tree</a></li>
+<li><a class="reference external" href="../../../../../posts/2017/Feb/13/splay-tree/">Splay tree</a></li>
+<li><a class="reference external" href="../../../../../posts/2017/Mar/11/b-tree/">B-tree</a></li>
+<li>Order Statistic Tree (MAW 4.44)</li>
+<li>Threaded Tree (MAW 4.45)</li>
+<li>k-d Tree (MAW 4.46)</li>
+</ul>
+</div>
+<div class="section" id="left-out">
+<h2>Left Out</h2>
+<p>Some material I left out when I work through this chapter:</p>
+<ul class="simple">
+<li>4.11 (cursor implementation of trees is not top priority)</li>
+<li>4.33, 4.34 (Form a nice tree drawing project; don't have time to do them now)</li>
+<li>4.12, 4.13, 4.14, 4.26.b, 4.37.b;c, 4.38 (interesting but may require too much effort)</li>
+</ul>
+</div>
+<div class="section" id="reference">
+<h2>Reference</h2>
+<ul class="simple">
+<li><a class="reference external" href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture6.pdf">https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture6.pdf</a></li>
+</ul>
+</div>
 
         </div><!-- /.entry-content -->
         <div class="comments">
         <h2>Comments !</h2>
             <div id="disqus_thread"></div>
             <script type="text/javascript">
-               var disqus_identifier = "posts/2016/Dec/20/whats-the-difference-between-sourcing-a-script-and-executing-a-script/";
+               var disqus_identifier = "posts/2017/Mar/11/maw-chapter-4-reflection/";
                (function() {
                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                dsq.src = 'https://zhu45-org.disqus.com/embed.js';
@@ -112,9 +119,9 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         <ul>
                            <li ><a href="../../../../../category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (15)</a></li>
                            <li ><a href="../../../../../category/mathematics.html"><i class="fa fa-folder-open fa-lg"></i> Mathematics (1)</a></li>
-                           <li ><a href="../../../../../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (4)</a></li>
+                           <li class="active"><a href="../../../../../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (4)</a></li>
                            <li ><a href="../../../../../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
-                           <li class="active"><a href="../../../../../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
+                           <li ><a href="../../../../../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>
                 </div>
                 <div class="widget social">

@@ -40,7 +40,62 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="./posts/2017/Mar/11/b-tree/">B-Tree</a></h1>
+                <h1 class="entry-title"><a href="./posts/2017/Mar/12/maw-chapter-4-reflection/">MAW: Chapter 4 Reflection</a></h1>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-12T10:45:00+08:00">Sun 12 Mar 2017, 10:45</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/misc.html">misc</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/meta.html">meta</a> <a href="./tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <div class="section" id="reflection">
+<h2>Reflection</h2>
+<p>In Chapter 4, we learn about the tree data structure. If we take a look from ADT
+perspective, the ADT we learn about is called Dictionary (a.k.a Map) ADT, which
+represented by a set of (key, value) pairs that support insert, find, delete operations.
+The core idea for this ADT, as you can imagine, is to store information according to
+some key and be able to retrieve it efficiently.</p>
+<p>Implementing dictionary ADT with tree structure brings following advantages:</p>
+<ul class="simple">
+<li>Trees reflect structural relationships in the data</li>
+<li>Trees are used to represent hierarchies</li>
+<li>Trees provide an efficient insertion and searching</li>
+<li>Trees are very flexible data, allowing to move subtrees around with minumum effort</li>
+</ul>
+<p>Many different tree structures get presented in this chapter. Most fundamental ones are:</p>
+<ul class="simple">
+<li><a class="reference external" href="./posts/2017/Jan/29/binary-tree-binary-search-tree/">Binary Search Tree</a></li>
+<li><a class="reference external" href="./posts/2017/Feb/05/avl-tree/">AVL tree</a></li>
+<li><a class="reference external" href="./posts/2017/Feb/13/splay-tree/">Splay tree</a></li>
+<li><a class="reference external" href="./posts/2017/Mar/11/b-tree/">B-tree</a></li>
+</ul>
+<p>Some variations to the above structures are Order Statistic Tree (MAW 4.44), Threaded Tree (MAW 4.45),
+k-d Tree (MAW 4.46), and B*-tree (MAW 4.38).</p>
+</div>
+<div class="section" id="left-out">
+<h2>Left Out</h2>
+<p>Some material I left out when I work through this chapter:</p>
+<ul class="simple">
+<li>4.11 (cursor implementation of trees is not top priority)</li>
+<li>4.33, 4.34 (Form a nice tree drawing project; don't have time to do them now)</li>
+<li>4.12, 4.13, 4.14, 4.26.b, 4.37.b;c, 4.38 (interesting but may require too much effort)</li>
+</ul>
+</div>
+<div class="section" id="reference">
+<h2>Reference</h2>
+<ul class="simple">
+<li><a class="reference external" href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture6.pdf">https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture6.pdf</a></li>
+</ul>
+</div>
+
+        </article></aside><!-- /#featured -->
+                <h1><i class="fa fa-bars"></i> Other articles</h1>
+                <hr />
+                    <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="./posts/2017/Mar/11/b-tree/" rel="bookmark" title="Permalink to B-Tree">B-Tree</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-11T21:32:00+08:00">Sat 11 Mar 2017, 21:32</abbr></p>
 
@@ -50,162 +105,10 @@
 <h2>Motivation</h2>
 <p>So far we have assumed that an entire data structure can be stored in the main memory. 
 However, this is not true in reality because if we have more data than can fit in main 
-memory, we have to store data structure on disk. In this case, number of disk 
-accesses will dominate the running time because they are very expensive comparing with the 
-processor speed. Then, when we design a data structure, we have to try our best to minimize
-the number of disk accesses. Under the context of tree structure, B-tree is a structure
-that tries to read as much information as possible in every disk access operation.</p>
-<h2>Concept</h2>
-<p>B-tree is by far the most chaoatic defined structure in the sense that different people
-have slightly different definitions. I'll follow MAW's definition and points out how MAW's definition
-is different from the other commonly seen definition.</p>
-<p>A B-tree of order <span class="math">\(M\)</span> is a tree with the following structural properties:</p>
-<ul>
-<li>The leaves contain all the actual data, which are either the key temselves or pointers to records containing the keys.</li>
-<li>The root is either a leaf (when tree has <span class="math">\(\le L\)</span> items) or has between <span class="math">\(2\)</span> and <span class="math">\(M\)</span> children.</li>
-<li>All nonleaf nodes (except the root) have between <span class="math">\(\lceil{M/2}\rceil\)</span> and <span class="math">\(M\)</span> children (at least half full).</li>
-<li>All leaves are the same depth and have between <span class="math">\(\lceil{L/2}\rceil\)</span> and <span class="math">\(L\)</span> sorted data items, for some L (at least half full).</li>
-<li>The nonleaf nodes have room for up to <span class="math">\(M-1\)</span> keys to guide the searching; key <span class="math">\(i\)</span> represents the smallest key in subtree <span class="math">\(i+1\)</span>.</li>
-</ul>
-<p><img src="/images/b-tree-order-property.PNG" alt="b-tree-order-property"/></p>
-<p>In MAW, the definition of B-tree is essentially known as <span class="math">\(B^+-\)</span>tree. Technically, the real B-tree has the key property that 
-the actual data to be stored in both leaves and internal nodes, which is not the case in our definition. In some <span class="math">\(B^+-\)</span>tree definition,
-the leaves are connected as a linked list so that we don't have to restart the search from the root once we already traverse down to the 
-leaf if we want a record that is on a leaf really close to the leaf we currently at. </p>
-<h2>Examples</h2>
-<p>Some typical examples in B-tree are of order 4 (known as 2-3-4 tree) and 3 (known as 2-3 tree).</p>
-<p><img src="/images/2-3-tree.PNG" alt="2-3-tree" style="width: 700px;"/></p>
-<p>B-tree is a structure that is widely used in the database system. The following picture shows a more real B-tree example. 
-Suppose we have a large customer table with gigabytes of data and an index is created on the phone number column of the 
-customer table to speed up search. Phone numbers stored in sorted order with information (page and slot) on where the rest of 
-the customer information can be found in the customer table.</p>
-<p><img src="/images/real-b-tree.PNG" alt="real-b-tree" style="width: 700px;"/></p>
-<p>In this example, once we continue down the tree and locate the phone number we are searching for, we use the RID to fetch the 
-rest of the customer record from the table. In this case, we use 4 disk accesses.</p>
-<h2>Operations</h2>
-<ul>
-<li>Find:</li>
-</ul>
-<p>For find, we basically do binary search on each node to decide what subtree we should go to search. </p>
-<ul>
-<li>Insertion:</li>
-</ul>
-<p>The major unique manipulation is we may need to split the node at the leaves and recursives make the new parent nodes (by pushing a key up to its parent)
-to the root. Other strategies regarding nodes overloaded also exist but this one is classic textbook.</p>
-<ul>
-<li>Deletion:</li>
-</ul>
-<p>I have to say deletion is the most messy one and people may always want to talk about it conceptually instead of getting hands dirty
-to actually implement one. Stanford paper listed in the reference section do a concrete implementation but the route they use is to implement
-a real-life B-tree deletion which may be complicated for the learner. </p>
-<p>The strategy we use for deletion is that we want to find the key to be deleted and remove it first. Then, if the leaf underflows, we borrow from 
-a neighbor. If leaf underflows and can't borrow, we merge nodes and delete parent.</p>
-<h2>Runtime analysis</h2>
-<p>We first show that height <span class="math">\(H\)</span> is logarithmic in number of data items <span class="math">\(N\)</span>. Let <span class="math">\(M \ge 2\)</span>. Because all nodes are at least half full (except root may have
-only 2 children) and all leaves are at the same level, the minimum number od data items <span class="math">\(N\)</span> for a height <span class="math">\(H\)</span> tree is </p>
-<div class="math">$$
-N \ge \underbrace{2(\lceil{M/2}\rceil)^{H-1}}_\textrm{min number of leaves}\times\underbrace{\lceil{L/2}\rceil}_\textrm{min data per leaf}
-$$</div>
-<p>Then for a B-tree of order <span class="math">\(M\)</span></p>
-<ul>
-<li>Each internal node has up to <span class="math">\(M-1\)</span> keys to search</li>
-<li>Each internal node has between <span class="math">\(\lceil{M/2}\rceil\)</span> and <span class="math">\(M\)</span> children</li>
-<li>Depth of B-tree storing <span class="math">\(N\)</span> items is <span class="math">\(O(\log_{\lceil{M/2}\rceil}N)\)</span></li>
-</ul>
-<p>Find then takes <span class="math">\(O(\log M)\)</span> to do binary search on each node to determine which branch to take. Then the total time is 
-O(depth <span class="math">\(\times \log M\)</span>) = <span class="math">\(O(\log N)\)</span> because <span class="math">\(M\)</span> is small compared to <span class="math">\(N\)</span>.</p>
-<p>Insertion and deletion doesn't different from <span class="math">\(O(\log N)\)</span> because the unique manipulation takes constant amount of work and the number 
-of times this unique manipulation is proportional to the height of tree.</p>
-<h2>Pros &amp; Cons of data structure</h2>
-<p>What makes B-trees so disk friendly?</p>
-<ul>
-<li>
-<p>Many keys stored in one node </p>
-<ul>
-<li>All brought into memory in one disk access</li>
-<li>Pick <span class="math">\(M\)</span> wisely. See MAW's Java version (3rd edition) p.149 for an example.</li>
-<li>Makes the binary searhc over <span class="math">\(M-1\)</span> keys totally worth it.</li>
-</ul>
-</li>
-<li>
-<p>Internal nodes contain only keys</p>
-<ul>
-<li>All find wants only one data item. So only bring one leaf of data items into memory.</li>
-<li>Data-item size doesn't affect what <span class="math">\(M\)</span> is. We determine <span class="math">\(M\)</span> only by how many keys can be packed into a disk block (node).
-  Thus, the key size, the children pointer size, and the block size are the only factors here.</li>
-</ul>
-</li>
-</ul>
-<h2>Reference</h2>
-<ul>
-<li>MAW Chapter 4</li>
-<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture15.pdf</li>
-<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf</li>
-<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture9.pdf</li>
-<li>http://www.cs.yale.edu/homes/aspnes/pinewiki/BTrees.html</li>
-<li>http://ilpubs.stanford.edu:8090/85/1/1995-19.pdf</li>
-</ul>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-</script>
-        </article></aside><!-- /#featured -->
-                <h1><i class="fa fa-bars"></i> Other articles</h1>
-                <hr />
-                    <ol id="posts-list" class="hfeed">
+memory, we ...</p>
+                <a class="readmore" href="./posts/2017/Mar/11/b-tree/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="./posts/2017/Feb/13/splay-tree/" rel="bookmark" title="Permalink to Splay Tree">Splay Tree</a></h1>
@@ -369,28 +272,6 @@ The interface ...</p></div>
                 <a class="readmore" href="./posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2017/Jan/19/typecasting-in-c/" rel="bookmark" title="Permalink to Typecasting in C">Typecasting in C</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-19T00:53:00+08:00">Thu 19 Jan 2017, 00:53</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/programming-languages.html">programming languages</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/c.html">c</a> <a href="./tag/pointer.html">pointer</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>This post covers the typecasting in C with the aim to get a clear understanding
-of the most commonly-seen C manipulation. This writeup is adapted from
-&quot;Hacking - the Art of Exploitation&quot;.</p>
-<div class="section" id="tl-dr">
-<h2>TL;DR</h2>
-<ul class="simple">
-<li>Typecasting change a variable into a different type just for that operation.</li>
-<li>Pointer type determines the size ...</li></ul></div>
-                <a class="readmore" href="./posts/2017/Jan/19/typecasting-in-c/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
         <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
         <hr />
@@ -421,7 +302,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         <ul>
                            <li ><a href="./category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (15)</a></li>
                            <li ><a href="./category/mathematics.html"><i class="fa fa-folder-open fa-lg"></i> Mathematics (1)</a></li>
-                           <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
+                           <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (4)</a></li>
                            <li ><a href="./category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
                            <li ><a href="./category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>
@@ -496,7 +377,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             maw
                         </a>
                     </li>
-                    <li class="list-group-item tag-3">
+                    <li class="list-group-item tag-2">
                         <a href="./tag/meta.html">
                             meta
                         </a>
