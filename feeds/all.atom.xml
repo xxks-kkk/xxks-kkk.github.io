@@ -1,5 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Tech Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-02-13T01:12:00+08:00</updated><entry><title>Splay Tree</title><link href="http://zhu45.org/posts/2017/Feb/13/splay-tree/" rel="alternate"></link><published>2017-02-13T01:12:00+08:00</published><updated>2017-02-13T01:12:00+08:00</updated><author><name></name></author><id>tag:zhu45.org,2017-02-13:posts/2017/Feb/13/splay-tree/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;Splay tree&lt;/em&gt; part in MAW Chapter 4.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Tech Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-03-11T21:32:00+08:00</updated><entry><title>B-Tree</title><link href="http://zhu45.org/posts/2017/Mar/11/b-tree/" rel="alternate"></link><published>2017-03-11T21:32:00+08:00</published><updated>2017-03-11T21:32:00+08:00</updated><author><name></name></author><id>tag:zhu45.org,2017-03-11:posts/2017/Mar/11/b-tree/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;B tree&lt;/em&gt; part in MAW Chapter 4.&lt;/p&gt;
+&lt;h2&gt;Motivation&lt;/h2&gt;
+&lt;p&gt;So far we have assumed that an entire data structure can be stored in the main memory. 
+However, this is not true in reality because if we have more data than can fit in main 
+memory, we have to store data structure on disk. In this case, number of disk 
+accesses will dominate the running time because they are very expensive comparing with the 
+processor speed. Then, when we design a data structure, we have to try our best to minimize
+the number of disk accesses. Under the context of tree structure, B-tree is a structure
+that tries to read as much information as possible in every disk access operation.&lt;/p&gt;
+&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;p&gt;B-tree is by far the most chaoatic defined structure in the sense that different people
+have slightly different definitions. I'll follow MAW's definition and points out how MAW's definition
+is different from the other commonly seen definition.&lt;/p&gt;
+&lt;p&gt;A B-tree of order &lt;span class="math"&gt;\(M\)&lt;/span&gt; is a tree with the following structural properties:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The leaves contain all the actual data, which are either the key temselves or pointers to records containing the keys.&lt;/li&gt;
+&lt;li&gt;The root is either a leaf (when tree has &lt;span class="math"&gt;\(\le L\)&lt;/span&gt; items) or has between &lt;span class="math"&gt;\(2\)&lt;/span&gt; and &lt;span class="math"&gt;\(M\)&lt;/span&gt; children.&lt;/li&gt;
+&lt;li&gt;All nonleaf nodes (except the root) have between &lt;span class="math"&gt;\(\lceil{M/2}\rceil\)&lt;/span&gt; and &lt;span class="math"&gt;\(M\)&lt;/span&gt; children (at least half full).&lt;/li&gt;
+&lt;li&gt;All leaves are the same depth and have between &lt;span class="math"&gt;\(\lceil{L/2}\rceil\)&lt;/span&gt; and &lt;span class="math"&gt;\(L\)&lt;/span&gt; sorted data items, for some L (at least half full).&lt;/li&gt;
+&lt;li&gt;The nonleaf nodes have room for up to &lt;span class="math"&gt;\(M-1\)&lt;/span&gt; keys to guide the searching; key &lt;span class="math"&gt;\(i\)&lt;/span&gt; represents the smallest key in subtree &lt;span class="math"&gt;\(i+1\)&lt;/span&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="/images/b-tree-order-property.PNG" alt="b-tree-order-property"/&gt;&lt;/p&gt;
+&lt;p&gt;In MAW, the definition of B-tree is essentially known as &lt;span class="math"&gt;\(B^+-\)&lt;/span&gt;tree. Technically, the real B-tree has the key property that 
+the actual data to be stored in both leaves and internal nodes, which is not the case in our definition. In some &lt;span class="math"&gt;\(B^+-\)&lt;/span&gt;tree definition,
+the leaves are connected as a linked list so that we don't have to restart the search from the root once we already traverse down to the 
+leaf if we want a record that is on a leaf really close to the leaf we currently at. &lt;/p&gt;
+&lt;h2&gt;Examples&lt;/h2&gt;
+&lt;p&gt;Some typical examples in B-tree are of order 4 (known as 2-3-4 tree) and 3 (known as 2-3 tree).&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/2-3-tree.PNG" alt="2-3-tree" style="width: 700px;"/&gt;&lt;/p&gt;
+&lt;p&gt;B-tree is a structure that is widely used in the database system. The following picture shows a more real B-tree example. 
+Suppose we have a large customer table with gigabytes of data and an index is created on the phone number column of the 
+customer table to speed up search. Phone numbers stored in sorted order with information (page and slot) on where the rest of 
+the customer information can be found in the customer table.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/real-b-tree.PNG" alt="real-b-tree" style="width: 700px;"/&gt;&lt;/p&gt;
+&lt;p&gt;In this example, once we continue down the tree and locate the phone number we are searching for, we use the RID to fetch the 
+rest of the customer record from the table. In this case, we use 4 disk accesses.&lt;/p&gt;
+&lt;h2&gt;Operations&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Find:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For find, we basically do binary search on each node to decide what subtree we should go to search. &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Insertion:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The major unique manipulation is we may need to split the node at the leaves and recursives make the new parent nodes (by pushing a key up to its parent)
+to the root. Other strategies regarding nodes overloaded also exist but this one is classic textbook.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Deletion:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I have to say deletion is the most messy one and people may always want to talk about it conceptually instead of getting hands dirty
+to actually implement one. Stanford paper listed in the reference section do a concrete implementation but the route they use is to implement
+a real-life B-tree deletion which may be complicated for the learner. &lt;/p&gt;
+&lt;p&gt;The strategy we use for deletion is that we want to find the key to be deleted and remove it first. Then, if the leaf underflows, we borrow from 
+a neighbor. If leaf underflows and can't borrow, we merge nodes and delete parent.&lt;/p&gt;
+&lt;h2&gt;Runtime analysis&lt;/h2&gt;
+&lt;p&gt;We first show that height &lt;span class="math"&gt;\(H\)&lt;/span&gt; is logarithmic in number of data items &lt;span class="math"&gt;\(N\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(M \ge 2\)&lt;/span&gt;. Because all nodes are at least half full (except root may have
+only 2 children) and all leaves are at the same level, the minimum number od data items &lt;span class="math"&gt;\(N\)&lt;/span&gt; for a height &lt;span class="math"&gt;\(H\)&lt;/span&gt; tree is &lt;/p&gt;
+&lt;div class="math"&gt;$$
+N \ge \underbrace{2(\lceil{M/2}\rceil)^{H-1}}_\textrm{min number of leaves}\times\underbrace{\lceil{L/2}\rceil}_\textrm{min data per leaf}
+$$&lt;/div&gt;
+&lt;p&gt;Then for a B-tree of order &lt;span class="math"&gt;\(M\)&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Each internal node has up to &lt;span class="math"&gt;\(M-1\)&lt;/span&gt; keys to search&lt;/li&gt;
+&lt;li&gt;Each internal node has between &lt;span class="math"&gt;\(\lceil{M/2}\rceil\)&lt;/span&gt; and &lt;span class="math"&gt;\(M\)&lt;/span&gt; children&lt;/li&gt;
+&lt;li&gt;Depth of B-tree storing &lt;span class="math"&gt;\(N\)&lt;/span&gt; items is &lt;span class="math"&gt;\(O(\log_{\lceil{M/2}\rceil}N)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Find then takes &lt;span class="math"&gt;\(O(\log M)\)&lt;/span&gt; to do binary search on each node to determine which branch to take. Then the total time is 
+O(depth &lt;span class="math"&gt;\(\times \log M\)&lt;/span&gt;) = &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; because &lt;span class="math"&gt;\(M\)&lt;/span&gt; is small compared to &lt;span class="math"&gt;\(N\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Insertion and deletion doesn't different from &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; because the unique manipulation takes constant amount of work and the number 
+of times this unique manipulation is proportional to the height of tree.&lt;/p&gt;
+&lt;h2&gt;Pros &amp;amp; Cons of data structure&lt;/h2&gt;
+&lt;p&gt;What makes B-trees so disk friendly?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Many keys stored in one node &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;All brought into memory in one disk access&lt;/li&gt;
+&lt;li&gt;Pick &lt;span class="math"&gt;\(M\)&lt;/span&gt; wisely. See MAW's Java version (3rd edition) p.149 for an example.&lt;/li&gt;
+&lt;li&gt;Makes the binary searhc over &lt;span class="math"&gt;\(M-1\)&lt;/span&gt; keys totally worth it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Internal nodes contain only keys&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;All find wants only one data item. So only bring one leaf of data items into memory.&lt;/li&gt;
+&lt;li&gt;Data-item size doesn't affect what &lt;span class="math"&gt;\(M\)&lt;/span&gt; is. We determine &lt;span class="math"&gt;\(M\)&lt;/span&gt; only by how many keys can be packed into a disk block (node).
+  Thus, the key size, the children pointer size, and the block size are the only factors here.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;MAW Chapter 4&lt;/li&gt;
+&lt;li&gt;https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture15.pdf&lt;/li&gt;
+&lt;li&gt;https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf&lt;/li&gt;
+&lt;li&gt;https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture9.pdf&lt;/li&gt;
+&lt;li&gt;http://www.cs.yale.edu/homes/aspnes/pinewiki/BTrees.html&lt;/li&gt;
+&lt;li&gt;http://ilpubs.stanford.edu:8090/85/1/1995-19.pdf&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="trees"></category><category term="maw"></category></entry><entry><title>Splay Tree</title><link href="http://zhu45.org/posts/2017/Feb/13/splay-tree/" rel="alternate"></link><published>2017-02-13T01:12:00+08:00</published><updated>2017-02-13T01:12:00+08:00</updated><author><name></name></author><id>tag:zhu45.org,2017-02-13:posts/2017/Feb/13/splay-tree/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;Splay tree&lt;/em&gt; part in MAW Chapter 4.&lt;/p&gt;
 &lt;h2&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;Ordinary BST has no balance conditions and thus, it is possible for a whole sequnece of &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; accesses to take place. This cumulative running time 
 then becomes noticeable. So, we introduce the balance condition on BST to improve our running time. One way to do so is to enforce a balance condition
@@ -177,6 +332,9 @@ Its approach to balancing tree is that we want a pretty good balance (allow a li
 that for every node in the tree, the height of the left and right subtrees can differ by at most 1.
 (The height of an empty tree is defined to be -1).&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/AVL.PNG" alt="AVL-tree-concept" style="width: 700px;"/&gt;&lt;/p&gt;
+&lt;p&gt;For simplicity, we really omit the actual data part of the node. The following picture demonstrate
+what AVL tree should really look like:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/AVL-real.PNG" alt="AVL-tree-real" style="height: 300px; width: 700px;"/&gt;&lt;/p&gt;
 &lt;h2&gt;Insertion&lt;/h2&gt;
 &lt;p&gt;AVL tree insertion is based upon BST insertion with two addition treatments:&lt;/p&gt;
 &lt;ul&gt;
@@ -831,7 +989,7 @@ updated as I work through the chapter.&lt;/p&gt;
   with the inductive step on &lt;span class="math"&gt;\(n\)&lt;/span&gt;. (MAW 4.17)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;Solutions&lt;/h2&gt;
-&lt;p&gt;including: MAW 4.4, 4.5, 4.6, 4.7, 4.14, 4.15, 4.16, 4.17, 4.23, 4.24, 4.25, 4.26.a, &lt;/p&gt;
+&lt;p&gt;including: MAW 4.4, 4.5, 4.6, 4.7, 4.14, 4.15, 4.16, 4.17, 4.23, 4.24, 4.25, 4.26.a, 4.43&lt;/p&gt;
 &lt;h3&gt;MAW 4.4&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Show that in a binary tree of &lt;span class="math"&gt;\(N\)&lt;/span&gt; nodes, there are &lt;span class="math"&gt;\(N + 1\)&lt;/span&gt; &lt;code&gt;NULL&lt;/code&gt; pointers
@@ -1190,6 +1348,23 @@ position for &lt;span class="math"&gt;\(N+1\)&lt;/span&gt; node: the right child
 then by BST, &lt;span class="math"&gt;\(N+1\)&lt;/span&gt; node's value is smaller than root's value and bigger than left most node's value.
 This violates the induction hypothesis because we are no longer access a splay tree in sequential order.
 Now we simply swap the right child of the root with root and we get a chain of left children. &lt;/p&gt;
+&lt;h3&gt;MAW 4.43&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;a. Show that via AVL single rotations, any binary search tree &lt;span class="math"&gt;\(T_1\)&lt;/span&gt; can be transformed into another
+search tree &lt;span class="math"&gt;\(T_2\)&lt;/span&gt; (with the same keys).
+b. Give an algorithm to perform this transformation using &lt;span class="math"&gt;\(O(N\log N)\)&lt;/span&gt; rotations on average.
+c. Show that this transformation can be done with &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; rotations, worst-case.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Let's first work through an example shown in the picture below. We transform the tree in the top-left 
+of the picture to the tree in the top-right of the picture through several steps linked by single arrows.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/maw-4-43.jpg" alt="maw-4-43" style="width: 700px;"/&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, the strategy here is that we do preorder processing. We compare the root &lt;span class="math"&gt;\(T_1\)&lt;/span&gt; with the root
+&lt;span class="math"&gt;\(T_2\)&lt;/span&gt;. If they are equal, then we move on to the left and right subtrees of &lt;span class="math"&gt;\(T_1\)&lt;/span&gt; and do the processing 
+recursively. However, if they are not equal, we find the &lt;span class="math"&gt;\(T_2\)&lt;/span&gt;'s root value &lt;span class="math"&gt;\(x\)&lt;/span&gt; in &lt;span class="math"&gt;\(T_1\)&lt;/span&gt; and rotate it to the
+root of &lt;span class="math"&gt;\(T_1\)&lt;/span&gt;. Then, we do the recursive processing for the left and right subtrees of &lt;span class="math"&gt;\(T_1\)&lt;/span&gt;. This algorithm
+takes &lt;span class="math"&gt;\(O(N\log N)\)&lt;/span&gt; on average because find &lt;span class="math"&gt;\(x\)&lt;/span&gt; takes &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time and AVL rotations also take &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time. 
+Since we could do &lt;span class="math"&gt;\(N\)&lt;/span&gt; rotations, then the result follows. However, a BST can be degenerated and in that case, we have 
+&lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; worst-case. &lt;/p&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -1298,7 +1473,11 @@ and the children of the nodes which are at &lt;em&gt;level 1&lt;/em&gt; will be 
 In other words, in a tree each step from top to bottom is called as a &lt;em&gt;level&lt;/em&gt; and the &lt;em&gt;level&lt;/em&gt;
 count starts with '0' and incremented by one at each level (step).&lt;/p&gt;
 &lt;img alt="" src="/images/tree-level.PNG" /&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;predecessor / successor&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If &lt;span class="math"&gt;\(X\)&lt;/span&gt; has two children, its predecessor is the maximum value in its left subtree
+and its successor the minimum value in its right subtree. It makes sense if we do in-order
+traversal of the tree.&lt;/p&gt;
+&lt;img src="/images/pred-succ.PNG" alt="predecessor-successor" style="width: 700px;"/&gt;&lt;/div&gt;
 &lt;div class="section" id="some-properties"&gt;
 &lt;h2&gt;Some properties&lt;/h2&gt;
 &lt;ul class="simple"&gt;

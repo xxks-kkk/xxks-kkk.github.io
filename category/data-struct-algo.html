@@ -40,121 +40,110 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="../posts/2017/Feb/13/splay-tree/">Splay Tree</a></h1>
+                <h1 class="entry-title"><a href="../posts/2017/Mar/11/b-tree/">B-Tree</a></h1>
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-13T01:12:00+08:00">Mon 13 Feb 2017, 01:12</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-11T21:32:00+08:00">Sat 11 Mar 2017, 21:32</abbr></p>
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-algo.html">Data Struct & Algo</a> </p>
 <p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/trees.html">trees</a> <a href="../tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>This is the summary of <em>Splay tree</em> part in MAW Chapter 4.</p>
+                <p>This is the summary of <em>B tree</em> part in MAW Chapter 4.</p>
 <h2>Motivation</h2>
-<p>Ordinary BST has no balance conditions and thus, it is possible for a whole sequnece of <span class="math">\(O(N)\)</span> accesses to take place. This cumulative running time 
-then becomes noticeable. So, we introduce the balance condition on BST to improve our running time. One way to do so is to enforce a balance condition
-when nodes change (i.e. insert or delete) like AVL. However, this data structure is hard to code and rebalancing costs time. In addition, sometimes it is 
-OK for us to have <span class="math">\(O(N)\)</span> operation as long as it occurs infrequently. In other words, A search data structure with <span class="math">\(O(N)\)</span> worst-case time, but a <em>guarantee</em>
-of at most <span class="math">\(O(M \log N)\)</span> for any <span class="math">\(M\)</span> consecutive operations, is good enough. Splay tree meets our needs. It is a data structure that 
-lies right in-between BST (no balance condition) and AVL (very strict balance condition).</p>
+<p>So far we have assumed that an entire data structure can be stored in the main memory. 
+However, this is not true in reality because if we have more data than can fit in main 
+memory, we have to store data structure on disk. In this case, number of disk 
+accesses will dominate the running time because they are very expensive comparing with the 
+processor speed. Then, when we design a data structure, we have to try our best to minimize
+the number of disk accesses. Under the context of tree structure, B-tree is a structure
+that tries to read as much information as possible in every disk access operation.</p>
 <h2>Concept</h2>
-<p>A splay tree is a type of balanced binary search tree. Structurally, it is identical to an ordinary binary search tree; the only difference is in the 
-algorithms for finding, inserting, and deleting entries. Specifically, splay tree is a self-adjusting tree, which the structure get organized over time
-as nodes are accessed (i.e., insert, delete, or find). This makes sense because if we don't re-structure the tree each time we access an node, then 
-the amortized time bound should be <span class="math">\(O(M N)\)</span> for a sequence of <span class="math">\(M\)</span> accesses instead of <span class="math">\(O(M \log N)\)</span>.</p>
-<p>The way we restructure the tree is called <em>splaying</em>. Chapter 4 talks about bottom-up splaying algorithms. Every time a node is accessed in a splay tree,
-it is moved to the root of the tree. The amortized cost of the operation is <span class="math">\(O(\log N)\)</span>. As shown by MAW, simply moving the element to the root by
-rotating it up the trees does not have this property. However, the following three structuring rules do guarantee this amortized bound.</p>
-<div class="highlight"><pre><span></span>                             y             x
-   Zig (terminal case):     /     ====&gt;     \               (same as AVL single rotation)
-                           x                 y
-
-                    z              z
-                   /              /             x
-   Zig-zag:       y     ====&gt;    x   ====&gt;     / \          (same as AVL double rotation)
-                   \            /             y   z
-                    x          y
-
-                    z                         x
-                   /            y              \
-   Zig-zig:       y     ====&gt;  / \   ====&gt;      y
-                 /            x   z              \
-                x                                 z
-</pre></div>
-
-
-<p>In the above pictures, x is the node that was accessed (that will
-eventually be at the root of the tree).  By looking at the local
-structure of the tree defined by x, x's parent, and x's grandparent we
-decide which of three rules to follow.  We continue to
-apply the rules until x is at the root of the tree.</p>
-<div class="highlight"><pre><span></span>Splay(1)
-
-              7                    7                   7               1
-             /                    /                   /                 \
-            6                    6                   6                   6
-           /                    /                   /                   / \
-          5                    5                   1                   4   7 
-         /      =======&gt;      /        =======&gt;     \    ======&gt;      / \
-        4                    4                       4               2   5
-       /                    /                       / \               \
-      3                    1                       2   5               3
-     /                      \                       \
-    2                        2                       3
-   /                          \
-  1                            3
-</pre></div>
-
-
-<h2>Implementation details</h2>
-<p>Splay tree is really a flexible data structure in the sense that there are many options to implement 
-the "splay" rules and corresponding tree operations and still have the property hold. Reference <a href="https://en.wikipedia.org/wiki/Splay_tree">wiki</a>
-for complete summary. Here, I only mention some of my findings. Please note that depends on how you implement your operations, the resulting tree
-may be different (i.e. different insert algorithm may result in different tree structure but there root will be the same).</p>
-<h3>Insertion (bottom-up)</h3>
-<p>There are two ways to do this. The first way is to use "split" to split the tree based upon the insertion value. By the property of splaying, 
-we will either have the insertion value (already inside the tree) or the parent of the insertion point at the root. Then we can make our insertion 
-value as the new root and adjust the orginal tree to form the new tree. For example,  if the insertion value <code>elem</code> smaller than the root, we do</p>
-<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">elem</span> <span class="o">&lt;</span> <span class="n">T</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">newT</span><span class="o">-&gt;</span><span class="n">Right</span> <span class="o">=</span> <span class="n">T</span><span class="p">;</span>
-  <span class="n">newT</span><span class="o">-&gt;</span><span class="n">Left</span> <span class="o">=</span> <span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">;</span> <span class="c1">// we can do this b/c the result of splaying is the parent node of where we should insert.</span>
-  <span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>The code is straightforward but <code>newT-&gt;Left = T-&gt;Left</code> is worth a remark. Here, when <code>T</code> is the parent of the insertion point, 
-we know <code>T</code>'s left subtree's values are smaller than <code>elem</code> as well. This is because 
-if there is any node <span class="math">\(x\)</span> greater than <code>elem</code> but smaller than <code>T</code>'s value, then <code>T</code> should be <span class="math">\(x\)</span> instead (by splaying), which is a contradiction.</p>
-<p>The second way is to do BST insertion first and then splay the insertion value, which is really straightforward and easy to code. </p>
-<h2>Deletion (bottom-up)</h2>
-<p>Correspondingly there are two methods to deletion as well. The first way is to splay the to-be-deleted node. This puts the node at the root. If it is
-deleted, we get two subtrees <span class="math">\(T_L\)</span> and <span class="math">\(T_R\)</span>. If we find the largest element in <span class="math">\(T_L\)</span>, then this element is rotated to the root of <span class="math">\(T_L\)</span>, and 
-<span class="math">\(T_L\)</span> will now have a root with no right child. We can finish the deletion by making <span class="math">\(T_R\)</span> the right child.</p>
-<p>The second way is to do BST deletion first, and then splay the parent of the deletion point to the root. It is quite similar to BST deletion and see
-the implementation <a href="https://github.com/xxks-kkk/algo/blob/master/trees/splay/splay.c">here</a>.</p>
-<h2>Properties</h2>
+<p>B-tree is by far the most chaoatic defined structure in the sense that different people
+have slightly different definitions. I'll follow MAW's definition and points out how MAW's definition
+is different from the other commonly seen definition.</p>
+<p>A B-tree of order <span class="math">\(M\)</span> is a tree with the following structural properties:</p>
 <ul>
-<li>any <span class="math">\(M\)</span> consecutive tree operations starting from an empty tree take at most <span class="math">\(O(M \log N)\)</span> time.</li>
-<li>Even though the worst-case running time is <span class="math">\(O(N)\)</span> for operation, the amortized cost of the operation is <span class="math">\(O(\log N)\)</span>.</li>
-<li>if all nodes in a splay tree are accessed in sequential order, the resulting tree consists of a chain of left children. (MAW 4.26.a)</li>
-<li>if all nodes in a splay tree are accessed in sequential order, then the total access time is <span class="math">\(O(N)\)</span>, regardless of the initial tree.</li>
+<li>The leaves contain all the actual data, which are either the key temselves or pointers to records containing the keys.</li>
+<li>The root is either a leaf (when tree has <span class="math">\(\le L\)</span> items) or has between <span class="math">\(2\)</span> and <span class="math">\(M\)</span> children.</li>
+<li>All nonleaf nodes (except the root) have between <span class="math">\(\lceil{M/2}\rceil\)</span> and <span class="math">\(M\)</span> children (at least half full).</li>
+<li>All leaves are the same depth and have between <span class="math">\(\lceil{L/2}\rceil\)</span> and <span class="math">\(L\)</span> sorted data items, for some L (at least half full).</li>
+<li>The nonleaf nodes have room for up to <span class="math">\(M-1\)</span> keys to guide the searching; key <span class="math">\(i\)</span> represents the smallest key in subtree <span class="math">\(i+1\)</span>.</li>
 </ul>
-<h2>Pros &amp; Cons of data structure</h2>
-<p>Splay tree is simpler and easier to program. Because of its implicity, splay tree insertion and deletion is typically faster in practice.
-Find operation can be faster or slower, depending on circumstances. Splay trees are designed to give especially fast access to nodes that 
-have been accessed recently, so they really excel in applications where a small fraction of the nodes are the targets of most of the find operation.</p>
-<h2>Todo</h2>
-<p>This post does not cover every part of the splay tree. This post will be updated once I complete the following two parts study:</p>
+<p><img src="/images/b-tree-order-property.PNG" alt="b-tree-order-property"/></p>
+<p>In MAW, the definition of B-tree is essentially known as <span class="math">\(B^+-\)</span>tree. Technically, the real B-tree has the key property that 
+the actual data to be stored in both leaves and internal nodes, which is not the case in our definition. In some <span class="math">\(B^+-\)</span>tree definition,
+the leaves are connected as a linked list so that we don't have to restart the search from the root once we already traverse down to the 
+leaf if we want a record that is on a leaf really close to the leaf we currently at. </p>
+<h2>Examples</h2>
+<p>Some typical examples in B-tree are of order 4 (known as 2-3-4 tree) and 3 (known as 2-3 tree).</p>
+<p><img src="/images/2-3-tree.PNG" alt="2-3-tree" style="width: 700px;"/></p>
+<p>B-tree is a structure that is widely used in the database system. The following picture shows a more real B-tree example. 
+Suppose we have a large customer table with gigabytes of data and an index is created on the phone number column of the 
+customer table to speed up search. Phone numbers stored in sorted order with information (page and slot) on where the rest of 
+the customer information can be found in the customer table.</p>
+<p><img src="/images/real-b-tree.PNG" alt="real-b-tree" style="width: 700px;"/></p>
+<p>In this example, once we continue down the tree and locate the phone number we are searching for, we use the RID to fetch the 
+rest of the customer record from the table. In this case, we use 4 disk accesses.</p>
+<h2>Operations</h2>
 <ul>
-<li>MAW Chapter 11 gives a thorough study of the amortized cost of the splay tree operations <span class="math">\(O( \log N)\)</span>.</li>
-<li>MAW Chapter 12 gives implementation details on top-down splay tree.  </li>
+<li>Find:</li>
+</ul>
+<p>For find, we basically do binary search on each node to decide what subtree we should go to search. </p>
+<ul>
+<li>Insertion:</li>
+</ul>
+<p>The major unique manipulation is we may need to split the node at the leaves and recursives make the new parent nodes (by pushing a key up to its parent)
+to the root. Other strategies regarding nodes overloaded also exist but this one is classic textbook.</p>
+<ul>
+<li>Deletion:</li>
+</ul>
+<p>I have to say deletion is the most messy one and people may always want to talk about it conceptually instead of getting hands dirty
+to actually implement one. Stanford paper listed in the reference section do a concrete implementation but the route they use is to implement
+a real-life B-tree deletion which may be complicated for the learner. </p>
+<p>The strategy we use for deletion is that we want to find the key to be deleted and remove it first. Then, if the leaf underflows, we borrow from 
+a neighbor. If leaf underflows and can't borrow, we merge nodes and delete parent.</p>
+<h2>Runtime analysis</h2>
+<p>We first show that height <span class="math">\(H\)</span> is logarithmic in number of data items <span class="math">\(N\)</span>. Let <span class="math">\(M \ge 2\)</span>. Because all nodes are at least half full (except root may have
+only 2 children) and all leaves are at the same level, the minimum number od data items <span class="math">\(N\)</span> for a height <span class="math">\(H\)</span> tree is </p>
+<div class="math">$$
+N \ge \underbrace{2(\lceil{M/2}\rceil)^{H-1}}_\textrm{min number of leaves}\times\underbrace{\lceil{L/2}\rceil}_\textrm{min data per leaf}
+$$</div>
+<p>Then for a B-tree of order <span class="math">\(M\)</span></p>
+<ul>
+<li>Each internal node has up to <span class="math">\(M-1\)</span> keys to search</li>
+<li>Each internal node has between <span class="math">\(\lceil{M/2}\rceil\)</span> and <span class="math">\(M\)</span> children</li>
+<li>Depth of B-tree storing <span class="math">\(N\)</span> items is <span class="math">\(O(\log_{\lceil{M/2}\rceil}N)\)</span></li>
+</ul>
+<p>Find then takes <span class="math">\(O(\log M)\)</span> to do binary search on each node to determine which branch to take. Then the total time is 
+O(depth <span class="math">\(\times \log M\)</span>) = <span class="math">\(O(\log N)\)</span> because <span class="math">\(M\)</span> is small compared to <span class="math">\(N\)</span>.</p>
+<p>Insertion and deletion doesn't different from <span class="math">\(O(\log N)\)</span> because the unique manipulation takes constant amount of work and the number 
+of times this unique manipulation is proportional to the height of tree.</p>
+<h2>Pros &amp; Cons of data structure</h2>
+<p>What makes B-trees so disk friendly?</p>
+<ul>
+<li>
+<p>Many keys stored in one node </p>
+<ul>
+<li>All brought into memory in one disk access</li>
+<li>Pick <span class="math">\(M\)</span> wisely. See MAW's Java version (3rd edition) p.149 for an example.</li>
+<li>Makes the binary searhc over <span class="math">\(M-1\)</span> keys totally worth it.</li>
+</ul>
+</li>
+<li>
+<p>Internal nodes contain only keys</p>
+<ul>
+<li>All find wants only one data item. So only bring one leaf of data items into memory.</li>
+<li>Data-item size doesn't affect what <span class="math">\(M\)</span> is. We determine <span class="math">\(M\)</span> only by how many keys can be packed into a disk block (node).
+  Thus, the key size, the children pointer size, and the block size are the only factors here.</li>
+</ul>
+</li>
 </ul>
 <h2>Reference</h2>
 <ul>
-<li>http://www.cs.cmu.edu/afs/cs/academic/class/15859-f05/www/documents/splay-trees.txt</li>
-<li>http://web.stanford.edu/class/archive/cs/cs166/cs166.1146/lectures/08/Small08.pdf (proof of properties in a concise structure)</li>
-<li>http://digital.cs.usu.edu/~allan/DS/Notes/Ch22.pdf</li>
-<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture14.pdf</li>
-<li>https://people.eecs.berkeley.edu/~jrs/61b/lec/36</li>
+<li>MAW Chapter 4</li>
+<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture15.pdf</li>
+<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf</li>
+<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture9.pdf</li>
+<li>http://www.cs.yale.edu/homes/aspnes/pinewiki/BTrees.html</li>
+<li>http://ilpubs.stanford.edu:8090/85/1/1995-19.pdf</li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
@@ -217,6 +206,24 @@ have been accessed recently, so they really excel in applications where a small 
                 <h1><i class="fa fa-bars"></i> Other articles</h1>
                 <hr />
                     <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="../posts/2017/Feb/13/splay-tree/" rel="bookmark" title="Permalink to Splay Tree">Splay Tree</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-13T01:12:00+08:00">Mon 13 Feb 2017, 01:12</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-algo.html">Data Struct & Algo</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/trees.html">trees</a> <a href="../tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>This is the summary of <em>Splay tree</em> part in MAW Chapter 4.</p>
+<h2>Motivation</h2>
+<p>Ordinary BST has no balance conditions and thus, it is possible for a whole sequnece of <span class="math">\(O(N)\)</span> accesses to take place. This cumulative running time 
+then becomes noticeable. So, we introduce the balance condition on BST ...</p>
+                <a class="readmore" href="../posts/2017/Feb/13/splay-tree/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="../posts/2017/Feb/05/avl-tree/" rel="bookmark" title="Permalink to AVL Tree">AVL Tree</a></h1>
@@ -382,25 +389,6 @@ of the ...</blockquote>
                 <a class="readmore" href="../posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="../posts/2016/Dec/23/print-singly-linked-list-in-reverse-order/" rel="bookmark" title="Permalink to Print singly linked list in reverse order">Print singly linked list in reverse order</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-23T00:05:00+08:00">Fri 23 Dec 2016, 00:05</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-algo.html">Data Struct & Algo</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/singly-linked-list.html">singly-linked-list</a> <a href="../tag/recursion.html">recursion</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>Today, during the lunch break, I take a look at the following problem:</p>
-<blockquote>
-Print a singly linked list in reverse order.</blockquote>
-<p>This is actually one of the interview questions I got at SAP for ABAP developer position
-(luckily, they didn't offer me the position). I didn't get the ...</p>
-                <a class="readmore" href="../posts/2016/Dec/23/print-singly-linked-list-in-reverse-order/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
         <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
         <hr />
@@ -427,7 +415,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li class="active"><a href="../category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (14)</a></li>
+                           <li class="active"><a href="../category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (15)</a></li>
                            <li ><a href="../category/mathematics.html"><i class="fa fa-folder-open fa-lg"></i> Mathematics (1)</a></li>
                            <li ><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
                            <li ><a href="../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
@@ -554,7 +542,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             travis-ci
                         </a>
                     </li>
-                    <li class="list-group-item tag-2">
+                    <li class="list-group-item tag-1">
                         <a href="../tag/trees.html">
                             trees
                         </a>

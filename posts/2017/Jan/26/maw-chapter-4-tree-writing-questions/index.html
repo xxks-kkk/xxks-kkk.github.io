@@ -62,7 +62,7 @@ updated as I work through the chapter.</p>
   with the inductive step on <span class="math">\(n\)</span>. (MAW 4.17)</li>
 </ul>
 <h2>Solutions</h2>
-<p>including: MAW 4.4, 4.5, 4.6, 4.7, 4.14, 4.15, 4.16, 4.17, 4.23, 4.24, 4.25, 4.26.a, </p>
+<p>including: MAW 4.4, 4.5, 4.6, 4.7, 4.14, 4.15, 4.16, 4.17, 4.23, 4.24, 4.25, 4.26.a, 4.43</p>
 <h3>MAW 4.4</h3>
 <blockquote>
 <p>Show that in a binary tree of <span class="math">\(N\)</span> nodes, there are <span class="math">\(N + 1\)</span> <code>NULL</code> pointers
@@ -421,6 +421,23 @@ position for <span class="math">\(N+1\)</span> node: the right child of the root
 then by BST, <span class="math">\(N+1\)</span> node's value is smaller than root's value and bigger than left most node's value.
 This violates the induction hypothesis because we are no longer access a splay tree in sequential order.
 Now we simply swap the right child of the root with root and we get a chain of left children. </p>
+<h3>MAW 4.43</h3>
+<blockquote>
+<p>a. Show that via AVL single rotations, any binary search tree <span class="math">\(T_1\)</span> can be transformed into another
+search tree <span class="math">\(T_2\)</span> (with the same keys).
+b. Give an algorithm to perform this transformation using <span class="math">\(O(N\log N)\)</span> rotations on average.
+c. Show that this transformation can be done with <span class="math">\(O(N)\)</span> rotations, worst-case.</p>
+</blockquote>
+<p>Let's first work through an example shown in the picture below. We transform the tree in the top-left 
+of the picture to the tree in the top-right of the picture through several steps linked by single arrows.</p>
+<p><img src="/images/maw-4-43.jpg" alt="maw-4-43" style="width: 700px;"/></p>
+<p>As you can see, the strategy here is that we do preorder processing. We compare the root <span class="math">\(T_1\)</span> with the root
+<span class="math">\(T_2\)</span>. If they are equal, then we move on to the left and right subtrees of <span class="math">\(T_1\)</span> and do the processing 
+recursively. However, if they are not equal, we find the <span class="math">\(T_2\)</span>'s root value <span class="math">\(x\)</span> in <span class="math">\(T_1\)</span> and rotate it to the
+root of <span class="math">\(T_1\)</span>. Then, we do the recursive processing for the left and right subtrees of <span class="math">\(T_1\)</span>. This algorithm
+takes <span class="math">\(O(N\log N)\)</span> on average because find <span class="math">\(x\)</span> takes <span class="math">\(O(\log N)\)</span> time and AVL rotations also take <span class="math">\(O(\log N)\)</span> time. 
+Since we could do <span class="math">\(N\)</span> rotations, then the result follows. However, a BST can be degenerated and in that case, we have 
+<span class="math">\(O(N)\)</span> worst-case. </p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -507,7 +524,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li class="active"><a href="../../../../../category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (14)</a></li>
+                           <li class="active"><a href="../../../../../category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (15)</a></li>
                            <li ><a href="../../../../../category/mathematics.html"><i class="fa fa-folder-open fa-lg"></i> Mathematics (1)</a></li>
                            <li ><a href="../../../../../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
                            <li ><a href="../../../../../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
@@ -634,7 +651,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             travis-ci
                         </a>
                     </li>
-                    <li class="list-group-item tag-2">
+                    <li class="list-group-item tag-1">
                         <a href="../../../../../tag/trees.html">
                             trees
                         </a>
