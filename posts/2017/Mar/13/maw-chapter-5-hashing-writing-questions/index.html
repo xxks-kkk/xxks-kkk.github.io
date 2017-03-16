@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-        <title>Num of function calls in recursive Fibonacci routine</title>
+        <title>MAW Chapter 5: Hashing writing questions</title>
         <meta charset="utf-8" />
         <meta content="This is the homepage of Zeyuan (Jerry) Hu" name="description">
         <meta content="Zeyuan Hu, Zeyuan, Jerry Hu, Jerry, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, Zeyuan wisc, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="../../../../../theme/css/main.css" type="text/css" />
         <link rel="stylesheet" href="../../../../../theme/css/font-awesome.min.css" type="text/css" />
         <link href='../../../../../theme/images/favicon.ico' rel='icon' type='image/x-icon'/>
-        <link href="../../../../../None" type="application/atom+xml" rel="alternate" title="Tech Stuff ATOM Feed" />
+        <link href="../../../../../feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Tech Stuff ATOM Feed" />
 
 
         <!--[if IE]>
@@ -39,140 +39,35 @@
 
 <section id="content" class="body">
 <article>
-      <header> <h1 class="entry-title"><a href="../../../../../posts/2017/Jan/23/num-of-function-calls-in-recursive-fibonacci-routine/"
-        rel="bookmark" title="Permalink to Num of function calls in recursive Fibonacci routine">Num of function calls in recursive Fibonacci routine</a></h1>  </header>
+      <header> <h1 class="entry-title"><a href="../../../../../posts/2017/Mar/13/maw-chapter-5-hashing-writing-questions/"
+        rel="bookmark" title="Permalink to MAW Chapter 5: Hashing writing questions">MAW Chapter 5: Hashing writing questions</a></h1>  </header>
         <div class="entry-content">
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-23T00:12:00+08:00">Mon 23 Jan 2017, 00:12</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-13T17:41:00+08:00">Mon 13 Mar 2017, 17:41</abbr></p>
 
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/data-struct-and-algo-analysis-in-c.html">Data Struct and Algo Analysis in C</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/math.html">math</a> <a href="../../../../../tag/call-stack.html">call-stack</a> <a href="../../../../../tag/recursion.html">recursion</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-        <p>This is MAW 3.24: </p>
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/data-struct-algo.html">Data Struct & Algo</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/hashing.html">hashing</a> <a href="../../../../../tag/proof.html">proof</a> <a href="../../../../../tag/math.html">math</a> <a href="../../../../../tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+        <h2>Solutions</h2>
+<p>including: MAW 5.4</p>
+<h3>MAW 5.4</h3>
 <blockquote>
-<p>If the recursive rotuine in Section 2.4 used to computeFibonacci numbers is run for N = 50, is stack space likely to run out?Why or why not?</p>
+<p>A large number of deletions in a separate chaining hash table can cause the 
+table to be fairly empty, which wastes space. In this case, we can rehash to 
+a table half as large. Assume that we rehash to a larger table when there are 
+twice as many elements as the table size. How empty should the table be before
+we rehash to a smaller table?</p>
 </blockquote>
-<div class="highlight"><pre><span></span><span class="kt">unsigned</span> <span class="kt">long</span>
-<span class="nf">Fib</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">N</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="k">else</span>
-    <span class="k">return</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Let's first do an empirical experimentation. By running <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/numCalls/numCalls.c">our test program numCalls</a>
-and we can get the following output:</p>
-<div class="highlight"><pre><span></span>    i               Fib(i)          numCalls
-    i = 0           1               1
-    i = 1           1               1
-    i = 2           2               3
-    i = 3           3               5
-    i = 4           5               9
-    i = 5           8               15
-    i = 6           13              25
-    i = 7           21              41
-    i = 8           34              67
-    i = 9           55              109
-    i = 10          89              177
-    i = 11          144             287
-    i = 12          233             465
-    i = 13          377             753
-    i = 14          610             1219
-    i = 15          987             1973
-    i = 16          1597            3193
-    i = 17          2584            5167
-    i = 18          4181            8361
-    i = 19          6765            13529
-    ... snip ...
-    i = 50          20365011074     40730022147
-</pre></div>
-
-
-<p>We know that the Fibonacci numbers are defined by the following recurrence relation:</p>
-<div class="math">$$
-\begin{equation}
-F(n) = F(n-1) + F(n-2), \text{ for }n = 2, 3, ... \label{eq:1}
-\end{equation}
-$$</div>
-<p>We define <span class="math">\(F(0) = F(1) = 1\)</span>. Now, we want to find out the number of recursive calls made to calculate <span class="math">\(F(n)\)</span>. We use <span class="math">\(G(n)\)</span> to denote the number of calls made by the recursive program in calculating <span class="math">\(F(n)\)</span>. Let's examine the output above. We see that <span class="math">\(G(0) = G(1) = 1\)</span> and to compute <span class="math">\(G(n)\)</span> for arbitrary <span class="math">\(n\)</span>, we'll make an initial call, and then <span class="math">\(G(n-1)\)</span> calls to calculate <span class="math">\(F(n-1)\)</span> and <span class="math">\(G(n-2)\)</span> calls to calculate <span class="math">\(F(n-2)\)</span>. Thus, we have the following recurrence relation for <span class="math">\(G(n)\)</span>:
-</p>
-<div class="math">$$
-\begin{equation}
-G(n) = G(n-1) + G(n-2) + 1 \label{eq:2}
-\end{equation}
-$$</div>
-<p>
-Let's solve this recurrence relation by establish the relationship between <span class="math">\(F(n)\)</span> and <span class="math">\(G(n)\)</span> and then, we can get the closed form based upon the closed form of <span class="math">\(F(n)\)</span>. </p>
-<p>Let's suppose that <span class="math">\(G(n)\)</span> depends on <span class="math">\(F(n)\)</span> in some way. In other words, <span class="math">\(G(n)\)</span> is a function of <span class="math">\(F(n)\)</span>. Let's try linear form first:
-</p>
-<div class="math">$$
-\begin{equation}
-G(n) = a F(n) + b \text{ where a, b are unknown constants}  \label {eq:3}
-\end{equation}
-$$</div>
-<p>
-Since we know that <span class="math">\(G(0) = G(1) = 1​\)</span> and <span class="math">\(F(0) = F(1) = 1​\)</span>, then \ref{eq:3} becomes </p>
-<div class="math">$$
-\begin{eqnarray*}
-G(1)  &amp; = &amp; a F(1) + b \\
-1 &amp; = &amp; a + b
-\end{eqnarray*}
-$$</div>
-<p>Now let's plugin \ref{eq:3} into \ref{eq:2} and using the \ref{eq:1} and we have:</p>
-<div class="math">$$
-\begin{eqnarray*}
-G(n) &amp; = &amp; G(n-1) + G(n-2) + 1 \\
-a F(n) + b &amp; = &amp; G(n-1) + G(n-2) + 1 \\
-a (F(n-1) + F(n-2)) + b &amp; = &amp; G(n-1) + G(n-2) + 1 \\
-a (F(n-1) + F(n-2)) + b &amp; = &amp; a F(n-1) + b + a F(n-2)) + b + 1 \\
-b &amp; = &amp; -1
-\end{eqnarray*}
-$$</div>
-<p>Now, our \ref{eq:3} becomes <span class="math">\(G(n) = 2F(n) - 1\)</span>. That is, the number of function calls
-to calculate a Fibonacci number <span class="math">\(F(n)\)</span> is <span class="math">\(2F(n) - 1\)</span>.</p>
-<p>Then the question asks about "is the stack space likely to run out?". This actually confuses
-me because it seems like the author tries to indicate that there is a relationship between
-the number of recursive calls and the actual space the program is going to take in call stack.
-I have no clue so far. But, maybe we can find out the space of our <code>Fib</code> routine
-is going to take in call stack and how large the system call stack and we can compare the two
-to get some insights.</p>
-<p>We can use <code>ulimit -a</code> or <code>ulimit -s</code> to find out the size of stack that system allows:</p>
-<div class="highlight"><pre><span></span>$ <span class="nb">ulimit</span> -a
-... snip ...
-stack size              <span class="o">(</span>kbytes, -s<span class="o">)</span> 10240
-... snip ...
-</pre></div>
-
-
-<p>As you can see, the default stack size is <code>10 MB</code>. Let's see how large space our <code>Fib</code>
-is going to use on stack: as of <code>gcc 4.6</code>, there is an option <code>-fstack-usage</code> to allow
-us check the function max amount of stack use. <a href="https://gcc.gnu.org/onlinedocs/gnat_ugn/Static-Stack-Usage-Analysis.html&gt;">Read more info here</a>.</p>
-<div class="highlight"><pre><span></span>numCalls.c:17:1:Fib     48      static
-numCalls.c:27:1:main    64      static
-</pre></div>
-
-
-<p>As you can see, <code>Fib</code> only uses <code>48 bytes</code> and it's quite unlikely to drain out our stack space. 
-But, of course, the runing time is another thing. I mean it's going to be very slow to get the output
-for <span class="math">\(N = 50\)</span>.</p>
-<h3>Future work</h3>
-<ul>
-<li>
-<p><a href="http://vulms.vu.edu.pk/Courses/CS201/Downloads/p60-robertson.pdf">This paper</a> mentions that 
-  \ref{eq:1} and \ref{eq:2} with their initial conditions respectively form second-order 
-  Discrete Dynamical System (DDS). This offers some more mathematical insights. This actually reminds
-  me equation 1.11 in <em>Concrete Mathematics: A Foundation for Computer Science</em> working on 
-  a generalized Josephus problem recurrence relation with a system of three equations and three unknown
-  constant coefficients. In fact, this way of solving problem seems anywhere like differential equations,
-  calculating moments in statistics, and so on. Quite interesting.</p>
-</li>
-<li>
-<p>Lots of things can be said about call stack. In addition, "determine the amount of stack a program uses" is an interesting
-  question that I may dig in the future.</p>
-</li>
-</ul>
+<p>We must be careful not to rehash too often. Let <span class="math">\(p\)</span> be the threshold (fraction of table
+size) at which we rehash to a smaller table. Then, if the new table has size <span class="math">\(N\)</span>, 
+it contains <span class="math">\(2Np\)</span> elements. This table will require rehashing after either 
+<span class="math">\(2N-2Np\)</span> insertions or <span class="math">\(pN\)</span> deletions. Then, we don't want to do rehashing either 
+after a few insertion or a few deletions. A good strategy is to set <span class="math">\(2N-2Np\)</span> equals to <span class="math">\(pN\)</span>
+and we get <span class="math">\(p = \frac{2}{3}\)</span>. For instance, suppose we have a table of size 300.
+If we rehash at 200 elements, then the new table size is <span class="math">\(N = 150\)</span>, and we can do 
+either 100 insertions or 100 deletions until a new rehash is required. </p>
+<p>If we know that insertions are more frequent than deletions, then we might choose <span class="math">\(p\)</span>
+to be somewhat larger. All in all, we play around the relation between <span class="math">\(2N-2Np\)</span> and 
+<span class="math">\(pN\)</span> depends on which operation we favorite.</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -235,7 +130,7 @@ for <span class="math">\(N = 50\)</span>.</p>
         <h2>Comments !</h2>
             <div id="disqus_thread"></div>
             <script type="text/javascript">
-               var disqus_identifier = "posts/2017/Jan/23/num-of-function-calls-in-recursive-fibonacci-routine/";
+               var disqus_identifier = "posts/2017/Mar/13/maw-chapter-5-hashing-writing-questions/";
                (function() {
                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                dsq.src = 'https://zhu45-org.disqus.com/embed.js';
@@ -259,8 +154,9 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li class="active"><a href="../../../../../category/data-struct-and-algo-analysis-in-c.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct and Algo Analysis in C (9)</a></li>
-                           <li ><a href="../../../../../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (3)</a></li>
+                           <li class="active"><a href="../../../../../category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (16)</a></li>
+                           <li ><a href="../../../../../category/mathematics.html"><i class="fa fa-folder-open fa-lg"></i> Mathematics (1)</a></li>
+                           <li ><a href="../../../../../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (4)</a></li>
                            <li ><a href="../../../../../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
                            <li ><a href="../../../../../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>
@@ -268,7 +164,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget social">
                         <h2><i class="fa fa-comments fa-lg"></i> Social</h2>
                         <ul>
-                            <!-- <li><a href="../../../../../None" rel="alternate"><i class="fa fa-rss-square fa-lg"></i> RSS feed</a></li> -->
+                            <!-- <li><a href="../../../../../feeds/all.atom.xml" rel="alternate"><i class="fa fa-rss-square fa-lg"></i> RSS feed</a></li> -->
                             <!--  -->
 
                             <li><a href="http://github.com/xxks-kkk"><i class="fa fa-github fa-lg"></i> GitHub</a></li>
@@ -296,8 +192,8 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
-                        <a href="../../../../../tag/circular-double-linked-list.html">
-                            circular-double-linked-list
+                        <a href="../../../../../tag/combinatorics.html">
+                            combinatorics
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
@@ -321,16 +217,26 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
+                        <a href="../../../../../tag/hashing.html">
+                            hashing
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
                         <a href="../../../../../tag/jinja.html">
                             Jinja
                         </a>
                     </li>
-                    <li class="list-group-item tag-3">
+                    <li class="list-group-item tag-2">
                         <a href="../../../../../tag/math.html">
                             math
                         </a>
                     </li>
-                    <li class="list-group-item tag-3">
+                    <li class="list-group-item tag-1">
+                        <a href="../../../../../tag/maw.html">
+                            maw
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
                         <a href="../../../../../tag/meta.html">
                             meta
                         </a>
@@ -343,6 +249,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                     <li class="list-group-item tag-4">
                         <a href="../../../../../tag/pointer.html">
                             pointer
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-3">
+                        <a href="../../../../../tag/proof.html">
+                            proof
                         </a>
                     </li>
                     <li class="list-group-item tag-2">
@@ -360,7 +271,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             shell
                         </a>
                     </li>
-                    <li class="list-group-item tag-1">
+                    <li class="list-group-item tag-2">
                         <a href="../../../../../tag/singly-linked-list.html">
                             singly-linked-list
                         </a>
@@ -373,6 +284,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                     <li class="list-group-item tag-4">
                         <a href="../../../../../tag/travis-ci.html">
                             travis-ci
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="../../../../../tag/trees.html">
+                            trees
                         </a>
                     </li>
                 </ul>

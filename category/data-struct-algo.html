@@ -40,111 +40,101 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="../posts/2017/Mar/11/b-tree/">B-Tree</a></h1>
+                <h1 class="entry-title"><a href="../posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/">MAW Chapter 5: Hashing writing questions</a></h1>
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-11T21:32:00+08:00">Sat 11 Mar 2017, 21:32</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-16T17:41:00+08:00">Thu 16 Mar 2017, 17:41</abbr></p>
 
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-algo.html">Data Struct & Algo</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/trees.html">trees</a> <a href="../tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>This is the summary of <em>B tree</em> part in MAW Chapter 4.</p>
-<h2>Motivation</h2>
-<p>So far we have assumed that an entire data structure can be stored in the main memory. 
-However, this is not true in reality because if we have more data than can fit in main 
-memory, we have to store data structure on disk. In this case, number of disk 
-accesses will dominate the running time because they are very expensive comparing with the 
-processor speed. Then, when we design a data structure, we have to try our best to minimize
-the number of disk accesses. Under the context of tree structure, B-tree is a structure
-that tries to read as much information as possible in every disk access operation.</p>
-<h2>Concept</h2>
-<p>B-tree is by far the most chaoatic defined structure in the sense that different people
-have slightly different definitions. I'll follow MAW's definition and points out how MAW's definition
-is different from the other commonly seen definition.</p>
-<p>A B-tree of order <span class="math">\(M\)</span> is a tree with the following structural properties:</p>
-<ul>
-<li>The leaves contain all the actual data, which are either the key temselves or pointers to records containing the keys.</li>
-<li>The root is either a leaf (when tree has <span class="math">\(\le L\)</span> items) or has between <span class="math">\(2\)</span> and <span class="math">\(M\)</span> children.</li>
-<li>All nonleaf nodes (except the root) have between <span class="math">\(\lceil{M/2}\rceil\)</span> and <span class="math">\(M\)</span> children (at least half full).</li>
-<li>All leaves are the same depth and have between <span class="math">\(\lceil{L/2}\rceil\)</span> and <span class="math">\(L\)</span> sorted data items, for some L (at least half full).</li>
-<li>The nonleaf nodes have room for up to <span class="math">\(M-1\)</span> keys to guide the searching; key <span class="math">\(i\)</span> represents the smallest key in subtree <span class="math">\(i+1\)</span>.</li>
-</ul>
-<p><img src="/images/b-tree-order-property.PNG" alt="b-tree-order-property"/></p>
-<p>In MAW, the definition of B-tree is essentially known as <span class="math">\(B^+-\)</span>tree. Technically, the real B-tree has the key property that 
-the actual data to be stored in both leaves and internal nodes, which is not the case in our definition. In some <span class="math">\(B^+-\)</span>tree definition,
-the leaves are connected as a linked list so that we don't have to restart the search from the root once we already traverse down to the 
-leaf if we want a record that is on a leaf really close to the leaf we currently at. </p>
-<h2>Examples</h2>
-<p>Some typical examples in B-tree are of order 4 (known as 2-3-4 tree) and 3 (known as 2-3 tree).</p>
-<p><img src="/images/2-3-tree.PNG" alt="2-3-tree" style="width: 700px;"/></p>
-<p>B-tree is a structure that is widely used in the database system. The following picture shows a more real B-tree example. 
-Suppose we have a large customer table with gigabytes of data and an index is created on the phone number column of the 
-customer table to speed up search. Phone numbers stored in sorted order with information (page and slot) on where the rest of 
-the customer information can be found in the customer table.</p>
-<p><img src="/images/real-b-tree.PNG" alt="real-b-tree" style="width: 700px;"/></p>
-<p>In this example, once we continue down the tree and locate the phone number we are searching for, we use the RID to fetch the 
-rest of the customer record from the table. In this case, we use 4 disk accesses.</p>
-<h2>Operations</h2>
-<ul>
-<li>Find:</li>
-</ul>
-<p>For find, we basically do binary search on each node to decide what subtree we should go to search. </p>
-<ul>
-<li>Insertion:</li>
-</ul>
-<p>The major unique manipulation is we may need to split the node at the leaves and recursives make the new parent nodes (by pushing a key up to its parent)
-to the root. Other strategies regarding nodes overloaded also exist but this one is classic textbook.</p>
-<ul>
-<li>Deletion:</li>
-</ul>
-<p>I have to say deletion is the most messy one and people may always want to talk about it conceptually instead of getting hands dirty
-to actually implement one. Stanford paper listed in the reference section do a concrete implementation but the route they use is to implement
-a real-life B-tree deletion which may be complicated for the learner. </p>
-<p>The strategy we use for deletion is that we want to find the key to be deleted and remove it first. Then, if the leaf underflows, we borrow from 
-a neighbor. If leaf underflows and can't borrow, we merge nodes and delete parent.</p>
-<h2>Runtime analysis</h2>
-<p>We first show that height <span class="math">\(H\)</span> is logarithmic in number of data items <span class="math">\(N\)</span>. Let <span class="math">\(M \ge 2\)</span>. Because all nodes are at least half full (except root may have
-only 2 children) and all leaves are at the same level, the minimum number od data items <span class="math">\(N\)</span> for a height <span class="math">\(H\)</span> tree is </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/hashing.html">hashing</a> <a href="../tag/proof.html">proof</a> <a href="../tag/math.html">math</a> <a href="../tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <h2>Solutions</h2>
+<p>including: MAW 5.4, 5.5, 5.10, 5.11</p>
+<h3>MAW 5.4</h3>
+<blockquote>
+<p>A large number of deletions in a separate chaining hash table can cause the 
+table to be fairly empty, which wastes space. In this case, we can rehash to 
+a table half as large. Assume that we rehash to a larger table when there are 
+twice as many elements as the table size. How empty should the table be before
+we rehash to a smaller table?</p>
+</blockquote>
+<p>We must be careful not to rehash too often. Let <span class="math">\(p\)</span> be the threshold (fraction of table
+size) at which we rehash to a smaller table. Then, if the new table has size <span class="math">\(N\)</span>, 
+it contains <span class="math">\(2Np\)</span> elements. This table will require rehashing after either 
+<span class="math">\(2N-2Np\)</span> insertions or <span class="math">\(pN\)</span> deletions. Then, we don't want to do rehashing either 
+after a few insertion or a few deletions. A good strategy is to set <span class="math">\(2N-2Np\)</span> equals to <span class="math">\(pN\)</span>
+and we get <span class="math">\(p = \frac{2}{3}\)</span>. For instance, suppose we have a table of size 300.
+If we rehash at 200 elements, then the new table size is <span class="math">\(N = 150\)</span>, and we can do 
+either 100 insertions or 100 deletions until a new rehash is required. </p>
+<p>If we know that insertions are more frequent than deletions, then we might choose <span class="math">\(p\)</span>
+to be somewhat larger. All in all, we play around the relation between <span class="math">\(2N-2Np\)</span> and 
+<span class="math">\(pN\)</span> depends on which operation we favorite.</p>
+<h3>MAW 5.5</h3>
+<blockquote>
+<p>An alternative collision resolution strategy is to define a sequence, <span class="math">\(F(i) = r_i\)</span>,
+where <span class="math">\(r_0 = 0\)</span> and <span class="math">\(r_1, r_2, \dots, r_N\)</span> is a random permutation of the first <span class="math">\(N\)</span>
+integers (each integer appears exactly once).</p>
+<p>a. Prove that under this strategy, if the table is not full, then the collision can 
+always be resolved.</p>
+</blockquote>
+<p>Since the sequence <span class="math">\(F(i)\)</span> is defined as a random permutation of the first <span class="math">\(N\)</span> integers,
+then each cells of the table will be probed eventually. If the table is not full, then the 
+collision can always be resolved.</p>
+<blockquote>
+<p>b. Would this strategy be expected to eliminate clustering?</p>
+</blockquote>
+<p>This seems to eliminate primary clustering but not secondary clustering because
+all elements that hash to some location will try the same collision resolution sequence.</p>
+<blockquote>
+<p>c. If the load factor of the table is <span class="math">\(\lambda\)</span>, what is the expected time to perform
+an insert and for a successful search?</p>
+</blockquote>
+<p>The running time is probably similar to quadratic probing. The advantage here is that 
+the insertion can't fail unless the table is full.</p>
+<h3>MAW 5.10</h3>
+<blockquote>
+<p>Describe a procedure that avoids initializing a hash table (at the expense of memory).</p>
+</blockquote>
+<p>To each hash table slot, we can add an extra field that we'll call <code>WhereOnStack</code>, and 
+we can keep an extra stack. When an insertion is first performed into a slot, we push
+the address (or number) of the slot onto the stack and set the <code>WhereOnStack</code> field to point
+to the top of the stack. When we access a hash table slot, we check that <code>WhereOnStack</code>
+points to a valid part of the stack and that the entry in the (middle of the) stack that is 
+pointed to by the <code>WhereOnStack</code> field has that hash table slot as an address.</p>
+<h3>MAW 5.11</h3>
+<blockquote>
+<p>Suppose we want to find the first occurrence of a string <span class="math">\(P_1P_2\dots P_k\)</span> in a long 
+input string <span class="math">\(A_1A_2\dots A_N\)</span>. We can solve this problem by hashing the pattern string,
+Obtaining a hash value <span class="math">\(H_p\)</span>, and comparing this value with the hash value formed from 
+<span class="math">\(A_1A_2\dots A_k\)</span>, <span class="math">\(A_2A_3\dots A_{k+1}\)</span>, <span class="math">\(A_3A_4\dots A_{k+2}\)</span>, and so on until 
+<span class="math">\(A_{N-k+1}A_{N-k+2}\dots A_N\)</span>. If we have a match of hash values, we compare the string character
+by character to verify the match. We return the position (in A) if the strings actually 
+do match, and we continue in the unlikely event that the match is false.</p>
+<p>a. Show that if the hash value of <span class="math">\(A_iA_{i+1}\dots A_{i+k-1}\)</span> is known, then the hash 
+value of <span class="math">\(A_{i+1}A_{i+2}\dots A_{i+k}\)</span> can be computed in constant time.</p>
+</blockquote>
+<p>As suggested by MAW p.151, we use <span class="math">\(\sum_{i=0}^{KeySize-1} Key[KeySize-i-1]\cdot 32^i\)</span>
+as the function to compute the hash value of a given string. Then, by this definition,
+<span class="math">\(A_iA_{i+1}\dots A_{i+k-1}\)</span> can be computed as </p>
 <div class="math">$$
-N \ge \underbrace{2(\lceil{M/2}\rceil)^{H-1}}_\textrm{min number of leaves}\times\underbrace{\lceil{L/2}\rceil}_\textrm{min data per leaf}
+H_1 = (32^0A_i + 32^1A_{i+1} + \dots + 32^{k-1}A_{i+k-1}) \% N
 $$</div>
-<p>Then for a B-tree of order <span class="math">\(M\)</span></p>
-<ul>
-<li>Each internal node has up to <span class="math">\(M-1\)</span> keys to search</li>
-<li>Each internal node has between <span class="math">\(\lceil{M/2}\rceil\)</span> and <span class="math">\(M\)</span> children</li>
-<li>Depth of B-tree storing <span class="math">\(N\)</span> items is <span class="math">\(O(\log_{\lceil{M/2}\rceil}N)\)</span></li>
-</ul>
-<p>Find then takes <span class="math">\(O(\log M)\)</span> to do binary search on each node to determine which branch to take. Then the total time is 
-O(depth <span class="math">\(\times \log M\)</span>) = <span class="math">\(O(\log N)\)</span> because <span class="math">\(M\)</span> is small compared to <span class="math">\(N\)</span>.</p>
-<p>Insertion and deletion doesn't different from <span class="math">\(O(\log N)\)</span> because the unique manipulation takes constant amount of work and the number 
-of times this unique manipulation is proportional to the height of tree.</p>
-<h2>Pros &amp; Cons of data structure</h2>
-<p>What makes B-trees so disk friendly?</p>
-<ul>
-<li>
-<p>Many keys stored in one node </p>
-<ul>
-<li>All brought into memory in one disk access</li>
-<li>Pick <span class="math">\(M\)</span> wisely. See MAW's Java version (3rd edition) p.149 for an example.</li>
-<li>Makes the binary searhc over <span class="math">\(M-1\)</span> keys totally worth it.</li>
-</ul>
-</li>
-<li>
-<p>Internal nodes contain only keys</p>
-<ul>
-<li>All find wants only one data item. So only bring one leaf of data items into memory.</li>
-<li>Data-item size doesn't affect what <span class="math">\(M\)</span> is. We determine <span class="math">\(M\)</span> only by how many keys can be packed into a disk block (node).
-  Thus, the key size, the children pointer size, and the block size are the only factors here.</li>
-</ul>
-</li>
-</ul>
-<h2>Reference</h2>
-<ul>
-<li>MAW Chapter 4</li>
-<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture15.pdf</li>
-<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf</li>
-<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture9.pdf</li>
-<li>http://www.cs.yale.edu/homes/aspnes/pinewiki/BTrees.html</li>
-<li>http://ilpubs.stanford.edu:8090/85/1/1995-19.pdf</li>
-</ul>
+<p>similarly, <span class="math">\(A_{i+1}A_{i+2}\dots A_{i+k}\)</span> can be computed as </p>
+<div class="math">$$
+H_2 = (32^1A_{i+1} + \dots + 32^kA_{i+k}) \% N
+$$</div>
+<p>If we take a look at the relationship between these two equations, we can see 
+</p>
+<div class="math">$$H_2 = H_1 - 32^0A_i \% N + 32^kA_{i+k} % N$$</div>
+<p>. This can be computed in constant time
+if <span class="math">\(H_1\)</span> is known.</p>
+<blockquote>
+<p>b. Show that the running time is <span class="math">\(O(k+N)\)</span> plus the time spent refuting false matches.</p>
+</blockquote>
+<p>The pattern's hash value <span class="math">\(H_p\)</span> computed in <span class="math">\(O(K)\)</span> time. Then, <span class="math">\(A_1A_2\dots A_k\)</span>
+is computed in <span class="math">\(O(K)\)</span> time. Then starting with <span class="math">\(A_2A_3\dots A_{k+1}\)</span> and until
+<span class="math">\(A_{N-k+1}A_{N-k+2}\dots A_N\)</span>, each hash value is computed in <span class="math">\(O(1)\)</span> by a) above.
+Since, there are <span class="math">\(N-k+1-2+1\)</span> terms of <span class="math">\(O(1)\)</span>, then the total running time is
+<span class="math">\(O(K) + O(K) + O(N-K) = O(N+K)\)</span>. Of course, there is also time we spend on refuting false
+matches.</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -206,6 +196,25 @@ of times this unique manipulation is proportional to the height of tree.</p>
                 <h1><i class="fa fa-bars"></i> Other articles</h1>
                 <hr />
                     <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="../posts/2017/Mar/11/b-tree/" rel="bookmark" title="Permalink to B-Tree">B-Tree</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-11T21:32:00+08:00">Sat 11 Mar 2017, 21:32</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-algo.html">Data Struct & Algo</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/trees.html">trees</a> <a href="../tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>This is the summary of <em>B tree</em> part in MAW Chapter 4.</p>
+<h2>Motivation</h2>
+<p>So far we have assumed that an entire data structure can be stored in the main memory. 
+However, this is not true in reality because if we have more data than can fit in main 
+memory, we ...</p>
+                <a class="readmore" href="../posts/2017/Mar/11/b-tree/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="../posts/2017/Feb/13/splay-tree/" rel="bookmark" title="Permalink to Splay Tree">Splay Tree</a></h1>
@@ -368,27 +377,6 @@ that I didn't realize until I start to work ...</p>
                 <a class="readmore" href="../posts/2016/Dec/28/a-peek-in-code-optimization/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="../posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/" rel="bookmark" title="Permalink to Reflection on integer arithmetic package problem">Reflection on integer arithmetic package problem</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-26T23:03:00+08:00">Mon 26 Dec 2016, 23:03</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-algo.html">Data Struct & Algo</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/software-engineering.html">software-engineering</a> <a href="../tag/c.html">c</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>This weekend, I'm working on MAW 3.9. The single problem results
-in almost 500 lines of code. This is quite unexpected. The problem
-is stated as the following:</p>
-<blockquote>
-Write an arbitrary-precision integer arithmetic package. You should
-use a strategy similar to polynomial arithmetic. Compute the distribution
-of the ...</blockquote>
-                <a class="readmore" href="../posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
         <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
         <hr />
@@ -415,7 +403,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li class="active"><a href="../category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (15)</a></li>
+                           <li class="active"><a href="../category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (16)</a></li>
                            <li ><a href="../category/mathematics.html"><i class="fa fa-folder-open fa-lg"></i> Mathematics (1)</a></li>
                            <li ><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (4)</a></li>
                            <li ><a href="../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
@@ -478,6 +466,11 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
+                        <a href="../tag/hashing.html">
+                            hashing
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
                         <a href="../tag/jinja.html">
                             Jinja
                         </a>
@@ -507,7 +500,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             pointer
                         </a>
                     </li>
-                    <li class="list-group-item tag-4">
+                    <li class="list-group-item tag-3">
                         <a href="../tag/proof.html">
                             proof
                         </a>
@@ -527,7 +520,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             shell
                         </a>
                     </li>
-                    <li class="list-group-item tag-1">
+                    <li class="list-group-item tag-2">
                         <a href="../tag/singly-linked-list.html">
                             singly-linked-list
                         </a>
@@ -542,7 +535,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             travis-ci
                         </a>
                     </li>
-                    <li class="list-group-item tag-1">
+                    <li class="list-group-item tag-2">
                         <a href="../tag/trees.html">
                             trees
                         </a>

@@ -1,5 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Tech Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Sun, 12 Mar 2017 10:45:00 +0800</lastBuildDate><item><title>MAW: Chapter 4 Reflection</title><link>http://zhu45.org/posts/2017/Mar/12/maw-chapter-4-reflection/</link><description>&lt;div class="section" id="reflection"&gt;
+<rss version="2.0"><channel><title>Tech Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Thu, 16 Mar 2017 17:41:00 +0800</lastBuildDate><item><title>MAW Chapter 5: Hashing writing questions</title><link>http://zhu45.org/posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/</link><description>&lt;h2&gt;Solutions&lt;/h2&gt;
+&lt;p&gt;including: MAW 5.4, 5.5, 5.10, 5.11&lt;/p&gt;
+&lt;h3&gt;MAW 5.4&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A large number of deletions in a separate chaining hash table can cause the 
+table to be fairly empty, which wastes space. In this case, we can rehash to 
+a table half as large. Assume that we rehash to a larger table when there are 
+twice as many elements as the table size. How empty should the table be before
+we rehash to a smaller table?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;We must be careful not to rehash too often. Let &lt;span class="math"&gt;\(p\)&lt;/span&gt; be the threshold (fraction of table
+size) at which we rehash to a smaller table. Then, if the new table has size &lt;span class="math"&gt;\(N\)&lt;/span&gt;, 
+it contains &lt;span class="math"&gt;\(2Np\)&lt;/span&gt; elements. This table will require rehashing after either 
+&lt;span class="math"&gt;\(2N-2Np\)&lt;/span&gt; insertions or &lt;span class="math"&gt;\(pN\)&lt;/span&gt; deletions. Then, we don't want to do rehashing either 
+after a few insertion or a few deletions. A good strategy is to set &lt;span class="math"&gt;\(2N-2Np\)&lt;/span&gt; equals to &lt;span class="math"&gt;\(pN\)&lt;/span&gt;
+and we get &lt;span class="math"&gt;\(p = \frac{2}{3}\)&lt;/span&gt;. For instance, suppose we have a table of size 300.
+If we rehash at 200 elements, then the new table size is &lt;span class="math"&gt;\(N = 150\)&lt;/span&gt;, and we can do 
+either 100 insertions or 100 deletions until a new rehash is required. &lt;/p&gt;
+&lt;p&gt;If we know that insertions are more frequent than deletions, then we might choose &lt;span class="math"&gt;\(p\)&lt;/span&gt;
+to be somewhat larger. All in all, we play around the relation between &lt;span class="math"&gt;\(2N-2Np\)&lt;/span&gt; and 
+&lt;span class="math"&gt;\(pN\)&lt;/span&gt; depends on which operation we favorite.&lt;/p&gt;
+&lt;h3&gt;MAW 5.5&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;An alternative collision resolution strategy is to define a sequence, &lt;span class="math"&gt;\(F(i) = r_i\)&lt;/span&gt;,
+where &lt;span class="math"&gt;\(r_0 = 0\)&lt;/span&gt; and &lt;span class="math"&gt;\(r_1, r_2, \dots, r_N\)&lt;/span&gt; is a random permutation of the first &lt;span class="math"&gt;\(N\)&lt;/span&gt;
+integers (each integer appears exactly once).&lt;/p&gt;
+&lt;p&gt;a. Prove that under this strategy, if the table is not full, then the collision can 
+always be resolved.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Since the sequence &lt;span class="math"&gt;\(F(i)\)&lt;/span&gt; is defined as a random permutation of the first &lt;span class="math"&gt;\(N\)&lt;/span&gt; integers,
+then each cells of the table will be probed eventually. If the table is not full, then the 
+collision can always be resolved.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;b. Would this strategy be expected to eliminate clustering?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This seems to eliminate primary clustering but not secondary clustering because
+all elements that hash to some location will try the same collision resolution sequence.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;c. If the load factor of the table is &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt;, what is the expected time to perform
+an insert and for a successful search?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The running time is probably similar to quadratic probing. The advantage here is that 
+the insertion can't fail unless the table is full.&lt;/p&gt;
+&lt;h3&gt;MAW 5.10&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Describe a procedure that avoids initializing a hash table (at the expense of memory).&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;To each hash table slot, we can add an extra field that we'll call &lt;code&gt;WhereOnStack&lt;/code&gt;, and 
+we can keep an extra stack. When an insertion is first performed into a slot, we push
+the address (or number) of the slot onto the stack and set the &lt;code&gt;WhereOnStack&lt;/code&gt; field to point
+to the top of the stack. When we access a hash table slot, we check that &lt;code&gt;WhereOnStack&lt;/code&gt;
+points to a valid part of the stack and that the entry in the (middle of the) stack that is 
+pointed to by the &lt;code&gt;WhereOnStack&lt;/code&gt; field has that hash table slot as an address.&lt;/p&gt;
+&lt;h3&gt;MAW 5.11&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Suppose we want to find the first occurrence of a string &lt;span class="math"&gt;\(P_1P_2\dots P_k\)&lt;/span&gt; in a long 
+input string &lt;span class="math"&gt;\(A_1A_2\dots A_N\)&lt;/span&gt;. We can solve this problem by hashing the pattern string,
+Obtaining a hash value &lt;span class="math"&gt;\(H_p\)&lt;/span&gt;, and comparing this value with the hash value formed from 
+&lt;span class="math"&gt;\(A_1A_2\dots A_k\)&lt;/span&gt;, &lt;span class="math"&gt;\(A_2A_3\dots A_{k+1}\)&lt;/span&gt;, &lt;span class="math"&gt;\(A_3A_4\dots A_{k+2}\)&lt;/span&gt;, and so on until 
+&lt;span class="math"&gt;\(A_{N-k+1}A_{N-k+2}\dots A_N\)&lt;/span&gt;. If we have a match of hash values, we compare the string character
+by character to verify the match. We return the position (in A) if the strings actually 
+do match, and we continue in the unlikely event that the match is false.&lt;/p&gt;
+&lt;p&gt;a. Show that if the hash value of &lt;span class="math"&gt;\(A_iA_{i+1}\dots A_{i+k-1}\)&lt;/span&gt; is known, then the hash 
+value of &lt;span class="math"&gt;\(A_{i+1}A_{i+2}\dots A_{i+k}\)&lt;/span&gt; can be computed in constant time.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;As suggested by MAW p.151, we use &lt;span class="math"&gt;\(\sum_{i=0}^{KeySize-1} Key[KeySize-i-1]\cdot 32^i\)&lt;/span&gt;
+as the function to compute the hash value of a given string. Then, by this definition,
+&lt;span class="math"&gt;\(A_iA_{i+1}\dots A_{i+k-1}\)&lt;/span&gt; can be computed as &lt;/p&gt;
+&lt;div class="math"&gt;$$
+H_1 = (32^0A_i + 32^1A_{i+1} + \dots + 32^{k-1}A_{i+k-1}) \% N
+$$&lt;/div&gt;
+&lt;p&gt;similarly, &lt;span class="math"&gt;\(A_{i+1}A_{i+2}\dots A_{i+k}\)&lt;/span&gt; can be computed as &lt;/p&gt;
+&lt;div class="math"&gt;$$
+H_2 = (32^1A_{i+1} + \dots + 32^kA_{i+k}) \% N
+$$&lt;/div&gt;
+&lt;p&gt;If we take a look at the relationship between these two equations, we can see 
+&lt;/p&gt;
+&lt;div class="math"&gt;$$H_2 = H_1 - 32^0A_i \% N + 32^kA_{i+k} % N$$&lt;/div&gt;
+&lt;p&gt;. This can be computed in constant time
+if &lt;span class="math"&gt;\(H_1\)&lt;/span&gt; is known.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;b. Show that the running time is &lt;span class="math"&gt;\(O(k+N)\)&lt;/span&gt; plus the time spent refuting false matches.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The pattern's hash value &lt;span class="math"&gt;\(H_p\)&lt;/span&gt; computed in &lt;span class="math"&gt;\(O(K)\)&lt;/span&gt; time. Then, &lt;span class="math"&gt;\(A_1A_2\dots A_k\)&lt;/span&gt;
+is computed in &lt;span class="math"&gt;\(O(K)\)&lt;/span&gt; time. Then starting with &lt;span class="math"&gt;\(A_2A_3\dots A_{k+1}\)&lt;/span&gt; and until
+&lt;span class="math"&gt;\(A_{N-k+1}A_{N-k+2}\dots A_N\)&lt;/span&gt;, each hash value is computed in &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt; by a) above.
+Since, there are &lt;span class="math"&gt;\(N-k+1-2+1\)&lt;/span&gt; terms of &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt;, then the total running time is
+&lt;span class="math"&gt;\(O(K) + O(K) + O(N-K) = O(N+K)\)&lt;/span&gt;. Of course, there is also time we spend on refuting false
+matches.&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</description><pubDate>Thu, 16 Mar 2017 17:41:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-03-16:posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/</guid><category>hashing</category><category>proof</category><category>math</category><category>maw</category></item><item><title>MAW: Chapter 4 Reflection</title><link>http://zhu45.org/posts/2017/Mar/12/maw-chapter-4-reflection/</link><description>&lt;div class="section" id="reflection"&gt;
 &lt;h2&gt;Reflection&lt;/h2&gt;
 &lt;p&gt;In Chapter 4, we learn about the tree data structure. If we take a look from ADT
 perspective, the ADT we learn about is called Dictionary (a.k.a Map) ADT, which
