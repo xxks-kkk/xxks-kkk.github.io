@@ -47,7 +47,7 @@
 <p><i class="fa fa-folder-open fa-fw"></i> <a href="../category/data-struct-algo.html">Data Struct & Algo</a> </p>
 <p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../tag/hashing.html">hashing</a> <a href="../tag/proof.html">proof</a> <a href="../tag/math.html">math</a> <a href="../tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
                 <h2>Solutions</h2>
-<p>including: MAW 5.4, 5.5, 5.10, 5.11</p>
+<p>including: MAW 5.4, 5.5, 5.6, 5.10, 5.11</p>
 <h3>MAW 5.4</h3>
 <blockquote>
 <p>A large number of deletions in a separate chaining hash table can cause the 
@@ -89,6 +89,22 @@ an insert and for a successful search?</p>
 </blockquote>
 <p>The running time is probably similar to quadratic probing. The advantage here is that 
 the insertion can't fail unless the table is full.</p>
+<h3>MAW 5.6</h3>
+<blockquote>
+<p>What are the advantages and disadvantages of the various collision resolution strategies?</p>
+</blockquote>
+<p>Separate chaining hashing requires the use of pointers, which costs some memory, and the 
+standard method of implementing calls on memory allocation routines, which typically are
+expensive. </p>
+<p>Linear probing is easily implemented, but performance degrades severly as the load 
+factor increases because of primary clustering. </p>
+<p>Quadratic probing is only slightly more 
+difficult to implement and gives good performance in practice. An insertion can fail 
+if the table is half empty, but this is not likely. Even if it were, such an insertion 
+would be so expensive that it wouldn't matter and would almost certainly point up a 
+weakness in the hash function. </p>
+<p>Double hashing eliminates primary and secondary clustering but the computation of a second
+hash function can be costly. </p>
 <h3>MAW 5.10</h3>
 <blockquote>
 <p>Describe a procedure that avoids initializing a hash table (at the expense of memory).</p>
@@ -121,11 +137,11 @@ $$</div>
 <div class="math">$$
 H_2 = (32^1A_{i+1} + \dots + 32^kA_{i+k}) \% N
 $$</div>
-<p>If we take a look at the relationship between these two equations, we can see 
-</p>
-<div class="math">$$H_2 = H_1 - 32^0A_i \% N + 32^kA_{i+k} % N$$</div>
-<p>. This can be computed in constant time
-if <span class="math">\(H_1\)</span> is known.</p>
+<p>If we take a look at the relationship between these two equations, we can see </p>
+<div class="math">$$
+H_2 = H_1 - 32^0A_i \% N + 32^kA_{i+k} % N
+$$</div>
+<p>This can be computed in constant time if <span class="math">\(H_1\)</span> is known.</p>
 <blockquote>
 <p>b. Show that the running time is <span class="math">\(O(k+N)\)</span> plus the time spent refuting false matches.</p>
 </blockquote>
@@ -405,7 +421,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         <ul>
                            <li class="active"><a href="../category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (16)</a></li>
                            <li ><a href="../category/mathematics.html"><i class="fa fa-folder-open fa-lg"></i> Mathematics (1)</a></li>
-                           <li ><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (4)</a></li>
+                           <li ><a href="../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (5)</a></li>
                            <li ><a href="../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
                            <li ><a href="../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>
@@ -465,7 +481,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             github
                         </a>
                     </li>
-                    <li class="list-group-item tag-4">
+                    <li class="list-group-item tag-3">
                         <a href="../tag/hashing.html">
                             hashing
                         </a>

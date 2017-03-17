@@ -40,102 +40,161 @@
 
      <section id="content" class="body">
         <aside id="featured"><article>
-                <h1 class="entry-title"><a href="./posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/">MAW Chapter 5: Hashing writing questions</a></h1>
+                <h1 class="entry-title"><a href="./posts/2017/Mar/17/maw-chapter-5-reflection/">MAW: Chapter 5 Reflection</a></h1>
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-16T17:41:00+08:00">Thu 16 Mar 2017, 17:41</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-17T15:56:00+08:00">Fri 17 Mar 2017, 15:56</abbr></p>
 
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-algo.html">Data Struct & Algo</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/hashing.html">hashing</a> <a href="./tag/proof.html">proof</a> <a href="./tag/math.html">math</a> <a href="./tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <h2>Solutions</h2>
-<p>including: MAW 5.4, 5.5, 5.10, 5.11</p>
-<h3>MAW 5.4</h3>
-<blockquote>
-<p>A large number of deletions in a separate chaining hash table can cause the 
-table to be fairly empty, which wastes space. In this case, we can rehash to 
-a table half as large. Assume that we rehash to a larger table when there are 
-twice as many elements as the table size. How empty should the table be before
-we rehash to a smaller table?</p>
-</blockquote>
-<p>We must be careful not to rehash too often. Let <span class="math">\(p\)</span> be the threshold (fraction of table
-size) at which we rehash to a smaller table. Then, if the new table has size <span class="math">\(N\)</span>, 
-it contains <span class="math">\(2Np\)</span> elements. This table will require rehashing after either 
-<span class="math">\(2N-2Np\)</span> insertions or <span class="math">\(pN\)</span> deletions. Then, we don't want to do rehashing either 
-after a few insertion or a few deletions. A good strategy is to set <span class="math">\(2N-2Np\)</span> equals to <span class="math">\(pN\)</span>
-and we get <span class="math">\(p = \frac{2}{3}\)</span>. For instance, suppose we have a table of size 300.
-If we rehash at 200 elements, then the new table size is <span class="math">\(N = 150\)</span>, and we can do 
-either 100 insertions or 100 deletions until a new rehash is required. </p>
-<p>If we know that insertions are more frequent than deletions, then we might choose <span class="math">\(p\)</span>
-to be somewhat larger. All in all, we play around the relation between <span class="math">\(2N-2Np\)</span> and 
-<span class="math">\(pN\)</span> depends on which operation we favorite.</p>
-<h3>MAW 5.5</h3>
-<blockquote>
-<p>An alternative collision resolution strategy is to define a sequence, <span class="math">\(F(i) = r_i\)</span>,
-where <span class="math">\(r_0 = 0\)</span> and <span class="math">\(r_1, r_2, \dots, r_N\)</span> is a random permutation of the first <span class="math">\(N\)</span>
-integers (each integer appears exactly once).</p>
-<p>a. Prove that under this strategy, if the table is not full, then the collision can 
-always be resolved.</p>
-</blockquote>
-<p>Since the sequence <span class="math">\(F(i)\)</span> is defined as a random permutation of the first <span class="math">\(N\)</span> integers,
-then each cells of the table will be probed eventually. If the table is not full, then the 
-collision can always be resolved.</p>
-<blockquote>
-<p>b. Would this strategy be expected to eliminate clustering?</p>
-</blockquote>
-<p>This seems to eliminate primary clustering but not secondary clustering because
-all elements that hash to some location will try the same collision resolution sequence.</p>
-<blockquote>
-<p>c. If the load factor of the table is <span class="math">\(\lambda\)</span>, what is the expected time to perform
-an insert and for a successful search?</p>
-</blockquote>
-<p>The running time is probably similar to quadratic probing. The advantage here is that 
-the insertion can't fail unless the table is full.</p>
-<h3>MAW 5.10</h3>
-<blockquote>
-<p>Describe a procedure that avoids initializing a hash table (at the expense of memory).</p>
-</blockquote>
-<p>To each hash table slot, we can add an extra field that we'll call <code>WhereOnStack</code>, and 
-we can keep an extra stack. When an insertion is first performed into a slot, we push
-the address (or number) of the slot onto the stack and set the <code>WhereOnStack</code> field to point
-to the top of the stack. When we access a hash table slot, we check that <code>WhereOnStack</code>
-points to a valid part of the stack and that the entry in the (middle of the) stack that is 
-pointed to by the <code>WhereOnStack</code> field has that hash table slot as an address.</p>
-<h3>MAW 5.11</h3>
-<blockquote>
-<p>Suppose we want to find the first occurrence of a string <span class="math">\(P_1P_2\dots P_k\)</span> in a long 
-input string <span class="math">\(A_1A_2\dots A_N\)</span>. We can solve this problem by hashing the pattern string,
-Obtaining a hash value <span class="math">\(H_p\)</span>, and comparing this value with the hash value formed from 
-<span class="math">\(A_1A_2\dots A_k\)</span>, <span class="math">\(A_2A_3\dots A_{k+1}\)</span>, <span class="math">\(A_3A_4\dots A_{k+2}\)</span>, and so on until 
-<span class="math">\(A_{N-k+1}A_{N-k+2}\dots A_N\)</span>. If we have a match of hash values, we compare the string character
-by character to verify the match. We return the position (in A) if the strings actually 
-do match, and we continue in the unlikely event that the match is false.</p>
-<p>a. Show that if the hash value of <span class="math">\(A_iA_{i+1}\dots A_{i+k-1}\)</span> is known, then the hash 
-value of <span class="math">\(A_{i+1}A_{i+2}\dots A_{i+k}\)</span> can be computed in constant time.</p>
-</blockquote>
-<p>As suggested by MAW p.151, we use <span class="math">\(\sum_{i=0}^{KeySize-1} Key[KeySize-i-1]\cdot 32^i\)</span>
-as the function to compute the hash value of a given string. Then, by this definition,
-<span class="math">\(A_iA_{i+1}\dots A_{i+k-1}\)</span> can be computed as </p>
-<div class="math">$$
-H_1 = (32^0A_i + 32^1A_{i+1} + \dots + 32^{k-1}A_{i+k-1}) \% N
-$$</div>
-<p>similarly, <span class="math">\(A_{i+1}A_{i+2}\dots A_{i+k}\)</span> can be computed as </p>
-<div class="math">$$
-H_2 = (32^1A_{i+1} + \dots + 32^kA_{i+k}) \% N
-$$</div>
-<p>If we take a look at the relationship between these two equations, we can see 
-</p>
-<div class="math">$$H_2 = H_1 - 32^0A_i \% N + 32^kA_{i+k} % N$$</div>
-<p>. This can be computed in constant time
-if <span class="math">\(H_1\)</span> is known.</p>
-<blockquote>
-<p>b. Show that the running time is <span class="math">\(O(k+N)\)</span> plus the time spent refuting false matches.</p>
-</blockquote>
-<p>The pattern's hash value <span class="math">\(H_p\)</span> computed in <span class="math">\(O(K)\)</span> time. Then, <span class="math">\(A_1A_2\dots A_k\)</span>
-is computed in <span class="math">\(O(K)\)</span> time. Then starting with <span class="math">\(A_2A_3\dots A_{k+1}\)</span> and until
-<span class="math">\(A_{N-k+1}A_{N-k+2}\dots A_N\)</span>, each hash value is computed in <span class="math">\(O(1)\)</span> by a) above.
-Since, there are <span class="math">\(N-k+1-2+1\)</span> terms of <span class="math">\(O(1)\)</span>, then the total running time is
-<span class="math">\(O(K) + O(K) + O(N-K) = O(N+K)\)</span>. Of course, there is also time we spend on refuting false
-matches.</p>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/misc.html">misc</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/meta.html">meta</a> <a href="./tag/maw.html">maw</a> <a href="./tag/hashing.html">hashing</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <p>This is the summary part of hash table and at the same time, it serves as the Chapter 5
+reflection.</p>
+<div class="section" id="reflection">
+<h2>Reflection</h2>
+<div class="section" id="motivation">
+<h3>Motivation</h3>
+<p>In the previous chapter, we implement the dictionary (map) ADT using tree structure.
+A typical find or insert operations require <span class="math">\(O(\log N)\)</span> time. However, this is
+not good enough compared with <span class="math">\(O(1)\)</span> time. This is place where hash tables implementation
+can shine. Hash tables is a data structure that is designed for <span class="math">\(O(1)\)</span> find, insert, and delete
+operations. The only downside compared hash tables with tree structure is the ill support for ordering elements.</p>
+<img src="/images/maw-chap5.PNG" alt="chapter5 ADT picture" style="width: 700px;"/></div>
+<div class="section" id="general-idea">
+<h3>General Idea</h3>
+<p>A hash table is an array of some fixed size. Then we use hash function to map each key
+(i.e. a key is a string with an associated value) into some number in the range <tt class="docutils literal">0</tt> to
+<tt class="docutils literal"><span class="pre">Tablesize-1</span></tt> and place it in the appropriate cell.</p>
+<img alt="" src="/images/hashtable.PNG" />
+<p>Ideally, two distinct keys get different cells. However, this is not possible because
+there are a finite number of cells and a virtually infinite supply of keys. Thus the key
+concern for hash table data structure is how to distribute the keys evenly among the cells.
+This issue is addressed from two ways:
+1) pick a good hash function to avoid collision (i.e. two keys hash to the same value)
+2) use a good strategy to redistribute keys when collision happens.</p>
+</div>
+<div class="section" id="hash-function">
+<h3>Hash function</h3>
+<p>Hash function is a mapping from the element key (string or number) to an integer
+(the hash value). The output of the hash function must always be less than the size of
+array and should be as evenly distributed as possible. One thing to note here is that
+the pick of hash function has high dependency on the actual content of the key set.</p>
+<p>We list some key points from the chapter here:</p>
+<ul class="simple">
+<li>Choose the table size of the hash table to be the prime.</li>
+</ul>
+<p>The rationale for this is that real-life data tends to have pattern, and &quot;multiples of 61&quot;
+are probably less likely than &quot;multiples of 60&quot;. In addition, quadratic hashing is an efficient
+collision strategy to use (compared with linear hashing, double hashing) and it requires the table size
+to be the prime.</p>
+<ul class="simple">
+<li>When we deal with string keys, we may use <span class="math">\(\big(\sum_{i=0}^{k-1} s_i \cdot 256^i \big) \% TableSize\)</span>
+as our function.</li>
+</ul>
+<p>Here we use 256 because <cite>char</cite> data is 1 byte. Other hash function may be adding up the ASCII values ofthe characters
+in the string. However, this doesn't work well because if string keys are short, it will not hash evenly to all of the
+hash table (see MAW p.151) and different character combinations hash to same value (i.e. &quot;abc&quot;, &quot;bca&quot; all add up to the
+same value).</p>
+<p>The slides listed in the reference section offer some examples on hash function pick if
+we know the keys beforehand (i.e. if keys <span class="math">\(s\)</span> are the real numbers uniformly
+distributed over <span class="math">\(0 \leq s &lt; 1\)</span>).</p>
+</div>
+<div class="section" id="collision-strategy">
+<h3>Collision strategy</h3>
+<p>A collision occurs when two different keys hash to the same value. By the nature of dictionary ADT,
+we cannot store both data records in the same cell in the array. So, we need to come up a strategy
+to resolve collision and try our best to make the keys evenly distribute among the table. There are
+two main strategies discussed in the chapter: separate chaining and open addressing.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Load factor <span class="math">\(\lambda\)</span> defined as the ratio of the number of the elements
+in the hash table to the table size. This concept appears frequently when we analyze
+hash table collision resolution strategy.</p>
+</div>
+<div class="section" id="separate-chaining">
+<h4>Separate chaining</h4>
+<p>Separate chaining is to keep a list (chain or bucket) of all elements that hash to the same value. In other words,
+each hash table cell holds pointer to linked list of records with same hash value.
+When collision happens, we insert the hash value of the key to the corresponding linked list of
+the cell that hash value should be stored. When we want to find an item, we compute the
+hash value, then do find on linked list.</p>
+<img alt="" src="/images/separate-chaining.PNG" />
+<p>Here the worst case time happens for find operation, which can take linear time.
+However, this can happen in the extreme rare case (bad luck or bad hash function).
+Of course, we can build a balance tree instead of a linked list on each cell to shrink
+the find time. But, the structure overhead and the compelxity of insert may make this effort not
+worth it.</p>
+<p>The average length of chained list = <span class="math">\(\lambda\)</span>. Thus, the average time for
+accessing an item = <span class="math">\(O(1) + O(\lambda)\)</span>. So, we want <span class="math">\(\lambda\)</span> to be smaller
+than 1 but close to 1 if good hashing function. Thus, the general rule for
+separate chaining hashing is to make the table size about as large as the number of
+elements expected (let <span class="math">\(\lambda \approx 1\)</span>).</p>
+</div>
+<div class="section" id="open-addressing">
+<h4>Open addressing</h4>
+<p>One disadvantage for the separate chaining strategy is that we need to build linked list
+for each cell, whcih introduces the overhead that can waste space. Another strategy to
+resolve collision is to try other empty cells. This is called open addressing. In general,
+open addressing means resolving collisions by trying a sequence of other positions in the table.
+Trying the next spot is called <em>probing</em>. More formally, cells <span class="math">\(h_0(X), h_1(x), h_2(x), \dots\)</span>
+are tried in succession until either x is found or we find an empty location (x not present).
+<span class="math">\(h_i(x) = (Hash(x) + F(i)) mod TableSize\)</span>, with <span class="math">\(F(0) = 0\)</span>. The function <span class="math">\(F\)</span>
+is the collision resolution strategy.</p>
+<p>Various flavors of open addressing differ in which probe sequence they use. This is reflected in <span class="math">\(F\)</span>.
+Three types of resolution function are discussed in the book:</p>
+<ol class="arabic simple">
+<li>Linear probing: <span class="math">\(F(i) = i\)</span></li>
+<li>Quadratic probing: <span class="math">\(F(i) = i^2\)</span></li>
+<li>Double probing: <span class="math">\(F(i) = i * Hash_2(x)\)</span></li>
+</ol>
+<p>Generally, the load factor should be below <span class="math">\(\lambda = 0.5\)</span> for open addressing hashing.</p>
+<div class="section" id="linear-probing">
+<h5>Linear probing</h5>
+<p>With linear probing, we try the cells sequentially (with wraparound) insearch of an empty cell.
+This strategy has a fundamental problem called <em>primary clustering</em>, which means blocks
+of occupied cells start forming. Any key that hashes into the cluster will require several
+attempts to resolve the collision, and then it will add to the cluster. In other words, primary
+clustering means elements that hash to different cells probe same alternative cells.</p>
+</div>
+<div class="section" id="quadratic-probing">
+<h5>Quadratic probing</h5>
+<p>Quadratic probing is a collision resolution method that eliminates the primary clustering problem
+of linear probing. But it has its own restriction or problem:</p>
+<ul class="simple">
+<li>If quadratic probing is used and the table size is prime, then a new element
+can always be inserted if the table is at least half empty. However, insertion is not guaranteed
+if <span class="math">\(\lambda &gt; 0.5\)</span>.</li>
+<li><em>Secondary clustering</em>, which means elements that hash to the same position will probe the same alternative cells.</li>
+</ul>
+</div>
+<div class="section" id="double-hashing">
+<h5>Double hashing</h5>
+<p>Double probing <span class="math">\(F\)</span> says that we apply a second hash function to x and probe
+at a distance <span class="math">\(hash_2(x), 2hash_2(x), \dots\)</span>, and so on.</p>
+<p>When <span class="math">\(\lambda\)</span> exceeds certain value, we need to build a bigger hash table of
+approximately twice the size and be prime. This is called rehashing.</p>
+<p>In addition, when hash table cannot be contained in the memory and have to store part of structure on the disk,
+then the disk I/O becomes the main cost. In this case, we use different hash scheme, which is called extendible hashing.
+Like B-tree, this structure is widely applied in the database field.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="left-out">
+<h2>Left Out</h2>
+<p>Some material I left out when I work through this chapter majorly due to the time
+constraint:</p>
+<ul class="simple">
+<li>5.7, 5.12, 5.13, 5.15</li>
+</ul>
+</div>
+<div class="section" id="reference">
+<h2>Reference</h2>
+<ul class="simple">
+<li>MAW Chapter 5</li>
+<li><a class="reference external" href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf">https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf</a></li>
+<li><a class="reference external" href="https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf">https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf</a></li>
+</ul>
+</div>
+<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
         linebreak = "false";
@@ -196,6 +255,27 @@ matches.</p>
                 <h1><i class="fa fa-bars"></i> Other articles</h1>
                 <hr />
                     <ol id="posts-list" class="hfeed">
+        <li><article class="hentry">
+                <header>
+                        <h1><a href="./posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/" rel="bookmark" title="Permalink to MAW Chapter 5: Hashing writing questions">MAW Chapter 5: Hashing writing questions</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-16T17:41:00+08:00">Thu 16 Mar 2017, 17:41</abbr></p>
+
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/data-struct-algo.html">Data Struct & Algo</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/hashing.html">hashing</a> <a href="./tag/proof.html">proof</a> <a href="./tag/math.html">math</a> <a href="./tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+                <h2>Solutions</h2>
+<p>including: MAW 5.4, 5.5, 5.6, 5.10, 5.11</p>
+<h3>MAW 5.4</h3>
+<blockquote>
+<p>A large number of deletions in a separate chaining hash table can cause the 
+table to be fairly empty, which wastes space. In this case, we can rehash to 
+a table half as large ...</p></blockquote>
+                <a class="readmore" href="./posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/">read more</a>
+                </div><!-- /.entry-content -->
+        </article></li>
         <li><article class="hentry">
                 <header>
                         <h1><a href="./posts/2017/Mar/12/maw-chapter-4-reflection/" rel="bookmark" title="Permalink to MAW: Chapter 4 Reflection">MAW: Chapter 4 Reflection</a></h1>
@@ -352,27 +432,6 @@ can be empty; otherwise, a tree consists of a distinguish node <em>r</em>, calle
                 <a class="readmore" href="./posts/2017/Jan/24/tree-terminology/">read more</a>
                 </div><!-- /.entry-content -->
         </article></li>
-        <li><article class="hentry">
-                <header>
-                        <h1><a href="./posts/2017/Jan/23/maw-chapter-3-reflection/" rel="bookmark" title="Permalink to MAW: Chapter 3 Reflection">MAW: Chapter 3 Reflection</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-23T10:45:00+08:00">Mon 23 Jan 2017, 10:45</abbr></p>
-
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="./category/misc.html">misc</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="./tag/meta.html">meta</a> <a href="./tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-                <p>I finally finish Chapter 3: List, Stacks, and Queues with almost all the problems
-solved. It's time to do some summary and reflection.</p>
-<div class="section" id="reflection">
-<h2>Reflection</h2>
-<p>One important philosophy in this chapter is the
-separation between the interface exposed to the user and the implementation details behind the scene.
-The interface ...</p></div>
-                <a class="readmore" href="./posts/2017/Jan/23/maw-chapter-3-reflection/">read more</a>
-                </div><!-- /.entry-content -->
-        </article></li>
 </ol><!-- /#posts-list -->
         <!-- <h2><i class="fa fa-file-o"></i> Pages</h2> -->
         <hr />
@@ -405,7 +464,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                         <ul>
                            <li ><a href="./category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (16)</a></li>
                            <li ><a href="./category/mathematics.html"><i class="fa fa-folder-open fa-lg"></i> Mathematics (1)</a></li>
-                           <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (4)</a></li>
+                           <li ><a href="./category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (5)</a></li>
                            <li ><a href="./category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
                            <li ><a href="./category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>
@@ -465,7 +524,7 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                             github
                         </a>
                     </li>
-                    <li class="list-group-item tag-4">
+                    <li class="list-group-item tag-3">
                         <a href="./tag/hashing.html">
                             hashing
                         </a>

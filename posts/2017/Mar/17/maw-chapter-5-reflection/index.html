@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-        <title>B-Tree</title>
+        <title>MAW: Chapter 5 Reflection</title>
         <meta charset="utf-8" />
         <meta content="This is the homepage of Zeyuan (Jerry) Hu" name="description">
         <meta content="Zeyuan Hu, Zeyuan, Jerry Hu, Jerry, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, Zeyuan wisc, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
@@ -39,114 +39,163 @@
 
 <section id="content" class="body">
 <article>
-      <header> <h1 class="entry-title"><a href="../../../../../posts/2017/Mar/11/b-tree/"
-        rel="bookmark" title="Permalink to B-Tree">B-Tree</a></h1>  </header>
+      <header> <h1 class="entry-title"><a href="../../../../../posts/2017/Mar/17/maw-chapter-5-reflection/"
+        rel="bookmark" title="Permalink to MAW: Chapter 5 Reflection">MAW: Chapter 5 Reflection</a></h1>  </header>
         <div class="entry-content">
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-11T21:32:00+08:00">Sat 11 Mar 2017, 21:32</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-17T15:56:00+08:00">Fri 17 Mar 2017, 15:56</abbr></p>
 
-<p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/data-struct-algo.html">Data Struct & Algo</a> </p>
-<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/trees.html">trees</a> <a href="../../../../../tag/maw.html">maw</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
-        <p>This is the summary of <em>B tree</em> part in MAW Chapter 4.</p>
-<h2>Motivation</h2>
-<p>So far we have assumed that an entire data structure can be stored in the main memory. 
-However, this is not true in reality because if we have more data than can fit in main 
-memory, we have to store data structure on disk. In this case, number of disk 
-accesses will dominate the running time because they are very expensive comparing with the 
-processor speed. Then, when we design a data structure, we have to try our best to minimize
-the number of disk accesses. Under the context of tree structure, B-tree is a structure
-that tries to read as much information as possible in every disk access operation.</p>
-<h2>Concept</h2>
-<p>B-tree is by far the most chaoatic defined structure in the sense that different people
-have slightly different definitions. I'll follow MAW's definition and points out how MAW's definition
-is different from the other commonly seen definition.</p>
-<p>A B-tree of order <span class="math">\(M\)</span> is a tree with the following structural properties:</p>
-<ul>
-<li>The leaves contain all the actual data, which are either the key temselves or pointers to records containing the keys.</li>
-<li>The root is either a leaf (when tree has <span class="math">\(\le L\)</span> items) or has between <span class="math">\(2\)</span> and <span class="math">\(M\)</span> children.</li>
-<li>All nonleaf nodes (except the root) have between <span class="math">\(\lceil{M/2}\rceil\)</span> and <span class="math">\(M\)</span> children (at least half full).</li>
-<li>All leaves are the same depth and have between <span class="math">\(\lceil{L/2}\rceil\)</span> and <span class="math">\(L\)</span> sorted data items, for some L (at least half full).</li>
-<li>The nonleaf nodes have room for up to <span class="math">\(M-1\)</span> keys to guide the searching; key <span class="math">\(i\)</span> represents the smallest key in subtree <span class="math">\(i+1\)</span>.</li>
+<p><i class="fa fa-folder-open fa-fw"></i> <a href="../../../../../category/misc.html">misc</a> </p>
+<p><i class="fa fa-tags fa-fw"></i>&nbsp;<a href="../../../../../tag/meta.html">meta</a> <a href="../../../../../tag/maw.html">maw</a> <a href="../../../../../tag/hashing.html">hashing</a> </p></p></footer><!-- /.post-info --><!-- /.post-info -->
+        <p>This is the summary part of hash table and at the same time, it serves as the Chapter 5
+reflection.</p>
+<div class="section" id="reflection">
+<h2>Reflection</h2>
+<div class="section" id="motivation">
+<h3>Motivation</h3>
+<p>In the previous chapter, we implement the dictionary (map) ADT using tree structure.
+A typical find or insert operations require <span class="math">\(O(\log N)\)</span> time. However, this is
+not good enough compared with <span class="math">\(O(1)\)</span> time. This is place where hash tables implementation
+can shine. Hash tables is a data structure that is designed for <span class="math">\(O(1)\)</span> find, insert, and delete
+operations. The only downside compared hash tables with tree structure is the ill support for ordering elements.</p>
+<img src="/images/maw-chap5.PNG" alt="chapter5 ADT picture" style="width: 700px;"/></div>
+<div class="section" id="general-idea">
+<h3>General Idea</h3>
+<p>A hash table is an array of some fixed size. Then we use hash function to map each key
+(i.e. a key is a string with an associated value) into some number in the range <tt class="docutils literal">0</tt> to
+<tt class="docutils literal"><span class="pre">Tablesize-1</span></tt> and place it in the appropriate cell.</p>
+<img alt="" src="/images/hashtable.PNG" />
+<p>Ideally, two distinct keys get different cells. However, this is not possible because
+there are a finite number of cells and a virtually infinite supply of keys. Thus the key
+concern for hash table data structure is how to distribute the keys evenly among the cells.
+This issue is addressed from two ways:
+1) pick a good hash function to avoid collision (i.e. two keys hash to the same value)
+2) use a good strategy to redistribute keys when collision happens.</p>
+</div>
+<div class="section" id="hash-function">
+<h3>Hash function</h3>
+<p>Hash function is a mapping from the element key (string or number) to an integer
+(the hash value). The output of the hash function must always be less than the size of
+array and should be as evenly distributed as possible. One thing to note here is that
+the pick of hash function has high dependency on the actual content of the key set.</p>
+<p>We list some key points from the chapter here:</p>
+<ul class="simple">
+<li>Choose the table size of the hash table to be the prime.</li>
 </ul>
-<p><img src="/images/b-tree-order-property.PNG" alt="b-tree-order-property"/></p>
-<p>In MAW, the definition of B-tree is essentially known as <span class="math">\(B^+-\)</span>tree. Technically, the real B-tree has the key property that 
-the actual data to be stored in both leaves and internal nodes, which is not the case in our definition. In some <span class="math">\(B^+-\)</span>tree definition,
-the leaves are connected as a linked list so that we don't have to restart the search from the root once we already traverse down to the 
-leaf if we want a record that is on a leaf really close to the leaf we currently at. </p>
-<h2>Examples</h2>
-<p>Some typical examples in B-tree are of order 4 (known as 2-3-4 tree) and 3 (known as 2-3 tree).</p>
-<p><img src="/images/2-3-tree.PNG" alt="2-3-tree" style="width: 700px;"/></p>
-<p>B-tree is a structure that is widely used in the database system. The following picture shows a more real B-tree example. 
-Suppose we have a large customer table with gigabytes of data and an index is created on the phone number column of the 
-customer table to speed up search. Phone numbers stored in sorted order with information (page and slot) on where the rest of 
-the customer information can be found in the customer table.</p>
-<p><img src="/images/real-b-tree.PNG" alt="real-b-tree" style="width: 700px;"/></p>
-<p>In this example, once we continue down the tree and locate the phone number we are searching for, we use the RID to fetch the 
-rest of the customer record from the table. In this case, we use 4 disk accesses.</p>
-<h2>Operations</h2>
-<ul>
-<li>Find:</li>
+<p>The rationale for this is that real-life data tends to have pattern, and &quot;multiples of 61&quot;
+are probably less likely than &quot;multiples of 60&quot;. In addition, quadratic hashing is an efficient
+collision strategy to use (compared with linear hashing, double hashing) and it requires the table size
+to be the prime.</p>
+<ul class="simple">
+<li>When we deal with string keys, we may use <span class="math">\(\big(\sum_{i=0}^{k-1} s_i \cdot 256^i \big) \% TableSize\)</span>
+as our function.</li>
 </ul>
-<p>For find, we basically do binary search on each node to decide what subtree we should go to search. </p>
-<ul>
-<li>Insertion:</li>
+<p>Here we use 256 because <cite>char</cite> data is 1 byte. Other hash function may be adding up the ASCII values ofthe characters
+in the string. However, this doesn't work well because if string keys are short, it will not hash evenly to all of the
+hash table (see MAW p.151) and different character combinations hash to same value (i.e. &quot;abc&quot;, &quot;bca&quot; all add up to the
+same value).</p>
+<p>The slides listed in the reference section offer some examples on hash function pick if
+we know the keys beforehand (i.e. if keys <span class="math">\(s\)</span> are the real numbers uniformly
+distributed over <span class="math">\(0 \leq s &lt; 1\)</span>).</p>
+</div>
+<div class="section" id="collision-strategy">
+<h3>Collision strategy</h3>
+<p>A collision occurs when two different keys hash to the same value. By the nature of dictionary ADT,
+we cannot store both data records in the same cell in the array. So, we need to come up a strategy
+to resolve collision and try our best to make the keys evenly distribute among the table. There are
+two main strategies discussed in the chapter: separate chaining and open addressing.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Load factor <span class="math">\(\lambda\)</span> defined as the ratio of the number of the elements
+in the hash table to the table size. This concept appears frequently when we analyze
+hash table collision resolution strategy.</p>
+</div>
+<div class="section" id="separate-chaining">
+<h4>Separate chaining</h4>
+<p>Separate chaining is to keep a list (chain or bucket) of all elements that hash to the same value. In other words,
+each hash table cell holds pointer to linked list of records with same hash value.
+When collision happens, we insert the hash value of the key to the corresponding linked list of
+the cell that hash value should be stored. When we want to find an item, we compute the
+hash value, then do find on linked list.</p>
+<img alt="" src="/images/separate-chaining.PNG" />
+<p>Here the worst case time happens for find operation, which can take linear time.
+However, this can happen in the extreme rare case (bad luck or bad hash function).
+Of course, we can build a balance tree instead of a linked list on each cell to shrink
+the find time. But, the structure overhead and the compelxity of insert may make this effort not
+worth it.</p>
+<p>The average length of chained list = <span class="math">\(\lambda\)</span>. Thus, the average time for
+accessing an item = <span class="math">\(O(1) + O(\lambda)\)</span>. So, we want <span class="math">\(\lambda\)</span> to be smaller
+than 1 but close to 1 if good hashing function. Thus, the general rule for
+separate chaining hashing is to make the table size about as large as the number of
+elements expected (let <span class="math">\(\lambda \approx 1\)</span>).</p>
+</div>
+<div class="section" id="open-addressing">
+<h4>Open addressing</h4>
+<p>One disadvantage for the separate chaining strategy is that we need to build linked list
+for each cell, whcih introduces the overhead that can waste space. Another strategy to
+resolve collision is to try other empty cells. This is called open addressing. In general,
+open addressing means resolving collisions by trying a sequence of other positions in the table.
+Trying the next spot is called <em>probing</em>. More formally, cells <span class="math">\(h_0(X), h_1(x), h_2(x), \dots\)</span>
+are tried in succession until either x is found or we find an empty location (x not present).
+<span class="math">\(h_i(x) = (Hash(x) + F(i)) mod TableSize\)</span>, with <span class="math">\(F(0) = 0\)</span>. The function <span class="math">\(F\)</span>
+is the collision resolution strategy.</p>
+<p>Various flavors of open addressing differ in which probe sequence they use. This is reflected in <span class="math">\(F\)</span>.
+Three types of resolution function are discussed in the book:</p>
+<ol class="arabic simple">
+<li>Linear probing: <span class="math">\(F(i) = i\)</span></li>
+<li>Quadratic probing: <span class="math">\(F(i) = i^2\)</span></li>
+<li>Double probing: <span class="math">\(F(i) = i * Hash_2(x)\)</span></li>
+</ol>
+<p>Generally, the load factor should be below <span class="math">\(\lambda = 0.5\)</span> for open addressing hashing.</p>
+<div class="section" id="linear-probing">
+<h5>Linear probing</h5>
+<p>With linear probing, we try the cells sequentially (with wraparound) insearch of an empty cell.
+This strategy has a fundamental problem called <em>primary clustering</em>, which means blocks
+of occupied cells start forming. Any key that hashes into the cluster will require several
+attempts to resolve the collision, and then it will add to the cluster. In other words, primary
+clustering means elements that hash to different cells probe same alternative cells.</p>
+</div>
+<div class="section" id="quadratic-probing">
+<h5>Quadratic probing</h5>
+<p>Quadratic probing is a collision resolution method that eliminates the primary clustering problem
+of linear probing. But it has its own restriction or problem:</p>
+<ul class="simple">
+<li>If quadratic probing is used and the table size is prime, then a new element
+can always be inserted if the table is at least half empty. However, insertion is not guaranteed
+if <span class="math">\(\lambda &gt; 0.5\)</span>.</li>
+<li><em>Secondary clustering</em>, which means elements that hash to the same position will probe the same alternative cells.</li>
 </ul>
-<p>The major unique manipulation is we may need to split the node at the leaves and recursives make the new parent nodes (by pushing a key up to its parent)
-to the root. Other strategies regarding nodes overloaded also exist but this one is classic textbook.</p>
-<ul>
-<li>Deletion:</li>
+</div>
+<div class="section" id="double-hashing">
+<h5>Double hashing</h5>
+<p>Double probing <span class="math">\(F\)</span> says that we apply a second hash function to x and probe
+at a distance <span class="math">\(hash_2(x), 2hash_2(x), \dots\)</span>, and so on.</p>
+<p>When <span class="math">\(\lambda\)</span> exceeds certain value, we need to build a bigger hash table of
+approximately twice the size and be prime. This is called rehashing.</p>
+<p>In addition, when hash table cannot be contained in the memory and have to store part of structure on the disk,
+then the disk I/O becomes the main cost. In this case, we use different hash scheme, which is called extendible hashing.
+Like B-tree, this structure is widely applied in the database field.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="left-out">
+<h2>Left Out</h2>
+<p>Some material I left out when I work through this chapter majorly due to the time
+constraint:</p>
+<ul class="simple">
+<li>5.7, 5.12, 5.13, 5.15</li>
 </ul>
-<p>I have to say deletion is the most messy one and people may always want to talk about it conceptually instead of getting hands dirty
-to actually implement one. Stanford paper listed in the reference section do a concrete implementation but the route they use is to implement
-a real-life B-tree deletion which may be complicated for the learner. </p>
-<p>The strategy we use for deletion is that we want to find the key to be deleted and remove it first. Then, if the leaf underflows, we borrow from 
-a neighbor. If leaf underflows and can't borrow, we merge nodes and delete parent.</p>
-<h2>Runtime analysis</h2>
-<p>We first show that height <span class="math">\(H\)</span> is logarithmic in number of data items <span class="math">\(N\)</span>. Let <span class="math">\(M \ge 2\)</span>. Because all nodes are at least half full (except root may have
-only 2 children) and all leaves are at the same level, the minimum number od data items <span class="math">\(N\)</span> for a height <span class="math">\(H\)</span> tree is </p>
-<div class="math">$$
-N \ge \underbrace{2(\lceil{M/2}\rceil)^{H-1}}_\textrm{min number of leaves}\times\underbrace{\lceil{L/2}\rceil}_\textrm{min data per leaf}
-$$</div>
-<p>Then for a B-tree of order <span class="math">\(M\)</span></p>
-<ul>
-<li>Each internal node has up to <span class="math">\(M-1\)</span> keys to search</li>
-<li>Each internal node has between <span class="math">\(\lceil{M/2}\rceil\)</span> and <span class="math">\(M\)</span> children</li>
-<li>Depth of B-tree storing <span class="math">\(N\)</span> items is <span class="math">\(O(\log_{\lceil{M/2}\rceil}N)\)</span></li>
-</ul>
-<p>Find then takes <span class="math">\(O(\log M)\)</span> to do binary search on each node to determine which branch to take. Then the total time is 
-O(depth <span class="math">\(\times \log M\)</span>) = <span class="math">\(O(\log N)\)</span> because <span class="math">\(M\)</span> is small compared to <span class="math">\(N\)</span>.</p>
-<p>Insertion and deletion doesn't different from <span class="math">\(O(\log N)\)</span> because the unique manipulation takes constant amount of work and the number 
-of times this unique manipulation is proportional to the height of tree.</p>
-<h2>Pros &amp; Cons of data structure</h2>
-<p>What makes B-trees so disk friendly?</p>
-<ul>
-<li>
-<p>Many keys stored in one node </p>
-<ul>
-<li>All brought into memory in one disk access</li>
-<li>Pick <span class="math">\(M\)</span> wisely. See MAW's Java version (3rd edition) p.149 for an example.</li>
-<li>Makes the binary searhc over <span class="math">\(M-1\)</span> keys totally worth it.</li>
-</ul>
-</li>
-<li>
-<p>Internal nodes contain only keys</p>
-<ul>
-<li>All find wants only one data item. So only bring one leaf of data items into memory.</li>
-<li>Data-item size doesn't affect what <span class="math">\(M\)</span> is. We determine <span class="math">\(M\)</span> only by how many keys can be packed into a disk block (node).
-  Thus, the key size, the children pointer size, and the block size are the only factors here.</li>
-</ul>
-</li>
-</ul>
+</div>
+<div class="section" id="reference">
 <h2>Reference</h2>
-<ul>
-<li>MAW Chapter 4</li>
-<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture15.pdf</li>
-<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf</li>
-<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture9.pdf</li>
-<li>http://www.cs.yale.edu/homes/aspnes/pinewiki/BTrees.html</li>
-<li>http://ilpubs.stanford.edu:8090/85/1/1995-19.pdf</li>
+<ul class="simple">
+<li>MAW Chapter 5</li>
+<li><a class="reference external" href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf">https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf</a></li>
+<li><a class="reference external" href="https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf">https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf</a></li>
 </ul>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+</div>
+<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
         linebreak = "false";
@@ -208,7 +257,7 @@ of times this unique manipulation is proportional to the height of tree.</p>
         <h2>Comments !</h2>
             <div id="disqus_thread"></div>
             <script type="text/javascript">
-               var disqus_identifier = "posts/2017/Mar/11/b-tree/";
+               var disqus_identifier = "posts/2017/Mar/17/maw-chapter-5-reflection/";
                (function() {
                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
                dsq.src = 'https://zhu45-org.disqus.com/embed.js';
@@ -232,9 +281,9 @@ MySQL 5.1 Plugins Development by Andrew Hutchings and Sergei Golubchik is now av
                 <div class="widget">
                         <h2><i class="fa fa-home fa-lg"></i> Categories</h2>
                         <ul>
-                           <li class="active"><a href="../../../../../category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (16)</a></li>
+                           <li ><a href="../../../../../category/data-struct-algo.html"><i class="fa fa-folder-open fa-lg"></i> Data Struct & Algo (16)</a></li>
                            <li ><a href="../../../../../category/mathematics.html"><i class="fa fa-folder-open fa-lg"></i> Mathematics (1)</a></li>
-                           <li ><a href="../../../../../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (5)</a></li>
+                           <li class="active"><a href="../../../../../category/misc.html"><i class="fa fa-folder-open fa-lg"></i> misc (5)</a></li>
                            <li ><a href="../../../../../category/programming-languages.html"><i class="fa fa-folder-open fa-lg"></i> programming languages (5)</a></li>
                            <li ><a href="../../../../../category/tools.html"><i class="fa fa-folder-open fa-lg"></i> tools (5)</a></li>
                         </ul>

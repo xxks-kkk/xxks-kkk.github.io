@@ -1,6 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Tech Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Thu, 16 Mar 2017 17:41:00 +0800</lastBuildDate><item><title>MAW Chapter 5: Hashing writing questions</title><link>http://zhu45.org/posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/</link><description>&lt;h2&gt;Solutions&lt;/h2&gt;
-&lt;p&gt;including: MAW 5.4, 5.5, 5.10, 5.11&lt;/p&gt;
+<rss version="2.0"><channel><title>Tech Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Fri, 17 Mar 2017 15:56:00 +0800</lastBuildDate><item><title>MAW: Chapter 5 Reflection</title><link>http://zhu45.org/posts/2017/Mar/17/maw-chapter-5-reflection/</link><description>&lt;p&gt;This is the summary part of hash table and at the same time, it serves as the Chapter 5
+reflection.&lt;/p&gt;
+&lt;div class="section" id="reflection"&gt;
+&lt;h2&gt;Reflection&lt;/h2&gt;
+&lt;div class="section" id="motivation"&gt;
+&lt;h3&gt;Motivation&lt;/h3&gt;
+&lt;p&gt;In the previous chapter, we implement the dictionary (map) ADT using tree structure.
+A typical find or insert operations require &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time. However, this is
+not good enough compared with &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt; time. This is place where hash tables implementation
+can shine. Hash tables is a data structure that is designed for &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt; find, insert, and delete
+operations. The only downside compared hash tables with tree structure is the ill support for ordering elements.&lt;/p&gt;
+&lt;img src="/images/maw-chap5.PNG" alt="chapter5 ADT picture" style="width: 700px;"/&gt;&lt;/div&gt;
+&lt;div class="section" id="general-idea"&gt;
+&lt;h3&gt;General Idea&lt;/h3&gt;
+&lt;p&gt;A hash table is an array of some fixed size. Then we use hash function to map each key
+(i.e. a key is a string with an associated value) into some number in the range &lt;tt class="docutils literal"&gt;0&lt;/tt&gt; to
+&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;Tablesize-1&lt;/span&gt;&lt;/tt&gt; and place it in the appropriate cell.&lt;/p&gt;
+&lt;img alt="" src="/images/hashtable.PNG" /&gt;
+&lt;p&gt;Ideally, two distinct keys get different cells. However, this is not possible because
+there are a finite number of cells and a virtually infinite supply of keys. Thus the key
+concern for hash table data structure is how to distribute the keys evenly among the cells.
+This issue is addressed from two ways:
+1) pick a good hash function to avoid collision (i.e. two keys hash to the same value)
+2) use a good strategy to redistribute keys when collision happens.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="hash-function"&gt;
+&lt;h3&gt;Hash function&lt;/h3&gt;
+&lt;p&gt;Hash function is a mapping from the element key (string or number) to an integer
+(the hash value). The output of the hash function must always be less than the size of
+array and should be as evenly distributed as possible. One thing to note here is that
+the pick of hash function has high dependency on the actual content of the key set.&lt;/p&gt;
+&lt;p&gt;We list some key points from the chapter here:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Choose the table size of the hash table to be the prime.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The rationale for this is that real-life data tends to have pattern, and &amp;quot;multiples of 61&amp;quot;
+are probably less likely than &amp;quot;multiples of 60&amp;quot;. In addition, quadratic hashing is an efficient
+collision strategy to use (compared with linear hashing, double hashing) and it requires the table size
+to be the prime.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;When we deal with string keys, we may use &lt;span class="math"&gt;\(\big(\sum_{i=0}^{k-1} s_i \cdot 256^i \big) \% TableSize\)&lt;/span&gt;
+as our function.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here we use 256 because &lt;cite&gt;char&lt;/cite&gt; data is 1 byte. Other hash function may be adding up the ASCII values ofthe characters
+in the string. However, this doesn't work well because if string keys are short, it will not hash evenly to all of the
+hash table (see MAW p.151) and different character combinations hash to same value (i.e. &amp;quot;abc&amp;quot;, &amp;quot;bca&amp;quot; all add up to the
+same value).&lt;/p&gt;
+&lt;p&gt;The slides listed in the reference section offer some examples on hash function pick if
+we know the keys beforehand (i.e. if keys &lt;span class="math"&gt;\(s\)&lt;/span&gt; are the real numbers uniformly
+distributed over &lt;span class="math"&gt;\(0 \leq s &amp;lt; 1\)&lt;/span&gt;).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="collision-strategy"&gt;
+&lt;h3&gt;Collision strategy&lt;/h3&gt;
+&lt;p&gt;A collision occurs when two different keys hash to the same value. By the nature of dictionary ADT,
+we cannot store both data records in the same cell in the array. So, we need to come up a strategy
+to resolve collision and try our best to make the keys evenly distribute among the table. There are
+two main strategies discussed in the chapter: separate chaining and open addressing.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="first admonition-title"&gt;Note&lt;/p&gt;
+&lt;p class="last"&gt;Load factor &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; defined as the ratio of the number of the elements
+in the hash table to the table size. This concept appears frequently when we analyze
+hash table collision resolution strategy.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="separate-chaining"&gt;
+&lt;h4&gt;Separate chaining&lt;/h4&gt;
+&lt;p&gt;Separate chaining is to keep a list (chain or bucket) of all elements that hash to the same value. In other words,
+each hash table cell holds pointer to linked list of records with same hash value.
+When collision happens, we insert the hash value of the key to the corresponding linked list of
+the cell that hash value should be stored. When we want to find an item, we compute the
+hash value, then do find on linked list.&lt;/p&gt;
+&lt;img alt="" src="/images/separate-chaining.PNG" /&gt;
+&lt;p&gt;Here the worst case time happens for find operation, which can take linear time.
+However, this can happen in the extreme rare case (bad luck or bad hash function).
+Of course, we can build a balance tree instead of a linked list on each cell to shrink
+the find time. But, the structure overhead and the compelxity of insert may make this effort not
+worth it.&lt;/p&gt;
+&lt;p&gt;The average length of chained list = &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt;. Thus, the average time for
+accessing an item = &lt;span class="math"&gt;\(O(1) + O(\lambda)\)&lt;/span&gt;. So, we want &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; to be smaller
+than 1 but close to 1 if good hashing function. Thus, the general rule for
+separate chaining hashing is to make the table size about as large as the number of
+elements expected (let &lt;span class="math"&gt;\(\lambda \approx 1\)&lt;/span&gt;).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="open-addressing"&gt;
+&lt;h4&gt;Open addressing&lt;/h4&gt;
+&lt;p&gt;One disadvantage for the separate chaining strategy is that we need to build linked list
+for each cell, whcih introduces the overhead that can waste space. Another strategy to
+resolve collision is to try other empty cells. This is called open addressing. In general,
+open addressing means resolving collisions by trying a sequence of other positions in the table.
+Trying the next spot is called &lt;em&gt;probing&lt;/em&gt;. More formally, cells &lt;span class="math"&gt;\(h_0(X), h_1(x), h_2(x), \dots\)&lt;/span&gt;
+are tried in succession until either x is found or we find an empty location (x not present).
+&lt;span class="math"&gt;\(h_i(x) = (Hash(x) + F(i)) mod TableSize\)&lt;/span&gt;, with &lt;span class="math"&gt;\(F(0) = 0\)&lt;/span&gt;. The function &lt;span class="math"&gt;\(F\)&lt;/span&gt;
+is the collision resolution strategy.&lt;/p&gt;
+&lt;p&gt;Various flavors of open addressing differ in which probe sequence they use. This is reflected in &lt;span class="math"&gt;\(F\)&lt;/span&gt;.
+Three types of resolution function are discussed in the book:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Linear probing: &lt;span class="math"&gt;\(F(i) = i\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Quadratic probing: &lt;span class="math"&gt;\(F(i) = i^2\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Double probing: &lt;span class="math"&gt;\(F(i) = i * Hash_2(x)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Generally, the load factor should be below &lt;span class="math"&gt;\(\lambda = 0.5\)&lt;/span&gt; for open addressing hashing.&lt;/p&gt;
+&lt;div class="section" id="linear-probing"&gt;
+&lt;h5&gt;Linear probing&lt;/h5&gt;
+&lt;p&gt;With linear probing, we try the cells sequentially (with wraparound) insearch of an empty cell.
+This strategy has a fundamental problem called &lt;em&gt;primary clustering&lt;/em&gt;, which means blocks
+of occupied cells start forming. Any key that hashes into the cluster will require several
+attempts to resolve the collision, and then it will add to the cluster. In other words, primary
+clustering means elements that hash to different cells probe same alternative cells.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="quadratic-probing"&gt;
+&lt;h5&gt;Quadratic probing&lt;/h5&gt;
+&lt;p&gt;Quadratic probing is a collision resolution method that eliminates the primary clustering problem
+of linear probing. But it has its own restriction or problem:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;If quadratic probing is used and the table size is prime, then a new element
+can always be inserted if the table is at least half empty. However, insertion is not guaranteed
+if &lt;span class="math"&gt;\(\lambda &amp;gt; 0.5\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Secondary clustering&lt;/em&gt;, which means elements that hash to the same position will probe the same alternative cells.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="double-hashing"&gt;
+&lt;h5&gt;Double hashing&lt;/h5&gt;
+&lt;p&gt;Double probing &lt;span class="math"&gt;\(F\)&lt;/span&gt; says that we apply a second hash function to x and probe
+at a distance &lt;span class="math"&gt;\(hash_2(x), 2hash_2(x), \dots\)&lt;/span&gt;, and so on.&lt;/p&gt;
+&lt;p&gt;When &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; exceeds certain value, we need to build a bigger hash table of
+approximately twice the size and be prime. This is called rehashing.&lt;/p&gt;
+&lt;p&gt;In addition, when hash table cannot be contained in the memory and have to store part of structure on the disk,
+then the disk I/O becomes the main cost. In this case, we use different hash scheme, which is called extendible hashing.
+Like B-tree, this structure is widely applied in the database field.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="left-out"&gt;
+&lt;h2&gt;Left Out&lt;/h2&gt;
+&lt;p&gt;Some material I left out when I work through this chapter majorly due to the time
+constraint:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;5.7, 5.12, 5.13, 5.15&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="reference"&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;MAW Chapter 5&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf"&gt;https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf"&gt;https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;script type='text/javascript'&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</description><pubDate>Fri, 17 Mar 2017 15:56:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-03-17:posts/2017/Mar/17/maw-chapter-5-reflection/</guid><category>meta</category><category>maw</category><category>hashing</category></item><item><title>MAW Chapter 5: Hashing writing questions</title><link>http://zhu45.org/posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/</link><description>&lt;h2&gt;Solutions&lt;/h2&gt;
+&lt;p&gt;including: MAW 5.4, 5.5, 5.6, 5.10, 5.11&lt;/p&gt;
 &lt;h3&gt;MAW 5.4&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;A large number of deletions in a separate chaining hash table can cause the 
@@ -42,6 +246,22 @@ an insert and for a successful search?&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;The running time is probably similar to quadratic probing. The advantage here is that 
 the insertion can't fail unless the table is full.&lt;/p&gt;
+&lt;h3&gt;MAW 5.6&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;What are the advantages and disadvantages of the various collision resolution strategies?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Separate chaining hashing requires the use of pointers, which costs some memory, and the 
+standard method of implementing calls on memory allocation routines, which typically are
+expensive. &lt;/p&gt;
+&lt;p&gt;Linear probing is easily implemented, but performance degrades severly as the load 
+factor increases because of primary clustering. &lt;/p&gt;
+&lt;p&gt;Quadratic probing is only slightly more 
+difficult to implement and gives good performance in practice. An insertion can fail 
+if the table is half empty, but this is not likely. Even if it were, such an insertion 
+would be so expensive that it wouldn't matter and would almost certainly point up a 
+weakness in the hash function. &lt;/p&gt;
+&lt;p&gt;Double hashing eliminates primary and secondary clustering but the computation of a second
+hash function can be costly. &lt;/p&gt;
 &lt;h3&gt;MAW 5.10&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Describe a procedure that avoids initializing a hash table (at the expense of memory).&lt;/p&gt;
@@ -74,11 +294,11 @@ $$&lt;/div&gt;
 &lt;div class="math"&gt;$$
 H_2 = (32^1A_{i+1} + \dots + 32^kA_{i+k}) \% N
 $$&lt;/div&gt;
-&lt;p&gt;If we take a look at the relationship between these two equations, we can see 
-&lt;/p&gt;
-&lt;div class="math"&gt;$$H_2 = H_1 - 32^0A_i \% N + 32^kA_{i+k} % N$$&lt;/div&gt;
-&lt;p&gt;. This can be computed in constant time
-if &lt;span class="math"&gt;\(H_1\)&lt;/span&gt; is known.&lt;/p&gt;
+&lt;p&gt;If we take a look at the relationship between these two equations, we can see &lt;/p&gt;
+&lt;div class="math"&gt;$$
+H_2 = H_1 - 32^0A_i \% N + 32^kA_{i+k} % N
+$$&lt;/div&gt;
+&lt;p&gt;This can be computed in constant time if &lt;span class="math"&gt;\(H_1\)&lt;/span&gt; is known.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;b. Show that the running time is &lt;span class="math"&gt;\(O(k+N)\)&lt;/span&gt; plus the time spent refuting false matches.&lt;/p&gt;
 &lt;/blockquote&gt;
