@@ -86,7 +86,7 @@ are probably less likely than &quot;multiples of 60&quot;. In addition, quadrati
 collision strategy to use (compared with linear hashing, double hashing) and it requires the table size
 to be the prime.</p>
 <ul class="simple">
-<li>When we deal with string keys, we may use <span class="math">\(\big(\sum_{i=0}^{k-1} s_i \cdot 256^i \big) \% TableSize\)</span>
+<li>When we deal with string keys, we may use <span class="math">\(\big(\sum_{i=0}^{k-1} s_i \cdot 256^i \big) \bmod TableSize\)</span>
 as our function.</li>
 </ul>
 <p>Here we use 256 because <cite>char</cite> data is 1 byte. Other hash function may be adding up the ASCII values ofthe characters
@@ -136,14 +136,14 @@ resolve collision is to try other empty cells. This is called open addressing. I
 open addressing means resolving collisions by trying a sequence of other positions in the table.
 Trying the next spot is called <em>probing</em>. More formally, cells <span class="math">\(h_0(X), h_1(x), h_2(x), \dots\)</span>
 are tried in succession until either x is found or we find an empty location (x not present).
-<span class="math">\(h_i(x) = (Hash(x) + F(i)) mod TableSize\)</span>, with <span class="math">\(F(0) = 0\)</span>. The function <span class="math">\(F\)</span>
+<span class="math">\(h_i(x) = (Hash(x) + F(i)) \bmod TableSize\)</span>, with <span class="math">\(F(0) = 0\)</span>. The function <span class="math">\(F\)</span>
 is the collision resolution strategy.</p>
 <p>Various flavors of open addressing differ in which probe sequence they use. This is reflected in <span class="math">\(F\)</span>.
 Three types of resolution function are discussed in the book:</p>
 <ol class="arabic simple">
 <li>Linear probing: <span class="math">\(F(i) = i\)</span></li>
 <li>Quadratic probing: <span class="math">\(F(i) = i^2\)</span></li>
-<li>Double probing: <span class="math">\(F(i) = i * Hash_2(x)\)</span></li>
+<li>Double hashing: <span class="math">\(F(i) = i \cdot Hash_2(x)\)</span></li>
 </ol>
 <p>Generally, the load factor should be below <span class="math">\(\lambda = 0.5\)</span> for open addressing hashing.</p>
 <div class="section" id="linear-probing">
@@ -167,7 +167,7 @@ if <span class="math">\(\lambda &gt; 0.5\)</span>.</li>
 </div>
 <div class="section" id="double-hashing">
 <h5>Double hashing</h5>
-<p>Double probing <span class="math">\(F\)</span> says that we apply a second hash function to x and probe
+<p>Double hashing <span class="math">\(F\)</span> says that we apply a second hash function to x and probe
 at a distance <span class="math">\(hash_2(x), 2hash_2(x), \dots\)</span>, and so on.</p>
 <p>When <span class="math">\(\lambda\)</span> exceeds certain value, we need to build a bigger hash table of
 approximately twice the size and be prime. This is called rehashing.</p>

@@ -39,7 +39,7 @@ are probably less likely than &amp;quot;multiples of 60&amp;quot;. In addition, 
 collision strategy to use (compared with linear hashing, double hashing) and it requires the table size
 to be the prime.&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;When we deal with string keys, we may use &lt;span class="math"&gt;\(\big(\sum_{i=0}^{k-1} s_i \cdot 256^i \big) \% TableSize\)&lt;/span&gt;
+&lt;li&gt;When we deal with string keys, we may use &lt;span class="math"&gt;\(\big(\sum_{i=0}^{k-1} s_i \cdot 256^i \big) \bmod TableSize\)&lt;/span&gt;
 as our function.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Here we use 256 because &lt;cite&gt;char&lt;/cite&gt; data is 1 byte. Other hash function may be adding up the ASCII values ofthe characters
@@ -89,14 +89,14 @@ resolve collision is to try other empty cells. This is called open addressing. I
 open addressing means resolving collisions by trying a sequence of other positions in the table.
 Trying the next spot is called &lt;em&gt;probing&lt;/em&gt;. More formally, cells &lt;span class="math"&gt;\(h_0(X), h_1(x), h_2(x), \dots\)&lt;/span&gt;
 are tried in succession until either x is found or we find an empty location (x not present).
-&lt;span class="math"&gt;\(h_i(x) = (Hash(x) + F(i)) mod TableSize\)&lt;/span&gt;, with &lt;span class="math"&gt;\(F(0) = 0\)&lt;/span&gt;. The function &lt;span class="math"&gt;\(F\)&lt;/span&gt;
+&lt;span class="math"&gt;\(h_i(x) = (Hash(x) + F(i)) \bmod TableSize\)&lt;/span&gt;, with &lt;span class="math"&gt;\(F(0) = 0\)&lt;/span&gt;. The function &lt;span class="math"&gt;\(F\)&lt;/span&gt;
 is the collision resolution strategy.&lt;/p&gt;
 &lt;p&gt;Various flavors of open addressing differ in which probe sequence they use. This is reflected in &lt;span class="math"&gt;\(F\)&lt;/span&gt;.
 Three types of resolution function are discussed in the book:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
 &lt;li&gt;Linear probing: &lt;span class="math"&gt;\(F(i) = i\)&lt;/span&gt;&lt;/li&gt;
 &lt;li&gt;Quadratic probing: &lt;span class="math"&gt;\(F(i) = i^2\)&lt;/span&gt;&lt;/li&gt;
-&lt;li&gt;Double probing: &lt;span class="math"&gt;\(F(i) = i * Hash_2(x)\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Double hashing: &lt;span class="math"&gt;\(F(i) = i \cdot Hash_2(x)\)&lt;/span&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Generally, the load factor should be below &lt;span class="math"&gt;\(\lambda = 0.5\)&lt;/span&gt; for open addressing hashing.&lt;/p&gt;
 &lt;div class="section" id="linear-probing"&gt;
@@ -120,7 +120,7 @@ if &lt;span class="math"&gt;\(\lambda &amp;gt; 0.5\)&lt;/span&gt;.&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="double-hashing"&gt;
 &lt;h5&gt;Double hashing&lt;/h5&gt;
-&lt;p&gt;Double probing &lt;span class="math"&gt;\(F\)&lt;/span&gt; says that we apply a second hash function to x and probe
+&lt;p&gt;Double hashing &lt;span class="math"&gt;\(F\)&lt;/span&gt; says that we apply a second hash function to x and probe
 at a distance &lt;span class="math"&gt;\(hash_2(x), 2hash_2(x), \dots\)&lt;/span&gt;, and so on.&lt;/p&gt;
 &lt;p&gt;When &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; exceeds certain value, we need to build a bigger hash table of
 approximately twice the size and be prime. This is called rehashing.&lt;/p&gt;
@@ -288,15 +288,15 @@ value of &lt;span class="math"&gt;\(A_{i+1}A_{i+2}\dots A_{i+k}\)&lt;/span&gt; c
 as the function to compute the hash value of a given string. Then, by this definition,
 &lt;span class="math"&gt;\(A_iA_{i+1}\dots A_{i+k-1}\)&lt;/span&gt; can be computed as &lt;/p&gt;
 &lt;div class="math"&gt;$$
-H_1 = (32^0A_i + 32^1A_{i+1} + \dots + 32^{k-1}A_{i+k-1}) \% N
+H_1 = (32^0A_i + 32^1A_{i+1} + \dots + 32^{k-1}A_{i+k-1}) \bmod N
 $$&lt;/div&gt;
 &lt;p&gt;similarly, &lt;span class="math"&gt;\(A_{i+1}A_{i+2}\dots A_{i+k}\)&lt;/span&gt; can be computed as &lt;/p&gt;
 &lt;div class="math"&gt;$$
-H_2 = (32^1A_{i+1} + \dots + 32^kA_{i+k}) \% N
+H_2 = (32^1A_{i+1} + \dots + 32^kA_{i+k}) \bmod N
 $$&lt;/div&gt;
 &lt;p&gt;If we take a look at the relationship between these two equations, we can see &lt;/p&gt;
 &lt;div class="math"&gt;$$
-H_2 = H_1 - 32^0A_i \% N + 32^kA_{i+k} % N
+H_2 = H_1 - 32^0A_i \bmod N + 32^kA_{i+k} \bmod N
 $$&lt;/div&gt;
 &lt;p&gt;This can be computed in constant time if &lt;span class="math"&gt;\(H_1\)&lt;/span&gt; is known.&lt;/p&gt;
 &lt;blockquote&gt;
