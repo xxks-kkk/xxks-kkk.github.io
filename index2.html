@@ -61,127 +61,103 @@ Zeyuan Hu's website            </a>
     <div class="row">
         <div class="col-lg-12">
             <article>
-                <h2><a href="./posts/2017/Jan/23/maw-chapter-3-reflection/">MAW: Chapter 3 Reflection</a></h2>
+                <h2><a href="./posts/2017/Jan/24/tree-terminology/">Tree Terminology</a></h2>
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-23T10:45:00+08:00">Mon 23 Jan 2017, 10:45</abbr></p>
-</footer><!-- /.post-info -->                    <p>I finally finish Chapter 3: List, Stacks, and Queues with almost all the problems
-solved. It's time to do some summary and reflection.</p>
-<div class="section" id="reflection">
-<h2>Reflection</h2>
-<p>One important philosophy in this chapter is the
-separation between the interface exposed to the user and the implementation details behind the scene.
-The interface exposed to the user is the Abstract Data Types (ADTs). In this chapter,
-the interface in this chapter is &quot;List&quot;. However, there are multiple implementations can meet the
-requirement of the interface, which are &quot;Array&quot; and &quot;Linked Lists&quot;. We can further
-categorize &quot;List&quot; interface into different subcategories &quot;Stack&quot;, &quot;Queue&quot;, &quot;Deque&quot;.
-In other words, even we talk about &quot;Stack&quot; ADT, &quot;Queue&quot; ADT, and &quot;Deque&quot; ADT, they are
-all essentially the &quot;List&quot; but with some restrictions in terms of list operations.
-Here is a picture that helps us to understand this concept better:</p>
-<img alt="" src="/images/maw-chap3.PNG" />
-<p>In terms of actual implementation, we can get a sense of what's the basic structure that a data structure
-should have. Take a linked list implementation of a queue as an example. The key characteristics
-of a queue is that it should have a <span class="math">\(O(1)\)</span> operation on both enqueue and dequeue. This leads us to
-the pointer to pointing both the front and rear of the list. Thus, our queue &quot;queue.h&quot; and &quot;queue.c&quot;
-look like respectively:</p>
-<div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">QueueRecord</span><span class="p">;</span>
-<span class="k">struct</span> <span class="n">QueueCDT</span><span class="p">;</span>
-<span class="k">typedef</span> <span class="k">struct</span> <span class="n">QueueRecord</span><span class="o">*</span> <span class="n">PtrToNode</span><span class="p">;</span>
-<span class="k">typedef</span> <span class="k">struct</span> <span class="n">QueueCDT</span><span class="o">*</span> <span class="n">QueueADT</span><span class="p">;</span>
-</pre></div>
-<div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">QueueRecord</span>
-<span class="p">{</span>
-  <span class="n">ET</span> <span class="n">Element</span><span class="p">;</span>
-  <span class="n">PtrToNode</span> <span class="n">Next</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">QueueCDT</span>
-<span class="p">{</span>
-  <span class="n">PtrToNode</span> <span class="n">Front</span><span class="p">;</span>
-  <span class="n">PtrToNode</span> <span class="n">Rear</span><span class="p">;</span>
-<span class="p">};</span>
-</pre></div>
-<p>Here, our queue pointed by <tt class="docutils literal">QueueADT</tt> is defined by two pointers: <tt class="docutils literal">Front</tt> and <tt class="docutils literal">Rear</tt>.
-Then, Those two pointers are pointing to our actual <tt class="docutils literal">QueueRecord</tt>, which how we form our linked list implementation.
-So, when we implement a data structure, we can take a top-down view by first thinking about
-what characterizes our data structure. That's the very important first step we take. Then, we can think
-follow the flow naturally by defining what are the required elements to implement those characteristics.</p>
-</div>
-<div class="section" id="chapter-structure">
-<h2>Chapter Structure</h2>
-<p><strong>Linked List</strong></p>
-<ul class="simple">
-<li>Singly Linked List</li>
-<li>Doubly Linked List</li>
-<li>Circular Linked List</li>
-<li>Applications:<ul>
-<li>Polynomial ADT</li>
-<li>Raxi Sort</li>
-</ul>
-</li>
-</ul>
-<p><strong>Stacks</strong></p>
-<ul class="simple">
-<li>Linked List implementation</li>
-<li>Array implementation</li>
-<li>Applications:<ul>
-<li>Balancing Symbols</li>
-<li>Postfix Expression (Postfix expression evaluation; Infix to Postfix Conversion)</li>
-<li>Function Call Stack</li>
-</ul>
-</li>
-</ul>
-<p><strong>Queue</strong></p>
-<ul class="simple">
-<li>Array implementation</li>
-<li>Linked List implementation</li>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-24T20:23:00+08:00">Tue 24 Jan 2017, 20:23</abbr></p>
+</footer><!-- /.post-info -->                    <div class="section" id="terminology">
+<h2>Terminology</h2>
+<p>Like &quot;list&quot; in Chapter 3, &quot;Trees&quot; is another type of abstraction.</p>
+<p><strong>tree</strong>, <strong>root</strong>, <strong>edge</strong></p>
+<p>We can define a tree recursively. A tree is a collection of nodes. The collection
+can be empty; otherwise, a tree consists of a distinguish node <em>r</em>, called the
+<em>root</em>, and zero or more nonempty (sub)tress <span class="math">\(T_1\)</span>, <span class="math">\(T_2\)</span>, ..., <span class="math">\(T_k\)</span>,
+each of whose roots are connected by a directed <em>edge</em> from <em>r</em>.</p>
+<img alt="" src="/images/subtree.PNG" />
+<p><strong>child</strong>, <strong>parent</strong></p>
+<p>The root of each subtree is said to be a <em>child</em> of <em>r</em>, and <em>r</em> is the <em>parent</em>
+of each subtree root.</p>
+<p><strong>leaves</strong></p>
+<p>Nodes with no children are known as <em>leaves</em>.</p>
+<p><strong>siblings</strong></p>
+<p>Nodes with the same parent are <em>siblings</em>.</p>
+<p><strong>path</strong></p>
+<p>A <em>path</em> from node <span class="math">\(n_1\)</span> to <span class="math">\(n_k\)</span> is defined as a sequence of nodes
+<span class="math">\(n_1\)</span>, <span class="math">\(n_2\)</span>, ..., <span class="math">\(n_k\)</span> such that <span class="math">\(n_i\)</span> is the parent of
+<span class="math">\(n_{i+1}\)</span> for <span class="math">\(1&lt;= i &lt; k\)</span>.</p>
+<p><strong>length</strong></p>
+<p>The <em>length</em> of this path is the number of edges on the path, namely <span class="math">\(k-1\)</span>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>There is a path of length zero from every node to itself.</li>
+<li>Notice that in a tree there is exactly one path from the root to each node.</li>
 </ul>
 </div>
-<div class="section" id="notable-questions">
-<h2>Notable Questions</h2>
-<ul>
-<li><p class="first">3.4, 3.5</p>
-<p>implement set operations using &quot;List&quot; interface. Especialy the union one
-provides insights on how we can implement addition of polynomials (3.6)
-and integer addition (3.9)</p>
-</li>
-<li><p class="first">3.6, 3.7, 3.8, 3.9</p>
-<p>a set of problems relating to Polynomial ADT</p>
-</li>
-<li><p class="first">3.10, 3.24</p>
-<p>problems to practice recurrence relation. Josephus problem is particular
-interesting because it's a good combination of mathematics, algorithm (dynamic programming)
-and data structures.</p>
-</li>
-<li><p class="first">3.12, 3.21, 3.23</p>
-<p>commonly-seen interview questions</p>
-</li>
-<li><p class="first">3.13</p>
-<p>require us to actually implement a radix sort in a real problem.</p>
-</li>
-<li><p class="first">3.18</p>
-<p>balancing symbols using Stack. A really cool problem that the end-product
-is a tool that you can use in your daily work.</p>
-</li>
-<li><p class="first">3.19, 3.20</p>
-<p>Postfix, Infix related problems. Learn about &quot;shunting yard&quot; algorithm
-and how left associate operators (i.e +, -) is different from
-right associate operators (i.e ^) in terms of implementation.</p>
-</li>
-<li><p class="first">3.25, 3.26</p>
-<p>Implement Queue and its variation, Deque, using different data structures.
-In particular, circular array implementation.</p>
-</li>
+<p><strong>depth</strong></p>
+<p>For any node <span class="math">\(n_i\)</span>, the <em>depth</em> of <span class="math">\(n_i\)</span>, is the length of the unique
+path from the root to <span class="math">\(n_i\)</span>.</p>
+<p><strong>internal path length</strong></p>
+<p>The sum of the depths of all nodes in a tree is known as the <em>internal path length</em>.</p>
+<p><strong>height</strong></p>
+<p>The <em>height</em> of <span class="math">\(n_i\)</span> is the length of the longest path from <span class="math">\(n_i\)</span> to
+a leaf.</p>
+<p><strong>ancestor</strong>, <strong>descendant</strong></p>
+<p>If there is a path from <span class="math">\(n_1\)</span> to <span class="math">\(n_2\)</span>, then <span class="math">\(n_1\)</span> is an <em>ancestor</em>
+of <span class="math">\(n_2\)</span> and <span class="math">\(n_2\)</span> is a <em>descendant</em> of <span class="math">\(n_1\)</span>. If <span class="math">\(n_1 \neq n_2\)</span>,
+then <span class="math">\(n_1\)</span> is a <em>proper ancestor</em> of <span class="math">\(n_2\)</span> and <span class="math">\(n_2\)</span> is a <em>proper descendant</em> of <span class="math">\(n_1\)</span>.</p>
+<p><strong>internal node</strong></p>
+<p>An <em>internal node</em>  is a node with at least one child. In other words, internal nodes are nodes other than leaves.</p>
+<p><strong>degree</strong></p>
+<p>The total number of children of a node is called as <em>degree</em> of that node. The highest
+degree of a node among all the nodes in a tree is called as <em>degree of tree</em>.</p>
+<p><strong>level</strong></p>
+<p>The root node is said to be at <em>level 0</em> and the children of root node are at <em>level 1</em>
+and the children of the nodes which are at <em>level 1</em> will be at <em>level 2</em> and so on ...
+In other words, in a tree each step from top to bottom is called as a <em>level</em> and the <em>level</em>
+count starts with '0' and incremented by one at each level (step).</p>
+<img alt="" src="/images/tree-level.PNG" />
+<p><strong>predecessor / successor</strong></p>
+<p>If <span class="math">\(X\)</span> has two children, its predecessor is the maximum value in its left subtree
+and its successor the minimum value in its right subtree. It makes sense if we do in-order
+traversal of the tree.</p>
+<img src="/images/pred-succ.PNG" alt="predecessor-successor" style="width: 700px;"/></div>
+<div class="section" id="some-properties">
+<h2>Some properties</h2>
+<ul class="simple">
+<li>A tree is a collection of N nodes, one of which is the root, and N-1 edges.
+(since each edge connects some node to its parent, and every node except
+the root has one parent.)</li>
+<li>The root is at depth 0.</li>
+<li>All leaves are at height 0.</li>
+<li>The height of a tree is equal to the height of the root.</li>
+<li>The depth of a tree is equal to the depth of the deepest leaf; this is always
+equal to the height of the tree.</li>
 </ul>
 </div>
-<div class="section" id="left-out">
-<h2>Left Out</h2>
-<p>Some material I left out when I work through this chapter:</p>
+<div class="section" id="example">
+<h2>Example</h2>
+<p>Let's work through MAW 4.1, 4.2, and 4.3 to get the tree terminology clear.</p>
+<a class="reference external image-reference" href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/trees/graphviz-src/tree-terminology.gv"><img alt="" src="/images/tree-terminology.png" /></a>
 <ul class="simple">
-<li>function calls as an example of stack (this part is going to be covered from computer system point of view
-in the coming posts).</li>
-<li>cursor implementation of linked list (this part is not on the top priority for now).</li>
-<li>3.7.c, 3.14, 3.16, 3.18.a, 3.22.b</li>
+<li>&quot;A&quot; is the <em>root</em></li>
+<li>&quot;G&quot;, &quot;H&quot;, &quot;I&quot;, &quot;L&quot;, &quot;M&quot;, &quot;K&quot; are the <em>leaves</em></li>
+<li>&quot;A&quot;:<ul>
+<li><em>children</em>: &quot;B&quot;, &quot;C&quot;</li>
+<li><em>depth</em>: 0</li>
+<li><em>height</em>: 4</li>
 </ul>
+</li>
+<li>&quot;B&quot;:<ul>
+<li><em>parent</em>: &quot;A&quot;</li>
+<li><em>children</em>: &quot;D&quot;, &quot;E&quot;</li>
+<li><em>siblings</em>: &quot;C&quot;</li>
+<li><em>depth</em>: 1</li>
+<li><em>height</em>: 3</li>
+</ul>
+</li>
+<li>The depth of the tree is 4</li>
+</ul>
+<!-- `Tree - Terminology <http://btechsmartclass.com/DS/U3_T1.html>`_ -->
 </div>
 <script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
@@ -240,6 +216,21 @@ in the coming posts).</li>
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
+            </article>
+            <hr class="style-eight"></hr>
+            <article>
+                <h2><a href="./posts/2017/Jan/23/maw-chapter-3-reflection/">MAW: Chapter 3 Reflection</a></h2>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-23T10:45:00+08:00">Mon 23 Jan 2017, 10:45</abbr></p>
+</footer><!-- /.post-info -->                <div class="summary"><p>I finally finish Chapter 3: List, Stacks, and Queues with almost all the problems
+solved. It's time to do some summary and reflection.</p>
+<div class="section" id="reflection">
+<h2>Reflection</h2>
+<p>One important philosophy in this chapter is the
+separation between the interface exposed to the user and the implementation details behind the scene.
+The interface ...</p></div>
+                    <a class="btn btn-default btn-xs" href="./posts/2017/Jan/23/maw-chapter-3-reflection/">more ...</a>
+                </div>
             </article>
             <hr class="style-eight"></hr>
             <article>
@@ -356,30 +347,6 @@ Write an arbitrary-precision integer arithmetic package. You should
 use a strategy similar to polynomial arithmetic. Compute the distribution
 of the ...</blockquote>
                     <a class="btn btn-default btn-xs" href="./posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">more ...</a>
-                </div>
-            </article>
-            <hr class="style-eight"></hr>
-            <article>
-                <h2><a href="./posts/2016/Dec/24/a-small-c-trick-i-learned-today/">A small C trick I learned today</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-24T23:11:00+08:00">Sat 24 Dec 2016, 23:11</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>Today I learned a C trick. Here is my original <tt class="docutils literal">printList</tt>:</p>
-<div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="nf">printList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">Pos</span> <span class="n">dummy</span><span class="p">;</span> <span class="c1">// creates a dummy node to traverse the list</span>
-
-  <span class="n">dummy</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-
-  <span class="k">while</span> <span class="p">(</span><span class="n">dummy</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d-&gt;&quot;</span><span class="p">,</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
-    <span class="n">dummy</span> <span class="o">=</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-<p>It works but there is a small caveat in this routine. This ...</p>
-                    <a class="btn btn-default btn-xs" href="./posts/2016/Dec/24/a-small-c-trick-i-learned-today/">more ...</a>
                 </div>
             </article>
             <hr class="style-eight"></hr>

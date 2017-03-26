@@ -61,70 +61,83 @@ Zeyuan Hu's website            </a>
     <div class="row">
         <div class="col-lg-12">
             <article>
+                <h2><a href="./posts/2016/Dec/24/a-small-c-trick-i-learned-today/">A small C trick I learned today</a></h2>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-24T23:11:00+08:00">Sat 24 Dec 2016, 23:11</abbr></p>
+</footer><!-- /.post-info -->                    <p>Today I learned a C trick. Here is my original <tt class="docutils literal">printList</tt>:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">printList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">Pos</span> <span class="n">dummy</span><span class="p">;</span> <span class="c1">// creates a dummy node to traverse the list</span>
+
+  <span class="n">dummy</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="n">dummy</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d-&gt;&quot;</span><span class="p">,</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
+    <span class="n">dummy</span> <span class="o">=</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>It works but there is a small caveat in this routine. This is
+part of print out for the <tt class="docutils literal">linkedListTestMain</tt>:</p>
+<pre class="literal-block">
+TEST: printList
+23-&gt;44-&gt;45-&gt;57-&gt;89-&gt;-1-&gt;
+</pre>
+<p>As you can see, there is a little <tt class="docutils literal"><span class="pre">-&gt;</span></tt> at the end of linked list, which
+is not supposed to be there because there is no next element after <tt class="docutils literal"><span class="pre">-1</span></tt>.</p>
+<p>I try to solve this problem but the solution is not succint and I don't want to
+do complicated stuff just to remove this <tt class="docutils literal"><span class="pre">-&gt;</span></tt>. Howver, I finally get a solution
+today that is very clean to eliminate <tt class="docutils literal"><span class="pre">-&gt;</span></tt> without adding additional complexity to
+the routine.</p>
+<p>In C, we know we can use if-else shorthand likes the following:</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>is equivalent with</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+<span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
+</pre></div>
+<p>We can use this shorthand inside our routine <tt class="docutils literal">printf</tt> statement to solve our problem:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">printList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">Pos</span> <span class="n">dummy</span><span class="p">;</span> <span class="c1">// creates a dummy node to traverse the list</span>
+
+  <span class="n">dummy</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="n">dummy</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d%s&quot;</span><span class="p">,</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">,</span> <span class="p">(</span><span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="s">&quot;-&gt;&quot;</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">));</span>
+    <span class="n">dummy</span> <span class="o">=</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>As you can see, inside <tt class="docutils literal">printf</tt> statement, we don't printout <tt class="docutils literal"><span class="pre">-&gt;</span></tt> by default, we check
+if <tt class="docutils literal"><span class="pre">dummy-&gt;Next</span></tt> is <tt class="docutils literal">NULL</tt>, then that means we are at the last element of the list, and
+we don't append anything (i.e. <tt class="docutils literal"><span class="pre">(&quot;&quot;)</span></tt>). However, if this is not the case, we print <tt class="docutils literal"><span class="pre">-&gt;</span></tt>.</p>
+
+            </article>
+            <hr class="style-eight"></hr>
+            <article>
                 <h2><a href="./posts/2016/Dec/23/print-singly-linked-list-in-reverse-order/">Print singly linked list in reverse order</a></h2>
 <footer class="post-info">
     <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-23T00:05:00+08:00">Fri 23 Dec 2016, 00:05</abbr></p>
-</footer><!-- /.post-info -->                    <p>Today, during the lunch break, I take a look at the following problem:</p>
+</footer><!-- /.post-info -->                <div class="summary"><p>Today, during the lunch break, I take a look at the following problem:</p>
 <blockquote>
 Print a singly linked list in reverse order.</blockquote>
 <p>This is actually one of the interview questions I got at SAP for ABAP developer position
-(luckily, they didn't offer me the position). I didn't get the correct answer at that time
-and I think the problem may help me to kill some time during the break.</p>
-<p>The question itself is not hard if you're familar with linked list and recursion philosophy:</p>
-<div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span>
-<span class="nf">printListReverseHelper</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">L</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">return</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="n">printListReverseHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d-&gt;&quot;</span><span class="p">,</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">printListReverse</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">Pos</span> <span class="n">dummyL</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="n">printListReverseHelper</span><span class="p">(</span><span class="n">dummyL</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-<p>Again, in our implementation of linked list, we use header node. Given the simiplicity of the problem,
-I think it is good time to revisit some basic rules in recursion.</p>
-<p>To be honest, recursion always gives me hard time because I always try to mentally expand all the call
-stack and then work backwards to see if the recursion function gives what I expect. This is super energy
-consuming and error-prone.</p>
-<p>However, things start to get better since I start to read MAW. Here are the four basic rules of recursion
-he emphasizes:</p>
-<blockquote>
-<ol class="arabic simple">
-<li><em>Base cases.</em> You must always have some base cases, which can be solved without recursion.</li>
-<li><em>Making progress.</em> For the cases that are to be solved recursively, the recursive call must always
-be to a case that makes progress toward a base case.</li>
-<li><em>Design rule.</em> Assume that all the recursive calls work.</li>
-<li><em>Compound interest rule.</em> Never duplicate work by solving the same instance of a problem in separate
-recursive calls.</li>
-</ol>
-</blockquote>
-<p>Among the four rules, No.3 rule is easily my most faviroite one. It is stated very simple but it has huge
-impact on how you think about recursion.</p>
-<p>Let's use first three rules to analyze this problem a little bit.</p>
-<ol class="arabic simple">
-<li><em>Base cases.</em> This problem is quite simple. The base case is the case when the list is empty. In this case,
-we have nothing to do and simply return.</li>
-<li><em>Making progress.</em> This is reflected when we call <tt class="docutils literal"><span class="pre">printListReverseHelper(L-&gt;Next)</span></tt>. Each time we make the
-recursive call, we pass in <tt class="docutils literal"><span class="pre">L-&gt;Next</span></tt>, which makes the list shorter. This eventually will make the whole list
-empty, which is the base case.</li>
-<li><em>Design rule.</em> I use this rule to design the whole recursion function. Just imagaine a scenario like the following:
-Suppose you have a list of <tt class="docutils literal"><span class="pre">1-&gt;2-&gt;3</span></tt>. Then, by the rule, we assume that the number <tt class="docutils literal">2</tt> and <tt class="docutils literal">3</tt> are already printed
-in reverse order. What we left to do is to print out <tt class="docutils literal">1</tt> and then we done. We follow this thought process closely
-when we actually write the recursion function. After we write out the base case, we first write <tt class="docutils literal"><span class="pre">printListReverseHelper(L-&gt;Next);</span></tt>
-This is saying that the rest of list (except the first one) is already printed in reverse order (i.e. <tt class="docutils literal">2</tt> and <tt class="docutils literal">3</tt> in our case).
-Then we write <tt class="docutils literal"><span class="pre">printf(&quot;%d-&gt;&quot;,</span> <span class="pre">L-&gt;Element);</span></tt>. This says, ok, since we are only left with the first node, let's print it out and the
-job is done (i.e. <tt class="docutils literal">1</tt> in our case).</li>
-</ol>
-<p>See, how simple the recursion can be if we can actually get over psychological obstacle to expand the call stack mentally and directly apply
-four rules (especially the third rule) to design our function.</p>
-
+(luckily, they didn't offer me the position). I didn't get the ...</p>
+                    <a class="btn btn-default btn-xs" href="./posts/2016/Dec/23/print-singly-linked-list-in-reverse-order/">more ...</a>
+                </div>
             </article>
             <hr class="style-eight"></hr>
             <article>
@@ -249,23 +262,6 @@ that talks about auto deployment with Travis CI</p>
 and then integrate it with Travis-CI to automatically publish the blog
 (basically run pelican to generate the output and push ...</p></blockquote></div>
                     <a class="btn btn-default btn-xs" href="./posts/2016/Nov/27/automatically-publish-tinkerer-bld-output-to-github-with-travis-ci/">more ...</a>
-                </div>
-            </article>
-            <hr class="style-eight"></hr>
-            <article>
-                <h2><a href="./posts/2016/Nov/27/generate-a-linked-list-from-a-given-array/">Generate a Linked List from a given array</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-11-27T19:38:00+08:00">Sun 27 Nov 2016, 19:38</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><div class="section" id="perface">
-<h2>Perface</h2>
-<p>Well, I'm starting to work through
-<a class="reference external" href="https://www.amazon.com/Data-Structures-Algorithm-Analysis-2nd/dp/0201498405">Data Structures and Algorithm Analysis in C (2nd edition)</a>
-(referenced as MAW in the following posts) a couple of months agao to serve several purposes:</p>
-<ul class="simple">
-<li>to get enough familarity with C programming language</li>
-<li>to keep my computer science foundation knowledge fresh</li>
-<li>I ...</li></ul></div>
-                    <a class="btn btn-default btn-xs" href="./posts/2016/Nov/27/generate-a-linked-list-from-a-given-array/">more ...</a>
                 </div>
             </article>
             <hr class="style-eight"></hr>

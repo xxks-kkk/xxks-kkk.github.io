@@ -61,158 +61,128 @@ Zeyuan Hu's website            </a>
     <div class="row">
         <div class="col-lg-12">
             <article>
-                <h2><a href="./posts/2017/Mar/17/maw-chapter-5-reflection/">MAW: Chapter 5 Reflection</a></h2>
+                <h2><a href="./posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/">MAW Chapter 6: Priority Queues (Heaps) writing questions</a></h2>
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-17T15:56:00+08:00">Fri 17 Mar 2017, 15:56</abbr></p>
-</footer><!-- /.post-info -->                    <p>This is the summary part of hash table and at the same time, it serves as the Chapter 5
-reflection.</p>
-<div class="section" id="reflection">
-<h2>Reflection</h2>
-<div class="section" id="motivation">
-<h3>Motivation</h3>
-<p>In the previous chapter, we implement the dictionary (map) ADT using tree structure.
-A typical find or insert operations require <span class="math">\(O(\log N)\)</span> time. However, this is
-not good enough compared with <span class="math">\(O(1)\)</span> time. This is place where hash tables implementation
-can shine. Hash tables is a data structure that is designed for <span class="math">\(O(1)\)</span> find, insert, and delete
-operations. The only downside compared hash tables with tree structure is the ill support for ordering elements.</p>
-<img src="/images/maw-chap5.PNG" alt="chapter5 ADT picture" style="width: 700px;"/></div>
-<div class="section" id="general-idea">
-<h3>General Idea</h3>
-<p>A hash table is an array of some fixed size. Then we use hash function to map each key
-(i.e. a key is a string with an associated value) into some number in the range <tt class="docutils literal">0</tt> to
-<tt class="docutils literal"><span class="pre">Tablesize-1</span></tt> and place it in the appropriate cell.</p>
-<img alt="" src="/images/hashtable.PNG" />
-<p>Ideally, two distinct keys get different cells. However, this is not possible because
-there are a finite number of cells and a virtually infinite supply of keys. Thus the key
-concern for hash table data structure is how to distribute the keys evenly among the cells.
-This issue is addressed from two ways:
-1) pick a good hash function to avoid collision (i.e. two keys hash to the same value)
-2) use a good strategy to redistribute keys when collision happens.</p>
-</div>
-<div class="section" id="hash-function">
-<h3>Hash function</h3>
-<p>Hash function is a mapping from the element key (string or number) to an integer
-(the hash value). The output of the hash function must always be less than the size of
-array and should be as evenly distributed as possible. One thing to note here is that
-the pick of hash function has high dependency on the actual content of the key set.</p>
-<p>We list some key points from the chapter here:</p>
-<ul class="simple">
-<li>Choose the table size of the hash table to be the prime.</li>
-</ul>
-<p>The rationale for this is that real-life data tends to have pattern, and &quot;multiples of 61&quot;
-are probably less likely than &quot;multiples of 60&quot;. In addition, quadratic hashing is an efficient
-collision strategy to use (compared with linear hashing, double hashing) and it requires the table size
-to be the prime.</p>
-<ul class="simple">
-<li>When we deal with string keys, we may use <span class="math">\(\big(\sum_{i=0}^{k-1} s_i \cdot 256^i \big) \bmod TableSize\)</span>
-as our function.</li>
-</ul>
-<p>Here we use 256 because <cite>char</cite> data is 1 byte. Other hash function may be adding up the ASCII values ofthe characters
-in the string. However, this doesn't work well because if string keys are short, it will not hash evenly to all of the
-hash table (see MAW p.151) and different character combinations hash to same value (i.e. &quot;abc&quot;, &quot;bca&quot; all add up to the
-same value).</p>
-<p>The slides listed in the reference section offer some examples on hash function pick if
-we know the keys beforehand (i.e. if keys <span class="math">\(s\)</span> are the real numbers uniformly
-distributed over <span class="math">\(0 \leq s &lt; 1\)</span>).</p>
-</div>
-<div class="section" id="collision-strategy">
-<h3>Collision strategy</h3>
-<p>A collision occurs when two different keys hash to the same value. By the nature of dictionary ADT,
-we cannot store both data records in the same cell in the array. So, we need to come up a strategy
-to resolve collision and try our best to make the keys evenly distribute among the table. There are
-two main strategies discussed in the chapter: separate chaining and open addressing.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Load factor <span class="math">\(\lambda\)</span> defined as the ratio of the number of the elements
-in the hash table to the table size. This concept appears frequently when we analyze
-hash table collision resolution strategy.</p>
-</div>
-<div class="section" id="separate-chaining">
-<h4>Separate chaining</h4>
-<p>Separate chaining is to keep a list (chain or bucket) of all elements that hash to the same value. In other words,
-each hash table cell holds pointer to linked list of records with same hash value.
-When collision happens, we insert the hash value of the key to the corresponding linked list of
-the cell that hash value should be stored. When we want to find an item, we compute the
-hash value, then do find on linked list.</p>
-<img alt="" src="/images/separate-chaining.PNG" />
-<p>Here the worst case time happens for find operation, which can take linear time.
-However, this can happen in the extreme rare case (bad luck or bad hash function).
-Of course, we can build a balance tree instead of a linked list on each cell to shrink
-the find time. But, the structure overhead and the compelxity of insert may make this effort not
-worth it.</p>
-<p>The average length of chained list = <span class="math">\(\lambda\)</span>. Thus, the average time for
-accessing an item = <span class="math">\(O(1) + O(\lambda)\)</span>. So, we want <span class="math">\(\lambda\)</span> to be smaller
-than 1 but close to 1 if good hashing function. Thus, the general rule for
-separate chaining hashing is to make the table size about as large as the number of
-elements expected (let <span class="math">\(\lambda \approx 1\)</span>).</p>
-</div>
-<div class="section" id="open-addressing">
-<h4>Open addressing</h4>
-<p>One disadvantage for the separate chaining strategy is that we need to build linked list
-for each cell, whcih introduces the overhead that can waste space. Another strategy to
-resolve collision is to try other empty cells. This is called open addressing. In general,
-open addressing means resolving collisions by trying a sequence of other positions in the table.
-Trying the next spot is called <em>probing</em>. More formally, cells <span class="math">\(h_0(X), h_1(x), h_2(x), \dots\)</span>
-are tried in succession until either x is found or we find an empty location (x not present).
-<span class="math">\(h_i(x) = (Hash(x) + F(i)) \bmod TableSize\)</span>, with <span class="math">\(F(0) = 0\)</span>. The function <span class="math">\(F\)</span>
-is the collision resolution strategy.</p>
-<p>Various flavors of open addressing differ in which probe sequence they use. This is reflected in <span class="math">\(F\)</span>.
-Three types of resolution function are discussed in the book:</p>
-<ol class="arabic simple">
-<li>Linear probing: <span class="math">\(F(i) = i\)</span></li>
-<li>Quadratic probing: <span class="math">\(F(i) = i^2\)</span></li>
-<li>Double hashing: <span class="math">\(F(i) = i \cdot Hash_2(x)\)</span></li>
-</ol>
-<p>Generally, the load factor should be below <span class="math">\(\lambda = 0.5\)</span> for open addressing hashing.</p>
-<div class="section" id="linear-probing">
-<h5>Linear probing</h5>
-<p>With linear probing, we try the cells sequentially (with wraparound) insearch of an empty cell.
-This strategy has a fundamental problem called <em>primary clustering</em>, which means blocks
-of occupied cells start forming. Any key that hashes into the cluster will require several
-attempts to resolve the collision, and then it will add to the cluster. In other words, primary
-clustering means elements that hash to different cells probe same alternative cells.</p>
-</div>
-<div class="section" id="quadratic-probing">
-<h5>Quadratic probing</h5>
-<p>Quadratic probing is a collision resolution method that eliminates the primary clustering problem
-of linear probing. But it has its own restriction or problem:</p>
-<ul class="simple">
-<li>If quadratic probing is used and the table size is prime, then a new element
-can always be inserted if the table is at least half empty. However, insertion is not guaranteed
-if <span class="math">\(\lambda &gt; 0.5\)</span>.</li>
-<li><em>Secondary clustering</em>, which means elements that hash to the same position will probe the same alternative cells.</li>
-</ul>
-</div>
-<div class="section" id="double-hashing">
-<h5>Double hashing</h5>
-<p>Double hashing <span class="math">\(F\)</span> says that we apply a second hash function to x and probe
-at a distance <span class="math">\(hash_2(x), 2hash_2(x), \dots\)</span>, and so on.</p>
-<p>When <span class="math">\(\lambda\)</span> exceeds certain value, we need to build a bigger hash table of
-approximately twice the size and be prime. This is called rehashing.</p>
-<p>In addition, when hash table cannot be contained in the memory and have to store part of structure on the disk,
-then the disk I/O becomes the main cost. In this case, we use different hash scheme, which is called extendible hashing.
-Like B-tree, this structure is widely applied in the database field.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="section" id="left-out">
-<h2>Left Out</h2>
-<p>Some material I left out when I work through this chapter majorly due to the time
-constraint:</p>
-<ul class="simple">
-<li>5.7, 5.12, 5.13, 5.15</li>
-</ul>
-</div>
-<div class="section" id="reference">
-<h2>Reference</h2>
-<ul class="simple">
-<li>MAW Chapter 5</li>
-<li><a class="reference external" href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf">https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf</a></li>
-<li><a class="reference external" href="https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf">https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf</a></li>
-</ul>
-</div>
-<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-26T12:01:00+08:00">Sun 26 Mar 2017, 12:01</abbr></p>
+</footer><!-- /.post-info -->                    <h2>Solutions</h2>
+<p>including: MAW 6.6, 6.7, 6.9, 6.13, 6.14</p>
+<h3>MAW 6.6</h3>
+<blockquote>
+<p>How many nodes are in the large heap in Figure 6.13?</p>
+</blockquote>
+<p>This question is interesting in the sense that the algorithm of counting reflecting
+the underneath implemenation structure. Since the binary heap is actually implemented 
+in terms of array, we start with <span class="math">\(i = 1\)</span> and position at the root. We follow the path
+toward the last node, doubling <span class="math">\(i\)</span> when taking a left child, and doubling <span class="math">\(i\)</span> and adding
+one when taking a right child. Then, we have the following calculation:
+<span class="math">\(2(2(2(2(2(2(2i+1)+1)))))+1 = 225\)</span>. The picture below shows the path from the root 
+to the node in the last position:</p>
+<p><img src="/images/maw-6-6.PNG" alt="MAW 6.6"/></p>
+<h3>MAW 6.7</h3>
+<blockquote>
+<p>b. show that a heap of eight elements can be constructed in eight comparisons between 
+   heap elements.</p>
+</blockquote>
+<p>Thie question is interesting because it offers another method we can use when build a binary
+heap with even number of elements. That is, we build binomial queue first. since the binary 
+form of <span class="math">\(8\)</span> is <span class="math">\(1000_2\)</span>, this means we will have only one binomial tree <span class="math">\(B_3\)</span> inside the binomial queue.
+Once we construct this binomial tree, we need one last step to tweek the binomial tree to
+follow binary heap property, namely each node has to have either zero or two children.</p>
+<p>For this question, it takes seven comparisons to construct the binomial queue (with a solo binomial tree)
+and we get the following:</p>
+<p><img src="/images/maw-6-7-b.PNG" alt="MAW 6.7.b"/></p>
+<p>Then we need to restore the binary heap property because "a" node has three children.
+This can be done by the eighth compariosn between "b" and "c". If "c" is less than "b",
+then "b" is made a child of "c". Otherwise, both "c" and "d" are made children of "b".</p>
+<h3>MAW 6.9</h3>
+<blockquote>
+<p>a. Give an algorithm to find all nodes less than some value, X, in a binary heap.
+   Your algorithm should run in <span class="math">\(O(K)\)</span>, where <span class="math">\(K\)</span> is the number of nodes output.</p>
+</blockquote>
+<p>The big idea is that we perform a preorder traversal of the heap. In detail, we start
+from the root of the heap. If value of the root is smaller than <span class="math">\(X\)</span>, then we output
+this value and call procedure recursively once for its left child and once for its right 
+child. If the value of a node is bigger or equal than <span class="math">\(X\)</span>, then the procedure halts
+without printing the value. We don't need to check the children by heap definition.</p>
+<p>The complexity of this algorithm is <span class="math">\(O(N)\)</span> in worst case, where <span class="math">\(N\)</span> is the total number
+of nodes in the heap. This happens when every node in the heap is smaller than <span class="math">\(X\)</span>, and 
+the procedure has to call each node of the heap.</p>
+<blockquote>
+<p>b. Does your algorithm extend to any of the other heap structures dicussed in 
+   this chapter?</p>
+</blockquote>
+<p>Yes. It works for leftist heap, skew heap, and d-heaps.</p>
+<h3>MAW 6.13</h3>
+<blockquote>
+<p>If a d-heap is stored as an array, for an entry located in position <span class="math">\(i\)</span>,
+where are the parents and children?</p>
+</blockquote>
+<p>Let's begin with children. Assume that position <span class="math">\(i\)</span> corresponds to the <span class="math">\(X\)</span>th node
+of level <span class="math">\(l\)</span>. Therefore</p>
+<div class="math">$$
+i = \sum_{j=0}^{l-1}d^j+X
+$$</div>
+<p><span class="math">\(\sum_{j=0}^{l-1}d^j is a geometric series whose first term equals $1\)</span>, whose
+common ratio is <span class="math">\(d\)</span>, and that contains <span class="math">\(l\)</span> terms in total. Thus, the result is
+<span class="math">\(\frac{d^l-1}{d-1}\)</span> and thus, we have </p>
+<div class="math">$$
+i = \frac{d^l-1}{d-1} + X
+$$</div>
+<p>We now calculate the position of <span class="math">\(i\)</span>'s second last child in terms of <span class="math">\(d\)</span>, <span class="math">\(l\)</span>, and
+<span class="math">\(X\)</span>. This equals <span class="math">\(i\)</span>, plus the number of nodes after <span class="math">\(i\)</span> on level <span class="math">\(l\)</span>, plus <span class="math">\(d\)</span>
+times the number of nodes before <span class="math">\(i\)</span> on level <span class="math">\(l\)</span>, plus <span class="math">\(d-1\)</span>.</p>
+<div class="math">$$
+\begin{eqnarray*}
+&amp;=&amp; \frac{d^l-1}{d-1} + X + d^l - X + (X-1)d + d - 1 \\
+&amp;=&amp; \frac{d^l-1}{d-1} + d^l-1 + dX \\
+&amp;=&amp; \frac{d(d^l-1)}{d-1} + dX \\
+&amp;=&amp; d(\frac{d^l-1}{d-1} + X) \\
+&amp;=&amp; di
+\end{eqnarray*}
+$$</div>
+<p>Therefore the second last child of <span class="math">\(i\)</span> is in position <span class="math">\(id\)</span>. It follows that the children
+of <span class="math">\(i\)</span> are in positions <span class="math">\(id-(d-2), \dots, id+1\)</span>.</p>
+<p>A node is a child of <span class="math">\(i\)</span> if and only if it is in one of the positions <span class="math">\(id-(d-2), \dots, id+1\)</span>.
+So what you want here is a function that will map each of these to <span class="math">\(i\)</span>, but will not
+map any other value to <span class="math">\(i\)</span>. Let <span class="math">\(j\)</span> be any of these values. Clearly,</p>
+<div class="math">$$
+\lfloor{\frac{j + (d-2)}{d}}\rfloor = i
+$$</div>
+<p>But if <span class="math">\(j\)</span> is greater than <span class="math">\(id+1\)</span> or less than <span class="math">\(id - (d-2)\)</span> then</p>
+<div class="math">$$
+\lfloor{\frac{j + (d-2)}{d}}\rfloor \ne i
+$$</div>
+<p>Thus we have our function which can now be used to work out the position of the
+parent of <span class="math">\(i\)</span>.</p>
+<div class="math">$$
+\lfloor{\frac{i + (d-2)}{d}}\rfloor
+$$</div>
+<h2>MAW 6.14</h2>
+<blockquote>
+<p>Suppose we need to perform <span class="math">\(M\)</span> <code>PercolateUp</code> and <span class="math">\(N\)</span> <code>DeleteMiin</code> on a d-heap
+that initially has <span class="math">\(N\)</span> elements.
+a. What is the total running time of all operations in terms of <span class="math">\(M\)</span>, <span class="math">\(N\)</span>, and <span class="math">\(d\)</span>?</p>
+</blockquote>
+<p>A <code>percolateUp</code> operation on a d-heap with <span class="math">\(N\)</span> elements takes <span class="math">\(O(\log_d N)\)</span> steps.
+The key is that each time we bubble the hole up, we only do comparison once: 
+compare the insertion value with the parent of the hole (Figure 6.6, 6.7 helps understanding).</p>
+<p>A <code>deleteMin</code> operation on a d-heap with <span class="math">\(N\)</span> elements takes <span class="math">\(O(d \log_d N)\)</span> steps.
+Here, we need to feel the empty hole with the minimum value of its children. This can
+take <span class="math">\(d\)</span> comparison to find the minimum (see p.184). </p>
+<p>Thus in total this will take <span class="math">\(O(M\log_d N + Nd\log_d N)\)</span> steps.</p>
+<blockquote>
+<p>d. If <span class="math">\(d = 2\)</span>, what is the running time of all heap operations?</p>
+</blockquote>
+<p>Substitute 2 into the formula calculated in part a) gives <span class="math">\(O((M+N)\log_2 N)\)</span>.</p>
+<blockquote>
+<p>c. If <span class="math">\(d = \theta (N)\)</span>, what is the total running time?</p>
+</blockquote>
+<p>If <span class="math">\(d = \theta (N)\)</span> then <span class="math">\(d = cN\)</span>, where <span class="math">\(c\)</span> is a constant value independent of <span class="math">\(N\)</span>.
+Substituting <span class="math">\(cN\)</span> into the formula calculated in part a) gives:</p>
+<div class="math">$$ 
+M\log_{cN} N + NcN \log_{cN}N = O(M + N^2)
+$$</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
         linebreak = "false";
@@ -269,6 +239,23 @@ constraint:</p>
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
+            </article>
+            <hr class="style-eight"></hr>
+            <article>
+                <h2><a href="./posts/2017/Mar/17/maw-chapter-5-reflection/">MAW: Chapter 5 Reflection</a></h2>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-17T15:56:00+08:00">Fri 17 Mar 2017, 15:56</abbr></p>
+</footer><!-- /.post-info -->                <div class="summary"><p>This is the summary part of hash table and at the same time, it serves as the Chapter 5
+reflection.</p>
+<div class="section" id="reflection">
+<h2>Reflection</h2>
+<div class="section" id="motivation">
+<h3>Motivation</h3>
+<p>In the previous chapter, we implement the dictionary (map) ADT using tree structure.
+A typical find or insert operations require <span class="math">\(O(\log N)\)</span> time. However, this is
+not ...</p></div></div>
+                    <a class="btn btn-default btn-xs" href="./posts/2017/Mar/17/maw-chapter-5-reflection/">more ...</a>
+                </div>
             </article>
             <hr class="style-eight"></hr>
             <article>
@@ -376,21 +363,6 @@ updated as I work through the chapter.</p>
 <ul>
 <li>Recursive ...</li></ul>
                     <a class="btn btn-default btn-xs" href="./posts/2017/Jan/26/maw-chapter-4-tree-writing-questions/">more ...</a>
-                </div>
-            </article>
-            <hr class="style-eight"></hr>
-            <article>
-                <h2><a href="./posts/2017/Jan/24/tree-terminology/">Tree Terminology</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-24T20:23:00+08:00">Tue 24 Jan 2017, 20:23</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><div class="section" id="terminology">
-<h2>Terminology</h2>
-<p>Like &quot;list&quot; in Chapter 3, &quot;Trees&quot; is another type of abstraction.</p>
-<p><strong>tree</strong>, <strong>root</strong>, <strong>edge</strong></p>
-<p>We can define a tree recursively. A tree is a collection of nodes. The collection
-can be empty; otherwise, a tree consists of a distinguish node <em>r</em>, called the
-<em>root</em>, and zero or more nonempty ...</p></div>
-                    <a class="btn btn-default btn-xs" href="./posts/2017/Jan/24/tree-terminology/">more ...</a>
                 </div>
             </article>
             <hr class="style-eight"></hr>

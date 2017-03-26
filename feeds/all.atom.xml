@@ -1,5 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's website</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-03-17T15:56:00+08:00</updated><entry><title>MAW: Chapter 5 Reflection</title><link href="http://zhu45.org/posts/2017/Mar/17/maw-chapter-5-reflection/" rel="alternate"></link><published>2017-03-17T15:56:00+08:00</published><updated>2017-03-17T15:56:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-17:posts/2017/Mar/17/maw-chapter-5-reflection/</id><summary type="html">&lt;p&gt;This is the summary part of hash table and at the same time, it serves as the Chapter 5
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's website</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-03-26T12:01:00+08:00</updated><entry><title>MAW Chapter 6: Priority Queues (Heaps) writing questions</title><link href="http://zhu45.org/posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/" rel="alternate"></link><published>2017-03-26T12:01:00+08:00</published><updated>2017-03-26T12:01:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-26:posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/</id><summary type="html">&lt;h2&gt;Solutions&lt;/h2&gt;
+&lt;p&gt;including: MAW 6.6, 6.7, 6.9, 6.13, 6.14&lt;/p&gt;
+&lt;h3&gt;MAW 6.6&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;How many nodes are in the large heap in Figure 6.13?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This question is interesting in the sense that the algorithm of counting reflecting
+the underneath implemenation structure. Since the binary heap is actually implemented 
+in terms of array, we start with &lt;span class="math"&gt;\(i = 1\)&lt;/span&gt; and position at the root. We follow the path
+toward the last node, doubling &lt;span class="math"&gt;\(i\)&lt;/span&gt; when taking a left child, and doubling &lt;span class="math"&gt;\(i\)&lt;/span&gt; and adding
+one when taking a right child. Then, we have the following calculation:
+&lt;span class="math"&gt;\(2(2(2(2(2(2(2i+1)+1)))))+1 = 225\)&lt;/span&gt;. The picture below shows the path from the root 
+to the node in the last position:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/maw-6-6.PNG" alt="MAW 6.6"/&gt;&lt;/p&gt;
+&lt;h3&gt;MAW 6.7&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;b. show that a heap of eight elements can be constructed in eight comparisons between 
+   heap elements.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Thie question is interesting because it offers another method we can use when build a binary
+heap with even number of elements. That is, we build binomial queue first. since the binary 
+form of &lt;span class="math"&gt;\(8\)&lt;/span&gt; is &lt;span class="math"&gt;\(1000_2\)&lt;/span&gt;, this means we will have only one binomial tree &lt;span class="math"&gt;\(B_3\)&lt;/span&gt; inside the binomial queue.
+Once we construct this binomial tree, we need one last step to tweek the binomial tree to
+follow binary heap property, namely each node has to have either zero or two children.&lt;/p&gt;
+&lt;p&gt;For this question, it takes seven comparisons to construct the binomial queue (with a solo binomial tree)
+and we get the following:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/maw-6-7-b.PNG" alt="MAW 6.7.b"/&gt;&lt;/p&gt;
+&lt;p&gt;Then we need to restore the binary heap property because "a" node has three children.
+This can be done by the eighth compariosn between "b" and "c". If "c" is less than "b",
+then "b" is made a child of "c". Otherwise, both "c" and "d" are made children of "b".&lt;/p&gt;
+&lt;h3&gt;MAW 6.9&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;a. Give an algorithm to find all nodes less than some value, X, in a binary heap.
+   Your algorithm should run in &lt;span class="math"&gt;\(O(K)\)&lt;/span&gt;, where &lt;span class="math"&gt;\(K\)&lt;/span&gt; is the number of nodes output.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The big idea is that we perform a preorder traversal of the heap. In detail, we start
+from the root of the heap. If value of the root is smaller than &lt;span class="math"&gt;\(X\)&lt;/span&gt;, then we output
+this value and call procedure recursively once for its left child and once for its right 
+child. If the value of a node is bigger or equal than &lt;span class="math"&gt;\(X\)&lt;/span&gt;, then the procedure halts
+without printing the value. We don't need to check the children by heap definition.&lt;/p&gt;
+&lt;p&gt;The complexity of this algorithm is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; in worst case, where &lt;span class="math"&gt;\(N\)&lt;/span&gt; is the total number
+of nodes in the heap. This happens when every node in the heap is smaller than &lt;span class="math"&gt;\(X\)&lt;/span&gt;, and 
+the procedure has to call each node of the heap.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;b. Does your algorithm extend to any of the other heap structures dicussed in 
+   this chapter?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Yes. It works for leftist heap, skew heap, and d-heaps.&lt;/p&gt;
+&lt;h3&gt;MAW 6.13&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;If a d-heap is stored as an array, for an entry located in position &lt;span class="math"&gt;\(i\)&lt;/span&gt;,
+where are the parents and children?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Let's begin with children. Assume that position &lt;span class="math"&gt;\(i\)&lt;/span&gt; corresponds to the &lt;span class="math"&gt;\(X\)&lt;/span&gt;th node
+of level &lt;span class="math"&gt;\(l\)&lt;/span&gt;. Therefore&lt;/p&gt;
+&lt;div class="math"&gt;$$
+i = \sum_{j=0}^{l-1}d^j+X
+$$&lt;/div&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\sum_{j=0}^{l-1}d^j is a geometric series whose first term equals $1\)&lt;/span&gt;, whose
+common ratio is &lt;span class="math"&gt;\(d\)&lt;/span&gt;, and that contains &lt;span class="math"&gt;\(l\)&lt;/span&gt; terms in total. Thus, the result is
+&lt;span class="math"&gt;\(\frac{d^l-1}{d-1}\)&lt;/span&gt; and thus, we have &lt;/p&gt;
+&lt;div class="math"&gt;$$
+i = \frac{d^l-1}{d-1} + X
+$$&lt;/div&gt;
+&lt;p&gt;We now calculate the position of &lt;span class="math"&gt;\(i\)&lt;/span&gt;'s second last child in terms of &lt;span class="math"&gt;\(d\)&lt;/span&gt;, &lt;span class="math"&gt;\(l\)&lt;/span&gt;, and
+&lt;span class="math"&gt;\(X\)&lt;/span&gt;. This equals &lt;span class="math"&gt;\(i\)&lt;/span&gt;, plus the number of nodes after &lt;span class="math"&gt;\(i\)&lt;/span&gt; on level &lt;span class="math"&gt;\(l\)&lt;/span&gt;, plus &lt;span class="math"&gt;\(d\)&lt;/span&gt;
+times the number of nodes before &lt;span class="math"&gt;\(i\)&lt;/span&gt; on level &lt;span class="math"&gt;\(l\)&lt;/span&gt;, plus &lt;span class="math"&gt;\(d-1\)&lt;/span&gt;.&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{eqnarray*}
+&amp;amp;=&amp;amp; \frac{d^l-1}{d-1} + X + d^l - X + (X-1)d + d - 1 \\
+&amp;amp;=&amp;amp; \frac{d^l-1}{d-1} + d^l-1 + dX \\
+&amp;amp;=&amp;amp; \frac{d(d^l-1)}{d-1} + dX \\
+&amp;amp;=&amp;amp; d(\frac{d^l-1}{d-1} + X) \\
+&amp;amp;=&amp;amp; di
+\end{eqnarray*}
+$$&lt;/div&gt;
+&lt;p&gt;Therefore the second last child of &lt;span class="math"&gt;\(i\)&lt;/span&gt; is in position &lt;span class="math"&gt;\(id\)&lt;/span&gt;. It follows that the children
+of &lt;span class="math"&gt;\(i\)&lt;/span&gt; are in positions &lt;span class="math"&gt;\(id-(d-2), \dots, id+1\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;A node is a child of &lt;span class="math"&gt;\(i\)&lt;/span&gt; if and only if it is in one of the positions &lt;span class="math"&gt;\(id-(d-2), \dots, id+1\)&lt;/span&gt;.
+So what you want here is a function that will map each of these to &lt;span class="math"&gt;\(i\)&lt;/span&gt;, but will not
+map any other value to &lt;span class="math"&gt;\(i\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(j\)&lt;/span&gt; be any of these values. Clearly,&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\lfloor{\frac{j + (d-2)}{d}}\rfloor = i
+$$&lt;/div&gt;
+&lt;p&gt;But if &lt;span class="math"&gt;\(j\)&lt;/span&gt; is greater than &lt;span class="math"&gt;\(id+1\)&lt;/span&gt; or less than &lt;span class="math"&gt;\(id - (d-2)\)&lt;/span&gt; then&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\lfloor{\frac{j + (d-2)}{d}}\rfloor \ne i
+$$&lt;/div&gt;
+&lt;p&gt;Thus we have our function which can now be used to work out the position of the
+parent of &lt;span class="math"&gt;\(i\)&lt;/span&gt;.&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\lfloor{\frac{i + (d-2)}{d}}\rfloor
+$$&lt;/div&gt;
+&lt;h2&gt;MAW 6.14&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Suppose we need to perform &lt;span class="math"&gt;\(M\)&lt;/span&gt; &lt;code&gt;PercolateUp&lt;/code&gt; and &lt;span class="math"&gt;\(N\)&lt;/span&gt; &lt;code&gt;DeleteMiin&lt;/code&gt; on a d-heap
+that initially has &lt;span class="math"&gt;\(N\)&lt;/span&gt; elements.
+a. What is the total running time of all operations in terms of &lt;span class="math"&gt;\(M\)&lt;/span&gt;, &lt;span class="math"&gt;\(N\)&lt;/span&gt;, and &lt;span class="math"&gt;\(d\)&lt;/span&gt;?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A &lt;code&gt;percolateUp&lt;/code&gt; operation on a d-heap with &lt;span class="math"&gt;\(N\)&lt;/span&gt; elements takes &lt;span class="math"&gt;\(O(\log_d N)\)&lt;/span&gt; steps.
+The key is that each time we bubble the hole up, we only do comparison once: 
+compare the insertion value with the parent of the hole (Figure 6.6, 6.7 helps understanding).&lt;/p&gt;
+&lt;p&gt;A &lt;code&gt;deleteMin&lt;/code&gt; operation on a d-heap with &lt;span class="math"&gt;\(N\)&lt;/span&gt; elements takes &lt;span class="math"&gt;\(O(d \log_d N)\)&lt;/span&gt; steps.
+Here, we need to feel the empty hole with the minimum value of its children. This can
+take &lt;span class="math"&gt;\(d\)&lt;/span&gt; comparison to find the minimum (see p.184). &lt;/p&gt;
+&lt;p&gt;Thus in total this will take &lt;span class="math"&gt;\(O(M\log_d N + Nd\log_d N)\)&lt;/span&gt; steps.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;d. If &lt;span class="math"&gt;\(d = 2\)&lt;/span&gt;, what is the running time of all heap operations?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Substitute 2 into the formula calculated in part a) gives &lt;span class="math"&gt;\(O((M+N)\log_2 N)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;c. If &lt;span class="math"&gt;\(d = \theta (N)\)&lt;/span&gt;, what is the total running time?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;If &lt;span class="math"&gt;\(d = \theta (N)\)&lt;/span&gt; then &lt;span class="math"&gt;\(d = cN\)&lt;/span&gt;, where &lt;span class="math"&gt;\(c\)&lt;/span&gt; is a constant value independent of &lt;span class="math"&gt;\(N\)&lt;/span&gt;.
+Substituting &lt;span class="math"&gt;\(cN\)&lt;/span&gt; into the formula calculated in part a) gives:&lt;/p&gt;
+&lt;div class="math"&gt;$$ 
+M\log_{cN} N + NcN \log_{cN}N = O(M + N^2)
+$$&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="heaps"></category><category term="proof"></category><category term="math"></category><category term="maw"></category></entry><entry><title>MAW: Chapter 5 Reflection</title><link href="http://zhu45.org/posts/2017/Mar/17/maw-chapter-5-reflection/" rel="alternate"></link><published>2017-03-17T15:56:00+08:00</published><updated>2017-03-17T15:56:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-17:posts/2017/Mar/17/maw-chapter-5-reflection/</id><summary type="html">&lt;p&gt;This is the summary part of hash table and at the same time, it serves as the Chapter 5
 reflection.&lt;/p&gt;
 &lt;div class="section" id="reflection"&gt;
 &lt;h2&gt;Reflection&lt;/h2&gt;
@@ -1291,6 +1465,11 @@ Also, in the book, solving &lt;span class="math"&gt;\(h_n = h_{n-1} + n^3\)&lt;/
   nodes as the previous level (since each internal node has exactly two children).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;img alt="perfect-binary-tree" src="http://zhu45.org/images/perfect-binary-tree.png" /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A &lt;em&gt;balance&lt;/em&gt; binary tree: a binary tree structure in which the left and right 
+  subtrees of every node differ in height by no more than 1. Yes, &lt;a href="http://zhu45.org/posts/2017/Feb/05/avl-tree/"&gt;AVL tree&lt;/a&gt;
+  definition.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2&gt;Properties&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;The average depth of binary tree is &lt;span class="math"&gt;\(O(\sqrt{n})\)&lt;/span&gt;&lt;/li&gt;

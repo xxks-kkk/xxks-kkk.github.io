@@ -62,114 +62,127 @@ Zeyuan Hu's website            </a>
     <div class="row">
         <div class="col-lg-12">
             <article>
-                <h2><a href="../posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/">MAW Chapter 5: Hashing writing questions</a></h2>
+                <h2><a href="../posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/">MAW Chapter 6: Priority Queues (Heaps) writing questions</a></h2>
 <footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-16T17:41:00+08:00">Thu 16 Mar 2017, 17:41</abbr></p>
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-26T12:01:00+08:00">Sun 26 Mar 2017, 12:01</abbr></p>
 </footer><!-- /.post-info -->                    <h2>Solutions</h2>
-<p>including: MAW 5.4, 5.5, 5.6, 5.10, 5.11</p>
-<h3>MAW 5.4</h3>
+<p>including: MAW 6.6, 6.7, 6.9, 6.13, 6.14</p>
+<h3>MAW 6.6</h3>
 <blockquote>
-<p>A large number of deletions in a separate chaining hash table can cause the 
-table to be fairly empty, which wastes space. In this case, we can rehash to 
-a table half as large. Assume that we rehash to a larger table when there are 
-twice as many elements as the table size. How empty should the table be before
-we rehash to a smaller table?</p>
+<p>How many nodes are in the large heap in Figure 6.13?</p>
 </blockquote>
-<p>We must be careful not to rehash too often. Let <span class="math">\(p\)</span> be the threshold (fraction of table
-size) at which we rehash to a smaller table. Then, if the new table has size <span class="math">\(N\)</span>, 
-it contains <span class="math">\(2Np\)</span> elements. This table will require rehashing after either 
-<span class="math">\(2N-2Np\)</span> insertions or <span class="math">\(pN\)</span> deletions. Then, we don't want to do rehashing either 
-after a few insertion or a few deletions. A good strategy is to set <span class="math">\(2N-2Np\)</span> equals to <span class="math">\(pN\)</span>
-and we get <span class="math">\(p = \frac{2}{3}\)</span>. For instance, suppose we have a table of size 300.
-If we rehash at 200 elements, then the new table size is <span class="math">\(N = 150\)</span>, and we can do 
-either 100 insertions or 100 deletions until a new rehash is required. </p>
-<p>If we know that insertions are more frequent than deletions, then we might choose <span class="math">\(p\)</span>
-to be somewhat larger. All in all, we play around the relation between <span class="math">\(2N-2Np\)</span> and 
-<span class="math">\(pN\)</span> depends on which operation we favorite.</p>
-<h3>MAW 5.5</h3>
+<p>This question is interesting in the sense that the algorithm of counting reflecting
+the underneath implemenation structure. Since the binary heap is actually implemented 
+in terms of array, we start with <span class="math">\(i = 1\)</span> and position at the root. We follow the path
+toward the last node, doubling <span class="math">\(i\)</span> when taking a left child, and doubling <span class="math">\(i\)</span> and adding
+one when taking a right child. Then, we have the following calculation:
+<span class="math">\(2(2(2(2(2(2(2i+1)+1)))))+1 = 225\)</span>. The picture below shows the path from the root 
+to the node in the last position:</p>
+<p><img src="/images/maw-6-6.PNG" alt="MAW 6.6"/></p>
+<h3>MAW 6.7</h3>
 <blockquote>
-<p>An alternative collision resolution strategy is to define a sequence, <span class="math">\(F(i) = r_i\)</span>,
-where <span class="math">\(r_0 = 0\)</span> and <span class="math">\(r_1, r_2, \dots, r_N\)</span> is a random permutation of the first <span class="math">\(N\)</span>
-integers (each integer appears exactly once).</p>
-<p>a. Prove that under this strategy, if the table is not full, then the collision can 
-always be resolved.</p>
+<p>b. show that a heap of eight elements can be constructed in eight comparisons between 
+   heap elements.</p>
 </blockquote>
-<p>Since the sequence <span class="math">\(F(i)\)</span> is defined as a random permutation of the first <span class="math">\(N\)</span> integers,
-then each cells of the table will be probed eventually. If the table is not full, then the 
-collision can always be resolved.</p>
+<p>Thie question is interesting because it offers another method we can use when build a binary
+heap with even number of elements. That is, we build binomial queue first. since the binary 
+form of <span class="math">\(8\)</span> is <span class="math">\(1000_2\)</span>, this means we will have only one binomial tree <span class="math">\(B_3\)</span> inside the binomial queue.
+Once we construct this binomial tree, we need one last step to tweek the binomial tree to
+follow binary heap property, namely each node has to have either zero or two children.</p>
+<p>For this question, it takes seven comparisons to construct the binomial queue (with a solo binomial tree)
+and we get the following:</p>
+<p><img src="/images/maw-6-7-b.PNG" alt="MAW 6.7.b"/></p>
+<p>Then we need to restore the binary heap property because "a" node has three children.
+This can be done by the eighth compariosn between "b" and "c". If "c" is less than "b",
+then "b" is made a child of "c". Otherwise, both "c" and "d" are made children of "b".</p>
+<h3>MAW 6.9</h3>
 <blockquote>
-<p>b. Would this strategy be expected to eliminate clustering?</p>
+<p>a. Give an algorithm to find all nodes less than some value, X, in a binary heap.
+   Your algorithm should run in <span class="math">\(O(K)\)</span>, where <span class="math">\(K\)</span> is the number of nodes output.</p>
 </blockquote>
-<p>This seems to eliminate primary clustering but not secondary clustering because
-all elements that hash to some location will try the same collision resolution sequence.</p>
+<p>The big idea is that we perform a preorder traversal of the heap. In detail, we start
+from the root of the heap. If value of the root is smaller than <span class="math">\(X\)</span>, then we output
+this value and call procedure recursively once for its left child and once for its right 
+child. If the value of a node is bigger or equal than <span class="math">\(X\)</span>, then the procedure halts
+without printing the value. We don't need to check the children by heap definition.</p>
+<p>The complexity of this algorithm is <span class="math">\(O(N)\)</span> in worst case, where <span class="math">\(N\)</span> is the total number
+of nodes in the heap. This happens when every node in the heap is smaller than <span class="math">\(X\)</span>, and 
+the procedure has to call each node of the heap.</p>
 <blockquote>
-<p>c. If the load factor of the table is <span class="math">\(\lambda\)</span>, what is the expected time to perform
-an insert and for a successful search?</p>
+<p>b. Does your algorithm extend to any of the other heap structures dicussed in 
+   this chapter?</p>
 </blockquote>
-<p>The running time is probably similar to quadratic probing. The advantage here is that 
-the insertion can't fail unless the table is full.</p>
-<h3>MAW 5.6</h3>
+<p>Yes. It works for leftist heap, skew heap, and d-heaps.</p>
+<h3>MAW 6.13</h3>
 <blockquote>
-<p>What are the advantages and disadvantages of the various collision resolution strategies?</p>
+<p>If a d-heap is stored as an array, for an entry located in position <span class="math">\(i\)</span>,
+where are the parents and children?</p>
 </blockquote>
-<p>Separate chaining hashing requires the use of pointers, which costs some memory, and the 
-standard method of implementing calls on memory allocation routines, which typically are
-expensive. </p>
-<p>Linear probing is easily implemented, but performance degrades severly as the load 
-factor increases because of primary clustering. </p>
-<p>Quadratic probing is only slightly more 
-difficult to implement and gives good performance in practice. An insertion can fail 
-if the table is half empty, but this is not likely. Even if it were, such an insertion 
-would be so expensive that it wouldn't matter and would almost certainly point up a 
-weakness in the hash function. </p>
-<p>Double hashing eliminates primary and secondary clustering but the computation of a second
-hash function can be costly. </p>
-<h3>MAW 5.10</h3>
-<blockquote>
-<p>Describe a procedure that avoids initializing a hash table (at the expense of memory).</p>
-</blockquote>
-<p>To each hash table slot, we can add an extra field that we'll call <code>WhereOnStack</code>, and 
-we can keep an extra stack. When an insertion is first performed into a slot, we push
-the address (or number) of the slot onto the stack and set the <code>WhereOnStack</code> field to point
-to the top of the stack. When we access a hash table slot, we check that <code>WhereOnStack</code>
-points to a valid part of the stack and that the entry in the (middle of the) stack that is 
-pointed to by the <code>WhereOnStack</code> field has that hash table slot as an address.</p>
-<h3>MAW 5.11</h3>
-<blockquote>
-<p>Suppose we want to find the first occurrence of a string <span class="math">\(P_1P_2\dots P_k\)</span> in a long 
-input string <span class="math">\(A_1A_2\dots A_N\)</span>. We can solve this problem by hashing the pattern string,
-Obtaining a hash value <span class="math">\(H_p\)</span>, and comparing this value with the hash value formed from 
-<span class="math">\(A_1A_2\dots A_k\)</span>, <span class="math">\(A_2A_3\dots A_{k+1}\)</span>, <span class="math">\(A_3A_4\dots A_{k+2}\)</span>, and so on until 
-<span class="math">\(A_{N-k+1}A_{N-k+2}\dots A_N\)</span>. If we have a match of hash values, we compare the string character
-by character to verify the match. We return the position (in A) if the strings actually 
-do match, and we continue in the unlikely event that the match is false.</p>
-<p>a. Show that if the hash value of <span class="math">\(A_iA_{i+1}\dots A_{i+k-1}\)</span> is known, then the hash 
-value of <span class="math">\(A_{i+1}A_{i+2}\dots A_{i+k}\)</span> can be computed in constant time.</p>
-</blockquote>
-<p>As suggested by MAW p.151, we use <span class="math">\(\sum_{i=0}^{KeySize-1} Key[KeySize-i-1]\cdot 32^i\)</span>
-as the function to compute the hash value of a given string. Then, by this definition,
-<span class="math">\(A_iA_{i+1}\dots A_{i+k-1}\)</span> can be computed as </p>
+<p>Let's begin with children. Assume that position <span class="math">\(i\)</span> corresponds to the <span class="math">\(X\)</span>th node
+of level <span class="math">\(l\)</span>. Therefore</p>
 <div class="math">$$
-H_1 = (32^0A_i + 32^1A_{i+1} + \dots + 32^{k-1}A_{i+k-1}) \bmod N
+i = \sum_{j=0}^{l-1}d^j+X
 $$</div>
-<p>similarly, <span class="math">\(A_{i+1}A_{i+2}\dots A_{i+k}\)</span> can be computed as </p>
+<p><span class="math">\(\sum_{j=0}^{l-1}d^j is a geometric series whose first term equals $1\)</span>, whose
+common ratio is <span class="math">\(d\)</span>, and that contains <span class="math">\(l\)</span> terms in total. Thus, the result is
+<span class="math">\(\frac{d^l-1}{d-1}\)</span> and thus, we have </p>
 <div class="math">$$
-H_2 = (32^1A_{i+1} + \dots + 32^kA_{i+k}) \bmod N
+i = \frac{d^l-1}{d-1} + X
 $$</div>
-<p>If we take a look at the relationship between these two equations, we can see </p>
+<p>We now calculate the position of <span class="math">\(i\)</span>'s second last child in terms of <span class="math">\(d\)</span>, <span class="math">\(l\)</span>, and
+<span class="math">\(X\)</span>. This equals <span class="math">\(i\)</span>, plus the number of nodes after <span class="math">\(i\)</span> on level <span class="math">\(l\)</span>, plus <span class="math">\(d\)</span>
+times the number of nodes before <span class="math">\(i\)</span> on level <span class="math">\(l\)</span>, plus <span class="math">\(d-1\)</span>.</p>
 <div class="math">$$
-H_2 = H_1 - 32^0A_i \bmod N + 32^kA_{i+k} \bmod N
+\begin{eqnarray*}
+&amp;=&amp; \frac{d^l-1}{d-1} + X + d^l - X + (X-1)d + d - 1 \\
+&amp;=&amp; \frac{d^l-1}{d-1} + d^l-1 + dX \\
+&amp;=&amp; \frac{d(d^l-1)}{d-1} + dX \\
+&amp;=&amp; d(\frac{d^l-1}{d-1} + X) \\
+&amp;=&amp; di
+\end{eqnarray*}
 $$</div>
-<p>This can be computed in constant time if <span class="math">\(H_1\)</span> is known.</p>
+<p>Therefore the second last child of <span class="math">\(i\)</span> is in position <span class="math">\(id\)</span>. It follows that the children
+of <span class="math">\(i\)</span> are in positions <span class="math">\(id-(d-2), \dots, id+1\)</span>.</p>
+<p>A node is a child of <span class="math">\(i\)</span> if and only if it is in one of the positions <span class="math">\(id-(d-2), \dots, id+1\)</span>.
+So what you want here is a function that will map each of these to <span class="math">\(i\)</span>, but will not
+map any other value to <span class="math">\(i\)</span>. Let <span class="math">\(j\)</span> be any of these values. Clearly,</p>
+<div class="math">$$
+\lfloor{\frac{j + (d-2)}{d}}\rfloor = i
+$$</div>
+<p>But if <span class="math">\(j\)</span> is greater than <span class="math">\(id+1\)</span> or less than <span class="math">\(id - (d-2)\)</span> then</p>
+<div class="math">$$
+\lfloor{\frac{j + (d-2)}{d}}\rfloor \ne i
+$$</div>
+<p>Thus we have our function which can now be used to work out the position of the
+parent of <span class="math">\(i\)</span>.</p>
+<div class="math">$$
+\lfloor{\frac{i + (d-2)}{d}}\rfloor
+$$</div>
+<h2>MAW 6.14</h2>
 <blockquote>
-<p>b. Show that the running time is <span class="math">\(O(k+N)\)</span> plus the time spent refuting false matches.</p>
+<p>Suppose we need to perform <span class="math">\(M\)</span> <code>PercolateUp</code> and <span class="math">\(N\)</span> <code>DeleteMiin</code> on a d-heap
+that initially has <span class="math">\(N\)</span> elements.
+a. What is the total running time of all operations in terms of <span class="math">\(M\)</span>, <span class="math">\(N\)</span>, and <span class="math">\(d\)</span>?</p>
 </blockquote>
-<p>The pattern's hash value <span class="math">\(H_p\)</span> computed in <span class="math">\(O(K)\)</span> time. Then, <span class="math">\(A_1A_2\dots A_k\)</span>
-is computed in <span class="math">\(O(K)\)</span> time. Then starting with <span class="math">\(A_2A_3\dots A_{k+1}\)</span> and until
-<span class="math">\(A_{N-k+1}A_{N-k+2}\dots A_N\)</span>, each hash value is computed in <span class="math">\(O(1)\)</span> by a) above.
-Since, there are <span class="math">\(N-k+1-2+1\)</span> terms of <span class="math">\(O(1)\)</span>, then the total running time is
-<span class="math">\(O(K) + O(K) + O(N-K) = O(N+K)\)</span>. Of course, there is also time we spend on refuting false
-matches.</p>
+<p>A <code>percolateUp</code> operation on a d-heap with <span class="math">\(N\)</span> elements takes <span class="math">\(O(\log_d N)\)</span> steps.
+The key is that each time we bubble the hole up, we only do comparison once: 
+compare the insertion value with the parent of the hole (Figure 6.6, 6.7 helps understanding).</p>
+<p>A <code>deleteMin</code> operation on a d-heap with <span class="math">\(N\)</span> elements takes <span class="math">\(O(d \log_d N)\)</span> steps.
+Here, we need to feel the empty hole with the minimum value of its children. This can
+take <span class="math">\(d\)</span> comparison to find the minimum (see p.184). </p>
+<p>Thus in total this will take <span class="math">\(O(M\log_d N + Nd\log_d N)\)</span> steps.</p>
+<blockquote>
+<p>d. If <span class="math">\(d = 2\)</span>, what is the running time of all heap operations?</p>
+</blockquote>
+<p>Substitute 2 into the formula calculated in part a) gives <span class="math">\(O((M+N)\log_2 N)\)</span>.</p>
+<blockquote>
+<p>c. If <span class="math">\(d = \theta (N)\)</span>, what is the total running time?</p>
+</blockquote>
+<p>If <span class="math">\(d = \theta (N)\)</span> then <span class="math">\(d = cN\)</span>, where <span class="math">\(c\)</span> is a constant value independent of <span class="math">\(N\)</span>.
+Substituting <span class="math">\(cN\)</span> into the formula calculated in part a) gives:</p>
+<div class="math">$$ 
+M\log_{cN} N + NcN \log_{cN}N = O(M + N^2)
+$$</div>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -227,6 +240,21 @@ matches.</p>
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
+            </article>
+            <hr class="style-eight"></hr>
+            <article>
+                <h2><a href="../posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/">MAW Chapter 5: Hashing writing questions</a></h2>
+<footer class="post-info">
+    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-16T17:41:00+08:00">Thu 16 Mar 2017, 17:41</abbr></p>
+</footer><!-- /.post-info -->                <div class="summary"><h2>Solutions</h2>
+<p>including: MAW 5.4, 5.5, 5.6, 5.10, 5.11</p>
+<h3>MAW 5.4</h3>
+<blockquote>
+<p>A large number of deletions in a separate chaining hash table can cause the 
+table to be fairly empty, which wastes space. In this case, we can rehash to 
+a table half as large ...</p></blockquote>
+                    <a class="btn btn-default btn-xs" href="../posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/">more ...</a>
+                </div>
             </article>
             <hr class="style-eight"></hr>
             <article>
@@ -340,19 +368,6 @@ In the <a href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithme
 I write almost 500 lines of code. For this one, the problem is not really diffcult to solve if we implement a program 
 that follows the game rule exactly. However, I figure ...</p>
                     <a class="btn btn-default btn-xs" href="../posts/2016/Dec/31/josephus-problem/">more ...</a>
-                </div>
-            </article>
-            <hr class="style-eight"></hr>
-            <article>
-                <h2><a href="../posts/2016/Dec/28/a-peek-in-code-optimization/">A peek in code optimization</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-28T13:21:00+08:00">Wed 28 Dec 2016, 13:21</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>Quite often, when I take a look at a programming
-question solution, I'm amazed by how succint the provided
-solution is. However, it is also known that getting an &quot;optimized&quot;
-solution is often taking iterative approach. This is something
-that I didn't realize until I start to work ...</p>
-                    <a class="btn btn-default btn-xs" href="../posts/2016/Dec/28/a-peek-in-code-optimization/">more ...</a>
                 </div>
             </article>
             <hr class="style-eight"></hr>
