@@ -1,499 +1,77 @@
 <!DOCTYPE html>
-<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
-<head>
-    <title>Mathematics - Zeyuan Hu's website</title>
-    <!-- Using the latest rendering mode for IE -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>Fluffy Stuff</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../theme/css/cid.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+            <div class="container">
+
+<header class="blog-header">
+    <h1><a href="..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <a href="../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>
+        <a href="../projects.html" style="padding: 10px">PROJECTS</a>
+        <a href="../quotes.html" style="padding: 10px">QUOTES</a>
+        <a href="../blog" style="padding: 10px">BLOG</a>
+        <a href="../archives" style="padding: 10px">ARCHIVES</a>
+    </nav>
+</header>
+
+        <h1>Category: Mathematics. <small class="header-link"><a href="../categories">All Categories</a></small></h1>
+
+        <div class="post-list">
 
 
-
-
-    <meta name="author" content="Zeyuan Hu" />
-    <meta name="keywords" content="Mathematics" />
-
-    <!-- Open Graph tags -->
-        <meta property="og:site_name" content="Zeyuan Hu's website" />
-        <meta property="og:type" content="website"/>
-        <meta property="og:title" content="Zeyuan Hu's website"/>
-        <meta property="og:url" content=".."/>
-        <meta property="og:description" content="Zeyuan Hu's website"/>
-
-
-    <!-- Bootstrap -->
-        <link rel="stylesheet" href="../theme/css/bootstrap.lumen.min.css" type="text/css"/>
-    <link href="../theme/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="../theme/css/pygments/emacs.css" rel="stylesheet">
-    <link rel="stylesheet" href="../theme/css/style.css" type="text/css"/>
-
-        <link href="../feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
-              title="Zeyuan Hu's website ATOM Feed"/>
-
-        <link href="../feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-              title="Zeyuan Hu's website RSS Feed"/>
-
-
-
-</head>
-<body>
-
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	<div class="container">
-        <div class="navbar-header">
-            <a href="../" class="navbar-brand">
-Zeyuan Hu's website            </a>
-        </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="../about-zack.html"><i class="fa fa-question"></i><span class="icon-label">About</span></a></li>
-              <li><a href="../archives/index.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-</div> <!-- /.navbar -->
-<!-- Banner -->
-<!-- End Banner -->
-<div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <article>
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Feb/02/solving-recurrence-relations-in-a-nutshell/">Solving recurrence relations in a nutshell</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-02T01:05:00+08:00">Thu 02 Feb 2017, 01:05</abbr></p>
-</footer><!-- /.post-info -->                    <p>Able to solve recurrence relation is a very important skill when we study data structures
-and algorithm. This is a ability that I used to be familar with when I took combinatorics
-class when I was an undergraduate. However, by that time, I didn't realize how important 
-this skill is from computer science point of view. But, thanks to MAW, I do now.</p>
-<p>This post is a study summary note on this very important subject. The aim of this note 
-is to help at least me quickly solve any types of recurrence relation in the future.
-The content closely follows Chapter 7
-"Recurrence Relations and Generating Functions" of 
-<a href="https://www.amazon.com/Introductory-Combinatorics-5th-Richard-Brualdi/dp/0136020402">"Introductory Combinatorics"</a>,
-which is the textbook I used.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>This note is practical-oriented. I will skip the proof of the theorem whenever possible.
-If you are interested in the proof side of the universe, please read the book.</p>
-</blockquote>
-<h2>TOC</h2>
-<p>The post will be organized in the following format:</p>
-<ul>
-<li>Linear homogeneous recurrence relation with constant coefficients<ul>
-<li>Method 1: Characteristic equation<ul>
-<li>distinct roots (theorem 7.4.1)</li>
-<li>roots with multiplicities (theorem 7.4.2)</li>
-</ul>
-</li>
-<li>Method 2: Generating function</li>
-</ul>
-</li>
-<li>Linear nonhomogeneous recurrence relation with constant coefficients<ul>
-<li>Method 1: Characteristic equation</li>
-<li>Method 2: Generating functions</li>
-</ul>
-</li>
-</ul>
-<h2>Linear homogeneous recurrence relation with constant coefficients</h2>
-<p><em>Definition:</em> Let <span class="math">\(h_0, h_1, h_2, \dots, h_n, \dots\)</span> be a sequence of numbers. This sequence is 
-said to satisfy a <strong>linear recurrence relation of order <span class="math">\(k\)</span></strong>, provided that there
-exist quantities <span class="math">\(a_1, a_2, \dots, a_k,\)</span> with <span class="math">\(a_k \ne 0\)</span>, and a quantity <span class="math">\(b_n\)</span>
-(each of these quantities <span class="math">\(a_1,a_2,\dots,a_k,b_n\)</span> may depend on <span class="math">\(n\)</span>) such that </p>
-<div class="math">$$
-\begin{equation}
-h_n = a_1h_{n-1} + a_2h_{n-2} + \dots + a_kh_{n-k} + b_n, (n\ge k) \label{eq:1}
-\end{equation}
-$$</div>
-<p><em>Example:</em> The Fabonacci sequence <span class="math">\(f_0, f_1, f_2, \dots, f_n, \dots\)</span> satisfies
-the linear recurrence relation</p>
-<div class="math">$$
-\begin{equation}
-f_n = f_{n-1} + f_{n-2} (n\ge 2)
-\end{equation}
-$$</div>
-<p>of order 2 with <span class="math">\(a_1 = 1, a_2 = 1,\)</span> and <span class="math">\(b_n = 0\)</span>.</p>
-<p><em>Definition:</em> The linear recurrence relation \ref{eq:1} is called <strong>homogeneous</strong> 
-provided that <span class="math">\(b_n\)</span> is zero and is said to have <strong>constant coefficients</strong> provided that
-<span class="math">\(a_1, a_2, \dots, a_k\)</span> are constants.</p>
-<h3>Method 1: Characteristic equation</h3>
-<p><em>Theorem 7.4.1:</em> Let <span class="math">\(q\)</span> be a nonzero number. Then <span class="math">\(h_n = q^n\)</span> is a solution of the
-linear homogeneous recurrence relation</p>
-<div class="math">$$
-\begin{equation}
-h_n - a_1h_{n-1}-a_2h_{n-2}- \dots - a_kh_{n-k} = 0, (a_k \ne 0, n \ge k) \label{eq:2}
-\end{equation}
-$$</div>
-<p>with constant coefficients iff <span class="math">\(q\)</span> is a root of the polynomial equation (called <strong>characteristic equation</strong>) </p>
-<div class="math">$$
-\begin{equation}
-x_k-a_1x^{k-1}-a_2x^{k-2}- \dots - a_k = 0 \label{eq:3}
-\end{equation}
-$$</div>
-<p>If the polynomial equation has <span class="math">\(k\)</span> <em>distinct</em> roots <span class="math">\(q_1, q_2, \dots, q_k\)</span>, then</p>
-<div class="math">$$
-\begin{equation}
-h_n = c_1q_1^{n}+c_2q_2^n+ \dots + c_kq_k^n \label{eq:4}
-\end{equation}
-$$</div>
-<p>is the general solution of \ref{eq:2} in the following sense: No matter what initial
-values for <span class="math">\(h_0, h_1, \dots, h_{k-1}\)</span> are given, there are constants <span class="math">\(c_1, c_2, \dots, c_k\)</span>
-so that \ref{eq:4} is the unique sequence which satisfies both the recurrence relation 
-\ref{eq:2} and the initial values.</p>
-<p><em>Example:</em> Solve the Fabonacci recurrence relation</p>
-<div class="math">$$
-\begin{equation*}
-f_n = f_{n-1} + f_{n-2} (n\ge 2)
-\end{equation*}
-$$</div>
-<p>subject to the initial values <span class="math">\(f_0 = 0\)</span>, and <span class="math">\(f_1\)</span> = 1.</p>
-<p>We rewrite reccurrence relation into <span class="math">\(f(n) - f(n-1) - f(n-2) = 0\)</span> and the characteristic 
-equation of this recurrence relation is</p>
-<div class="math">$$
-\begin{equation*}
-x^2 - x - 1 = 0
-\end{equation*}
-$$</div>
-<p>and its two roots are <span class="math">\(\frac{1+\sqrt 5}{2}\)</span>, <span class="math">\(\frac{1-\sqrt 5}{2}\)</span>, and by theorem 7.4.1,</p>
-<div class="math">$$
-\begin{equation*}
-f_n = c_1 \Big(\frac{1+\sqrt 5}{2}\Big)^n + c_2 \Big(\frac{1-\sqrt 5}{2}\Big)^n
-\end{equation*}
-$$</div>
-<p>is the general solution. We now want constants c_1, and c_2 so that </p>
-<div class="math">$$
-\begin{equation*}
-\begin{cases}
-c_1 \Big(\frac{1+\sqrt 5}{2}\Big) + c_2 \Big(\frac{1-\sqrt 5}{2}\Big) &amp;=&amp; 1 \qquad (n=1)\\
-c_1 + c_2 &amp;=&amp; 0 \qquad (n=0)\\
-\end{cases}
-\end{equation*}
-$$</div>
-<p>and we have <span class="math">\(c_1 = \frac{1}{\sqrt 5}\)</span>, and <span class="math">\(c_2 = -\frac{1}{\sqrt 5}\)</span>. Thus,</p>
-<div class="math">$$
-\begin{equation*}
-f_n = \frac{1}{\sqrt 5}\Big(\frac{1+\sqrt 5}{2}\Big)^n - \frac{1}{\sqrt 5}\Big(\frac{1-\sqrt 5}{2}\Big)^n
-\end{equation*}
-$$</div>
-<p>is the solution of the Fabonacci recurrence relation.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>As you might notice, theorem 7.4.1 explicitly requires that the roots of the characteristic equation have 
-to be distinct. However, that's not always the case and theorem 7.4.1 will not work (see book for an example).
-That's why we need theorem 7.4.2.</p>
-</blockquote>
-<p><em>Theorem 7.4.2:</em> Let <span class="math">\(q_1, q_2, \dots, q_n\)</span> be the distinct roots of the following characteristic equation of the 
-linear homogeneous recurrence relation with constant coefficients:</p>
-<div class="math">$$
-\begin{equation}
-h_n = a_1h_{n-1}+a_2h_{n-2}+ \dots + a_kh_{n-k}, a_k \ne 0, \qquad (n \ge k) \label{eq:5}
-\end{equation}
-$$</div>
-<p>If <span class="math">\(q_i\)</span> is an <span class="math">\(s_i\)</span>-fold root fo the characteristic equation of \ref{eq:5}, the part of the general solution of this recurrence 
-relation corresponding to <span class="math">\(q_i\)</span> is </p>
-<div class="math">$$
-\begin{equation*}
-H_{n}^{(i)} = c_1q_i^n + c_2nq_i^n + \dots + c_{s_i}n^{s_i-1}q_i^n
-\end{equation*}
-$$</div>
-<p>The general solution of the recurrence relation is </p>
-<div class="math">$$
-\begin{equation*}
-h_n = H_n^{(1)} + H_n^{(2)} + \dots + H_n^{(t)}
-\end{equation*}
-$$</div>
-<p><em>Example:</em> Solve the recurrence relation</p>
-<div class="math">$$
-\begin{equation*}
-h_n = -h_{n-1} + 3h_{n-2}+5h_{n-3}+2h_{n-4} \qquad (n \ge 4)
-\end{equation*}
-$$</div>
-<p>subject to the initial values <span class="math">\(h_0=1\)</span>, <span class="math">\(h_1 = 0\)</span>, <span class="math">\(h_2 = 1\)</span>, and <span class="math">\(h_3 = 2\)</span>.</p>
-<p>The characteristic equation of this recurrence relation is <span class="math">\(x^4 + x^3 -3x^2 - 5x - 2 = 0\)</span>, which has roots <span class="math">\(-1\)</span>, <span class="math">\(-1\)</span>, <span class="math">\(-1\)</span>, <span class="math">\(-2\)</span>.
-Thus, the part of the general solution corresponding to the root <span class="math">\(-1\)</span> is</p>
-<div class="math">$$
-\begin{equation*}
-H_n^{(1)} = c_1(-1)^n + c_2n(-1)^n + c_3n^2(-1)^n
-\end{equation*}
-$$</div>
-<p>while the part of a general solution corresponding to the root <span class="math">\(2\)</span> is <span class="math">\(H_n^{(2)} = c_42^n\)</span>. The general solution is </p>
-<div class="math">$$
-\begin{equation*}
-h_n = H_n^{(1)} + H_n^{(2)} = c_1(-1)^n + c_2n(-1)^n + c_3n^2(-1)^n + c_42^n
-\end{equation*}
-$$</div>
-<p>Then we can use initial values to determine <span class="math">\(c1\)</span>, <span class="math">\(c2\)</span>, <span class="math">\(c3\)</span>, <span class="math">\(c4\)</span> and we have <span class="math">\(h_n = \frac{7}{9} (-1)^n - \frac{3}{9}n(-1)^n + \frac{2}{9}2^n\)</span>.</p>
-<!--\* ---- Note ---- *
-
-> You probably already notice from the previous example that "characteristic equation" method really depends on the diffculty in finding all roots
-> of a polynomial equation. Sometimes finding the roots of characteristic equation can be quite diffcult. That's what second method tries to address.
-> If you find out that characteristic equation is really diffcult to solve, you can always use "generating function" method.-->
-
-<h3>Method 2: Generating function</h3>
-<p><em>Definition:</em> Let <span class="math">\(h_0, h_1, h_2, \dots, h_n, \dots\)</span> be an infinite sequence of numbers. Its <strong>generating function</strong> is defined to be the infinite
-series</p>
-<div class="math">$$
-\begin{equation}
-g(x) = h_0 + h_1x + h_2x^2 + \dots + h_nx^n + \cdots
-\end{equation}
-$$</div>
-<p>The coefficient of <span class="math">\(x^n\)</span> in <span class="math">\(g(x)\)</span> is the general solution to <span class="math">\(h_n\)</span>. As you can see, generating functions are Taylor series (power series expansion)
-of infinitely differentiable functions. If we can find the function (i.e. <span class="math">\(g(x)\)</span>) and its Taylor series, then the coefficients of the Taylor series give the solution 
-to the problem.</p>
-<p>Let's illustrate this method using an example.</p>
-<p><em>Example:</em> Solve the recurrence relation </p>
-<div class="math">$$
-\begin{equation*}
-h_n = 5h_{n-1} - 6h_{n-2} \qquad (n \ge 2) 
-\end{equation*}
-$$</div>
-<p>subject to the initial values <span class="math">\(h_0 = 1\)</span> and <span class="math">\(h_1 = -2\)</span>.</p>
-<p>We first rewrite the recurrence relation into <span class="math">\(h_n -5h_{n-1} + 6h_{n-2} = 0 \quad (n \ge 2)\)</span>. Let <span class="math">\(g(x) = h_0 + h_1x + h_2x^2 + \dots + h_nx^n + \cdots\)</span>
-be the generating function for the sequence <span class="math">\(h_0, h_1, \dots, h_n, \dots\)</span>. We then form the following system of equations with the multipliers chosen based 
-upon our rewritten recurrence relation initially.</p>
-<div class="math">$$
-\begin{eqnarray*}
-g(x) &amp;=&amp; h_0 + h_1x + h_2x^2 + \dots + h_nx^n + \cdots \\
--5xg(x) &amp;=&amp;   -5h_0x - 5h_1x^2 - \dots - 5h_{n-1}x^n - \cdots \\
-6x^2g(x) &amp;=&amp;         6h_0x^2 + \dots + 6h_{n-2}x^n + \cdots
-\end{eqnarray*}
-$$</div>
-<p>If you look at the coefficients of <span class="math">\(x^n\)</span> term vertically of all these three equations, you can see that they match our recurrence relation exactly.
-Now, we add these three equations together, we obtain</p>
-<div class="math">$$
-\begin{equation*}
-(1-5x+6x^2)g(x) = h_0 + (h_1-5h_0)x + (h_2 - 5h_1 + 6h_0)x^2 + \dots + (h_n - 5h_{n-1} + 6h_{n-2})x^n + \cdots .
-\end{equation*}
-$$</div>
-<p>since <span class="math">\($h_n - 5h_{n-1} + 6h_{n-2} = 0 \quad (n \ge 2)\)</span> and our initial condition, we have</p>
-<div class="math">$$
-\begin{equation*}
-(1-5x+6x^2)g(x) = h_0 + (h_1 - 5h_0)x = 1 -7x
-\end{equation*}
-$$</div>
-<p>Thus,</p>
-<div class="math">$$
-\begin{equation*}
-g(x) = \frac{1-7x}{1-5x+6x^2}
-\end{equation*}
-$$</div>
-<p>Now, we need to expand <span class="math">\(g(x)\)</span> in order to get the coefficient of <span class="math">\(h_n\)</span>. Since <span class="math">\(1-5x+6x^2 = (1-2x)(1-3x)\)</span>, we can write</p>
-<div class="math">$$
-\begin{equation*}
-\frac{1-7x}{1-5x+6x^2} = \frac{c_1}{1-2x} + \frac{c_2}{1-3x}
-\end{equation*}
-$$</div>
-<p>for some constants <span class="math">\(c1\)</span> and <span class="math">\(c2\)</span>. We can determine <span class="math">\(c1\)</span> and <span class="math">\(c2\)</span> by multiplying both sides of this equation by <span class="math">\(1-5x+6x^2\)</span> to get</p>
-<div class="math">$$
-\begin{equation*}
-1 - 7x = (c_1 + c_2) + (-3c_1 -2c_2)x
-\end{equation*}
-$$</div>
-<p>We can get <span class="math">\(c_1 = 5\)</span> and <span class="math">\(c_2 = -4\)</span>. Since </p>
-<div class="math">$$
-\begin{equation*}
-\frac{1}{(1-rx)^n} = \sum_{k=0}^\infty\dbinom{n+k-1}{k}r^kx^k \qquad \Big(|x| &lt; \frac{1}{|r|}\Big)
-\end{equation*}
-$$</div>
-<p>We have </p>
-<div class="math">$$
-\begin{equation*}
-\frac{1}{1-2x} = 1 + 2x + 2^2x^2 + \dots + 2^nx^n + \cdots
-\end{equation*}
-$$</div>
-<div class="math">$$
-\begin{equation*}
-\frac{1}{1-3x} = 1 + 3x + 3^2x^2 + \dots + 3^nx^n + \cdots
-\end{equation*}
-$$</div>
-<p>So</p>
-<div class="math">$$
-\begin{eqnarray*}
-g(x) &amp;=&amp; 5(1 + 2x + 2^2x^2 + \dots + 2^nx^n + \cdots) -4(1 + 3x + 3^2x^2 + \dots + 3^nx^n + \cdots) \\
-&amp;=&amp; 1 + (-2)x + (-15)x^2 + \dots + (5\times2^n - 4\times3^n)x^n + \cdots
-\end{eqnarray*}
-$$</div>
-<p>Thus, <span class="math">\(h_n = 5\times2^n - 4\times3^n\)</span>.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>Getting the polynomial expansion of <span class="math">\(g(x)\)</span> is the hardest part of this method. For instance, factoring the 
-denominator of <span class="math">\(g(x)\)</span> can be tricky for high degree polynomials. I need more practice on solving recurrence
-relation to decide which method is superior under what kind of situation.</p>
-</blockquote>
-<h2>Linear nonhomogeneous recurrence relation with constant coefficients</h2>
-<p><strong>nonhomogeneous</strong> means <span class="math">\(b_n\)</span> in \ref{eq:1} is no longer zero constant.</p>
-<h3>Method 1: Characteristic equation</h3>
-<p><em>Steps:</em></p>
-<p>1) Find the general solution of the homogeneous relation.</p>
-<p>2) Find a particular solution of the nonhomogeneous relation.</p>
-<ul>
-<li>If <span class="math">\(b_n\)</span> is a polynomial of degree <span class="math">\(k\)</span> in <span class="math">\(n\)</span>, then look for a particular solution <span class="math">\(h_n\)</span> that is also a polynomial of degree <span class="math">\(k\)</span> in <span class="math">\(n\)</span>. Thus, try <ul>
-<li><span class="math">\(h_n = r\)</span> (a constant) if <span class="math">\(b_n = d\)</span> (a constant)</li>
-<li><span class="math">\(h_n = rn + s\)</span> if <span class="math">\(b_n = dn + e\)</span></li>
-<li><span class="math">\(h_n = rn^2 + sn + t\)</span> if <span class="math">\(b_n = dn^2 + en + f\)</span></li>
-</ul>
-</li>
-<li>If <span class="math">\(b_n\)</span> is an exponential, then look for a particular solution that is also an exponential. Thus, try <span class="math">\(h_n = pd^n\)</span> if <span class="math">\(b_n = d^n\)</span> or <span class="math">\(h_n = pnd^n\)</span> if 
-  the first try doesn't work.</li>
-</ul>
-<p>3) Combine the general solution and the particular solution so that the combined solution satisfies the initial conditions.</p>
-<p><em>Example:</em> Solve </p>
-<div class="math">$$
-\begin{eqnarray*}
-h_n &amp;=&amp; 3h_{n-1} - 4n, \qquad (n \ge 1) \\
-h_0 &amp;=&amp; 2
-\end{eqnarray*}
-$$</div>
-<p>We first consider corresponding homogeneous recurrence relation <span class="math">\(h_n = 3h_{n-1}\)</span> and its characteristic equation is <span class="math">\(x - 3 = 0\)</span>. and thus
-we have the general solution <span class="math">\(h_n = c3^n, \quad (n \ge 1)\)</span>.</p>
-<p>Now we seek a particular solution of the nonhomogeneous recurrence relation <span class="math">\(h_n = 3h_{n-1}-4n, \quad (n \ge 1)\)</span>. We try to find a solution of the 
-form <span class="math">\(h_n = rn + s\)</span> for some constant number <span class="math">\(r\)</span> and <span class="math">\(s\)</span>. We plug in our conjecture into the recurrence relation and get</p>
-<div class="math">$$
-\begin{equation*}
-rn + s = 3(r(n-1)+s) - 4n = (3r-4)n + (-3r+3s)
-\end{equation*}
-$$</div>
-<p>Thus, <span class="math">\(r = 2\)</span> and <span class="math">\(s = 3\)</span> and <span class="math">\(h_n = 2n + 3\)</span>. Now, we combine the general solution of the homogeneous relation with the particular solution 
-of the nonhomogeneous relation to obtain</p>
-<div class="math">$$
-\begin{equation*}
-h_n = c3^n + 2n + 3
-\end{equation*}
-$$</div>
-<p>Now, let's use inital condition to solve for <span class="math">\(c\)</span> and we have <span class="math">\(c = -1\)</span>. So, <span class="math">\(h_n = -3^n + 2n + 3\)</span>.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>As you can see, solving recurrence relation using characteristic equation has strong connection with solving differential equations (both homogeneous and
-nonhomogeneous). </p>
-</blockquote>
-<h3>Method 2: Generating function</h3>
-<p>There is nothing difference in using "generating function" method to solve nonhomogeneous than solve homogeneous recurrence relation. That's actually 
-a beauty of this method: nothing needs to tweak in order to work under different situation.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>Certainly, not all recurrence relation appeard in computer science can be easily solved by the method described in this post. For instance,
-inside <a href="../posts/2016/Dec/31/josephus-problem/">Josephus problem</a>, recurrence relation may depend on whether <span class="math">\(n\)</span> is odd or even and 
-methods may not apply nicely. This implies another type of technique to solve recurrence relation is to guess the solution and prove it by induction.
-Also, in the book, solving <span class="math">\(h_n = h_{n-1} + n^3\)</span> on p. 250 is not standard as well.</p>
-</blockquote>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-</script>
+                <time datetime="2017-02-02T01:05:00+08:00">Feb 02, 2017</time>
+                <div class="excerpt"><p>MATH475 methods to solve recurrence relation</p></div>
             </article>
-            <hr class="style-eight"></hr>
+
 
         </div>
-    </div>
-</div>
-<footer>
-   <div class="container">
-      <hr>
-      <div class="row">
-         <div class="col-xs-10">&copy; 2015-2017 Zeyuan Hu
-           <!-- &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
-            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>-->         </div>
-         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
-      </div>
-   </div>
+
+        <div class="paginator">
+            Page 1 / 1
+        </div>
+
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+<!--                            <li><a href="../about-zack.html">About</a></li>
+                <li><a href="../blog">Blog</a></li>
+                <li><a href="../quotes.html">Quotes</a></li>
+                <li><a href="../projects.html">Projects</a></li>
+-->
+    </ul>
+
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
 </footer>
-<script src="../theme/js/jquery.min.js"></script>
-
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="../theme/js/bootstrap.min.js"></script>
-
-<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
-<script src="../theme/js/respond.min.js"></script>
-
-    <!-- Disqus -->
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'zhu45-org'; // required: replace example with your forum shortname
-
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function () {
-            var s = document.createElement('script');
-            s.async = true;
-            s.type = 'text/javascript';
-            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-        }());
-    </script>
-    <!-- End Disqus Code -->
-    <!-- Google Analytics -->
-    <script type="text/javascript">
-
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-37565522-2']);
-        _gaq.push(['_trackPageview']);
-
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-    <!-- End Google Analytics Code -->
-
-</body>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
 </html>

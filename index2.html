@@ -1,243 +1,69 @@
 <!DOCTYPE html>
-<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
-<head>
-    <title>Zeyuan Hu's website</title>
-    <!-- Using the latest rendering mode for IE -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>Zeyuan Hu's website</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="./theme/css/cid.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's website Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's website RSS Feed" />
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+            <div class="container">
+
+<header class="blog-header">
+    <h1><a href=".">Zeyuan Hu's website</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <a href="./blog">INDEX</a>
+        <a href="./archives">ARCHIVES</a>
+        <a href="./categories">CATEGORIES</a>
+    </nav>
+</header>
 
 
-
-<link rel="canonical" href=".">
-        <meta name="author" content="Zeyuan Hu" />
-
-    <!-- Open Graph tags -->
-        <meta property="og:site_name" content="Zeyuan Hu's website" />
-        <meta property="og:type" content="website"/>
-        <meta property="og:title" content="Zeyuan Hu's website"/>
-        <meta property="og:url" content="."/>
-        <meta property="og:description" content="Zeyuan Hu's website"/>
+        <div class="post-list">
 
 
-    <!-- Bootstrap -->
-        <link rel="stylesheet" href="./theme/css/bootstrap.lumen.min.css" type="text/css"/>
-    <link href="./theme/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="./theme/css/pygments/emacs.css" rel="stylesheet">
-    <link rel="stylesheet" href="./theme/css/style.css" type="text/css"/>
-
-        <link href="./feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
-              title="Zeyuan Hu's website ATOM Feed"/>
-
-        <link href="./feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-              title="Zeyuan Hu's website RSS Feed"/>
-
-
-
-</head>
-<body>
-
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	<div class="container">
-        <div class="navbar-header">
-            <a href="./" class="navbar-brand">
-Zeyuan Hu's website            </a>
-        </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="./about-zack.html"><i class="fa fa-question"></i><span class="icon-label">About</span></a></li>
-              <li><a href="./archives/index.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-</div> <!-- /.navbar -->
-<!-- Banner -->
-<!-- End Banner -->
-<div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <article>
+            <article class="post-overview">
                 <h2><a href="./posts/2017/Jan/24/tree-terminology/">Tree Terminology</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-24T20:23:00+08:00">Tue 24 Jan 2017, 20:23</abbr></p>
-</footer><!-- /.post-info -->                    <div class="section" id="terminology">
+                <time datetime="2017-01-24T20:23:00+08:00">Jan 24, 2017</time>
+                <div class="excerpt"><div class="section" id="terminology">
 <h2>Terminology</h2>
 <p>Like &quot;list&quot; in Chapter 3, &quot;Trees&quot; is another type of abstraction.</p>
 <p><strong>tree</strong>, <strong>root</strong>, <strong>edge</strong></p>
 <p>We can define a tree recursively. A tree is a collection of nodes. The collection
 can be empty; otherwise, a tree consists of a distinguish node <em>r</em>, called the
-<em>root</em>, and zero or more nonempty (sub)tress <span class="math">\(T_1\)</span>, <span class="math">\(T_2\)</span>, ..., <span class="math">\(T_k\)</span>,
-each of whose roots are connected by a directed <em>edge</em> from <em>r</em>.</p>
-<img alt="" src="/images/subtree.PNG" />
-<p><strong>child</strong>, <strong>parent</strong></p>
-<p>The root of each subtree is said to be a <em>child</em> of <em>r</em>, and <em>r</em> is the <em>parent</em>
-of each subtree root.</p>
-<p><strong>leaves</strong></p>
-<p>Nodes with no children are known as <em>leaves</em>.</p>
-<p><strong>siblings</strong></p>
-<p>Nodes with the same parent are <em>siblings</em>.</p>
-<p><strong>path</strong></p>
-<p>A <em>path</em> from node <span class="math">\(n_1\)</span> to <span class="math">\(n_k\)</span> is defined as a sequence of nodes
-<span class="math">\(n_1\)</span>, <span class="math">\(n_2\)</span>, ..., <span class="math">\(n_k\)</span> such that <span class="math">\(n_i\)</span> is the parent of
-<span class="math">\(n_{i+1}\)</span> for <span class="math">\(1&lt;= i &lt; k\)</span>.</p>
-<p><strong>length</strong></p>
-<p>The <em>length</em> of this path is the number of edges on the path, namely <span class="math">\(k-1\)</span>.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<ul class="last simple">
-<li>There is a path of length zero from every node to itself.</li>
-<li>Notice that in a tree there is exactly one path from the root to each node.</li>
-</ul>
-</div>
-<p><strong>depth</strong></p>
-<p>For any node <span class="math">\(n_i\)</span>, the <em>depth</em> of <span class="math">\(n_i\)</span>, is the length of the unique
-path from the root to <span class="math">\(n_i\)</span>.</p>
-<p><strong>internal path length</strong></p>
-<p>The sum of the depths of all nodes in a tree is known as the <em>internal path length</em>.</p>
-<p><strong>height</strong></p>
-<p>The <em>height</em> of <span class="math">\(n_i\)</span> is the length of the longest path from <span class="math">\(n_i\)</span> to
-a leaf.</p>
-<p><strong>ancestor</strong>, <strong>descendant</strong></p>
-<p>If there is a path from <span class="math">\(n_1\)</span> to <span class="math">\(n_2\)</span>, then <span class="math">\(n_1\)</span> is an <em>ancestor</em>
-of <span class="math">\(n_2\)</span> and <span class="math">\(n_2\)</span> is a <em>descendant</em> of <span class="math">\(n_1\)</span>. If <span class="math">\(n_1 \neq n_2\)</span>,
-then <span class="math">\(n_1\)</span> is a <em>proper ancestor</em> of <span class="math">\(n_2\)</span> and <span class="math">\(n_2\)</span> is a <em>proper descendant</em> of <span class="math">\(n_1\)</span>.</p>
-<p><strong>internal node</strong></p>
-<p>An <em>internal node</em>  is a node with at least one child. In other words, internal nodes are nodes other than leaves.</p>
-<p><strong>degree</strong></p>
-<p>The total number of children of a node is called as <em>degree</em> of that node. The highest
-degree of a node among all the nodes in a tree is called as <em>degree of tree</em>.</p>
-<p><strong>level</strong></p>
-<p>The root node is said to be at <em>level 0</em> and the children of root node are at <em>level 1</em>
-and the children of the nodes which are at <em>level 1</em> will be at <em>level 2</em> and so on ...
-In other words, in a tree each step from top to bottom is called as a <em>level</em> and the <em>level</em>
-count starts with '0' and incremented by one at each level (step).</p>
-<img alt="" src="/images/tree-level.PNG" />
-<p><strong>predecessor / successor</strong></p>
-<p>If <span class="math">\(X\)</span> has two children, its predecessor is the maximum value in its left subtree
-and its successor the minimum value in its right subtree. It makes sense if we do in-order
-traversal of the tree.</p>
-<img src="/images/pred-succ.PNG" alt="predecessor-successor" style="width: 700px;"/></div>
-<div class="section" id="some-properties">
-<h2>Some properties</h2>
-<ul class="simple">
-<li>A tree is a collection of N nodes, one of which is the root, and N-1 edges.
-(since each edge connects some node to its parent, and every node except
-the root has one parent.)</li>
-<li>The root is at depth 0.</li>
-<li>All leaves are at height 0.</li>
-<li>The height of a tree is equal to the height of the root.</li>
-<li>The depth of a tree is equal to the depth of the deepest leaf; this is always
-equal to the height of the tree.</li>
-</ul>
-</div>
-<div class="section" id="example">
-<h2>Example</h2>
-<p>Let's work through MAW 4.1, 4.2, and 4.3 to get the tree terminology clear.</p>
-<a class="reference external image-reference" href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/trees/graphviz-src/tree-terminology.gv"><img alt="" src="/images/tree-terminology.png" /></a>
-<ul class="simple">
-<li>&quot;A&quot; is the <em>root</em></li>
-<li>&quot;G&quot;, &quot;H&quot;, &quot;I&quot;, &quot;L&quot;, &quot;M&quot;, &quot;K&quot; are the <em>leaves</em></li>
-<li>&quot;A&quot;:<ul>
-<li><em>children</em>: &quot;B&quot;, &quot;C&quot;</li>
-<li><em>depth</em>: 0</li>
-<li><em>height</em>: 4</li>
-</ul>
-</li>
-<li>&quot;B&quot;:<ul>
-<li><em>parent</em>: &quot;A&quot;</li>
-<li><em>children</em>: &quot;D&quot;, &quot;E&quot;</li>
-<li><em>siblings</em>: &quot;C&quot;</li>
-<li><em>depth</em>: 1</li>
-<li><em>height</em>: 3</li>
-</ul>
-</li>
-<li>The depth of the tree is 4</li>
-</ul>
-<!-- `Tree - Terminology <http://btechsmartclass.com/DS/U3_T1.html>`_ -->
-</div>
-<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-</script>
+<em>root</em>, and zero or more nonempty ...</p></div></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="./posts/2017/Jan/23/maw-chapter-3-reflection/">MAW: Chapter 3 Reflection</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-23T10:45:00+08:00">Mon 23 Jan 2017, 10:45</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>I finally finish Chapter 3: List, Stacks, and Queues with almost all the problems
+                <time datetime="2017-01-23T10:45:00+08:00">Jan 23, 2017</time>
+                <div class="excerpt"><p>I finally finish Chapter 3: List, Stacks, and Queues with almost all the problems
 solved. It's time to do some summary and reflection.</p>
 <div class="section" id="reflection">
 <h2>Reflection</h2>
 <p>One important philosophy in this chapter is the
 separation between the interface exposed to the user and the implementation details behind the scene.
-The interface ...</p></div>
-                    <a class="btn btn-default btn-xs" href="./posts/2017/Jan/23/maw-chapter-3-reflection/">more ...</a>
-                </div>
+The interface ...</p></div></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="./posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/">Num of function calls in recursive Fibonacci routine</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-22T23:12:00+08:00">Sun 22 Jan 2017, 23:12</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>This is MAW 3.24: </p>
+                <time datetime="2017-01-22T23:12:00+08:00">Jan 22, 2017</time>
+                <div class="excerpt"><p>This is MAW 3.24: </p>
 <blockquote>
 <p>If the recursive rotuine in Section 2.4 used to computeFibonacci numbers is run for N = 50, is stack space likely to run out?Why or why not?</p>
 </blockquote>
@@ -247,179 +73,123 @@ The interface ...</p></div>
   <span class="k">if</span> <span class="p">(</span><span class="n">N</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
   <span class="k">else</span>
-    <span class="k">return</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N ...</span></pre></div>
-                    <a class="btn btn-default btn-xs" href="./posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/">more ...</a>
-                </div>
+    <span class="k">return</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N ...</span></pre></div></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="./posts/2017/Jan/19/typecasting-in-c/">Typecasting in C</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-19T00:53:00+08:00">Thu 19 Jan 2017, 00:53</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>This post covers the typecasting in C with the aim to get a clear understanding
+                <time datetime="2017-01-19T00:53:00+08:00">Jan 19, 2017</time>
+                <div class="excerpt"><p>This post covers the typecasting in C with the aim to get a clear understanding
 of the most commonly-seen C manipulation. This writeup is adapted from
 &quot;Hacking - the Art of Exploitation&quot;.</p>
 <div class="section" id="tl-dr">
 <h2>TL;DR</h2>
 <ul class="simple">
 <li>Typecasting change a variable into a different type just for that operation.</li>
-<li>Pointer type determines the size ...</li></ul></div>
-                    <a class="btn btn-default btn-xs" href="./posts/2017/Jan/19/typecasting-in-c/">more ...</a>
-                </div>
+<li>Pointer type determines the size ...</li></ul></div></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="./posts/2017/Jan/11/difference-between-i-and-i/">Difference between <tt class="docutils literal">i++</tt> and <tt class="docutils literal">++i</tt></a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-11T22:39:00+08:00">Wed 11 Jan 2017, 22:39</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>I'm starting to read through <a class="reference external" href="https://www.amazon.com/Hacking-Art-Exploitation-Jon-Erickson/dp/1593271441">Hacking: The Art of Exploitation</a> on
+                <time datetime="2017-01-11T22:39:00+08:00">Jan 11, 2017</time>
+                <div class="excerpt"><p>I'm starting to read through <a class="reference external" href="https://www.amazon.com/Hacking-Art-Exploitation-Jon-Erickson/dp/1593271441">Hacking: The Art of Exploitation</a> on
 my four hours daily commute to work in order to get myself more comfortable working with C. I resolve a puzzle I have about C, as shown in the title.</p>
 <ul class="simple">
-<li><tt class="docutils literal">i++</tt> means increment the value of <tt class="docutils literal">i</tt> by ...</li></ul>
-                    <a class="btn btn-default btn-xs" href="./posts/2017/Jan/11/difference-between-i-and-i/">more ...</a>
-                </div>
+<li><tt class="docutils literal">i++</tt> means increment the value of <tt class="docutils literal">i</tt> by ...</li></ul></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="./posts/2017/Jan/08/modify-array-inside-function-in-c/">Modify array inside function in C</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-08T09:23:00+08:00">Sun 08 Jan 2017, 09:23</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>In this post, I want to write down the lesson learned
+                <time datetime="2017-01-08T09:23:00+08:00">Jan 08, 2017</time>
+                <div class="excerpt"><p>In this post, I want to write down the lesson learned
 about modifying array inside a function in C with an example
 from MAW 3.15.a:</p>
 <blockquote>
 Write an array implementation of self-adjusting lists.
 A self-adjusting list is like a regular list, except that
-all insertions are performed at the ...</blockquote>
-                    <a class="btn btn-default btn-xs" href="./posts/2017/Jan/08/modify-array-inside-function-in-c/">more ...</a>
-                </div>
+all insertions are performed at the ...</blockquote></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="./posts/2017/Jan/06/josephus-problem-radix-sort-reflection/">Josephus Problem &amp; Radix Sort Reflection</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-06T00:34:00+08:00">Fri 06 Jan 2017, 00:34</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>This post is a reflection on the two problems (MAW 3.13 &amp; 3.10) I
+                <time datetime="2017-01-06T00:34:00+08:00">Jan 06, 2017</time>
+                <div class="excerpt"><p>This post is a reflection on the two problems (MAW 3.13 &amp; 3.10) I
 have been working on for the past five days.</p>
 <div class="section" id="dynamic-arrays-in-c">
 <h2>Dynamic arrays in C</h2>
 <p>One of the ways I try out to solve <a class="reference external" href="./posts/2016/Dec/31/josephus-problem/">Josephus Problem</a> is to use circular double linked list, which
-is implemented in ...</p></div>
-                    <a class="btn btn-default btn-xs" href="./posts/2017/Jan/06/josephus-problem-radix-sort-reflection/">more ...</a>
-                </div>
+is implemented in ...</p></div></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="./posts/2016/Dec/31/josephus-problem/">Josephus Problem</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-31T20:24:00+08:00">Sat 31 Dec 2016, 20:24</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><h2>Preface</h2>
+                <time datetime="2016-12-31T20:24:00+08:00">Dec 31, 2016</time>
+                <div class="excerpt"><h2>Preface</h2>
 <p>This is actually MAW 3.10. I gradually realize how dense MAW is.
 In the <a href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">previous problem</a>,
 I write almost 500 lines of code. For this one, the problem is not really diffcult to solve if we implement a program 
-that follows the game rule exactly. However, I figure ...</p>
-                    <a class="btn btn-default btn-xs" href="./posts/2016/Dec/31/josephus-problem/">more ...</a>
-                </div>
+that follows the game rule exactly. However, I figure ...</p></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="./posts/2016/Dec/28/a-peek-in-code-optimization/">A peek in code optimization</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-28T13:21:00+08:00">Wed 28 Dec 2016, 13:21</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>Quite often, when I take a look at a programming
+                <time datetime="2016-12-28T13:21:00+08:00">Dec 28, 2016</time>
+                <div class="excerpt"><p>Quite often, when I take a look at a programming
 question solution, I'm amazed by how succint the provided
 solution is. However, it is also known that getting an &quot;optimized&quot;
 solution is often taking iterative approach. This is something
-that I didn't realize until I start to work ...</p>
-                    <a class="btn btn-default btn-xs" href="./posts/2016/Dec/28/a-peek-in-code-optimization/">more ...</a>
-                </div>
+that I didn't realize until I start to work ...</p></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="./posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">Reflection on integer arithmetic package problem</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-26T23:03:00+08:00">Mon 26 Dec 2016, 23:03</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>This weekend, I'm working on MAW 3.9. The single problem results
+                <time datetime="2016-12-26T23:03:00+08:00">Dec 26, 2016</time>
+                <div class="excerpt"><p>This weekend, I'm working on MAW 3.9. The single problem results
 in almost 500 lines of code. This is quite unexpected. The problem
 is stated as the following:</p>
 <blockquote>
 Write an arbitrary-precision integer arithmetic package. You should
 use a strategy similar to polynomial arithmetic. Compute the distribution
-of the ...</blockquote>
-                    <a class="btn btn-default btn-xs" href="./posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">more ...</a>
-                </div>
+of the ...</blockquote></div>
             </article>
-            <hr class="style-eight"></hr>
 
-        <ul class="pagination">
-                <li class="prev"><a href="./index.html">&laquo;</a>
-                </li>
-                    <li class=""><a
-                            href="./index.html">1</a></li>
-                    <li class="active"><a
-                            href="./index2.html">2</a></li>
-                    <li class=""><a
-                            href="./index3.html">3</a></li>
-                    <li class=""><a
-                            href="./index4.html">4</a></li>
-                <li class="next"><a
-                        href="./index3.html">&raquo;</a></li>
-        </ul>
+
         </div>
-    </div>
-</div>
-<footer>
-   <div class="container">
-      <hr>
-      <div class="row">
-         <div class="col-xs-10">&copy; 2015-2017 Zeyuan Hu
-           <!-- &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
-            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>-->         </div>
-         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
-      </div>
-   </div>
+
+        <div class="paginator">
+                    <a href="./index.html">&lt;&lt;&lt;</a>
+            Page 2 / 4
+                <a href="./index3.html">
+                    &gt;&gt;&gt;
+                </a>
+        </div>
+
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+                <li><a href="./about-zack.html">About</a></li>
+                <li><a href="./blog">Blog</a></li>
+    </ul>
+
+    <p class="disclaimer">
+    Built with <a href="http://getpelican.com">Pelican</a>, and <a href="https://github.com/hdra/Pelican-Cid">Cid</a> theme.
+    </p>
 </footer>
-<script src="./theme/js/jquery.min.js"></script>
-
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="./theme/js/bootstrap.min.js"></script>
-
-<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
-<script src="./theme/js/respond.min.js"></script>
-
-    <!-- Disqus -->
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'zhu45-org'; // required: replace example with your forum shortname
-
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function () {
-            var s = document.createElement('script');
-            s.async = true;
-            s.type = 'text/javascript';
-            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-        }());
-    </script>
-    <!-- End Disqus Code -->
-    <!-- Google Analytics -->
-    <script type="text/javascript">
-
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-37565522-2']);
-        _gaq.push(['_trackPageview']);
-
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-    <!-- End Google Analytics Code -->
-
-</body>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
 </html>

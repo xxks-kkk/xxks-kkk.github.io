@@ -1,441 +1,144 @@
 <!DOCTYPE html>
-<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
-<head>
-    <title>Data Struct & Algo - Zeyuan Hu's website</title>
-    <!-- Using the latest rendering mode for IE -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>Fluffy Stuff</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../theme/css/cid.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+            <div class="container">
+
+<header class="blog-header">
+    <h1><a href="..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <a href="../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>
+        <a href="../projects.html" style="padding: 10px">PROJECTS</a>
+        <a href="../quotes.html" style="padding: 10px">QUOTES</a>
+        <a href="../blog" style="padding: 10px">BLOG</a>
+        <a href="../archives" style="padding: 10px">ARCHIVES</a>
+    </nav>
+</header>
+
+        <h1>Category: Data Struct & Algo. <small class="header-link"><a href="../categories">All Categories</a></small></h1>
+
+        <div class="post-list">
 
 
-
-
-    <meta name="author" content="Zeyuan Hu" />
-    <meta name="keywords" content="Data Struct & Algo" />
-
-    <!-- Open Graph tags -->
-        <meta property="og:site_name" content="Zeyuan Hu's website" />
-        <meta property="og:type" content="website"/>
-        <meta property="og:title" content="Zeyuan Hu's website"/>
-        <meta property="og:url" content=".."/>
-        <meta property="og:description" content="Zeyuan Hu's website"/>
-
-
-    <!-- Bootstrap -->
-        <link rel="stylesheet" href="../theme/css/bootstrap.lumen.min.css" type="text/css"/>
-    <link href="../theme/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="../theme/css/pygments/emacs.css" rel="stylesheet">
-    <link rel="stylesheet" href="../theme/css/style.css" type="text/css"/>
-
-        <link href="../feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
-              title="Zeyuan Hu's website ATOM Feed"/>
-
-        <link href="../feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-              title="Zeyuan Hu's website RSS Feed"/>
-
-
-
-</head>
-<body>
-
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	<div class="container">
-        <div class="navbar-header">
-            <a href="../" class="navbar-brand">
-Zeyuan Hu's website            </a>
-        </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="../about-zack.html"><i class="fa fa-question"></i><span class="icon-label">About</span></a></li>
-              <li><a href="../archives/index.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-</div> <!-- /.navbar -->
-<!-- Banner -->
-<!-- End Banner -->
-<div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <article>
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/">MAW Chapter 6: Priority Queues (Heaps) writing questions</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-26T12:01:00+08:00">Sun 26 Mar 2017, 12:01</abbr></p>
-</footer><!-- /.post-info -->                    <h2>Solutions</h2>
-<p>including: MAW 6.6, 6.7, 6.9, 6.13, 6.14</p>
-<h3>MAW 6.6</h3>
-<blockquote>
-<p>How many nodes are in the large heap in Figure 6.13?</p>
-</blockquote>
-<p>This question is interesting in the sense that the algorithm of counting reflecting
-the underneath implemenation structure. Since the binary heap is actually implemented 
-in terms of array, we start with <span class="math">\(i = 1\)</span> and position at the root. We follow the path
-toward the last node, doubling <span class="math">\(i\)</span> when taking a left child, and doubling <span class="math">\(i\)</span> and adding
-one when taking a right child. Then, we have the following calculation:
-<span class="math">\(2(2(2(2(2(2(2i+1)+1)))))+1 = 225\)</span>. The picture below shows the path from the root 
-to the node in the last position:</p>
-<p><img src="/images/maw-6-6.PNG" alt="MAW 6.6"/></p>
-<h3>MAW 6.7</h3>
-<blockquote>
-<p>b. show that a heap of eight elements can be constructed in eight comparisons between 
-   heap elements.</p>
-</blockquote>
-<p>Thie question is interesting because it offers another method we can use when build a binary
-heap with even number of elements. That is, we build binomial queue first. since the binary 
-form of <span class="math">\(8\)</span> is <span class="math">\(1000_2\)</span>, this means we will have only one binomial tree <span class="math">\(B_3\)</span> inside the binomial queue.
-Once we construct this binomial tree, we need one last step to tweek the binomial tree to
-follow binary heap property, namely each node has to have either zero or two children.</p>
-<p>For this question, it takes seven comparisons to construct the binomial queue (with a solo binomial tree)
-and we get the following:</p>
-<p><img src="/images/maw-6-7-b.PNG" alt="MAW 6.7.b"/></p>
-<p>Then we need to restore the binary heap property because "a" node has three children.
-This can be done by the eighth compariosn between "b" and "c". If "c" is less than "b",
-then "b" is made a child of "c". Otherwise, both "c" and "d" are made children of "b".</p>
-<h3>MAW 6.9</h3>
-<blockquote>
-<p>a. Give an algorithm to find all nodes less than some value, X, in a binary heap.
-   Your algorithm should run in <span class="math">\(O(K)\)</span>, where <span class="math">\(K\)</span> is the number of nodes output.</p>
-</blockquote>
-<p>The big idea is that we perform a preorder traversal of the heap. In detail, we start
-from the root of the heap. If value of the root is smaller than <span class="math">\(X\)</span>, then we output
-this value and call procedure recursively once for its left child and once for its right 
-child. If the value of a node is bigger or equal than <span class="math">\(X\)</span>, then the procedure halts
-without printing the value. We don't need to check the children by heap definition.</p>
-<p>The complexity of this algorithm is <span class="math">\(O(N)\)</span> in worst case, where <span class="math">\(N\)</span> is the total number
-of nodes in the heap. This happens when every node in the heap is smaller than <span class="math">\(X\)</span>, and 
-the procedure has to call each node of the heap.</p>
-<blockquote>
-<p>b. Does your algorithm extend to any of the other heap structures dicussed in 
-   this chapter?</p>
-</blockquote>
-<p>Yes. It works for leftist heap, skew heap, and d-heaps.</p>
-<h3>MAW 6.13</h3>
-<blockquote>
-<p>If a d-heap is stored as an array, for an entry located in position <span class="math">\(i\)</span>,
-where are the parents and children?</p>
-</blockquote>
-<p>Let's begin with children. Assume that position <span class="math">\(i\)</span> corresponds to the <span class="math">\(X\)</span>th node
-of level <span class="math">\(l\)</span>. Therefore</p>
-<div class="math">$$
-i = \sum_{j=0}^{l-1}d^j+X
-$$</div>
-<p><span class="math">\(\sum_{j=0}^{l-1}d^j is a geometric series whose first term equals $1\)</span>, whose
-common ratio is <span class="math">\(d\)</span>, and that contains <span class="math">\(l\)</span> terms in total. Thus, the result is
-<span class="math">\(\frac{d^l-1}{d-1}\)</span> and thus, we have </p>
-<div class="math">$$
-i = \frac{d^l-1}{d-1} + X
-$$</div>
-<p>We now calculate the position of <span class="math">\(i\)</span>'s second last child in terms of <span class="math">\(d\)</span>, <span class="math">\(l\)</span>, and
-<span class="math">\(X\)</span>. This equals <span class="math">\(i\)</span>, plus the number of nodes after <span class="math">\(i\)</span> on level <span class="math">\(l\)</span>, plus <span class="math">\(d\)</span>
-times the number of nodes before <span class="math">\(i\)</span> on level <span class="math">\(l\)</span>, plus <span class="math">\(d-1\)</span>.</p>
-<div class="math">$$
-\begin{eqnarray*}
-&amp;=&amp; \frac{d^l-1}{d-1} + X + d^l - X + (X-1)d + d - 1 \\
-&amp;=&amp; \frac{d^l-1}{d-1} + d^l-1 + dX \\
-&amp;=&amp; \frac{d(d^l-1)}{d-1} + dX \\
-&amp;=&amp; d(\frac{d^l-1}{d-1} + X) \\
-&amp;=&amp; di
-\end{eqnarray*}
-$$</div>
-<p>Therefore the second last child of <span class="math">\(i\)</span> is in position <span class="math">\(id\)</span>. It follows that the children
-of <span class="math">\(i\)</span> are in positions <span class="math">\(id-(d-2), \dots, id+1\)</span>.</p>
-<p>A node is a child of <span class="math">\(i\)</span> if and only if it is in one of the positions <span class="math">\(id-(d-2), \dots, id+1\)</span>.
-So what you want here is a function that will map each of these to <span class="math">\(i\)</span>, but will not
-map any other value to <span class="math">\(i\)</span>. Let <span class="math">\(j\)</span> be any of these values. Clearly,</p>
-<div class="math">$$
-\lfloor{\frac{j + (d-2)}{d}}\rfloor = i
-$$</div>
-<p>But if <span class="math">\(j\)</span> is greater than <span class="math">\(id+1\)</span> or less than <span class="math">\(id - (d-2)\)</span> then</p>
-<div class="math">$$
-\lfloor{\frac{j + (d-2)}{d}}\rfloor \ne i
-$$</div>
-<p>Thus we have our function which can now be used to work out the position of the
-parent of <span class="math">\(i\)</span>.</p>
-<div class="math">$$
-\lfloor{\frac{i + (d-2)}{d}}\rfloor
-$$</div>
-<h2>MAW 6.14</h2>
-<blockquote>
-<p>Suppose we need to perform <span class="math">\(M\)</span> <code>PercolateUp</code> and <span class="math">\(N\)</span> <code>DeleteMiin</code> on a d-heap
-that initially has <span class="math">\(N\)</span> elements.
-a. What is the total running time of all operations in terms of <span class="math">\(M\)</span>, <span class="math">\(N\)</span>, and <span class="math">\(d\)</span>?</p>
-</blockquote>
-<p>A <code>percolateUp</code> operation on a d-heap with <span class="math">\(N\)</span> elements takes <span class="math">\(O(\log_d N)\)</span> steps.
-The key is that each time we bubble the hole up, we only do comparison once: 
-compare the insertion value with the parent of the hole (Figure 6.6, 6.7 helps understanding).</p>
-<p>A <code>deleteMin</code> operation on a d-heap with <span class="math">\(N\)</span> elements takes <span class="math">\(O(d \log_d N)\)</span> steps.
-Here, we need to feel the empty hole with the minimum value of its children. This can
-take <span class="math">\(d\)</span> comparison to find the minimum (see p.184). </p>
-<p>Thus in total this will take <span class="math">\(O(M\log_d N + Nd\log_d N)\)</span> steps.</p>
-<blockquote>
-<p>d. If <span class="math">\(d = 2\)</span>, what is the running time of all heap operations?</p>
-</blockquote>
-<p>Substitute 2 into the formula calculated in part a) gives <span class="math">\(O((M+N)\log_2 N)\)</span>.</p>
-<blockquote>
-<p>c. If <span class="math">\(d = \theta (N)\)</span>, what is the total running time?</p>
-</blockquote>
-<p>If <span class="math">\(d = \theta (N)\)</span> then <span class="math">\(d = cN\)</span>, where <span class="math">\(c\)</span> is a constant value independent of <span class="math">\(N\)</span>.
-Substituting <span class="math">\(cN\)</span> into the formula calculated in part a) gives:</p>
-<div class="math">$$ 
-M\log_{cN} N + NcN \log_{cN}N = O(M + N^2)
-$$</div>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-</script>
+                <time datetime="2017-03-26T12:01:00+08:00">Mar 26, 2017</time>
+                <div class="excerpt"><p>My solutions to selected problems in MAW Chapter 6</p></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/">MAW Chapter 5: Hashing writing questions</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-16T17:41:00+08:00">Thu 16 Mar 2017, 17:41</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><h2>Solutions</h2>
-<p>including: MAW 5.4, 5.5, 5.6, 5.10, 5.11</p>
-<h3>MAW 5.4</h3>
-<blockquote>
-<p>A large number of deletions in a separate chaining hash table can cause the 
-table to be fairly empty, which wastes space. In this case, we can rehash to 
-a table half as large ...</p></blockquote>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/">more ...</a>
-                </div>
+                <time datetime="2017-03-16T17:41:00+08:00">Mar 16, 2017</time>
+                <div class="excerpt"><p>My solutions to selected problems in MAW Chapter 5</p></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Mar/11/b-tree/">B-Tree</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-11T21:32:00+08:00">Sat 11 Mar 2017, 21:32</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>This is the summary of <em>B tree</em> part in MAW Chapter 4.</p>
-<h2>Motivation</h2>
-<p>So far we have assumed that an entire data structure can be stored in the main memory. 
-However, this is not true in reality because if we have more data than can fit in main 
-memory, we ...</p>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Mar/11/b-tree/">more ...</a>
-                </div>
+                <time datetime="2017-03-11T21:32:00+08:00">Mar 11, 2017</time>
+                <div class="excerpt"><p>B-tree summary</p></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Feb/13/splay-tree/">Splay Tree</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-13T01:12:00+08:00">Mon 13 Feb 2017, 01:12</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>This is the summary of <em>Splay tree</em> part in MAW Chapter 4.</p>
-<h2>Motivation</h2>
-<p>Ordinary BST has no balance conditions and thus, it is possible for a whole sequnece of <span class="math">\(O(N)\)</span> accesses to take place. This cumulative running time 
-then becomes noticeable. So, we introduce the balance condition on BST ...</p>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Feb/13/splay-tree/">more ...</a>
-                </div>
+                <time datetime="2017-02-13T01:12:00+08:00">Feb 13, 2017</time>
+                <div class="excerpt"><p>Splay tree summary</p></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Feb/05/avl-tree/">AVL Tree</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-02-05T10:43:00+08:00">Sun 05 Feb 2017, 10:43</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>This is the summary of <em>AVL tree</em> part in MAW Chapter 4.</p>
-<h2>Motivation</h2>
-<p>All BST operations are <span class="math">\(O(H)\)</span> time, where <span class="math">\(H\)</span> is the height of the tree. In the worst case
-scenario, when the tree is degenerated, <span class="math">\(H = N\)</span>, where <span class="math">\(N\)</span> is the number of nodes.
-Thus, the problem ...</p>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Feb/05/avl-tree/">more ...</a>
-                </div>
+                <time datetime="2017-02-05T10:43:00+08:00">Feb 05, 2017</time>
+                <div class="excerpt"><p>AVL tree summary</p></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Jan/29/binary-tree-binary-search-tree/">Binary Tree & Binary Search Tree</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-29T13:20:00+08:00">Sun 29 Jan 2017, 13:20</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>This is the summary of <em>binary tree</em> and <em>binary search tree</em> part in MAW Chapter 4.</p>
-<h2>Concept</h2>
-<ul>
-<li>A <em>binary tree</em> is a tree in which no node can have more than two children. </li>
-<li>An important application of binary trees is <em>binary search tree</em>: for every node,
-  <span class="math">\(X\)</span>, in the tree ...</li></ul>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Jan/29/binary-tree-binary-search-tree/">more ...</a>
-                </div>
+                <time datetime="2017-01-29T13:20:00+08:00">Jan 29, 2017</time>
+                <div class="excerpt"><p>Binary tree and binary search tree summary</p></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Jan/26/maw-chapter-4-tree-writing-questions/">MAW Chapter 4: Tree writing questions</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-26T17:41:00+08:00">Thu 26 Jan 2017, 17:41</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>There are a lot of writing questions in Chapter 4. Some questions offer
-great insights on the general techniques in solving algorithmatic proving questions.
-So, I decide to record them in this single post. Of course, this post will be continually
-updated as I work through the chapter.</p>
-<h2>Insights</h2>
-<ul>
-<li>Recursive ...</li></ul>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Jan/26/maw-chapter-4-tree-writing-questions/">more ...</a>
-                </div>
+                <time datetime="2017-01-26T17:41:00+08:00">Jan 26, 2017</time>
+                <div class="excerpt"><p>My solutions to selected problems in MAW Chapter 4</p></div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Jan/24/tree-terminology/">Tree Terminology</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-24T20:23:00+08:00">Tue 24 Jan 2017, 20:23</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><div class="section" id="terminology">
-<h2>Terminology</h2>
-<p>Like &quot;list&quot; in Chapter 3, &quot;Trees&quot; is another type of abstraction.</p>
-<p><strong>tree</strong>, <strong>root</strong>, <strong>edge</strong></p>
-<p>We can define a tree recursively. A tree is a collection of nodes. The collection
-can be empty; otherwise, a tree consists of a distinguish node <em>r</em>, called the
-<em>root</em>, and zero or more nonempty ...</p></div>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Jan/24/tree-terminology/">more ...</a>
-                </div>
-            </article>
-            <hr class="style-eight"></hr>
-            <article>
-                <h2><a href="../posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/">Num of function calls in recursive Fibonacci routine</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-22T23:12:00+08:00">Sun 22 Jan 2017, 23:12</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>This is MAW 3.24: </p>
-<blockquote>
-<p>If the recursive rotuine in Section 2.4 used to computeFibonacci numbers is run for N = 50, is stack space likely to run out?Why or why not?</p>
-</blockquote>
-<div class="highlight"><pre><span></span><span class="kt">unsigned</span> <span class="kt">long</span>
-<span class="nf">Fib</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">N</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="k">else</span>
-    <span class="k">return</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N ...</span></pre></div>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/">more ...</a>
-                </div>
-            </article>
-            <hr class="style-eight"></hr>
-            <article>
-                <h2><a href="../posts/2016/Dec/31/josephus-problem/">Josephus Problem</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-31T20:24:00+08:00">Sat 31 Dec 2016, 20:24</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><h2>Preface</h2>
-<p>This is actually MAW 3.10. I gradually realize how dense MAW is.
-In the <a href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">previous problem</a>,
-I write almost 500 lines of code. For this one, the problem is not really diffcult to solve if we implement a program 
-that follows the game rule exactly. However, I figure ...</p>
-                    <a class="btn btn-default btn-xs" href="../posts/2016/Dec/31/josephus-problem/">more ...</a>
-                </div>
-            </article>
-            <hr class="style-eight"></hr>
-
-        <ul class="pagination">
-                <li class="prev disabled"><a href="#">&laquo;</a></li>
-                    <li class="active"><a
-                            href="../category/data-struct-algo.html">1</a></li>
-                    <li class=""><a
-                            href="../category/data-struct-algo2.html">2</a></li>
-                <li class="next"><a
-                        href="../category/data-struct-algo2.html">&raquo;</a></li>
-        </ul>
-        </div>
-    </div>
+                <time datetime="2017-01-24T20:23:00+08:00">Jan 24, 2017</time>
+                <div class="excerpt"><p class="first last">Commonly seen tree terminology</p>
 </div>
-<footer>
-   <div class="container">
-      <hr>
-      <div class="row">
-         <div class="col-xs-10">&copy; 2015-2017 Zeyuan Hu
-           <!-- &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
-            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>-->         </div>
-         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
-      </div>
-   </div>
+            </article>
+
+
+            <article class="post-overview">
+                <h2><a href="../posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/">Num of function calls in recursive Fibonacci routine</a></h2>
+                <time datetime="2017-01-22T23:12:00+08:00">Jan 22, 2017</time>
+                <div class="excerpt"><p>Origin from MAW 3.24</p></div>
+            </article>
+
+
+            <article class="post-overview">
+                <h2><a href="../posts/2016/Dec/31/josephus-problem/">Josephus Problem</a></h2>
+                <time datetime="2016-12-31T20:24:00+08:00">Dec 31, 2016</time>
+                <div class="excerpt"><p>See above</p></div>
+            </article>
+
+
+        </div>
+
+        <div class="paginator">
+            Page 1 / 2
+                <a href="../category/data-struct-algo2.html">
+                    &gt;&gt;&gt;
+                </a>
+        </div>
+
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+<!--                            <li><a href="../about-zack.html">About</a></li>
+                <li><a href="../blog">Blog</a></li>
+                <li><a href="../quotes.html">Quotes</a></li>
+                <li><a href="../projects.html">Projects</a></li>
+-->
+    </ul>
+
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
 </footer>
-<script src="../theme/js/jquery.min.js"></script>
-
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="../theme/js/bootstrap.min.js"></script>
-
-<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
-<script src="../theme/js/respond.min.js"></script>
-
-    <!-- Disqus -->
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'zhu45-org'; // required: replace example with your forum shortname
-
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function () {
-            var s = document.createElement('script');
-            s.async = true;
-            s.type = 'text/javascript';
-            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-        }());
-    </script>
-    <!-- End Disqus Code -->
-    <!-- Google Analytics -->
-    <script type="text/javascript">
-
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-37565522-2']);
-        _gaq.push(['_trackPageview']);
-
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-    <!-- End Google Analytics Code -->
-
-</body>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
 </html>

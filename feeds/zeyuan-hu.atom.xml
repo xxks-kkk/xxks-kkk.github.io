@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's website</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-03-26T12:01:00+08:00</updated><entry><title>MAW Chapter 6: Priority Queues (Heaps) writing questions</title><link href="http://zhu45.org/posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/" rel="alternate"></link><published>2017-03-26T12:01:00+08:00</published><updated>2017-03-26T12:01:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-26:posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/</id><summary type="html">&lt;h2&gt;Solutions&lt;/h2&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-03-26T12:01:00+08:00</updated><entry><title>MAW Chapter 6: Priority Queues (Heaps) writing questions</title><link href="http://zhu45.org/posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/" rel="alternate"></link><published>2017-03-26T12:01:00+08:00</published><updated>2017-03-26T12:01:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-26:posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/</id><summary type="html">&lt;h2&gt;Solutions&lt;/h2&gt;
 &lt;p&gt;including: MAW 6.6, 6.7, 6.9, 6.13, 6.14&lt;/p&gt;
 &lt;h3&gt;MAW 6.6&lt;/h3&gt;
 &lt;blockquote&gt;
@@ -57,7 +57,7 @@ of level &lt;span class="math"&gt;\(l\)&lt;/span&gt;. Therefore&lt;/p&gt;
 &lt;div class="math"&gt;$$
 i = \sum_{j=0}^{l-1}d^j+X
 $$&lt;/div&gt;
-&lt;p&gt;&lt;span class="math"&gt;\(\sum_{j=0}^{l-1}d^j is a geometric series whose first term equals $1\)&lt;/span&gt;, whose
+&lt;p&gt;&lt;span class="math"&gt;\(\sum_{j=0}^{l-1}d^j\)&lt;/span&gt; is a geometric series whose first term equals &lt;span class="math"&gt;\(1\)&lt;/span&gt;, whose
 common ratio is &lt;span class="math"&gt;\(d\)&lt;/span&gt;, and that contains &lt;span class="math"&gt;\(l\)&lt;/span&gt; terms in total. Thus, the result is
 &lt;span class="math"&gt;\(\frac{d^l-1}{d-1}\)&lt;/span&gt; and thus, we have &lt;/p&gt;
 &lt;div class="math"&gt;$$
@@ -95,8 +95,8 @@ $$&lt;/div&gt;
 &lt;h2&gt;MAW 6.14&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Suppose we need to perform &lt;span class="math"&gt;\(M\)&lt;/span&gt; &lt;code&gt;PercolateUp&lt;/code&gt; and &lt;span class="math"&gt;\(N\)&lt;/span&gt; &lt;code&gt;DeleteMiin&lt;/code&gt; on a d-heap
-that initially has &lt;span class="math"&gt;\(N\)&lt;/span&gt; elements.
-a. What is the total running time of all operations in terms of &lt;span class="math"&gt;\(M\)&lt;/span&gt;, &lt;span class="math"&gt;\(N\)&lt;/span&gt;, and &lt;span class="math"&gt;\(d\)&lt;/span&gt;?&lt;/p&gt;
+that initially has &lt;span class="math"&gt;\(N\)&lt;/span&gt; elements.&lt;/p&gt;
+&lt;p&gt;a. What is the total running time of all operations in terms of &lt;span class="math"&gt;\(M\)&lt;/span&gt;, &lt;span class="math"&gt;\(N\)&lt;/span&gt;, and &lt;span class="math"&gt;\(d\)&lt;/span&gt;?&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;A &lt;code&gt;percolateUp&lt;/code&gt; operation on a d-heap with &lt;span class="math"&gt;\(N\)&lt;/span&gt; elements takes &lt;span class="math"&gt;\(O(\log_d N)\)&lt;/span&gt; steps.
 The key is that each time we bubble the hole up, we only do comparison once: 
@@ -106,7 +106,7 @@ Here, we need to feel the empty hole with the minimum value of its children. Thi
 take &lt;span class="math"&gt;\(d\)&lt;/span&gt; comparison to find the minimum (see p.184). &lt;/p&gt;
 &lt;p&gt;Thus in total this will take &lt;span class="math"&gt;\(O(M\log_d N + Nd\log_d N)\)&lt;/span&gt; steps.&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;d. If &lt;span class="math"&gt;\(d = 2\)&lt;/span&gt;, what is the running time of all heap operations?&lt;/p&gt;
+&lt;p&gt;b. If &lt;span class="math"&gt;\(d = 2\)&lt;/span&gt;, what is the running time of all heap operations?&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Substitute 2 into the formula calculated in part a) gives &lt;span class="math"&gt;\(O((M+N)\log_2 N)\)&lt;/span&gt;.&lt;/p&gt;
 &lt;blockquote&gt;
@@ -117,6 +117,12 @@ Substituting &lt;span class="math"&gt;\(cN\)&lt;/span&gt; into the formula calcu
 &lt;div class="math"&gt;$$ 
 M\log_{cN} N + NcN \log_{cN}N = O(M + N^2)
 $$&lt;/div&gt;
+&lt;blockquote&gt;
+&lt;p&gt;d. What choice of &lt;span class="math"&gt;\(d\)&lt;/span&gt; minimizes the total running time?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(d = max(2, M/N)\)&lt;/span&gt; (See the related discussion at the end of Section 11.4)&lt;/p&gt;
+&lt;!--http://mail.csis.ul.ie/~cs4115/resources/sol10.pdf--&gt;
+
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",

@@ -1,386 +1,110 @@
 <!DOCTYPE html>
-<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
-<head>
-    <title>misc - Zeyuan Hu's website</title>
-    <!-- Using the latest rendering mode for IE -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>Fluffy Stuff</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../theme/css/cid.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+            <div class="container">
+
+<header class="blog-header">
+    <h1><a href="..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <a href="../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>
+        <a href="../projects.html" style="padding: 10px">PROJECTS</a>
+        <a href="../quotes.html" style="padding: 10px">QUOTES</a>
+        <a href="../blog" style="padding: 10px">BLOG</a>
+        <a href="../archives" style="padding: 10px">ARCHIVES</a>
+    </nav>
+</header>
+
+        <h1>Category: misc. <small class="header-link"><a href="../categories">All Categories</a></small></h1>
+
+        <div class="post-list">
 
 
-
-
-    <meta name="author" content="Zeyuan Hu" />
-    <meta name="keywords" content="misc" />
-
-    <!-- Open Graph tags -->
-        <meta property="og:site_name" content="Zeyuan Hu's website" />
-        <meta property="og:type" content="website"/>
-        <meta property="og:title" content="Zeyuan Hu's website"/>
-        <meta property="og:url" content=".."/>
-        <meta property="og:description" content="Zeyuan Hu's website"/>
-
-
-    <!-- Bootstrap -->
-        <link rel="stylesheet" href="../theme/css/bootstrap.lumen.min.css" type="text/css"/>
-    <link href="../theme/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="../theme/css/pygments/emacs.css" rel="stylesheet">
-    <link rel="stylesheet" href="../theme/css/style.css" type="text/css"/>
-
-        <link href="../feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
-              title="Zeyuan Hu's website ATOM Feed"/>
-
-        <link href="../feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-              title="Zeyuan Hu's website RSS Feed"/>
-
-
-
-</head>
-<body>
-
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	<div class="container">
-        <div class="navbar-header">
-            <a href="../" class="navbar-brand">
-Zeyuan Hu's website            </a>
-        </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="../about-zack.html"><i class="fa fa-question"></i><span class="icon-label">About</span></a></li>
-              <li><a href="../archives/index.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-</div> <!-- /.navbar -->
-<!-- Banner -->
-<!-- End Banner -->
-<div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <article>
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Mar/17/maw-chapter-5-reflection/">MAW: Chapter 5 Reflection</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-17T15:56:00+08:00">Fri 17 Mar 2017, 15:56</abbr></p>
-</footer><!-- /.post-info -->                    <p>This is the summary part of hash table and at the same time, it serves as the Chapter 5
-reflection.</p>
-<div class="section" id="reflection">
-<h2>Reflection</h2>
-<div class="section" id="motivation">
-<h3>Motivation</h3>
-<p>In the previous chapter, we implement the dictionary (map) ADT using tree structure.
-A typical find or insert operations require <span class="math">\(O(\log N)\)</span> time. However, this is
-not good enough compared with <span class="math">\(O(1)\)</span> time. This is place where hash tables implementation
-can shine. Hash tables is a data structure that is designed for <span class="math">\(O(1)\)</span> find, insert, and delete
-operations. The only downside compared hash tables with tree structure is the ill support for ordering elements.</p>
-<img src="/images/maw-chap5.PNG" alt="chapter5 ADT picture" style="width: 700px;"/></div>
-<div class="section" id="general-idea">
-<h3>General Idea</h3>
-<p>A hash table is an array of some fixed size. Then we use hash function to map each key
-(i.e. a key is a string with an associated value) into some number in the range <tt class="docutils literal">0</tt> to
-<tt class="docutils literal"><span class="pre">Tablesize-1</span></tt> and place it in the appropriate cell.</p>
-<img alt="" src="/images/hashtable.PNG" />
-<p>Ideally, two distinct keys get different cells. However, this is not possible because
-there are a finite number of cells and a virtually infinite supply of keys. Thus the key
-concern for hash table data structure is how to distribute the keys evenly among the cells.
-This issue is addressed from two ways:
-1) pick a good hash function to avoid collision (i.e. two keys hash to the same value)
-2) use a good strategy to redistribute keys when collision happens.</p>
+                <time datetime="2017-03-17T15:56:00+08:00">Mar 17, 2017</time>
+                <div class="excerpt"><p class="first last">Summary of hash table for MAW Chapter 5</p>
 </div>
-<div class="section" id="hash-function">
-<h3>Hash function</h3>
-<p>Hash function is a mapping from the element key (string or number) to an integer
-(the hash value). The output of the hash function must always be less than the size of
-array and should be as evenly distributed as possible. One thing to note here is that
-the pick of hash function has high dependency on the actual content of the key set.</p>
-<p>We list some key points from the chapter here:</p>
-<ul class="simple">
-<li>Choose the table size of the hash table to be the prime.</li>
-</ul>
-<p>The rationale for this is that real-life data tends to have pattern, and &quot;multiples of 61&quot;
-are probably less likely than &quot;multiples of 60&quot;. In addition, quadratic hashing is an efficient
-collision strategy to use (compared with linear hashing, double hashing) and it requires the table size
-to be the prime.</p>
-<ul class="simple">
-<li>When we deal with string keys, we may use <span class="math">\(\big(\sum_{i=0}^{k-1} s_i \cdot 256^i \big) \bmod TableSize\)</span>
-as our function.</li>
-</ul>
-<p>Here we use 256 because <cite>char</cite> data is 1 byte. Other hash function may be adding up the ASCII values ofthe characters
-in the string. However, this doesn't work well because if string keys are short, it will not hash evenly to all of the
-hash table (see MAW p.151) and different character combinations hash to same value (i.e. &quot;abc&quot;, &quot;bca&quot; all add up to the
-same value).</p>
-<p>The slides listed in the reference section offer some examples on hash function pick if
-we know the keys beforehand (i.e. if keys <span class="math">\(s\)</span> are the real numbers uniformly
-distributed over <span class="math">\(0 \leq s &lt; 1\)</span>).</p>
-</div>
-<div class="section" id="collision-strategy">
-<h3>Collision strategy</h3>
-<p>A collision occurs when two different keys hash to the same value. By the nature of dictionary ADT,
-we cannot store both data records in the same cell in the array. So, we need to come up a strategy
-to resolve collision and try our best to make the keys evenly distribute among the table. There are
-two main strategies discussed in the chapter: separate chaining and open addressing.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Load factor <span class="math">\(\lambda\)</span> defined as the ratio of the number of the elements
-in the hash table to the table size. This concept appears frequently when we analyze
-hash table collision resolution strategy.</p>
-</div>
-<div class="section" id="separate-chaining">
-<h4>Separate chaining</h4>
-<p>Separate chaining is to keep a list (chain or bucket) of all elements that hash to the same value. In other words,
-each hash table cell holds pointer to linked list of records with same hash value.
-When collision happens, we insert the hash value of the key to the corresponding linked list of
-the cell that hash value should be stored. When we want to find an item, we compute the
-hash value, then do find on linked list.</p>
-<img alt="" src="/images/separate-chaining.PNG" />
-<p>Here the worst case time happens for find operation, which can take linear time.
-However, this can happen in the extreme rare case (bad luck or bad hash function).
-Of course, we can build a balance tree instead of a linked list on each cell to shrink
-the find time. But, the structure overhead and the compelxity of insert may make this effort not
-worth it.</p>
-<p>The average length of chained list = <span class="math">\(\lambda\)</span>. Thus, the average time for
-accessing an item = <span class="math">\(O(1) + O(\lambda)\)</span>. So, we want <span class="math">\(\lambda\)</span> to be smaller
-than 1 but close to 1 if good hashing function. Thus, the general rule for
-separate chaining hashing is to make the table size about as large as the number of
-elements expected (let <span class="math">\(\lambda \approx 1\)</span>).</p>
-</div>
-<div class="section" id="open-addressing">
-<h4>Open addressing</h4>
-<p>One disadvantage for the separate chaining strategy is that we need to build linked list
-for each cell, whcih introduces the overhead that can waste space. Another strategy to
-resolve collision is to try other empty cells. This is called open addressing. In general,
-open addressing means resolving collisions by trying a sequence of other positions in the table.
-Trying the next spot is called <em>probing</em>. More formally, cells <span class="math">\(h_0(X), h_1(x), h_2(x), \dots\)</span>
-are tried in succession until either x is found or we find an empty location (x not present).
-<span class="math">\(h_i(x) = (Hash(x) + F(i)) \bmod TableSize\)</span>, with <span class="math">\(F(0) = 0\)</span>. The function <span class="math">\(F\)</span>
-is the collision resolution strategy.</p>
-<p>Various flavors of open addressing differ in which probe sequence they use. This is reflected in <span class="math">\(F\)</span>.
-Three types of resolution function are discussed in the book:</p>
-<ol class="arabic simple">
-<li>Linear probing: <span class="math">\(F(i) = i\)</span></li>
-<li>Quadratic probing: <span class="math">\(F(i) = i^2\)</span></li>
-<li>Double hashing: <span class="math">\(F(i) = i \cdot Hash_2(x)\)</span></li>
-</ol>
-<p>Generally, the load factor should be below <span class="math">\(\lambda = 0.5\)</span> for open addressing hashing.</p>
-<div class="section" id="linear-probing">
-<h5>Linear probing</h5>
-<p>With linear probing, we try the cells sequentially (with wraparound) insearch of an empty cell.
-This strategy has a fundamental problem called <em>primary clustering</em>, which means blocks
-of occupied cells start forming. Any key that hashes into the cluster will require several
-attempts to resolve the collision, and then it will add to the cluster. In other words, primary
-clustering means elements that hash to different cells probe same alternative cells.</p>
-</div>
-<div class="section" id="quadratic-probing">
-<h5>Quadratic probing</h5>
-<p>Quadratic probing is a collision resolution method that eliminates the primary clustering problem
-of linear probing. But it has its own restriction or problem:</p>
-<ul class="simple">
-<li>If quadratic probing is used and the table size is prime, then a new element
-can always be inserted if the table is at least half empty. However, insertion is not guaranteed
-if <span class="math">\(\lambda &gt; 0.5\)</span>.</li>
-<li><em>Secondary clustering</em>, which means elements that hash to the same position will probe the same alternative cells.</li>
-</ul>
-</div>
-<div class="section" id="double-hashing">
-<h5>Double hashing</h5>
-<p>Double hashing <span class="math">\(F\)</span> says that we apply a second hash function to x and probe
-at a distance <span class="math">\(hash_2(x), 2hash_2(x), \dots\)</span>, and so on.</p>
-<p>When <span class="math">\(\lambda\)</span> exceeds certain value, we need to build a bigger hash table of
-approximately twice the size and be prime. This is called rehashing.</p>
-<p>In addition, when hash table cannot be contained in the memory and have to store part of structure on the disk,
-then the disk I/O becomes the main cost. In this case, we use different hash scheme, which is called extendible hashing.
-Like B-tree, this structure is widely applied in the database field.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="section" id="left-out">
-<h2>Left Out</h2>
-<p>Some material I left out when I work through this chapter majorly due to the time
-constraint:</p>
-<ul class="simple">
-<li>5.7, 5.12, 5.13, 5.15</li>
-</ul>
-</div>
-<div class="section" id="reference">
-<h2>Reference</h2>
-<ul class="simple">
-<li>MAW Chapter 5</li>
-<li><a class="reference external" href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf">https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf</a></li>
-<li><a class="reference external" href="https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf">https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf</a></li>
-</ul>
-</div>
-<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-</script>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Mar/12/maw-chapter-4-reflection/">MAW: Chapter 4 Reflection</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-03-12T10:45:00+08:00">Sun 12 Mar 2017, 10:45</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><div class="section" id="reflection">
-<h2>Reflection</h2>
-<p>In Chapter 4, we learn about the tree data structure. If we take a look from ADT
-perspective, the ADT we learn about is called Dictionary (a.k.a Map) ADT, which
-represented by a set of (key, value) pairs that support insert, find, delete operations.
-The core idea ...</p></div>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Mar/12/maw-chapter-4-reflection/">more ...</a>
-                </div>
+                <time datetime="2017-03-12T10:45:00+08:00">Mar 12, 2017</time>
+                <div class="excerpt"><p class="first last">An overview summary of MAW Chapter 4</p>
+</div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
-                <h2><a href="../posts/2017/Jan/23/maw-chapter-3-reflection/">MAW: Chapter 3 Reflection</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-23T10:45:00+08:00">Mon 23 Jan 2017, 10:45</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>I finally finish Chapter 3: List, Stacks, and Queues with almost all the problems
-solved. It's time to do some summary and reflection.</p>
-<div class="section" id="reflection">
-<h2>Reflection</h2>
-<p>One important philosophy in this chapter is the
-separation between the interface exposed to the user and the implementation details behind the scene.
-The interface ...</p></div>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Jan/23/maw-chapter-3-reflection/">more ...</a>
-                </div>
-            </article>
-            <hr class="style-eight"></hr>
-            <article>
-                <h2><a href="../posts/2016/Dec/16/lesson-learned-portability/">Lesson Learned: Portability</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-16T23:20:00+08:00">Fri 16 Dec 2016, 23:20</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>Portability is a kind of issue that people always talk about in software engineering field.
-I never have been through such problem on my own probably because I don't have to port my
-stuff into different platforms. However, this is not the case anymore during the work.</p>
-<p>Recently, I ...</p>
-                    <a class="btn btn-default btn-xs" href="../posts/2016/Dec/16/lesson-learned-portability/">more ...</a>
-                </div>
-            </article>
-            <hr class="style-eight"></hr>
-            <article>
-                <h2><a href="../posts/2016/Nov/23/hello-world/">Hello World</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-11-23T23:00:00+08:00">Wed 23 Nov 2016, 23:00</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>This blog will focus entirely on posts that involve either source code or
-mathematical expression. If you are looking for my posts about life reflection,
-book review, and many other non-technical posts, please check out <a class="reference external" href="https://zeyuanhu.wordpress.com/">my blog on wordpress</a>.</p>
 
-                    <a class="btn btn-default btn-xs" href="../posts/2016/Nov/23/hello-world/">more ...</a>
-                </div>
+
+            <article class="post-overview">
+                <h2><a href="../posts/2017/Jan/23/maw-chapter-3-reflection/">MAW: Chapter 3 Reflection</a></h2>
+                <time datetime="2017-01-23T10:45:00+08:00">Jan 23, 2017</time>
+                <div class="excerpt"><p class="first last">An overview summary of MAW Chapter 3</p>
+</div>
             </article>
-            <hr class="style-eight"></hr>
+
+
+            <article class="post-overview">
+                <h2><a href="../posts/2016/Dec/16/lesson-learned-portability/">Lesson Learned: Portability</a></h2>
+                <time datetime="2016-12-16T23:20:00+08:00">Dec 16, 2016</time>
+                <div class="excerpt"><p class="first last">Shell is not portable!</p>
+</div>
+            </article>
+
+
+            <article class="post-overview">
+                <h2><a href="../posts/2016/Nov/23/hello-world/">Hello World</a></h2>
+                <time datetime="2016-11-23T23:00:00+08:00">Nov 23, 2016</time>
+                <div class="excerpt"><p class="first last">Hello</p>
+</div>
+            </article>
+
 
         </div>
-    </div>
-</div>
-<footer>
-   <div class="container">
-      <hr>
-      <div class="row">
-         <div class="col-xs-10">&copy; 2015-2017 Zeyuan Hu
-           <!-- &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
-            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>-->         </div>
-         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
-      </div>
-   </div>
+
+        <div class="paginator">
+            Page 1 / 1
+        </div>
+
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+<!--                            <li><a href="../about-zack.html">About</a></li>
+                <li><a href="../blog">Blog</a></li>
+                <li><a href="../quotes.html">Quotes</a></li>
+                <li><a href="../projects.html">Projects</a></li>
+-->
+    </ul>
+
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
 </footer>
-<script src="../theme/js/jquery.min.js"></script>
-
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="../theme/js/bootstrap.min.js"></script>
-
-<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
-<script src="../theme/js/respond.min.js"></script>
-
-    <!-- Disqus -->
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'zhu45-org'; // required: replace example with your forum shortname
-
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function () {
-            var s = document.createElement('script');
-            s.async = true;
-            s.type = 'text/javascript';
-            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-        }());
-    </script>
-    <!-- End Disqus Code -->
-    <!-- Google Analytics -->
-    <script type="text/javascript">
-
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-37565522-2']);
-        _gaq.push(['_trackPageview']);
-
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-    <!-- End Google Analytics Code -->
-
-</body>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
 </html>

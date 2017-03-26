@@ -1,468 +1,110 @@
 <!DOCTYPE html>
-<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
-<head>
-    <title>programming languages - Zeyuan Hu's website</title>
-    <!-- Using the latest rendering mode for IE -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>Fluffy Stuff</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../theme/css/cid.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+            <div class="container">
+
+<header class="blog-header">
+    <h1><a href="..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <a href="../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>
+        <a href="../projects.html" style="padding: 10px">PROJECTS</a>
+        <a href="../quotes.html" style="padding: 10px">QUOTES</a>
+        <a href="../blog" style="padding: 10px">BLOG</a>
+        <a href="../archives" style="padding: 10px">ARCHIVES</a>
+    </nav>
+</header>
+
+        <h1>Category: programming languages. <small class="header-link"><a href="../categories">All Categories</a></small></h1>
+
+        <div class="post-list">
 
 
-
-
-    <meta name="author" content="Zeyuan Hu" />
-    <meta name="keywords" content="programming languages" />
-
-    <!-- Open Graph tags -->
-        <meta property="og:site_name" content="Zeyuan Hu's website" />
-        <meta property="og:type" content="website"/>
-        <meta property="og:title" content="Zeyuan Hu's website"/>
-        <meta property="og:url" content=".."/>
-        <meta property="og:description" content="Zeyuan Hu's website"/>
-
-
-    <!-- Bootstrap -->
-        <link rel="stylesheet" href="../theme/css/bootstrap.lumen.min.css" type="text/css"/>
-    <link href="../theme/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="../theme/css/pygments/emacs.css" rel="stylesheet">
-    <link rel="stylesheet" href="../theme/css/style.css" type="text/css"/>
-
-        <link href="../feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
-              title="Zeyuan Hu's website ATOM Feed"/>
-
-        <link href="../feeds/all.rss.xml" type="application/rss+xml" rel="alternate"
-              title="Zeyuan Hu's website RSS Feed"/>
-
-
-
-</head>
-<body>
-
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	<div class="container">
-        <div class="navbar-header">
-            <a href="../" class="navbar-brand">
-Zeyuan Hu's website            </a>
-        </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="../about-zack.html"><i class="fa fa-question"></i><span class="icon-label">About</span></a></li>
-              <li><a href="../archives/index.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-</div> <!-- /.navbar -->
-<!-- Banner -->
-<!-- End Banner -->
-<div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <article>
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Jan/19/typecasting-in-c/">Typecasting in C</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-19T00:53:00+08:00">Thu 19 Jan 2017, 00:53</abbr></p>
-</footer><!-- /.post-info -->                    <p>This post covers the typecasting in C with the aim to get a clear understanding
-of the most commonly-seen C manipulation. This writeup is adapted from
-&quot;Hacking - the Art of Exploitation&quot;.</p>
-<div class="section" id="tl-dr">
-<h2>TL;DR</h2>
-<ul class="simple">
-<li>Typecasting change a variable into a different type just for that operation.</li>
-<li>Pointer type determines the size of the data it points to. In other words, when you
-do pointer arithemetic (i.e <tt class="docutils literal">+</tt>), the number of bytes change (i.e increase) in terms of memory
-address is determined by the pointer type.</li>
-<li><tt class="docutils literal">void</tt> pointer is a generic pointer and we need to cast them to the proper data type in order to
-de-reference it.</li>
-<li>Pointer is merely a memory address. With typecasting, any type with enough size to hold
-the memory address can work like a pointer.</li>
-</ul>
+                <time datetime="2017-01-19T00:53:00+08:00">Jan 19, 2017</time>
+                <div class="excerpt"><p class="first last">A study of typecasting in C</p>
 </div>
-<div class="section" id="details">
-<h2>Details</h2>
-<p>Typecasting is simply a way to temporarily change a variable's data type,
-despite how it was originally define. When a variable is typecast into a different type,
-the compiler is basically told to treat that variable as if it were the new data type,
-but <em>only for that operation</em>.</p>
-<p>Typecasting is mostly used with pointers. Before we jump into typecasting, let's take a look
-why we need to define type for pointer (pointer is just a memory address). One reason for this
-is to try to limit programming errors. An integer pointer should only point to integer data, while
-a character pointer should only point to character data. Another reason is for pointer arithmetic.
-An integer is four bytes in size, while a character only takes up a single byte.</p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-
-  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;a&#39;</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span><span class="p">,</span> <span class="sc">&#39;c&#39;</span><span class="p">,</span> <span class="sc">&#39;d&#39;</span><span class="p">,</span> <span class="sc">&#39;e&#39;</span><span class="p">};</span>
-  <span class="kt">int</span> <span class="n">int_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
-
-  <span class="kt">char</span> <span class="o">*</span><span class="n">char_pointer</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="o">*</span><span class="n">int_pointer</span><span class="p">;</span>
-
-  <span class="n">char_pointer</span> <span class="o">=</span> <span class="n">char_array</span><span class="p">;</span>
-  <span class="n">int_pointer</span> <span class="o">=</span> <span class="n">int_array</span><span class="p">;</span>
-
-  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[integer pointer] points to %p, which contains the integer %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">int_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">int_pointer</span><span class="o">++</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[char pointer] points to %p, which contains the char &#39;%c&#39;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">char_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">char_pointer</span><span class="o">++</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-<p>The program itself is pretty straightforward. Here is the output:</p>
-<pre class="literal-block">
-[integer pointer] points to 0x7ffd90db45a4, which contains the integer 1
-[integer pointer] points to 0x7ffd90db45a8, which contains the integer 2
-[integer pointer] points to 0x7ffd90db45ac, which contains the integer 3
-[integer pointer] points to 0x7ffd90db45b0, which contains the integer 4
-[integer pointer] points to 0x7ffd90db45b4, which contains the integer 5
-[char pointer] points to 0x7ffd90db45c1, which contains the char 'a'
-[char pointer] points to 0x7ffd90db45c2, which contains the char 'b'
-[char pointer] points to 0x7ffd90db45c3, which contains the char 'c'
-[char pointer] points to 0x7ffd90db45c4, which contains the char 'd'
-[char pointer] points to 0x7ffd90db45c5, which contains the char 'e'
-</pre>
-<p>Even though the same value of 1 is added to <tt class="docutils literal">int_pointer</tt> and <tt class="docutils literal">char_pointer</tt>
-in their respective loops, the compiler increments the pointer's addresses by different
-amounts. Since a char is only 1 byte, the pointer to the next char would naturally also be 1 byte over.
-But since an integer is 4 bytes, a pointer to the next integer has to be 4 bytes over.</p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-
-  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;a&#39;</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span><span class="p">,</span> <span class="sc">&#39;c&#39;</span><span class="p">,</span> <span class="sc">&#39;d&#39;</span><span class="p">,</span> <span class="sc">&#39;e&#39;</span><span class="p">};</span>
-  <span class="kt">int</span> <span class="n">int_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
-
-  <span class="kt">char</span> <span class="o">*</span><span class="n">char_pointer</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="o">*</span><span class="n">int_pointer</span><span class="p">;</span>
-
-  <span class="c1">// The char_pointer and int_pointer now point to incompatible data types.</span>
-  <span class="n">char_pointer</span> <span class="o">=</span> <span class="n">int_array</span><span class="p">;</span>
-  <span class="n">int_pointer</span> <span class="o">=</span> <span class="n">char_array</span><span class="p">;</span>
-
-  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[integer pointer] points to %p, which contains the integer %c</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">int_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">int_pointer</span><span class="o">++</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[char pointer] points to %p, which contains the char &#39;%d&#39;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">char_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">char_pointer</span><span class="o">++</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-<p>The output is:</p>
-<pre class="literal-block">
-$ gcc pointer_types2.c
-pointer_types2.c: In function ‘main’:
-pointer_types2.c:13: warning: assignment from incompatible pointer type
-pointer_types2.c:14: warning: assignment from incompatible pointer type
-</pre>
-<p>Here, the compiler and the programmer are the only ones that care about a pointer's type.
-In the compiled code, a pointer is nothing more than a memory address, so the compiler
-will still compile the code if a pointer points to an incompatible data type - it simply warns us
-to anticipate unexpected results.:</p>
-<pre class="literal-block">
-[integer pointer] points to 0x7ffe2d481324, which contains the integer a
-[integer pointer] points to 0x7ffe2d481328, which contains the integer e
-[integer pointer] points to 0x7ffe2d48132c, which contains the integer ▒
-[integer pointer] points to 0x7ffe2d481330, which contains the integer
-[integer pointer] points to 0x7ffe2d481334, which contains the integer
-[char pointer] points to 0x7ffe2d481301, which contains the char '1'
-[char pointer] points to 0x7ffe2d481302, which contains the char '0'
-[char pointer] points to 0x7ffe2d481303, which contains the char '0'
-[char pointer] points to 0x7ffe2d481304, which contains the char '0'
-[char pointer] points to 0x7ffe2d481305, which contains the char '2'
-</pre>
-<p>Even though <tt class="docutils literal">int_pointer</tt> points to character data that only contains 5 bytes of data, it is still
-typed as an integer. This means that adding 1 to the pointer will increment the address by 4 each time.
-Similarly, the <tt class="docutils literal">char_pointer</tt>'s address is only incremented by 1 each time, stepping through the 20 bytes
-of integer data, one byte at a time. So, we need to make sure that pointer type is correct. This is the place where
-we need typecasting.</p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-
-  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;a&#39;</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span><span class="p">,</span> <span class="sc">&#39;c&#39;</span><span class="p">,</span> <span class="sc">&#39;d&#39;</span><span class="p">,</span> <span class="sc">&#39;e&#39;</span><span class="p">};</span>
-  <span class="kt">int</span> <span class="n">int_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
-
-  <span class="kt">char</span> <span class="o">*</span><span class="n">char_pointer</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="o">*</span><span class="n">int_pointer</span><span class="p">;</span>
-
-  <span class="n">char_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">int_array</span><span class="p">;</span>
-  <span class="n">int_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span> <span class="n">char_array</span><span class="p">;</span>
-
-  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[integer  pointer] points to %p, which contains the integer %c</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">int_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">int_pointer</span><span class="p">);</span>
-    <span class="n">int_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">int_pointer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[char pointer] points to %p, which contains the char &#39;%d&#39;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">char_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">char_pointer</span><span class="p">);</span>
-    <span class="n">char_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">char_pointer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-<p>Typecasting is just a way to change the type of a variable on the fly. In the above code, when the pointers
-are initially set, the data is typecast into the pointer's data type. This will prevent the C compiler from complaining
-about the conflicting data types; however, any pointer arithmetic will still be incorrect (because typecasting is just
-for that one operation). To fix that, when 1 is added to the pointers, they must first be typecast into the correct data type
-so the address is incremented by the correct amount. Then this pointer needs to be typecast back into the pointer's data type
-once again. It works but in a not beautiful way.:</p>
-<pre class="literal-block">
-[integer pointer] points to 0x7ffd484ac470, which contains the integer a
-[integer pointer] points to 0x7ffd484ac471, which contains the integer b
-[integer pointer] points to 0x7ffd484ac472, which contains the integer c
-[integer pointer] points to 0x7ffd484ac473, which contains the integer d
-[integer pointer] points to 0x7ffd484ac474, which contains the integer e
-[char pointer] points to 0x7ffd484ac450, which contains the char '1'
-[char pointer] points to 0x7ffd484ac454, which contains the char '2'
-[char pointer] points to 0x7ffd484ac458, which contains the char '3'
-[char pointer] points to 0x7ffd484ac45c, which contains the char '4'
-[char pointer] points to 0x7ffd484ac460, which contains the char '5'
-</pre>
-<p>Sometimes, we probably want to use a generic, typeless pointer. In C, a void pointer is a typeless pointer, defined by the <tt class="docutils literal">void</tt> keyword.
-Here are two things we need to note:</p>
-<blockquote>
-<ul class="simple">
-<li>pointers cannot be de-referenced unless they have a type. In order to retrieve the value stored in the pointer's memory address, the
-compiler must first know what type of data it is.</li>
-<li>void pointers must also be typecast before doing pointer arithmetic, which indicates that a void pointer's main purpose is to simply hold a
-memory address.</li>
-</ul>
-</blockquote>
-<p>Let's rewrite our program.</p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-
-  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;a&#39;</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span><span class="p">,</span> <span class="sc">&#39;c&#39;</span><span class="p">,</span> <span class="sc">&#39;d&#39;</span><span class="p">,</span> <span class="sc">&#39;e&#39;</span><span class="p">};</span>
-  <span class="kt">int</span> <span class="n">int_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
-
-  <span class="kt">void</span> <span class="o">*</span><span class="n">void_pointer</span><span class="p">;</span>
-
-  <span class="n">void_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">char_array</span><span class="p">;</span>
-
-  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[char pointer] points to %p, which contains the char %c</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">void_pointer</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">void_pointer</span><span class="p">));</span>
-    <span class="n">void_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">void_pointer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="n">void_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">int_array</span><span class="p">;</span>
-
-  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[integer pointer] points to %p, which contains the integer %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">void_pointer</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">void_pointer</span><span class="p">));</span>
-    <span class="n">void_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span> <span class="n">void_pointer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-<p>The output is:</p>
-<pre class="literal-block">
-[char pointer] points to 0x7fff06cf8de0, which contains the char a
-[char pointer] points to 0x7fff06cf8de1, which contains the char b
-[char pointer] points to 0x7fff06cf8de2, which contains the char c
-[char pointer] points to 0x7fff06cf8de3, which contains the char d
-[char pointer] points to 0x7fff06cf8de4, which contains the char e
-[integer pointer] points to 0x7fff06cf8dc0, which contains the integer 1
-[integer pointer] points to 0x7fff06cf8dc4, which contains the integer 2
-[integer pointer] points to 0x7fff06cf8dc8, which contains the integer 3
-[integer pointer] points to 0x7fff06cf8dcc, which contains the integer 4
-[integer pointer] points to 0x7fff06cf8dd0, which contains the integer 5
-</pre>
-<p>The void pointer is really just holding the memory addresses, while the hard-coded typecasting
-is telling the compiler to use the proper types whenever the pointer is used. Since the type is
-taken care of by the typecasts, the void pointer is truly nothin more than a memory address.
-With the data types defined by typecasting, anything that is big enough to hold a four-byte or eight-byte value can
-work the same way as a void pointer.</p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-
-  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;a&#39;</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span><span class="p">,</span> <span class="sc">&#39;c&#39;</span><span class="p">,</span> <span class="sc">&#39;d&#39;</span><span class="p">,</span> <span class="sc">&#39;e&#39;</span><span class="p">};</span>
-  <span class="kt">int</span> <span class="n">int_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
-
-  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">int</span> <span class="n">hacky_nonpointer</span><span class="p">;</span>
-
-  <span class="n">hacky_nonpointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">int</span><span class="p">)</span><span class="n">char_array</span><span class="p">;</span>
-
-  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[hacky_nonpointer] points to %p, which contains the char %c</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">hacky_nonpointer</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">hacky_nonpointer</span><span class="p">));</span>
-    <span class="n">hacky_nonpointer</span> <span class="o">=</span> <span class="n">hacky_nonpointer</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="n">hacky_nonpointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">int</span><span class="p">)</span><span class="n">int_array</span><span class="p">;</span>
-
-  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[hacky_nonpointer] points to %p, which contains the integer %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">hacky_nonpointer</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">hacky_nonpointer</span><span class="p">));</span>
-    <span class="n">hacky_nonpointer</span> <span class="o">=</span> <span class="n">hacky_nonpointer</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-<p>Note that I use <tt class="docutils literal">unsigned long int</tt> because I'm on a 64-bit system. <tt class="docutils literal">unsigned int</tt> is enough for 32-bit system.:</p>
-<pre class="literal-block">
-[hacky_nonpointer] points to 0x7fff3e378360, which contains the char a
-[hacky_nonpointer] points to 0x7fff3e378361, which contains the char b
-[hacky_nonpointer] points to 0x7fff3e378362, which contains the char c
-[hacky_nonpointer] points to 0x7fff3e378363, which contains the char d
-[hacky_nonpointer] points to 0x7fff3e378364, which contains the char e
-[hacky_nonpointer] points to 0x7fff3e378340, which contains the integer 1
-[hacky_nonpointer] points to 0x7fff3e378344, which contains the integer 2
-[hacky_nonpointer] points to 0x7fff3e378348, which contains the integer 3
-[hacky_nonpointer] points to 0x7fff3e37834c, which contains the integer 4
-[hacky_nonpointer] points to 0x7fff3e378350, which contains the integer 5
-</pre>
-<p>The important thing to remember about variables in C is that the compiler is the
-only thing that care about a variable's type. In the end, after the program has been compiled,
-the variables are nothing more than memory addresses. This means that variables of one type can easily be coerced into
-behaving like another type by telling the compiler to typecast them into the desired type.</p>
-</div>
-
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Jan/11/difference-between-i-and-i/">Difference between <tt class="docutils literal">i++</tt> and <tt class="docutils literal">++i</tt></a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-11T22:39:00+08:00">Wed 11 Jan 2017, 22:39</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>I'm starting to read through <a class="reference external" href="https://www.amazon.com/Hacking-Art-Exploitation-Jon-Erickson/dp/1593271441">Hacking: The Art of Exploitation</a> on
-my four hours daily commute to work in order to get myself more comfortable working with C. I resolve a puzzle I have about C, as shown in the title.</p>
-<ul class="simple">
-<li><tt class="docutils literal">i++</tt> means increment the value of <tt class="docutils literal">i</tt> by ...</li></ul>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Jan/11/difference-between-i-and-i/">more ...</a>
-                </div>
+                <time datetime="2017-01-11T22:39:00+08:00">Jan 11, 2017</time>
+                <div class="excerpt"><p class="first last">Understanding easily confused part of C</p>
+</div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Jan/08/modify-array-inside-function-in-c/">Modify array inside function in C</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-08T09:23:00+08:00">Sun 08 Jan 2017, 09:23</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>In this post, I want to write down the lesson learned
-about modifying array inside a function in C with an example
-from MAW 3.15.a:</p>
-<blockquote>
-Write an array implementation of self-adjusting lists.
-A self-adjusting list is like a regular list, except that
-all insertions are performed at the ...</blockquote>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Jan/08/modify-array-inside-function-in-c/">more ...</a>
-                </div>
+                <time datetime="2017-01-08T09:23:00+08:00">Jan 08, 2017</time>
+                <div class="excerpt"><p class="first last">Commonly seen C usage</p>
+</div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="../posts/2017/Jan/06/josephus-problem-radix-sort-reflection/">Josephus Problem &amp; Radix Sort Reflection</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2017-01-06T00:34:00+08:00">Fri 06 Jan 2017, 00:34</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>This post is a reflection on the two problems (MAW 3.13 &amp; 3.10) I
-have been working on for the past five days.</p>
-<div class="section" id="dynamic-arrays-in-c">
-<h2>Dynamic arrays in C</h2>
-<p>One of the ways I try out to solve <a class="reference external" href="../posts/2016/Dec/31/josephus-problem/">Josephus Problem</a> is to use circular double linked list, which
-is implemented in ...</p></div>
-                    <a class="btn btn-default btn-xs" href="../posts/2017/Jan/06/josephus-problem-radix-sort-reflection/">more ...</a>
-                </div>
+                <time datetime="2017-01-06T00:34:00+08:00">Jan 06, 2017</time>
+                <div class="excerpt"><p class="first last">Takeaway from MAW 3.13 and 3.10</p>
+</div>
             </article>
-            <hr class="style-eight"></hr>
-            <article>
+
+
+            <article class="post-overview">
                 <h2><a href="../posts/2016/Dec/24/a-small-c-trick-i-learned-today/">A small C trick I learned today</a></h2>
-<footer class="post-info">
-    <p><i class="fa fa-calendar-o fa-fw"></i> <abbr style="padding: 0 1px" class="published" title="2016-12-24T23:11:00+08:00">Sat 24 Dec 2016, 23:11</abbr></p>
-</footer><!-- /.post-info -->                <div class="summary"><p>Today I learned a C trick. Here is my original <tt class="docutils literal">printList</tt>:</p>
-<div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="nf">printList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">Pos</span> <span class="n">dummy</span><span class="p">;</span> <span class="c1">// creates a dummy node to traverse the list</span>
-
-  <span class="n">dummy</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-
-  <span class="k">while</span> <span class="p">(</span><span class="n">dummy</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d-&gt;&quot;</span><span class="p">,</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
-    <span class="n">dummy</span> <span class="o">=</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-<p>It works but there is a small caveat in this routine. This ...</p>
-                    <a class="btn btn-default btn-xs" href="../posts/2016/Dec/24/a-small-c-trick-i-learned-today/">more ...</a>
-                </div>
+                <time datetime="2016-12-24T23:11:00+08:00">Dec 24, 2016</time>
+                <div class="excerpt"><p class="first last">A C one-liner</p>
+</div>
             </article>
-            <hr class="style-eight"></hr>
+
 
         </div>
-    </div>
-</div>
-<footer>
-   <div class="container">
-      <hr>
-      <div class="row">
-         <div class="col-xs-10">&copy; 2015-2017 Zeyuan Hu
-           <!-- &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
-            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>-->         </div>
-         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
-      </div>
-   </div>
+
+        <div class="paginator">
+            Page 1 / 1
+        </div>
+
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+<!--                            <li><a href="../about-zack.html">About</a></li>
+                <li><a href="../blog">Blog</a></li>
+                <li><a href="../quotes.html">Quotes</a></li>
+                <li><a href="../projects.html">Projects</a></li>
+-->
+    </ul>
+
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
 </footer>
-<script src="../theme/js/jquery.min.js"></script>
-
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="../theme/js/bootstrap.min.js"></script>
-
-<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
-<script src="../theme/js/respond.min.js"></script>
-
-    <!-- Disqus -->
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'zhu45-org'; // required: replace example with your forum shortname
-
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function () {
-            var s = document.createElement('script');
-            s.async = true;
-            s.type = 'text/javascript';
-            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-        }());
-    </script>
-    <!-- End Disqus Code -->
-    <!-- Google Analytics -->
-    <script type="text/javascript">
-
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-37565522-2']);
-        _gaq.push(['_trackPageview']);
-
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-    <!-- End Google Analytics Code -->
-
-</body>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
 </html>
