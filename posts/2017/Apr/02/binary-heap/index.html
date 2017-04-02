@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Binary heap
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+            <div class="container">
+
+<header class="blog-header">
+    <h1><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+        <a href="../../../../../quotes.html" style="padding: 10px">QUOTES</a>
+        <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+        <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a>
+    </nav>
+</header>
+
+    <div class="post">
+        <header>
+            <h1>Binary heap</h1>
+            <p class="date">Written on <time datetime="2017-04-02T11:30:00+08:00">Apr 02, 2017</time></p>
+        </header>
+
+        <article>
+            <p>This is the summary of <em>binary heap</em> and its generalization <em>d-heap</em> part in MAW Chapter 6.</p>
+<h2>Motivation</h2>
+<p>The motivation for priority queue majorly comes from the fact that not all things
+are equally weighted. I'll summarize the applications of priority queues in my
+end-chapter summary post. </p>
+<h2>Concept</h2>
+<p>A binary heap is a binary tree (NOT a BST) that is:</p>
+<ul>
+<li>Complete (structure property):</li>
+</ul>
+<p>the tree is completely filled except possibly the bottom level, which is filled
+from left to right.</p>
+<ul>
+<li>satisfies the heap order property:</li>
+</ul>
+<p>For every nodex <span class="math">\(X\)</span>, the key in the parent of <span class="math">\(X\)</span> is smaller than (or equal to) the
+key in <span class="math">\(X\)</span>, with the exception of the root (which has no parent). In other words,
+every node is less than or equal to its children.</p>
+<p>This property guarantees that the root node is always the smallest node.</p>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>The heap order property is for min heap. If you want to have a max heap, then
+the heap order property should be that every node is greater than or equal to 
+its children.</p>
+</blockquote>
+<p>Here are some examples:</p>
+<p><img src="/images/binary-heap.PNG" alt="binary heap examples" style="width: 700px;"/></p>
+<h2>Properties</h2>
+<ul>
+<li>Since complete binary tree of height <span class="math">\(h\)</span> has between <span class="math">\(2^h\)</span> and <span class="math">\(2^{h+1}-1\)</span> nodes, 
+  the height of a binary heap is <span class="math">\(O(\log N)\)</span>.</li>
+<li>For binary heaps, <code>BuildHeap</code> does at most <span class="math">\(2N-2\)</span> comparisons between elements.</li>
+</ul>
+<h2>Remarks on implementation</h2>
+<p>We use array as the actual implementation for the binary heap above. 
+For any element in array position <span class="math">\(i\)</span>, the left child is in position <span class="math">\(2i\)</span>, the
+right child is in the cell after the left child <span class="math">\((2i+1)\)</span>, and the parent is in position
+<span class="math">\(\lfloor i/2 \rfloor\)</span>. Position 0 is used as a sentinel.</p>
+<p>The reason we use the array implementation is that dealing with pointers are quite
+expensive to do.</p>
+<h2>Operations</h2>
+<h3>Insert</h3>
+<p>We add the value as the new node at the end of the array, which is the next avaliable
+location in the tree. Then, we need to maintain the heap order property by doing 
+a simple insertion sort operation on the path from the new place to the root to find
+the correct place for it in the tree. This is called <em>percolate up</em>. </p>
+<p><img src="/images/binary-heap-percolate-up.PNG" alt="binary heap percolate up" style="width: 700px;"/></p>
+<ul>
+<li>We start at last node and keep comparing with parent <span class="math">\(A[i/2]\)</span></li>
+<li>If parent larger, copy parent down and go up one level</li>
+<li>Done if parent <span class="math">\(\le\)</span> item or reached top node <span class="math">\(A[1]\)</span></li>
+</ul>
+<p><img src="/images/binary-heap-percolate-up-done.PNG" alt="binary heap percolate up done"/></p>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>Position 0 is used as a sentinel, which holds the value that is smaller than
+(or equal to) any element in the heap. This is because every iteration of insert
+needs to test: 1. if it has reached the top node A[1] 2. if parent <span class="math">\(\le\)</span> item
+The first test can be avoid by using sentinel b/c it then becomes a special case
+of second test.</p>
+</blockquote>
+<h3>DeleteMin</h3>
+<p>We delete and return the value at root node in this operation. Same as the insert, 
+we need to maintain the binary heap properties. </p>
+<p>By removing the root node's value, we have a "hole" at the root. We use the last
+node's value in the tree to fill in the hole. By doing this way, we maintain the 
+structure property. Now, we need to maintain the heap order property. Similar to 
+insertion, we can do a simple insertion sort-like operation to find the correct
+place for it in the tree. This is called <em>percolate down</em>.</p>
+<p><img src="/images/binary-heap-percolate-down.PNG" alt="binary heap percolate down" style="width: 700px;"/></p>
+<ul>
+<li>Keep comparing with children <span class="math">\(A[2i]\)</span> and <span class="math">\(A[2i+1]\)</span></li>
+<li>Copy smaller child up and go down one level</li>
+<li>Done if both children are <span class="math">\(\ge\)</span> item or reached a leaf node</li>
+</ul>
+<h3>Other heap operations</h3>
+<p>The following operations (with <span class="math">\(P\)</span> argument) require the position of every element in the heap known
+by some other method in order to make them cheap to perform.</p>
+<h4><code>DecreaseKey</code>(P, <span class="math">\(\delta\)</span>, H)</h4>
+<p>decrease the key value of node at position <span class="math">\(P\)</span> by a positive amount <span class="math">\(\delta\)</span>. We 
+can first subtract <span class="math">\(\delta\)</span> from current value at <span class="math">\(P\)</span>. Then we <em>percolate up</em> to fix.
+This requires <span class="math">\(O(\log N)\)</span> time.</p>
+<h4><code>IncreaseKey</code>(P, <span class="math">\(\delta\)</span>, H)</h4>
+<p>increase the key value of node at position <span class="math">\(P\)</span> by a positive amount <span class="math">\(\delta\)</span>. We
+can add <span class="math">\(\delta\)</span> to current value at <span class="math">\(P\)</span> then <em>percolate down</em> to fix. This requires
+<span class="math">\(O(\log N)\)</span> time.</p>
+<h4><code>Delete(P,H)</code></h4>
+<p>removes the node at position <span class="math">\(P\)</span> from the heap. We can use <code>DecreaseKey</code>(P, <span class="math">\(\infty\)</span>, H)
+followed by <code>DeleteMin</code>. The running time is <span class="math">\(O(\log N)\)</span>.</p>
+<h4><code>Buildheap(H)</code></h4>
+<p>takes as input <span class="math">\(N\)</span> keys and construct a binary heap from it. This is known as Floyd's algorithm.</p>
+<ul>
+<li>Place the <span class="math">\(N\)</span> keys into the tree in order. This satisfies the structure property.</li>
+<li>Then we do the following to maintain the heap order property.</li>
+</ul>
+<div class="highlight"><pre><span></span>for( i = N/2; i &gt; 0; i--)
+  PercolateDown(i);
+</pre></div>
+
+
+<p>This alogrithm runs in <span class="math">\(O(N)\)</span> time. Detailed proof see MAW p.189.</p>
+<h4><code>Merge(H1,H2)</code></h4>
+<p>We merge two heaps <span class="math">\(H1\)</span> and <span class="math">\(H2\)</span> of size <span class="math">\(O(N)\)</span>. <span class="math">\(H1\)</span> and <span class="math">\(H2\)</span> are stored in two
+arrays. We can do <span class="math">\(O(N)\)</span> insert but this requires <span class="math">\(O(N\log N)\)</span> time. We can do better
+by copy <span class="math">\(H2\)</span> at the end of <span class="math">\(H1\)</span> and use <code>BuildHeap</code>. This requires <span class="math">\(O(N)\)</span> time.</p>
+<h2>Runtime analysis</h2>
+<ul>
+<li>Space: <span class="math">\(O(N)\)</span> (an array of size <span class="math">\(N+1\)</span>)</li>
+<li>Insert: <span class="math">\(O(\log N)\)</span></li>
+<li>DeleteMin: <span class="math">\(O(\log N)\)</span></li>
+</ul>
+<h1>d-heaps</h1>
+<p>d-heaps is the generalization of binary heap: we have <span class="math">\(d\)</span> children instead of 2.
+Similar to B-tree, this structure will makes the heaps shallower and is useful for
+heaps too big for memory. </p>
+<p>Everything is same to the binary heap except that it takes <span class="math">\(d-1\)</span> comparisons to find
+the minimum of <span class="math">\(d\)</span> children (in binary heap, we do comparison once). Then, for
+<code>DeleteMin</code>, for example, takes <span class="math">\(O(d\log_d N)\)</span>. Other operations runtime adjusts similarly.</p>
+<p>In terms of array implementation, for entry located in position <span class="math">\(i\)</span>, the parent is
+at <span class="math">\(\lfloor{\frac{i + (d-2)}{d}}\rfloor\)</span> and the children are at <span class="math">\(id-(d-2), \dots, id+1\)</span>.</p>
+<h2>Reference</h2>
+<ul>
+<li>MAW Chapter 6</li>
+<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture4.pdf</li>
+<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture08.pdf</li>
+<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture11.pdf</li>
+</ul>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/data-struct-algo.html">Data Struct & Algo</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+<!--                            <li><a href="../../../../../about-zack.html">About</a></li>
+                <li><a href="../../../../../blog2">Blog</a></li>
+                <li><a href="../../../../../quotes.html">Quotes</a></li>
+                <li><a href="../../../../../projects.html">Projects</a></li>
+-->
+    </ul>
+
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
