@@ -183,7 +183,7 @@ at &lt;span class="math"&gt;\(\lfloor{\frac{i + (d-2)}{d}}\rfloor\)&lt;/span&gt;
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;</summary><category term="heaps"></category><category term="maw"></category></entry><entry><title>MAW Chapter 6: Priority Queues (Heaps) writing questions</title><link href="http://zhu45.org/posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/" rel="alternate"></link><published>2017-03-26T12:01:00+08:00</published><updated>2017-03-26T12:01:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-26:posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/</id><summary type="html">&lt;h2&gt;Solutions&lt;/h2&gt;
-&lt;p&gt;including: MAW 6.6, 6.7, 6.9, 6.13, 6.14&lt;/p&gt;
+&lt;p&gt;including: MAW 6.6, 6.7, 6.9, 6.13, 6.14, 6.16&lt;/p&gt;
 &lt;h3&gt;MAW 6.6&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;How many nodes are in the large heap in Figure 6.13?&lt;/p&gt;
@@ -306,6 +306,26 @@ $$&lt;/div&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(d = max(2, M/N)\)&lt;/span&gt; (See the related discussion at the end of Section 11.4)&lt;/p&gt;
 &lt;!--http://mail.csis.ul.ie/~cs4115/resources/sol10.pdf--&gt;
 
+&lt;h2&gt;MAW 6.16&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Merge the two leftist heaps in Figure 6.58&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="/images/maw-6-16-problem.PNG" alt="MAW 6.16"/&gt;&lt;/p&gt;
+&lt;p&gt;The book doesn't do a well job on displaying the detailed steps in merging the 
+leftist heap. So, I decide to use this problem as an illustration. By algorithm
+description on p. 194 and the actual algorithm implementation on p.189., there are
+two key points in the algorithm:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;recursively merge the heap with the larger root with the right subheap of
+the heap with the smaller root.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We do the swap at the root.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The following shows the steps to get the final answer for this problem:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/maw-6-16-solution.jpg" alt="MAW 6.16 solution" style="width:700px;height:400px"/&gt;&lt;/p&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -5904,6 +5924,10 @@ printf &amp;quot;%s=%s\n&amp;quot; &amp;quot;LoginTimeout&amp;quot; &amp;quot;0&
 &lt;p class="first admonition-title"&gt;Note&lt;/p&gt;
 &lt;p class="last"&gt;Instead of delete, you can use &lt;strong&gt;C-x r t string RET&lt;/strong&gt; to replace rectangle contents with &lt;em&gt;string&lt;/em&gt; con each line.&lt;/p&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="topic"&gt;
+&lt;p class="topic-title first"&gt;Turn on the line number on the left hand side&lt;/p&gt;
+&lt;p&gt;I find this is particularly useful when I work with gdb in emacs. It can be done with &lt;strong&gt;M-x linum-mode&lt;/strong&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="resources"&gt;
