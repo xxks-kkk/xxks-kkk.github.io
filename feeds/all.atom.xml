@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-04-04T10:30:00+08:00</updated><entry><title>Leftist heaps</title><link href="http://zhu45.org/posts/2017/Apr/04/leftist-heaps/" rel="alternate"></link><published>2017-04-04T10:30:00+08:00</published><updated>2017-04-04T10:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-04:posts/2017/Apr/04/leftist-heaps/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;leftist heaps&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-04-04T10:30:00+08:00</updated><entry><title>Leftist heap</title><link href="http://zhu45.org/posts/2017/Apr/04/leftist-heap/" rel="alternate"></link><published>2017-04-04T10:30:00+08:00</published><updated>2017-04-04T10:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-04:posts/2017/Apr/04/leftist-heap/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;leftist heaps&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
 &lt;h2&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;Merge two priority queues into one can be a very hard operation to do. For binary
 heap, this can be done at &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;. However, we want to do better. Leftist heap
@@ -46,7 +46,7 @@ initially empty leftist heap.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;Operations&lt;/h2&gt;
 &lt;h3&gt;&lt;code&gt;merge(H1, H2)&lt;/code&gt;&lt;/h3&gt;
-&lt;p&gt;As with &lt;a href="{filename}/blog/2017/02/11/splay.md}"&gt;splay&lt;/a&gt; in splay trees, &lt;code&gt;merge&lt;/code&gt; is
+&lt;p&gt;As with &lt;a href="http://zhu45.org/posts/2017/Feb/13/splay-tree/"&gt;splay&lt;/a&gt; in splay trees, &lt;code&gt;merge&lt;/code&gt; is
 the fundamental operation that is used to implement other operations in leftist 
 heap(i.e., &lt;code&gt;insert&lt;/code&gt;, &lt;code&gt;deleteMin&lt;/code&gt;). &lt;/p&gt;
 &lt;p&gt;The key point for the merge operation are:&lt;/p&gt;
@@ -60,22 +60,79 @@ with the smaller root.&lt;/p&gt;
 root, if needed, to keep leftist property of merged result.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Detailed algorithm implemented in C can be checked from maw p.198. The following
-picture shows a good example of &lt;code&gt;merge&lt;/code&gt; steps. Note that the &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; of the node in
+&lt;p&gt;The following picture shows a good example of &lt;code&gt;merge&lt;/code&gt; steps. Note that the &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; of the node in
 picture is 1 larger than our's definition. The blue curve represents the final
 swap step.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/leftist-heap-merge.PNG" alt="leftist heap merge example" style="width: 700px;"/&gt;&lt;/p&gt;
 &lt;p&gt;Another example can be seen from MAW 6.16 in 
 &lt;a href="http://zhu45.org/posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/"&gt;my chapter 6 writing question post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The actual implementation in C is below, which is copied from maw p.198:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;PriorityQueue&lt;/span&gt;
+&lt;span class="nf"&gt;Merge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PriorityQueue&lt;/span&gt; &lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PriorityQueue&lt;/span&gt; &lt;span class="n"&gt;H2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;H1&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;H2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;H2&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Element&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;H2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Element&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Merge1&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;H2&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Element&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;H2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Element&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Merge2&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;H2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PriorityQueue&lt;/span&gt;
+&lt;span class="nf"&gt;Merge1&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PriorityQueue&lt;/span&gt; &lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PriorityQueue&lt;/span&gt; &lt;span class="n"&gt;H2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Left&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;H2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// Single node; H1-&amp;gt;Right is already NULL&lt;/span&gt;
+  &lt;span class="k"&gt;else&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Merge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Right&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;H2&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Left&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Npl&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Right&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Npl&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;swapChildren&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Npl&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Right&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Npl&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;    
+  &lt;span class="p"&gt;}&lt;/span&gt;    
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;H1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h3&gt;insert&lt;/h3&gt;
 &lt;p&gt;We can carry out insertion by making the item to be inserted a one-node heap
 and perform a merge. &lt;/p&gt;
 &lt;p&gt;Reference section offers a link to visualize the whole insertion process. The
-actual implementation is on maw p.199.&lt;/p&gt;
+actual implementation is on maw p.199 and copied below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;PriorityQueue&lt;/span&gt;
+&lt;span class="nf"&gt;Insert1&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ElementType&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PriorityQueue&lt;/span&gt; &lt;span class="n"&gt;H&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;PriorityQueue&lt;/span&gt; &lt;span class="n"&gt;SingleNode&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="n"&gt;SingleNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;malloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;assert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SingleNode&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="n"&gt;SingleNode&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Element&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;SingleNode&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Npl&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;SingleNode&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SingleNode&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;H&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;merge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SingleNode&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;H&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;H&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;    
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h3&gt;deleteMin&lt;/h3&gt;
 &lt;p&gt;deleteMin can be done by remove the root and merge the left and subtree tree into
 a new leftist heap.&lt;/p&gt;
-&lt;p&gt;The actual implementation is on maw p.200.&lt;/p&gt;
+&lt;p&gt;The actual implementation is on maw p.200 and copied below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;PriorityQueue&lt;/span&gt;
+&lt;span class="nf"&gt;DeleteMin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PriorityQueue&lt;/span&gt; &lt;span class="n"&gt;H&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;PriorityQueue&lt;/span&gt; &lt;span class="n"&gt;LeftHeap&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;RightHeap&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IsEmpty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;H&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;Error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Priority queue is empty&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;H&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;    
+  &lt;span class="p"&gt;}&lt;/span&gt;    
+  &lt;span class="n"&gt;LeftHeap&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;H&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Left&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;RightHeap&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;H&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Right&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;free&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;H&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Merge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LeftHeap&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;RightHeap&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h2&gt;Runtime analysis&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;merge&lt;/code&gt;, &lt;code&gt;deleteMin&lt;/code&gt;, and &lt;code&gt;insert&lt;/code&gt; are all running in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;.&lt;/li&gt;

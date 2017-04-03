@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Leftist heap
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+            <div class="container">
+
+<header class="blog-header">
+    <h1><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+        <a href="../../../../../quotes.html" style="padding: 10px">QUOTES</a>
+        <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+        <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a>
+    </nav>
+</header>
+
+    <div class="post">
+        <header>
+            <h1>Leftist heap</h1>
+            <p class="date">Written on <time datetime="2017-04-04T10:30:00+08:00">Apr 04, 2017</time></p>
+        </header>
+
+        <article>
+            <p>This is the summary of <em>leftist heaps</em> part in MAW Chapter 6.</p>
+<h2>Motivation</h2>
+<p>Merge two priority queues into one can be a very hard operation to do. For binary
+heap, this can be done at <span class="math">\(O(N)\)</span>. However, we want to do better. Leftist heap
+is a priority queue that supports merge operation in <span class="math">\(O(\log N)\)</span>.</p>
+<h2>Concept</h2>
+<p>The idea for leftist heap is that we want to make the tree structure imbalance
+as much as possible to make merge fast. This is achieved by leftist heap property.</p>
+<ul>
+<li>
+<p><em>null path length</em> <span class="math">\(Npl(X)\)</span> of any node <span class="math">\(X\)</span> is the length of the shortest path 
+from <span class="math">\(X\)</span> to a node without two children. Thus, the <span class="math">\(Npl\)</span> of a node with zero or
+one child is 0 and <span class="math">\(Npl(NULL) = -1\)</span>. In addition, the <span class="math">\(Npl\)</span> of any node is 1 more
+than the minimum of the <span class="math">\(Npl\)</span> of its children.</p>
+</li>
+<li>
+<p>leftist heap property is that for every node <span class="math">\(X\)</span> in the heap, the <span class="math">\(Npl\)</span> of the
+left child is at least as large as that of the right child.</p>
+</li>
+</ul>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>In fact, the leftist heap property is the leftist property applies to heap.
+In other words, if every node in a tree has the <span class="math">\(Npl\)</span> of the left child
+is at least as large as that of the right child, then we call this tree
+a <em>leftist tree</em>. A leftist heap is simply a leftist tree with keys in heap order.</p>
+</blockquote>
+<p>The number in the each node below is the <span class="math">\(Npl\)</span> of that node. By the leftist property,
+only the left tree is leftist.</p>
+<p><img src="/images/leftist-tree-example.PNG" alt="leftist tree example" style="width: 700px;"/></p>
+<h2>Properties</h2>
+<ul>
+<li>If rightmost path of leftist tree has <span class="math">\(r\)</span> nodes, then the whole tree has at least
+<span class="math">\(2^r-1\)</span> nodes. </li>
+</ul>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>The above property leads to: <span class="math">\(n \ge 2^r-1\)</span>, so <span class="math">\(r\)</span> is <span class="math">\(O(\log N)\)</span>. Since our 
+fundamental operation <code>merge</code> will perform all the work on the right path,
+then we can have a <span class="math">\(O(\log N)\)</span> <code>merge</code> operation.</p>
+</blockquote>
+<ul>
+<li>A perfectly balanced tree forms if keys 1 to <span class="math">\(2^k-1\)</span> are inserted in order into an
+initially empty leftist heap.</li>
+</ul>
+<h2>Operations</h2>
+<h3><code>merge(H1, H2)</code></h3>
+<p>As with <a href="../../../../../posts/2017/Feb/13/splay-tree/">splay</a> in splay trees, <code>merge</code> is
+the fundamental operation that is used to implement other operations in leftist 
+heap(i.e., <code>insert</code>, <code>deleteMin</code>). </p>
+<p>The key point for the merge operation are:</p>
+<ul>
+<li>
+<p>recursively merge the heap with the larger root with the right subheap of the heap
+with the smaller root.</p>
+</li>
+<li>
+<p>We update <span class="math">\(Npl\)</span> of the merged root and swap left and right subtrees just below
+root, if needed, to keep leftist property of merged result.</p>
+</li>
+</ul>
+<p>The following picture shows a good example of <code>merge</code> steps. Note that the <span class="math">\(Npl\)</span> of the node in
+picture is 1 larger than our's definition. The blue curve represents the final
+swap step.</p>
+<p><img src="/images/leftist-heap-merge.PNG" alt="leftist heap merge example" style="width: 700px;"/></p>
+<p>Another example can be seen from MAW 6.16 in 
+<a href="../../../../../posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/">my chapter 6 writing question post</a>.</p>
+<p>The actual implementation in C is below, which is copied from maw p.198:</p>
+<div class="highlight"><pre><span></span><span class="n">PriorityQueue</span>
+<span class="nf">Merge</span><span class="p">(</span><span class="n">PriorityQueue</span> <span class="n">H1</span><span class="p">,</span> <span class="n">PriorityQueue</span> <span class="n">H2</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">H1</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="n">H2</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">H2</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="n">H1</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="n">Element</span> <span class="o">&lt;</span> <span class="n">H2</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span> <span class="k">return</span> <span class="n">Merge1</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="n">H2</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="n">Element</span> <span class="o">&gt;</span> <span class="n">H2</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span> <span class="k">return</span> <span class="n">Merge2</span><span class="p">(</span><span class="n">H2</span><span class="p">,</span> <span class="n">H1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="n">PriorityQueue</span>
+<span class="nf">Merge1</span><span class="p">(</span><span class="n">PriorityQueue</span> <span class="n">H1</span><span class="p">,</span> <span class="n">PriorityQueue</span> <span class="n">H2</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="n">Left</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="n">H1</span><span class="o">-&gt;</span><span class="n">Left</span> <span class="o">=</span> <span class="n">H2</span><span class="p">;</span> <span class="c1">// Single node; H1-&gt;Right is already NULL</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="n">H1</span><span class="o">-&gt;</span><span class="n">Right</span> <span class="o">=</span> <span class="n">Merge</span><span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">,</span> <span class="n">H2</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="n">Left</span><span class="o">-&gt;</span><span class="n">Npl</span> <span class="o">&lt;</span> <span class="n">H1</span><span class="o">-&gt;</span><span class="n">Right</span><span class="o">-&gt;</span><span class="n">Npl</span><span class="p">)</span> <span class="n">swapChildren</span><span class="p">(</span><span class="n">H1</span><span class="p">);</span>
+    <span class="n">H1</span><span class="o">-&gt;</span><span class="n">Npl</span> <span class="o">=</span> <span class="n">H1</span><span class="o">-&gt;</span><span class="n">Right</span><span class="o">-&gt;</span><span class="n">Npl</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>    
+  <span class="p">}</span>    
+  <span class="k">return</span> <span class="n">H1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3>insert</h3>
+<p>We can carry out insertion by making the item to be inserted a one-node heap
+and perform a merge. </p>
+<p>Reference section offers a link to visualize the whole insertion process. The
+actual implementation is on maw p.199 and copied below:</p>
+<div class="highlight"><pre><span></span><span class="n">PriorityQueue</span>
+<span class="nf">Insert1</span><span class="p">(</span><span class="n">ElementType</span> <span class="n">X</span><span class="p">,</span> <span class="n">PriorityQueue</span> <span class="n">H</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">PriorityQueue</span> <span class="n">SingleNode</span><span class="p">;</span>
+
+  <span class="n">SingleNode</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span><span class="p">));</span>
+  <span class="n">assert</span><span class="p">(</span><span class="n">SingleNode</span><span class="p">);</span>
+
+  <span class="n">SingleNode</span><span class="o">-&gt;</span><span class="n">Element</span> <span class="o">=</span> <span class="n">X</span><span class="p">;</span> <span class="n">SingleNode</span><span class="o">-&gt;</span><span class="n">Npl</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">SingleNode</span><span class="o">-&gt;</span><span class="n">Left</span> <span class="o">=</span> <span class="n">SingleNode</span><span class="o">-&gt;</span><span class="n">Right</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="n">H</span> <span class="o">=</span> <span class="n">merge</span><span class="p">(</span><span class="n">SingleNode</span><span class="p">,</span> <span class="n">H</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">H</span><span class="p">;</span>    
+<span class="p">}</span>
+</pre></div>
+
+
+<h3>deleteMin</h3>
+<p>deleteMin can be done by remove the root and merge the left and subtree tree into
+a new leftist heap.</p>
+<p>The actual implementation is on maw p.200 and copied below:</p>
+<div class="highlight"><pre><span></span><span class="n">PriorityQueue</span>
+<span class="nf">DeleteMin</span><span class="p">(</span><span class="n">PriorityQueue</span> <span class="n">H</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">PriorityQueue</span> <span class="n">LeftHeap</span><span class="p">,</span> <span class="n">RightHeap</span><span class="p">;</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">IsEmpty</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+  <span class="p">{</span>
+    <span class="n">Error</span><span class="p">(</span><span class="s">&quot;Priority queue is empty&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">H</span><span class="p">;</span>    
+  <span class="p">}</span>    
+  <span class="n">LeftHeap</span> <span class="o">=</span> <span class="n">H</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">;</span>
+  <span class="n">RightHeap</span> <span class="o">=</span> <span class="n">H</span><span class="o">-&gt;</span><span class="n">Right</span><span class="p">;</span>
+  <span class="n">free</span><span class="p">(</span><span class="n">H</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">Merge</span><span class="p">(</span><span class="n">LeftHeap</span><span class="p">,</span> <span class="n">RightHeap</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2>Runtime analysis</h2>
+<ul>
+<li><code>merge</code>, <code>deleteMin</code>, and <code>insert</code> are all running in <span class="math">\(O(\log N)\)</span>.</li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li>MAW Chapter 6</li>
+<li>http://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/heaps.pdf</li>
+<li>https://www.cs.usfca.edu/~galles/visualization/LeftistHeap.html (good tool to visualize the operations)</li>
+<li>http://courses.cs.washington.edu/courses/cse326/08sp/lectures/05-leftist-heaps.pdf</li>
+</ul>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/data-struct-algo.html">Data Struct & Algo</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+<!--                            <li><a href="../../../../../about-zack.html">About</a></li>
+                <li><a href="../../../../../blog2">Blog</a></li>
+                <li><a href="../../../../../quotes.html">Quotes</a></li>
+                <li><a href="../../../../../projects.html">Projects</a></li>
+-->
+    </ul>
+
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
