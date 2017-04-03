@@ -1,5 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Sun, 02 Apr 2017 11:30:00 +0800</lastBuildDate><item><title>Binary heap</title><link>http://zhu45.org/posts/2017/Apr/02/binary-heap/</link><description>&lt;p&gt;This is the summary of &lt;em&gt;binary heap&lt;/em&gt; and its generalization &lt;em&gt;d-heap&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Tue, 04 Apr 2017 10:30:00 +0800</lastBuildDate><item><title>Leftist heaps</title><link>http://zhu45.org/posts/2017/Apr/04/leftist-heaps/</link><description>&lt;p&gt;This is the summary of &lt;em&gt;leftist heaps&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
+&lt;h2&gt;Motivation&lt;/h2&gt;
+&lt;p&gt;Merge two priority queues into one can be a very hard operation to do. For binary
+heap, this can be done at &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;. However, we want to do better. Leftist heap
+is a priority queue that supports merge operation in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;p&gt;The idea for leftist heap is that we want to make the tree structure imbalance
+as much as possible to make merge fast. This is achieved by leftist heap property.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;null path length&lt;/em&gt; &lt;span class="math"&gt;\(Npl(X)\)&lt;/span&gt; of any node &lt;span class="math"&gt;\(X\)&lt;/span&gt; is the length of the shortest path 
+from &lt;span class="math"&gt;\(X\)&lt;/span&gt; to a node without two children. Thus, the &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; of a node with zero or
+one child is 0 and &lt;span class="math"&gt;\(Npl(NULL) = -1\)&lt;/span&gt;. In addition, the &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; of any node is 1 more
+than the minimum of the &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; of its children.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;leftist heap property is that for every node &lt;span class="math"&gt;\(X\)&lt;/span&gt; in the heap, the &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; of the
+left child is at least as large as that of the right child.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;In fact, the leftist heap property is the leftist property applies to heap.
+In other words, if every node in a tree has the &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; of the left child
+is at least as large as that of the right child, then we call this tree
+a &lt;em&gt;leftist tree&lt;/em&gt;. A leftist heap is simply a leftist tree with keys in heap order.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The number in the each node below is the &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; of that node. By the leftist property,
+only the left tree is leftist.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/leftist-tree-example.PNG" alt="leftist tree example" style="width: 700px;"/&gt;&lt;/p&gt;
+&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;If rightmost path of leftist tree has &lt;span class="math"&gt;\(r\)&lt;/span&gt; nodes, then the whole tree has at least
+&lt;span class="math"&gt;\(2^r-1\)&lt;/span&gt; nodes. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The above property leads to: &lt;span class="math"&gt;\(n \ge 2^r-1\)&lt;/span&gt;, so &lt;span class="math"&gt;\(r\)&lt;/span&gt; is &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;. Since our 
+fundamental operation &lt;code&gt;merge&lt;/code&gt; will perform all the work on the right path,
+then we can have a &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; &lt;code&gt;merge&lt;/code&gt; operation.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;A perfectly balanced tree forms if keys 1 to &lt;span class="math"&gt;\(2^k-1\)&lt;/span&gt; are inserted in order into an
+initially empty leftist heap.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Operations&lt;/h2&gt;
+&lt;h3&gt;&lt;code&gt;merge(H1, H2)&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;As with &lt;a href="{filename}/blog/2017/02/11/splay.md}"&gt;splay&lt;/a&gt; in splay trees, &lt;code&gt;merge&lt;/code&gt; is
+the fundamental operation that is used to implement other operations in leftist 
+heap(i.e., &lt;code&gt;insert&lt;/code&gt;, &lt;code&gt;deleteMin&lt;/code&gt;). &lt;/p&gt;
+&lt;p&gt;The key point for the merge operation are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;recursively merge the heap with the larger root with the right subheap of the heap
+with the smaller root.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We update &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; of the merged root and swap left and right subtrees just below
+root, if needed, to keep leftist property of merged result.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Detailed algorithm implemented in C can be checked from maw p.198. The following
+picture shows a good example of &lt;code&gt;merge&lt;/code&gt; steps. Note that the &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; of the node in
+picture is 1 larger than our's definition. The blue curve represents the final
+swap step.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/leftist-heap-merge.PNG" alt="leftist heap merge example" style="width: 700px;"/&gt;&lt;/p&gt;
+&lt;p&gt;Another example can be seen from MAW 6.16 in 
+&lt;a href="http://zhu45.org/posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/"&gt;my chapter 6 writing question post&lt;/a&gt;.&lt;/p&gt;
+&lt;h3&gt;insert&lt;/h3&gt;
+&lt;p&gt;We can carry out insertion by making the item to be inserted a one-node heap
+and perform a merge. &lt;/p&gt;
+&lt;p&gt;Reference section offers a link to visualize the whole insertion process. The
+actual implementation is on maw p.199.&lt;/p&gt;
+&lt;h3&gt;deleteMin&lt;/h3&gt;
+&lt;p&gt;deleteMin can be done by remove the root and merge the left and subtree tree into
+a new leftist heap.&lt;/p&gt;
+&lt;p&gt;The actual implementation is on maw p.200.&lt;/p&gt;
+&lt;h2&gt;Runtime analysis&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;merge&lt;/code&gt;, &lt;code&gt;deleteMin&lt;/code&gt;, and &lt;code&gt;insert&lt;/code&gt; are all running in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;MAW Chapter 6&lt;/li&gt;
+&lt;li&gt;http://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/heaps.pdf&lt;/li&gt;
+&lt;li&gt;https://www.cs.usfca.edu/~galles/visualization/LeftistHeap.html (good tool to visualize the operations)&lt;/li&gt;
+&lt;li&gt;http://courses.cs.washington.edu/courses/cse326/08sp/lectures/05-leftist-heaps.pdf&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Tue, 04 Apr 2017 10:30:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-04:posts/2017/Apr/04/leftist-heaps/</guid><category>heaps</category><category>maw</category></item><item><title>Binary heap</title><link>http://zhu45.org/posts/2017/Apr/02/binary-heap/</link><description>&lt;p&gt;This is the summary of &lt;em&gt;binary heap&lt;/em&gt; and its generalization &lt;em&gt;d-heap&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
 &lt;h2&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;The motivation for priority queue majorly comes from the fact that not all things
 are equally weighted. I'll summarize the applications of priority queues in my
@@ -183,7 +327,7 @@ at &lt;span class="math"&gt;\(\lfloor{\frac{i + (d-2)}{d}}\rfloor\)&lt;/span&gt;
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Sun, 02 Apr 2017 11:30:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-02:posts/2017/Apr/02/binary-heap/</guid><category>heaps</category><category>maw</category></item><item><title>MAW Chapter 6: Priority Queues (Heaps) writing questions</title><link>http://zhu45.org/posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/</link><description>&lt;h2&gt;Solutions&lt;/h2&gt;
-&lt;p&gt;including: MAW 6.6, 6.7, 6.9, 6.13, 6.14, 6.16&lt;/p&gt;
+&lt;p&gt;including: MAW 6.6, 6.7, 6.9, 6.13, 6.14, 6.16, 6.17, &lt;/p&gt;
 &lt;h3&gt;MAW 6.6&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;How many nodes are in the large heap in Figure 6.13?&lt;/p&gt;
@@ -326,6 +470,12 @@ the heap with the smaller root.&lt;/p&gt;
 &lt;/ol&gt;
 &lt;p&gt;The following shows the steps to get the final answer for this problem:&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/maw-6-16-solution.jpg" alt="MAW 6.16 solution" style="width:700px;height:400px"/&gt;&lt;/p&gt;
+&lt;h2&gt;MAW 6.17&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Show the result of inserting keys 1 to 15 in order into an initially empty leftist heap.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Use this wonderful site: https://www.cs.usfca.edu/~galles/visualization/LeftistHeap.html
+to see the whole process of insertion.&lt;/p&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
