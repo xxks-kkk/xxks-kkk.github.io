@@ -177,6 +177,12 @@ a new leftist heap.</p>
 </pre></div>
 
 
+<h3>BuildHeap</h3>
+<p>As described in MAW 6.22, we can perform <code>BuildHeap</code> in linear time for leftist 
+heaps by considering each element as a one-node leftist heap, placing all these
+heaps on a queue, and performing the following step: Until only one heap is on 
+the queue, dequeue two heaps, merge them, and enqueue the result.</p>
+<p>This algorithm is <span class="math">\(O(N)\)</span> in the worst time.</p>
 <h2>Runtime analysis</h2>
 <ul>
 <li><code>merge</code>, <code>deleteMin</code>, and <code>insert</code> are all running in <span class="math">\(O(\log N)\)</span>.</li>

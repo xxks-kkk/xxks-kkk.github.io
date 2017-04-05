@@ -1,5 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-04-04T10:30:00+08:00</updated><entry><title>Leftist heap</title><link href="http://zhu45.org/posts/2017/Apr/04/leftist-heap/" rel="alternate"></link><published>2017-04-04T10:30:00+08:00</published><updated>2017-04-04T10:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-04:posts/2017/Apr/04/leftist-heap/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;leftist heaps&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-04-05T23:30:00+08:00</updated><entry><title>Skew heap</title><link href="http://zhu45.org/posts/2017/Apr/05/skew-heap/" rel="alternate"></link><published>2017-04-05T23:30:00+08:00</published><updated>2017-04-05T23:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-05:posts/2017/Apr/05/skew-heap/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;skew heap&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
+&lt;h2&gt;Motivation&lt;/h2&gt;
+&lt;p&gt;Like the relation between splay trees and AVL trees, we want to have 
+&lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; amortized cost per operation. In addition, we don't want
+to have any auxiliary information stored at the nodes. In this case,
+like splay trees to AVL trees, we have Skew heaps to leftist heaps.&lt;/p&gt;
+&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;p&gt;Skew heaps are binary trees with heap order, but there is no structural constraint
+on these trees. This means that we don't need the binary tree to be complete 
+(i.e. binary heap) or left heavy (i.e. leftist heap).&lt;/p&gt;
+&lt;p&gt;In addition, we don't store &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; information in the node.&lt;/p&gt;
+&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;A perfectly balanced tree forms if the keys &lt;span class="math"&gt;\(1\)&lt;/span&gt; to &lt;span class="math"&gt;\(2^k-1\)&lt;/span&gt; are inserted in order
+into an initially empty skew heap.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Operations&lt;/h2&gt;
+&lt;p&gt;Skew heap is extremely similar with leftist heap in terms of &lt;code&gt;merge&lt;/code&gt; operation. 
+There is only one difference: for leftist heap, we check to see whether the 
+left and right children satisfy the leftist heap order property and swap them
+if they do not. However, for skew heaps, the swap is unconditional. In other words,
+we &lt;strong&gt;always&lt;/strong&gt; swap the left &amp;amp; right subtrees at each step of merge. &lt;/p&gt;
+&lt;p&gt;In the below example, we want to merge two skew heaps &lt;span class="math"&gt;\(H_1\)&lt;/span&gt; and &lt;span class="math"&gt;\(H_2\)&lt;/span&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/skew-heap-01.PNG" alt="skew heap 01" style="width: 700px;"/&gt;&lt;/p&gt;
+&lt;p&gt;Then, we get the following result of merging &lt;span class="math"&gt;\(H_2\)&lt;/span&gt; with &lt;span class="math"&gt;\(H_1\)&lt;/span&gt;'s right subheap:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/skew-heap-02.PNG" alt="skew heap 02" style="width: 700px;"/&gt;&lt;/p&gt;
+&lt;p&gt;and this is the final merge result:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/skew-heap-03.PNG" alt="skew heap 03" style="width: 700px;"/&gt;&lt;/p&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The end result is actually leftist heap but there is no guaranteed that this is
+always the case. If you take a look, &lt;span class="math"&gt;\(H_1\)&lt;/span&gt; is not lefist heap.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Runtime analysis&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;merge&lt;/code&gt;, &lt;code&gt;deleteMin&lt;/code&gt;, and &lt;code&gt;insert&lt;/code&gt; are all running in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; amortized time.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;MAW Chapter 6&lt;/li&gt;
+&lt;li&gt;http://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/heaps.pdf&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="heaps"></category><category term="maw"></category></entry><entry><title>Leftist heap</title><link href="http://zhu45.org/posts/2017/Apr/04/leftist-heap/" rel="alternate"></link><published>2017-04-04T10:30:00+08:00</published><updated>2017-04-04T10:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-04:posts/2017/Apr/04/leftist-heap/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;leftist heaps&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
 &lt;h2&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;Merge two priority queues into one can be a very hard operation to do. For binary
 heap, this can be done at &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;. However, we want to do better. Leftist heap
@@ -133,6 +231,12 @@ a new leftist heap.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;h3&gt;BuildHeap&lt;/h3&gt;
+&lt;p&gt;As described in MAW 6.22, we can perform &lt;code&gt;BuildHeap&lt;/code&gt; in linear time for leftist 
+heaps by considering each element as a one-node leftist heap, placing all these
+heaps on a queue, and performing the following step: Until only one heap is on 
+the queue, dequeue two heaps, merge them, and enqueue the result.&lt;/p&gt;
+&lt;p&gt;This algorithm is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; in the worst time.&lt;/p&gt;
 &lt;h2&gt;Runtime analysis&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;merge&lt;/code&gt;, &lt;code&gt;deleteMin&lt;/code&gt;, and &lt;code&gt;insert&lt;/code&gt; are all running in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;.&lt;/li&gt;
