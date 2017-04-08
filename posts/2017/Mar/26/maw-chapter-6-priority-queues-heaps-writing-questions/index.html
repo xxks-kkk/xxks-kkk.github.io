@@ -44,7 +44,7 @@
 
         <article>
             <h2>Solutions</h2>
-<p>including: MAW 6.6, 6.7, 6.9, 6.13, 6.14, 6.16, 6.17, </p>
+<p>including: MAW 6.6, 6.7, 6.9, 6.13, 6.14, 6.16, 6.17, 6.27, 6.28,</p>
 <h3>MAW 6.6</h3>
 <blockquote>
 <p>How many nodes are in the large heap in Figure 6.13?</p>
@@ -191,8 +191,38 @@ the heap with the smaller root.</p>
 <blockquote>
 <p>Show the result of inserting keys 1 to 15 in order into an initially empty leftist heap.</p>
 </blockquote>
-<p>Use this wonderful site: https://www.cs.usfca.edu/~galles/visualization/LeftistHeap.html
+<p>Use this wonderful site: <img alt="" src="https://www.cs.usfca.edu/~galles/visualization/LeftistHeap.html" />
 to see the whole process of insertion.</p>
+<h2>MAW 6.27</h2>
+<blockquote>
+<p>Prove that a binomial tree <span class="math">\(B_k\)</span> has binomial trees <span class="math">\(B_0, B_1, \dots, B_{k-1}\)</span>
+as children of the root.</p>
+</blockquote>
+<p>I'll try to use two ways to prove this. Both ways are by induction but one of them
+is more mathematical formula involved.</p>
+<p><em>Method 1</em></p>
+<p>Clearly the claim is true for <span class="math">\(k = 1\)</span>. Suppose it is true for all values <span class="math">\(i = 1, 2, \dots, k-1\)</span>.
+Since for <span class="math">\(B_k\)</span>, we have <span class="math">\(2^k\)</span> nodes. Then, by the induction hypothesis, we have
+<span class="math">\(2^{k-1} = 1 + 2^0 + \dots + 2^{k-2}\)</span>. Now, multiplying both sides of the equation
+by 2, we have <span class="math">\(2^k = 2 + 2 + \dots + 2^{k-1}\)</span>, which is the same as
+<span class="math">\(2^k = 1 + 2^0 + \dots + 2^{k-1}\)</span>. This completes the proof.</p>
+<p><em>Method 2</em></p>
+<p>Again the claim is true for <span class="math">\(k = 1\)</span>. Suppose it is true for all values <span class="math">\(i = 1, 2, \dots, k-1\)</span>.
+A <span class="math">\(B_k\)</span> tree is fromed by attaching a <span class="math">\(B_{k-1}\)</span> tree to the root of a <span class="math">\(B_{k-1}\)</span> tree.
+Thus, by induction, it contains a <span class="math">\(B_0\)</span> through <span class="math">\(B_{k-2}\)</span> tree, as well as the
+newly attached <span class="math">\(B_{k-1}\)</span> tree, proving the claim.</p>
+<h2>MAW 6.28</h2>
+<blockquote>
+<p>Prove that a binomial tree of height <span class="math">\(k\)</span> has <span class="math">\({k \choose d}\)</span> nodes at depth <span class="math">\(d\)</span>.</p>
+</blockquote>
+<p>Proof is by induction. Clearly the claim is true for <span class="math">\(k=1\)</span>. Assume true for 
+all values <span class="math">\(i=1,2,\dots,k\)</span>. A <span class="math">\(B_{k+1}\)</span> tree is formed by attaching a <span class="math">\(B_k\)</span> tree
+to the original <span class="math">\(B_k\)</span> tree. The original tree has <span class="math">\({k \choose d}\)</span> nodes at depth
+<span class="math">\(d\)</span> by induction hypothesis. The attached tree had <span class="math">\(\binom{k}{d-1}\)</span> nodes at depth
+<span class="math">\(d-1\)</span>, which are now at depth <span class="math">\(d\)</span>. Adding these two terms we have</p>
+<div class="math">$$
+\binom{k+1}{d} = \binom{k}{d} + \binom{k}{d-1}
+$$</div>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",

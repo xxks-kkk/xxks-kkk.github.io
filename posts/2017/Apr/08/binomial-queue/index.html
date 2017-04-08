@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
-        <title>    Skew heap
+        <title>    Binomial queue
 </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -38,52 +38,95 @@
 
     <div class="post">
         <header>
-            <h1>Skew heap</h1>
-            <p class="date">Written on <time datetime="2017-04-05T23:33:00+08:00">Apr 05, 2017</time></p>
+            <h1>Binomial queue</h1>
+            <p class="date">Written on <time datetime="2017-04-08T23:33:00+08:00">Apr 08, 2017</time></p>
         </header>
 
         <article>
-            <p>This is the summary of <em>skew heap</em> part in MAW Chapter 6.</p>
+            <p>This is the summary of <em>binomial queue</em> part in MAW Chapter 6.</p>
 <h2>Motivation</h2>
-<p>Like the relation between splay trees and AVL trees, we want to have 
-<span class="math">\(O(\log N)\)</span> amortized cost per operation. In addition, we don't want
-to have any auxiliary information stored at the nodes. In this case,
-like splay trees to AVL trees, we have Skew heaps to leftist heaps.</p>
+<p>We want to have a data structure that support merging, insertion, and deleteMin
+in <span class="math">\(O(\log N)\)</span> time per operation, and at the same time, like binary heap, we 
+want to have insertion takes constant time on average. The latter part is not possible
+with skew heap or leftist heap. </p>
+<p>The data structure we have is called <em>binomial queue</em>.</p>
 <h2>Concept</h2>
-<p>Skew heaps are binary trees with heap order, but there is no structural constraint
-on these trees. This means that we don't need the binary tree to be complete 
-(i.e. binary heap) or left heavy (i.e. leftist heap).</p>
-<p>In addition, we don't store <span class="math">\(Npl\)</span> information in the node.</p>
+<p>Binomial queues is a collection of heap-ordered trees. Each of the heap-ordered
+trees is called a <em>binomial tree</em> with the following constraints:</p>
+<ul>
+<li>There is at most one binomial tree of every height.</li>
+<li>A binomial tree of height 0 is a one-node tree; a binomial tree, <span class="math">\(B_k\)</span>, of 
+height <span class="math">\(k\)</span> is formed by attaching a binomial tree, <span class="math">\(B_{k-1}\)</span>, to the root of another
+binomial tree, <span class="math">\(B_{k-1}\)</span>.</li>
+</ul>
+<p>The picture below shows a binomial queue consisting of six elements
+with two binomial trees <span class="math">\(B_1\)</span> and <span class="math">\(B_2\)</span>:</p>
+<p><img src="/images/binomial-queue.PNG" alt="binomial queue example"/></p>
 <h2>Properties</h2>
 <ul>
-<li>A perfectly balanced tree forms if the keys <span class="math">\(1\)</span> to <span class="math">\(2^k-1\)</span> are inserted in order
-into an initially empty skew heap.</li>
+<li>A binomial tree <span class="math">\(B_k\)</span>, consists of a root with children <span class="math">\(B_0, B_1, \dots, B_{k-1}\)</span>.</li>
+<li>Binomial trees of height <span class="math">\(k\)</span> have exactly <span class="math">\(2^k\)</span> nodes</li>
+<li>The number of nodes at depth <span class="math">\(d\)</span> is the binomial coefficient <span class="math">\({k \choose d}\)</span>.</li>
+<li>A priority queue of any size can be represented by a collection of binomial trees.
+For instances, a priority queue of size 13 could be represented by <span class="math">\(B_3, B_2, B_0\)</span> 
+( <span class="math">\(13 = 2^3 + 2^2 + 2^0\)</span> ). Thus, we can write this representation as <span class="math">\(1101\)</span>, which not 
+only represents <span class="math">\(13\)</span> in binary but also represents the fact that <span class="math">\(B_3, B_2, B_0\)</span>
+are present and <span class="math">\(B_1\)</span> is not.</li>
 </ul>
 <h2>Operations</h2>
-<p>Skew heap is extremely similar with leftist heap in terms of <code>merge</code> operation. 
-There is only one difference: for leftist heap, we check to see whether the 
-left and right children satisfy the leftist heap order property and swap them
-if they do not. However, for skew heaps, the swap is unconditional. In other words,
-we <strong>always</strong> swap the left &amp; right subtrees at each step of merge. </p>
-<p>In the below example, we want to merge two skew heaps <span class="math">\(H_1\)</span> and <span class="math">\(H_2\)</span>:</p>
-<p><img src="/images/skew-heap-01.PNG" alt="skew heap 01" style="width: 700px;"/></p>
-<p>Then, we get the following result of merging <span class="math">\(H_2\)</span> with <span class="math">\(H_1\)</span>'s right subheap:</p>
-<p><img src="/images/skew-heap-02.PNG" alt="skew heap 02" style="width: 700px;"/></p>
-<p>and this is the final merge result:</p>
-<p><img src="/images/skew-heap-03.PNG" alt="skew heap 03" style="width: 700px;"/></p>
+<h3>Merge</h3>
+<p>The merge is performed by essentially adding the two queues together. Let's illustrate
+through merging two binomial queues <span class="math">\(H_1\)</span> and <span class="math">\(H_2\)</span> shown below:</p>
+<p><img src="/images/binomial-queue-merge-01.PNG" alt="binomial queue merge 01"/></p>
+<p>If you will, <span class="math">\(H_1\)</span> can be represented as <span class="math">\(0110_{2}\)</span> and <span class="math">\(H_2\)</span> can be represented as
+<span class="math">\(0111_{2}\)</span>. Thus, merge is just adding two binary number together, and we have
+<span class="math">\(1101_2\)</span>. This implies that our final result contains <span class="math">\(B_0, B_2, B_3\)</span>. The actual
+merge step is implied by the binomial tree constraint mentioned above:</p>
+<blockquote>
+<p>A binomial tree of height 0 is a one-node tree; a binomial tree, <span class="math">\(B_k\)</span>, of 
+height <span class="math">\(k\)</span> is formed by attaching a binomial tree, <span class="math">\(B_{k-1}\)</span>, to the root of another
+binomial tree, <span class="math">\(B_{k-1}\)</span>.</p>
+</blockquote>
+<p>Thus merge of the two <span class="math">\(B_1\)</span> trees in <span class="math">\(H_1\)</span> and <span class="math">\(H_2\)</span> looks like:</p>
+<p><img src="/images/binomial-queue-merge-02.PNG" alt="binomial queue merge 02"/></p>
+<p>and the final result of merging looks like:</p>
+<p><img src="/images/binomial-queue-merge-03.PNG" alt="binomial queue merge 03"/></p>
+<h3>Insertion</h3>
+<p>Insertion is just a special case of merging, since we merely create a one-node tree
+and perform a merge.</p>
+<h3>DeleteMin</h3>
+<ol>
+<li>find the binomial tree with the smallest root. Let this tree be <span class="math">\(B_k\)</span>, and let the original priority queue be <span class="math">\(H\)</span>. </li>
+<li>Remove the binomial tree <span class="math">\(B_k\)</span> from the forest of trees in <span class="math">\(H\)</span>, forming the new binomial queue <span class="math">\(H'\)</span>. </li>
+<li>Remove the root of <span class="math">\(B_k\)</span>, creating binomial trees <span class="math">\(B_0, B_1, \dots, B_{k-1}\)</span>, which collectively form priority queue <span class="math">\(H''\)</span>. </li>
+<li>merge <span class="math">\(H'\)</span> and <span class="math">\(H''\)</span>.</li>
+</ol>
+<p>Suppose we perform a DeleteMin on <span class="math">\(H_3\)</span> from above. The minimum root is 12, and we have 
+<span class="math">\(H'\)</span> and <span class="math">\(H''\)</span> below:</p>
+<p><img src="/images/binomial-queue-deleteMin-01.PNG" alt="binomial queue deleteMin 01"/></p>
+<p><img src="/images/binomial-queue-deleteMin-02.PNG" alt="binomial queue deleteMin 02"/></p>
+<p>and our final result is:</p>
+<p><img src="/images/binomial-queue-deleteMin-03.PNG" alt="binomial queue deleteMin 03"/></p>
 <p>* ---- Note ---- *</p>
 <blockquote>
-<p>The end result is actually leftist heap but there is no guaranteed that this is
-always the case. If you take a look, <span class="math">\(H_1\)</span> is not lefist heap.</p>
+<p>For actual implementation details, please see MAW p. 208 - 211.</p>
 </blockquote>
 <h2>Runtime analysis</h2>
-<ul>
-<li><code>merge</code>, <code>deleteMin</code>, and <code>insert</code> are all running in <span class="math">\(O(\log N)\)</span> amortized time.</li>
-</ul>
+<h3>Merge</h3>
+<p>Since merging two binomial trees takes constant time with almost any reasonable
+implementation, and there are <span class="math">\(O(\log N)\)</span> binomial trees (think of representing
+the size of priority queue in terms of binary, and we need to do <span class="math">\(O(\log N)\)</span> division),
+the merge takes <span class="math">\(O(\log N)\)</span> time.</p>
+<h3>Insertion</h3>
+<p>The worst-case time of this operation is <span class="math">\(O(\log N)\)</span>. However, this actually can be
+constant on average. Details see MAW p.205.</p>
+<h3>DeleteMin</h3>
+<p>We take <span class="math">\(O(\log N)\)</span> time to find the tree containing the minimum element. We take
+constant time to create the queues <span class="math">\(H'\)</span> and <span class="math">\(H''\)</span>. Merging these
+two queues takes <span class="math">\(O(\log N)\)</span> time and thus, the operation overall takes <span class="math">\(O(\log N)\)</span>.</p>
 <h2>Reference</h2>
 <ul>
 <li>MAW Chapter 6</li>
-<li>http://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/heaps.pdf</li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",

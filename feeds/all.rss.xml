@@ -1,5 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Wed, 05 Apr 2017 23:30:00 +0800</lastBuildDate><item><title>Skew heap</title><link>http://zhu45.org/posts/2017/Apr/05/skew-heap/</link><description>&lt;p&gt;This is the summary of &lt;em&gt;skew heap&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Sat, 08 Apr 2017 23:33:00 +0800</lastBuildDate><item><title>Binomial queue</title><link>http://zhu45.org/posts/2017/Apr/08/binomial-queue/</link><description>&lt;p&gt;This is the summary of &lt;em&gt;binomial queue&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
+&lt;h2&gt;Motivation&lt;/h2&gt;
+&lt;p&gt;We want to have a data structure that support merging, insertion, and deleteMin
+in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time per operation, and at the same time, like binary heap, we 
+want to have insertion takes constant time on average. The latter part is not possible
+with skew heap or leftist heap. &lt;/p&gt;
+&lt;p&gt;The data structure we have is called &lt;em&gt;binomial queue&lt;/em&gt;.&lt;/p&gt;
+&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;p&gt;Binomial queues is a collection of heap-ordered trees. Each of the heap-ordered
+trees is called a &lt;em&gt;binomial tree&lt;/em&gt; with the following constraints:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;There is at most one binomial tree of every height.&lt;/li&gt;
+&lt;li&gt;A binomial tree of height 0 is a one-node tree; a binomial tree, &lt;span class="math"&gt;\(B_k\)&lt;/span&gt;, of 
+height &lt;span class="math"&gt;\(k\)&lt;/span&gt; is formed by attaching a binomial tree, &lt;span class="math"&gt;\(B_{k-1}\)&lt;/span&gt;, to the root of another
+binomial tree, &lt;span class="math"&gt;\(B_{k-1}\)&lt;/span&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The picture below shows a binomial queue consisting of six elements
+with two binomial trees &lt;span class="math"&gt;\(B_1\)&lt;/span&gt; and &lt;span class="math"&gt;\(B_2\)&lt;/span&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/binomial-queue.PNG" alt="binomial queue example"/&gt;&lt;/p&gt;
+&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;A binomial tree &lt;span class="math"&gt;\(B_k\)&lt;/span&gt;, consists of a root with children &lt;span class="math"&gt;\(B_0, B_1, \dots, B_{k-1}\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Binomial trees of height &lt;span class="math"&gt;\(k\)&lt;/span&gt; have exactly &lt;span class="math"&gt;\(2^k\)&lt;/span&gt; nodes&lt;/li&gt;
+&lt;li&gt;The number of nodes at depth &lt;span class="math"&gt;\(d\)&lt;/span&gt; is the binomial coefficient &lt;span class="math"&gt;\({k \choose d}\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;A priority queue of any size can be represented by a collection of binomial trees.
+For instances, a priority queue of size 13 could be represented by &lt;span class="math"&gt;\(B_3, B_2, B_0\)&lt;/span&gt; 
+( &lt;span class="math"&gt;\(13 = 2^3 + 2^2 + 2^0\)&lt;/span&gt; ). Thus, we can write this representation as &lt;span class="math"&gt;\(1101\)&lt;/span&gt;, which not 
+only represents &lt;span class="math"&gt;\(13\)&lt;/span&gt; in binary but also represents the fact that &lt;span class="math"&gt;\(B_3, B_2, B_0\)&lt;/span&gt;
+are present and &lt;span class="math"&gt;\(B_1\)&lt;/span&gt; is not.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Operations&lt;/h2&gt;
+&lt;h3&gt;Merge&lt;/h3&gt;
+&lt;p&gt;The merge is performed by essentially adding the two queues together. Let's illustrate
+through merging two binomial queues &lt;span class="math"&gt;\(H_1\)&lt;/span&gt; and &lt;span class="math"&gt;\(H_2\)&lt;/span&gt; shown below:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/binomial-queue-merge-01.PNG" alt="binomial queue merge 01"/&gt;&lt;/p&gt;
+&lt;p&gt;If you will, &lt;span class="math"&gt;\(H_1\)&lt;/span&gt; can be represented as &lt;span class="math"&gt;\(0110_{2}\)&lt;/span&gt; and &lt;span class="math"&gt;\(H_2\)&lt;/span&gt; can be represented as
+&lt;span class="math"&gt;\(0111_{2}\)&lt;/span&gt;. Thus, merge is just adding two binary number together, and we have
+&lt;span class="math"&gt;\(1101_2\)&lt;/span&gt;. This implies that our final result contains &lt;span class="math"&gt;\(B_0, B_2, B_3\)&lt;/span&gt;. The actual
+merge step is implied by the binomial tree constraint mentioned above:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A binomial tree of height 0 is a one-node tree; a binomial tree, &lt;span class="math"&gt;\(B_k\)&lt;/span&gt;, of 
+height &lt;span class="math"&gt;\(k\)&lt;/span&gt; is formed by attaching a binomial tree, &lt;span class="math"&gt;\(B_{k-1}\)&lt;/span&gt;, to the root of another
+binomial tree, &lt;span class="math"&gt;\(B_{k-1}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Thus merge of the two &lt;span class="math"&gt;\(B_1\)&lt;/span&gt; trees in &lt;span class="math"&gt;\(H_1\)&lt;/span&gt; and &lt;span class="math"&gt;\(H_2\)&lt;/span&gt; looks like:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/binomial-queue-merge-02.PNG" alt="binomial queue merge 02"/&gt;&lt;/p&gt;
+&lt;p&gt;and the final result of merging looks like:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/binomial-queue-merge-03.PNG" alt="binomial queue merge 03"/&gt;&lt;/p&gt;
+&lt;h3&gt;Insertion&lt;/h3&gt;
+&lt;p&gt;Insertion is just a special case of merging, since we merely create a one-node tree
+and perform a merge.&lt;/p&gt;
+&lt;h3&gt;DeleteMin&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;find the binomial tree with the smallest root. Let this tree be &lt;span class="math"&gt;\(B_k\)&lt;/span&gt;, and let the original priority queue be &lt;span class="math"&gt;\(H\)&lt;/span&gt;. &lt;/li&gt;
+&lt;li&gt;Remove the binomial tree &lt;span class="math"&gt;\(B_k\)&lt;/span&gt; from the forest of trees in &lt;span class="math"&gt;\(H\)&lt;/span&gt;, forming the new binomial queue &lt;span class="math"&gt;\(H'\)&lt;/span&gt;. &lt;/li&gt;
+&lt;li&gt;Remove the root of &lt;span class="math"&gt;\(B_k\)&lt;/span&gt;, creating binomial trees &lt;span class="math"&gt;\(B_0, B_1, \dots, B_{k-1}\)&lt;/span&gt;, which collectively form priority queue &lt;span class="math"&gt;\(H''\)&lt;/span&gt;. &lt;/li&gt;
+&lt;li&gt;merge &lt;span class="math"&gt;\(H'\)&lt;/span&gt; and &lt;span class="math"&gt;\(H''\)&lt;/span&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Suppose we perform a DeleteMin on &lt;span class="math"&gt;\(H_3\)&lt;/span&gt; from above. The minimum root is 12, and we have 
+&lt;span class="math"&gt;\(H'\)&lt;/span&gt; and &lt;span class="math"&gt;\(H''\)&lt;/span&gt; below:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/binomial-queue-deleteMin-01.PNG" alt="binomial queue deleteMin 01"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/binomial-queue-deleteMin-02.PNG" alt="binomial queue deleteMin 02"/&gt;&lt;/p&gt;
+&lt;p&gt;and our final result is:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/binomial-queue-deleteMin-03.PNG" alt="binomial queue deleteMin 03"/&gt;&lt;/p&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;For actual implementation details, please see MAW p. 208 - 211.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Runtime analysis&lt;/h2&gt;
+&lt;h3&gt;Merge&lt;/h3&gt;
+&lt;p&gt;Since merging two binomial trees takes constant time with almost any reasonable
+implementation, and there are &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; binomial trees (think of representing
+the size of priority queue in terms of binary, and we need to do &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; division),
+the merge takes &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time.&lt;/p&gt;
+&lt;h3&gt;Insertion&lt;/h3&gt;
+&lt;p&gt;The worst-case time of this operation is &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;. However, this actually can be
+constant on average. Details see MAW p.205.&lt;/p&gt;
+&lt;h3&gt;DeleteMin&lt;/h3&gt;
+&lt;p&gt;We take &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time to find the tree containing the minimum element. We take
+constant time to create the queues &lt;span class="math"&gt;\(H'\)&lt;/span&gt; and &lt;span class="math"&gt;\(H''\)&lt;/span&gt;. Merging these
+two queues takes &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time and thus, the operation overall takes &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;MAW Chapter 6&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Sat, 08 Apr 2017 23:33:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-08:posts/2017/Apr/08/binomial-queue/</guid><category>heaps</category><category>maw</category></item><item><title>Skew heap</title><link>http://zhu45.org/posts/2017/Apr/05/skew-heap/</link><description>&lt;p&gt;This is the summary of &lt;em&gt;skew heap&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
 &lt;h2&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;Like the relation between splay trees and AVL trees, we want to have 
 &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; amortized cost per operation. In addition, we don't want
@@ -97,7 +238,7 @@ always the case. If you take a look, &lt;span class="math"&gt;\(H_1\)&lt;/span&g
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Wed, 05 Apr 2017 23:30:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-05:posts/2017/Apr/05/skew-heap/</guid><category>heaps</category><category>maw</category></item><item><title>Leftist heap</title><link>http://zhu45.org/posts/2017/Apr/04/leftist-heap/</link><description>&lt;p&gt;This is the summary of &lt;em&gt;leftist heaps&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
+&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Wed, 05 Apr 2017 23:33:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-05:posts/2017/Apr/05/skew-heap/</guid><category>heaps</category><category>maw</category></item><item><title>Leftist heap</title><link>http://zhu45.org/posts/2017/Apr/04/leftist-heap/</link><description>&lt;p&gt;This is the summary of &lt;em&gt;leftist heaps&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
 &lt;h2&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;Merge two priority queues into one can be a very hard operation to do. For binary
 heap, this can be done at &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;. However, we want to do better. Leftist heap
@@ -413,6 +554,14 @@ by copy &lt;span class="math"&gt;\(H2\)&lt;/span&gt; at the end of &lt;span clas
 &lt;ul&gt;
 &lt;li&gt;Space: &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; (an array of size &lt;span class="math"&gt;\(N+1\)&lt;/span&gt;)&lt;/li&gt;
 &lt;li&gt;Insert: &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;As shown on MAW p.183, empirical study shows that on average, percolation terminates
+early: average &lt;em&gt;insert&lt;/em&gt; moves an element up 1.607 levels. This means that 
+binary heap support insertion in &lt;em&gt;constant average&lt;/em&gt; time per operation.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
 &lt;li&gt;DeleteMin: &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h1&gt;d-heaps&lt;/h1&gt;
@@ -488,7 +637,7 @@ at &lt;span class="math"&gt;\(\lfloor{\frac{i + (d-2)}{d}}\rfloor\)&lt;/span&gt;
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Sun, 02 Apr 2017 11:30:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-02:posts/2017/Apr/02/binary-heap/</guid><category>heaps</category><category>maw</category></item><item><title>MAW Chapter 6: Priority Queues (Heaps) writing questions</title><link>http://zhu45.org/posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/</link><description>&lt;h2&gt;Solutions&lt;/h2&gt;
-&lt;p&gt;including: MAW 6.6, 6.7, 6.9, 6.13, 6.14, 6.16, 6.17, &lt;/p&gt;
+&lt;p&gt;including: MAW 6.6, 6.7, 6.9, 6.13, 6.14, 6.16, 6.17, 6.27, 6.28,&lt;/p&gt;
 &lt;h3&gt;MAW 6.6&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;How many nodes are in the large heap in Figure 6.13?&lt;/p&gt;
@@ -635,8 +784,38 @@ the heap with the smaller root.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Show the result of inserting keys 1 to 15 in order into an initially empty leftist heap.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;Use this wonderful site: https://www.cs.usfca.edu/~galles/visualization/LeftistHeap.html
+&lt;p&gt;Use this wonderful site: &lt;img alt="" src="https://www.cs.usfca.edu/~galles/visualization/LeftistHeap.html" /&gt;
 to see the whole process of insertion.&lt;/p&gt;
+&lt;h2&gt;MAW 6.27&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Prove that a binomial tree &lt;span class="math"&gt;\(B_k\)&lt;/span&gt; has binomial trees &lt;span class="math"&gt;\(B_0, B_1, \dots, B_{k-1}\)&lt;/span&gt;
+as children of the root.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I'll try to use two ways to prove this. Both ways are by induction but one of them
+is more mathematical formula involved.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Method 1&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Clearly the claim is true for &lt;span class="math"&gt;\(k = 1\)&lt;/span&gt;. Suppose it is true for all values &lt;span class="math"&gt;\(i = 1, 2, \dots, k-1\)&lt;/span&gt;.
+Since for &lt;span class="math"&gt;\(B_k\)&lt;/span&gt;, we have &lt;span class="math"&gt;\(2^k\)&lt;/span&gt; nodes. Then, by the induction hypothesis, we have
+&lt;span class="math"&gt;\(2^{k-1} = 1 + 2^0 + \dots + 2^{k-2}\)&lt;/span&gt;. Now, multiplying both sides of the equation
+by 2, we have &lt;span class="math"&gt;\(2^k = 2 + 2 + \dots + 2^{k-1}\)&lt;/span&gt;, which is the same as
+&lt;span class="math"&gt;\(2^k = 1 + 2^0 + \dots + 2^{k-1}\)&lt;/span&gt;. This completes the proof.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Method 2&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Again the claim is true for &lt;span class="math"&gt;\(k = 1\)&lt;/span&gt;. Suppose it is true for all values &lt;span class="math"&gt;\(i = 1, 2, \dots, k-1\)&lt;/span&gt;.
+A &lt;span class="math"&gt;\(B_k\)&lt;/span&gt; tree is fromed by attaching a &lt;span class="math"&gt;\(B_{k-1}\)&lt;/span&gt; tree to the root of a &lt;span class="math"&gt;\(B_{k-1}\)&lt;/span&gt; tree.
+Thus, by induction, it contains a &lt;span class="math"&gt;\(B_0\)&lt;/span&gt; through &lt;span class="math"&gt;\(B_{k-2}\)&lt;/span&gt; tree, as well as the
+newly attached &lt;span class="math"&gt;\(B_{k-1}\)&lt;/span&gt; tree, proving the claim.&lt;/p&gt;
+&lt;h2&gt;MAW 6.28&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Prove that a binomial tree of height &lt;span class="math"&gt;\(k\)&lt;/span&gt; has &lt;span class="math"&gt;\({k \choose d}\)&lt;/span&gt; nodes at depth &lt;span class="math"&gt;\(d\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Proof is by induction. Clearly the claim is true for &lt;span class="math"&gt;\(k=1\)&lt;/span&gt;. Assume true for 
+all values &lt;span class="math"&gt;\(i=1,2,\dots,k\)&lt;/span&gt;. A &lt;span class="math"&gt;\(B_{k+1}\)&lt;/span&gt; tree is formed by attaching a &lt;span class="math"&gt;\(B_k\)&lt;/span&gt; tree
+to the original &lt;span class="math"&gt;\(B_k\)&lt;/span&gt; tree. The original tree has &lt;span class="math"&gt;\({k \choose d}\)&lt;/span&gt; nodes at depth
+&lt;span class="math"&gt;\(d\)&lt;/span&gt; by induction hypothesis. The attached tree had &lt;span class="math"&gt;\(\binom{k}{d-1}\)&lt;/span&gt; nodes at depth
+&lt;span class="math"&gt;\(d-1\)&lt;/span&gt;, which are now at depth &lt;span class="math"&gt;\(d\)&lt;/span&gt;. Adding these two terms we have&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\binom{k+1}{d} = \binom{k}{d} + \binom{k}{d-1}
+$$&lt;/div&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
