@@ -11,17 +11,17 @@ the most commonly-seen one. Insert can be done in &lt;span class="math"&gt;\(O(\
 case and constant on average. DeleteMin can be done in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;. However,
 it has natural drawback in supporting merge operation, which is needed when we
 want to merge two heaps into one. This leads to the
-&lt;a class="reference external" href="http://zhu45.org/posts/2017/Apr/04/leftist-heap/"&gt;leftist heap&lt;/a&gt;,
-&lt;a class="reference external" href="http://zhu45.org/posts/2017/Apr/05/skew-heap/"&gt;skew heap&lt;/a&gt;, and
-&lt;a class="reference external" href="http://zhu45.org/posts/2017/Apr/08/binomial-queue/"&gt;binomial-queue&lt;/a&gt;. Leftist heap
+&lt;a class="reference external" href="http://zhu45.org/posts/2017/Apr/04/leftist-heap/"&gt;leftist heap&lt;/a&gt;. Leftist heap
 supports all three operations (insert, DeleteMin, merge) efficiently but we
 needs to maintain extra information in the node and we need to do extra test
-when working with leftist heap in order to maintain the leftist heap property.
-To better solve these two little disadvantages, we propose skew heap, which has
-no restriction on the tree structure at all while maintain the efficiency of operations
-in amortized time. However, we are still unsatisfy with the structure because
+during merge in order to maintain the leftist heap property.
+To better solve these two little disadvantages, we propose
+&lt;a class="reference external" href="http://zhu45.org/posts/2017/Apr/05/skew-heap/"&gt;skew heap&lt;/a&gt;, which has
+no restriction on the tree structure at all while still enjoying the efficiency of operations
+in amortized time. However, there is still room for improvement because
 both leftist heap and skew heap cannot support constant on average insertion like
-binary heap does. This is why we propose a new structure called binomial heap.&lt;/p&gt;
+binary heap does. This is why we propose a new structure called
+&lt;a class="reference external" href="http://zhu45.org/posts/2017/Apr/08/binomial-queue/"&gt;binomial queue&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;There are many applications of priority queues:&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;Operating system task scheduler&lt;/li&gt;

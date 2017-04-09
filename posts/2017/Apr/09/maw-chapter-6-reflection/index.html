@@ -55,17 +55,17 @@ the most commonly-seen one. Insert can be done in <span class="math">\(O(\log N)
 case and constant on average. DeleteMin can be done in <span class="math">\(O(\log N)\)</span>. However,
 it has natural drawback in supporting merge operation, which is needed when we
 want to merge two heaps into one. This leads to the
-<a class="reference external" href="../../../../../posts/2017/Apr/04/leftist-heap/">leftist heap</a>,
-<a class="reference external" href="../../../../../posts/2017/Apr/05/skew-heap/">skew heap</a>, and
-<a class="reference external" href="../../../../../posts/2017/Apr/08/binomial-queue/">binomial-queue</a>. Leftist heap
+<a class="reference external" href="../../../../../posts/2017/Apr/04/leftist-heap/">leftist heap</a>. Leftist heap
 supports all three operations (insert, DeleteMin, merge) efficiently but we
 needs to maintain extra information in the node and we need to do extra test
-when working with leftist heap in order to maintain the leftist heap property.
-To better solve these two little disadvantages, we propose skew heap, which has
-no restriction on the tree structure at all while maintain the efficiency of operations
-in amortized time. However, we are still unsatisfy with the structure because
+during merge in order to maintain the leftist heap property.
+To better solve these two little disadvantages, we propose
+<a class="reference external" href="../../../../../posts/2017/Apr/05/skew-heap/">skew heap</a>, which has
+no restriction on the tree structure at all while still enjoying the efficiency of operations
+in amortized time. However, there is still room for improvement because
 both leftist heap and skew heap cannot support constant on average insertion like
-binary heap does. This is why we propose a new structure called binomial heap.</p>
+binary heap does. This is why we propose a new structure called
+<a class="reference external" href="../../../../../posts/2017/Apr/08/binomial-queue/">binomial queue</a>.</p>
 <p>There are many applications of priority queues:</p>
 <ul class="simple">
 <li>Operating system task scheduler</li>
