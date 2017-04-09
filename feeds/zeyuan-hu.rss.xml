@@ -1,5 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Sat, 08 Apr 2017 23:33:00 +0800</lastBuildDate><item><title>Binomial queue</title><link>http://zhu45.org/posts/2017/Apr/08/binomial-queue/</link><description>&lt;p&gt;This is the summary of &lt;em&gt;binomial queue&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Sun, 09 Apr 2017 10:45:00 +0800</lastBuildDate><item><title>MAW: Chapter 6 Reflection</title><link>http://zhu45.org/posts/2017/Apr/09/maw-chapter-6-reflection/</link><description>&lt;div class="section" id="reflection"&gt;
+&lt;h2&gt;Reflection&lt;/h2&gt;
+&lt;p&gt;In chapter 6, we learn about the priority queue ADT. We assume each item has
+a &amp;quot;priority&amp;quot; and the ADT allows us to insert the element into the queue and
+get the element with &amp;quot;highest&amp;quot; priority from the queue. The model looks like&lt;/p&gt;
+&lt;img src="/images/priority-queue-ADT.PNG" alt="priority queue ADT"/&gt;&lt;p&gt;and the big picture we have studied so far becomes:&lt;/p&gt;
+&lt;img src="/images/ADT.PNG" alt="ADT overview"/&gt;&lt;p&gt;In order to support two operations required by the model, we propose four new
+implmentations. &lt;a class="reference external" href="http://zhu45.org/posts/2017/Apr/02/binary-heap/"&gt;Binary heap&lt;/a&gt; is
+the most commonly-seen one. Insert can be done in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; in the worst
+case and constant on average. DeleteMin can be done in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;. However,
+it has natural drawback in supporting merge operation, which is needed when we
+want to merge two heaps into one. This needs to the
+&lt;a class="reference external" href="http://zhu45.org/posts/2017/Apr/04/leftist-heap/"&gt;leftist heap&lt;/a&gt;,
+&lt;a class="reference external" href="http://zhu45.org/posts/2017/Apr/05/skew-heap/"&gt;skew heap&lt;/a&gt;, and
+&lt;a class="reference external" href="http://zhu45.org/posts/2017/Apr/08/binomial-queue/"&gt;binomial-queue&lt;/a&gt;. Leftist heap
+supports all three operations (insert, DeleteMin, merge) efficiently but we
+needs to maintain extra information in the node and we need to do extra test
+when working with leftist heap in order to maintain the leftist heap property.
+To better solve these two little disadvantages, we propose skew heap, which has
+no restriction on the tree structure at all while maintain the efficiency of operations
+in amortized time. However, we are still unsatisfy with the structure because
+both leftist heap and skew heap cannot support constant on average insertion like
+binary heap does. This is why we propose a new structure called binomial heap.&lt;/p&gt;
+&lt;p&gt;There are many applications of priority queues:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Operating system task scheduler&lt;/li&gt;
+&lt;li&gt;Forward network packets in order of urgency&lt;/li&gt;
+&lt;li&gt;Select most frequent symbols for data compression&lt;/li&gt;
+&lt;li&gt;Sorting&lt;/li&gt;
+&lt;li&gt;Implementation for greedy algorithms&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="left-out"&gt;
+&lt;h2&gt;Left Out&lt;/h2&gt;
+&lt;p&gt;Some material I left out when I work through this chapter:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;6.9.c, 6.10, 6.12, 6.20, 6.21, 6.30, 6.32, 6.33, 6.34, 6.35, 6.36&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="reference"&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;MAW Chapter 6&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture4.pdf"&gt;https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture4.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;script type='text/javascript'&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Sun, 09 Apr 2017 10:45:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-09:posts/2017/Apr/09/maw-chapter-6-reflection/</guid><category>meta</category><category>maw</category></item><item><title>Binomial queue</title><link>http://zhu45.org/posts/2017/Apr/08/binomial-queue/</link><description>&lt;p&gt;This is the summary of &lt;em&gt;binomial queue&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
 &lt;h2&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;We want to have a data structure that support merging, insertion, and deleteMin
 in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time per operation, and at the same time, like binary heap, we 
@@ -784,7 +886,7 @@ the heap with the smaller root.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Show the result of inserting keys 1 to 15 in order into an initially empty leftist heap.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;Use this wonderful site: &lt;img alt="" src="https://www.cs.usfca.edu/~galles/visualization/LeftistHeap.html" /&gt;
+&lt;p&gt;Use &lt;a href="https://www.cs.usfca.edu/~galles/visualization/LeftistHeap.html"&gt;this wonderful site&lt;/a&gt;
 to see the whole process of insertion.&lt;/p&gt;
 &lt;h2&gt;MAW 6.27&lt;/h2&gt;
 &lt;blockquote&gt;
