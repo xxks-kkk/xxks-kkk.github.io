@@ -44,7 +44,7 @@
 
         <article>
             <h2>Solutions</h2>
-<p>including: MAW 7.1, 7.2, </p>
+<p>including: MAW 7.1, 7.2, 7.3, 7.4</p>
 <h3>MAW 7.1</h3>
 <blockquote>
 <p>Sort the sequence 3,1,4,1,5,9,2,6,5 using insertion sort.</p>
@@ -69,6 +69,36 @@
 </blockquote>
 <p>If you take a look at the code on p. 220, you can see that inner for loop checks
 <code>A[j-1] &gt; tmp</code> and it will fail immediately. Thus, the running time is <span class="math">\(O(N)\)</span>.</p>
+<h3>MAW 7.3</h3>
+<blockquote>
+<p>Suppose we exchange elements <span class="math">\(A[i]\)</span> and <span class="math">\(A[i+k]\)</span>, which were originally
+out of order. Prove that at least 1 and at most <span class="math">\(2k-1\)</span> inversions are removed.</p>
+</blockquote>
+<p>The inversion that existed between <span class="math">\(A[i]\)</span> and <span class="math">\(A[i+k]\)</span> is removed. This shows 
+at least one inversion is removed. Now let's consider <span class="math">\(A[i], A[i+1], \dots, A[i+k-1], A[i+k]\)</span>,
+Suppose <span class="math">\(A[i]\)</span> is greater than <span class="math">\(A[i+1], \dots, A[i+k]\)</span> and <span class="math">\(A[i+k]\)</span> is smaller than
+<span class="math">\(A[i], \dots, A[i+k-1]\)</span>. In this case, by swapping <span class="math">\(A[i]\)</span> and <span class="math">\(A[i+k]\)</span>, we fix 
+<span class="math">\(2k-1\)</span> inversions (<span class="math">\(-1\)</span> is that <span class="math">\(A[i]\)</span> greater than <span class="math">\(A[i+k]\)</span> and <span class="math">\(A[i+k]\)</span> smaller
+than <span class="math">\(A[i]\)</span> points to the same inversion).</p>
+<p>Another way to think about <span class="math">\(2k-1\)</span> is that for each of the <span class="math">\(k-1\)</span> elements 
+<span class="math">\(A[i+1], A[i+2], \dots, A[i+k-1]\)</span>, at most two inversions can be removed by exchange.
+For instance, for <span class="math">\(A[i+1]\)</span>, two inversions are <span class="math">\(A[i]\)</span> and <span class="math">\(A[i+1]\)</span>, and <span class="math">\(A[i+1]\)</span> and
+<span class="math">\(A[i+k]\)</span> (i.e. for sequence 10,4,3, by swapping 10 and 3, we remove inversion {10,4}
+and {4,3}). Thus, a maximum of <span class="math">\(2(k-1)+1 = 2k-1\)</span>.</p>
+<h3>MAW 7.4</h3>
+<blockquote>
+<p>Show the result of running Shellsort on the input 9,8,7,6,5,4,3,2,1 using the
+increments {1,3,7}</p>
+</blockquote>
+<div class="highlight"><pre><span></span>| index        | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| original     | 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 |
+|--------------|---|---|---|---|---|---|---|---|---|
+| after 7-sort | 2 | 1 | 7 | 6 | 5 | 4 | 3 | 9 | 8 |
+| after 3-sort | 2 | 1 | 4 | 3 | 5 | 7 | 6 | 9 | 8 |
+| after 1-sort | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+</pre></div>
+
+
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
