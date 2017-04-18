@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Sorting prelim
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+            <div class="container">
+
+<header class="blog-header">
+    <h1><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+        <a href="../../../../../quotes.html" style="padding: 10px">QUOTES</a>
+        <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+        <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a>
+    </nav>
+</header>
+
+    <div class="post">
+        <header>
+            <h1>Sorting prelim</h1>
+            <p class="date">Written on <time datetime="2017-04-18T10:03:00+08:00">Apr 18, 2017</time></p>
+        </header>
+
+        <article>
+            <p>Chapter 7: Sorting will have some rigorous analysis of the sorting algorithms
+(no wonder as suggested by the title of the book). Some meta-concepts related with
+sorting appeard at the very beginning of the chapter. I usually push them to the
+end-chapter summary post but this time I decide to do a writeup beforehand because 
+I find it is really hard to talk about various sorting schemes without setting up some
+ground concepts first.</p>
+<h2>Definitions</h2>
+<ul>
+<li>Sorting problem: Given an array <span class="math">\(A\)</span>, output <span class="math">\(A\)</span> such that: 
+  For any <span class="math">\(i\)</span> and <span class="math">\(J\)</span>, if <span class="math">\(i &lt; j\)</span>, then <span class="math">\(A[i] \le A[j]\)</span>.</li>
+</ul>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>Here, for the input, we are given an array <span class="math">\(A\)</span> of data records, each with
+a key (which can be an integer, character, string, etc) as long as the following
+condition can be met:
+- There is an ordering on the set of possible keys
+- We can compare any two keys using <span class="math">\(&lt;, &gt;, =\)</span></p>
+</blockquote>
+<ul>
+<li>
+<p>Sorting algorithm using comparison operators (i.e <span class="math">\(&lt;, &gt;, =\)</span>) is known as
+<strong>comparison-based sorting</strong>. Another major type is called <strong>counting sort</strong> (i.e. Radix sort).</p>
+</li>
+<li>
+<p>If the entire sort can be done in main memory (i.e number of elements is relatively small, usually less than a million), we call it <strong>internal sorting</strong>. By the contrast,
+if the data is on the disk, we call it <strong>external sorting</strong>.</p>
+</li>
+<li>
+<p>An algorithm requires <span class="math">\(O(1)\)</span> extra space is known as an <strong>in place</strong> sorting algorithm.</p>
+</li>
+</ul>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>Under the context of the sorting, we may ask: Does the sorting algorithm require extra
+memory to sort the collection of items? Do we need to copy and temporarily store some 
+subset of the keys/data records?</p>
+</blockquote>
+<ul>
+<li>A sorting algorithm is <strong>stable</strong> if elements with equal keys are left in the same
+order as they occur in the input. In other words, we can ask ourself the question:
+Does it rearrange the order of input data records which have the same key value
+(duplicates)? If the answer is No, then the sorting algorithm is <em>stable</em>.</li>
+</ul>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>One example is that Phone book is sorted by name. Now let's sort the book by country -
+is the list still sorted by name within each country? As you can tell, it is 
+an extremely important property for databases.</p>
+</blockquote>
+<ul>
+<li>
+<p>There will be three kinds of running time mentioned in the sorting analysis:</p>
+<ul>
+<li><em>average case time</em>: given an arbitrary input, what do we expect the running time
+to be.</li>
+<li><em>worst case time</em>: for a particular degenerate case, how bad will the algorithm
+perform.</li>
+<li><em>best case time</em>: for a particularly benevolent input case, what is the best case 
+performance.</li>
+</ul>
+</li>
+</ul>
+<h2>Reference</h2>
+<ul>
+<li>MAW Chapter 7</li>
+<li>https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt</li>
+<li>https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf</li>
+</ul>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/data-struct-algo.html">Data Struct & Algo</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+<!--                            <li><a href="../../../../../about-zack.html">About</a></li>
+                <li><a href="../../../../../blog2">Blog</a></li>
+                <li><a href="../../../../../quotes.html">Quotes</a></li>
+                <li><a href="../../../../../projects.html">Projects</a></li>
+-->
+    </ul>
+
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

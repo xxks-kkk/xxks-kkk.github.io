@@ -1,5 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Sat, 15 Apr 2017 23:54:00 +0800</lastBuildDate><item><title>MAW Chapter 7: Sorting writing questions</title><link>http://zhu45.org/posts/2017/Apr/15/maw-chapter-7-sorting-writing-questions/</link><description>&lt;h2&gt;Solutions&lt;/h2&gt;
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Tue, 18 Apr 2017 10:03:00 +0800</lastBuildDate><item><title>Sorting prelim</title><link>http://zhu45.org/posts/2017/Apr/18/sorting-prelim/</link><description>&lt;p&gt;Chapter 7: Sorting will have some rigorous analysis of the sorting algorithms
+(no wonder as suggested by the title of the book). Some meta-concepts related with
+sorting appeard at the very beginning of the chapter. I usually push them to the
+end-chapter summary post but this time I decide to do a writeup beforehand because 
+I find it is really hard to talk about various sorting schemes without setting up some
+ground concepts first.&lt;/p&gt;
+&lt;h2&gt;Definitions&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Sorting problem: Given an array &lt;span class="math"&gt;\(A\)&lt;/span&gt;, output &lt;span class="math"&gt;\(A\)&lt;/span&gt; such that: 
+  For any &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(J\)&lt;/span&gt;, if &lt;span class="math"&gt;\(i &amp;lt; j\)&lt;/span&gt;, then &lt;span class="math"&gt;\(A[i] \le A[j]\)&lt;/span&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Here, for the input, we are given an array &lt;span class="math"&gt;\(A\)&lt;/span&gt; of data records, each with
+a key (which can be an integer, character, string, etc) as long as the following
+condition can be met:
+- There is an ordering on the set of possible keys
+- We can compare any two keys using &lt;span class="math"&gt;\(&amp;lt;, &amp;gt;, =\)&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Sorting algorithm using comparison operators (i.e &lt;span class="math"&gt;\(&amp;lt;, &amp;gt;, =\)&lt;/span&gt;) is known as
+&lt;strong&gt;comparison-based sorting&lt;/strong&gt;. Another major type is called &lt;strong&gt;counting sort&lt;/strong&gt; (i.e. Radix sort).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If the entire sort can be done in main memory (i.e number of elements is relatively small, usually less than a million), we call it &lt;strong&gt;internal sorting&lt;/strong&gt;. By the contrast,
+if the data is on the disk, we call it &lt;strong&gt;external sorting&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;An algorithm requires &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt; extra space is known as an &lt;strong&gt;in place&lt;/strong&gt; sorting algorithm.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Under the context of the sorting, we may ask: Does the sorting algorithm require extra
+memory to sort the collection of items? Do we need to copy and temporarily store some 
+subset of the keys/data records?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;A sorting algorithm is &lt;strong&gt;stable&lt;/strong&gt; if elements with equal keys are left in the same
+order as they occur in the input. In other words, we can ask ourself the question:
+Does it rearrange the order of input data records which have the same key value
+(duplicates)? If the answer is No, then the sorting algorithm is &lt;em&gt;stable&lt;/em&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;One example is that Phone book is sorted by name. Now let's sort the book by country -
+is the list still sorted by name within each country? As you can tell, it is 
+an extremely important property for databases.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;There will be three kinds of running time mentioned in the sorting analysis:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;average case time&lt;/em&gt;: given an arbitrary input, what do we expect the running time
+to be.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;worst case time&lt;/em&gt;: for a particular degenerate case, how bad will the algorithm
+perform.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;best case time&lt;/em&gt;: for a particularly benevolent input case, what is the best case 
+performance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;MAW Chapter 7&lt;/li&gt;
+&lt;li&gt;https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt&lt;/li&gt;
+&lt;li&gt;https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Tue, 18 Apr 2017 10:03:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-18:posts/2017/Apr/18/sorting-prelim/</guid><category>sorting</category><category>maw</category></item><item><title>MAW Chapter 7: Sorting writing questions</title><link>http://zhu45.org/posts/2017/Apr/15/maw-chapter-7-sorting-writing-questions/</link><description>&lt;h2&gt;Solutions&lt;/h2&gt;
 &lt;p&gt;including: MAW 7.1, 7.2, 7.3, 7.4, 7.5.a, 7.9, 7.10, &lt;/p&gt;
 &lt;h3&gt;MAW 7.1&lt;/h3&gt;
 &lt;blockquote&gt;
@@ -68,7 +193,7 @@ so the cost of that pass is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;. Th
 for the algorithm is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;. &lt;/p&gt;
 &lt;h3&gt;MAW 7.9&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;Determine the running time of Shellsort for &lt;/p&gt;
+&lt;p&gt;Determine the running time (i.e. number of swaps) of Shellsort for &lt;/p&gt;
 &lt;p&gt;a. sorted input&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(O(N \log N)\)&lt;/span&gt;. No exachanges acutally done in each each pass but we will still
@@ -77,10 +202,23 @@ need to go through the second for loop, which indicates that each pass takes
 &lt;blockquote&gt;
 &lt;p&gt;b. reverse-ordered input&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;NOTE: this one is a temp answer. It is subject to revision.&lt;/p&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(O(N \log N)\)&lt;/span&gt;. It is easy to show that after an &lt;span class="math"&gt;\(h_k\)&lt;/span&gt; sort, no element is farther
 than &lt;span class="math"&gt;\(h_k\)&lt;/span&gt; from its rightful position. Thus, if the increments satisfy &lt;span class="math"&gt;\(h_{k+1} \le ch_k\)&lt;/span&gt;
 for a constant &lt;span class="math"&gt;\(c\)&lt;/span&gt;, which implies &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; increments, then the bound follows.&lt;/p&gt;
+&lt;p&gt;However, one cannot talk about shellsort without specifying the increment sequence.
+If we assume the shell sequence (i.e. &lt;span class="math"&gt;\(N/2, N/4, \dots, 2, 1\)&lt;/span&gt;), then the running time
+is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; as suggested by &lt;a href="https://www.cs.rochester.edu/~brown/172/exams/2ndmidterm_ans_13.pdf"&gt;this answer&lt;/a&gt;,
+which I'll copy below for future reference.&lt;/p&gt;
+&lt;p&gt;Shellsort is just a bunch of insertion sorts. For a given increment &lt;span class="math"&gt;\(I\)&lt;/span&gt;, there will
+be &lt;span class="math"&gt;\(I\)&lt;/span&gt; subarrays to sort by insertion, each of length &lt;span class="math"&gt;\(N/I\)&lt;/span&gt;. We know that insertion
+sort requires time &lt;span class="math"&gt;\(O(m^2)\)&lt;/span&gt; to sort a reverse-sorted array of length &lt;span class="math"&gt;\(m\)&lt;/span&gt;. Here, &lt;span class="math"&gt;\(m\)&lt;/span&gt;
+will be (&lt;span class="math"&gt;\(N/I\)&lt;/span&gt;) for each subarray. Thus one subarray will cost &lt;span class="math"&gt;\((N/I)^2\)&lt;/span&gt; to sort. 
+There are &lt;span class="math"&gt;\(I\)&lt;/span&gt; subarrays, so the total cost will be &lt;span class="math"&gt;\(I * (N/I)^2 = N^2/I\)&lt;/span&gt;. But that 
+is the cost just for a single increment. The total time for all of the iterations must be
+&lt;span class="math"&gt;\(N^2/(N/2) + N^2/(N/4) + N^2/(N/8) + \dots + N^2/2 + N^2/1 = 2N + 4N + \dots + N^2/2 + N^2/1\)&lt;/span&gt; .
+If we factor out an &lt;span class="math"&gt;\(N\)&lt;/span&gt;, we get &lt;span class="math"&gt;\(N(2+4+\dots+N/2+N)\)&lt;/span&gt; . In parenthesis is the sum of powers of 
+2 from 2 to &lt;span class="math"&gt;\(N\)&lt;/span&gt;, which is approximately equalt to &lt;span class="math"&gt;\(2N\)&lt;/span&gt;. Therefore, the total cost
+is &lt;span class="math"&gt;\(N(2N) = 2N^2 = O(N^2)\)&lt;/span&gt;.&lt;/p&gt;
 &lt;h3&gt;MAW 7.10&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Do either of the following modifications to the Shellsort routine coded in 
@@ -258,7 +396,7 @@ binary heap does. This is why we propose a new structure called
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Sun, 09 Apr 2017 10:45:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-09:posts/2017/Apr/09/maw-chapter-6-reflection/</guid><category>meta</category><category>maw</category></item><item><title>Binomial queue</title><link>http://zhu45.org/posts/2017/Apr/08/binomial-queue/</link><description>&lt;p&gt;This is the summary of &lt;em&gt;binomial queue&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
+&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Sun, 09 Apr 2017 10:45:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-09:posts/2017/Apr/09/maw-chapter-6-reflection/</guid><category>meta</category><category>maw</category><category>heaps</category></item><item><title>Binomial queue</title><link>http://zhu45.org/posts/2017/Apr/08/binomial-queue/</link><description>&lt;p&gt;This is the summary of &lt;em&gt;binomial queue&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
 &lt;h2&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;We want to have a data structure that support merging, insertion, and deleteMin
 in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time per operation, and at the same time, like binary heap, we 

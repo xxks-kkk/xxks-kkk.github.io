@@ -112,7 +112,7 @@ so the cost of that pass is <span class="math">\(O(N^2)\)</span>. The 1-sort is 
 for the algorithm is <span class="math">\(O(N^2)\)</span>. </p>
 <h3>MAW 7.9</h3>
 <blockquote>
-<p>Determine the running time of Shellsort for </p>
+<p>Determine the running time (i.e. number of swaps) of Shellsort for </p>
 <p>a. sorted input</p>
 </blockquote>
 <p><span class="math">\(O(N \log N)\)</span>. No exachanges acutally done in each each pass but we will still
@@ -121,10 +121,23 @@ need to go through the second for loop, which indicates that each pass takes
 <blockquote>
 <p>b. reverse-ordered input</p>
 </blockquote>
-<p>NOTE: this one is a temp answer. It is subject to revision.</p>
 <p><span class="math">\(O(N \log N)\)</span>. It is easy to show that after an <span class="math">\(h_k\)</span> sort, no element is farther
 than <span class="math">\(h_k\)</span> from its rightful position. Thus, if the increments satisfy <span class="math">\(h_{k+1} \le ch_k\)</span>
 for a constant <span class="math">\(c\)</span>, which implies <span class="math">\(O(\log N)\)</span> increments, then the bound follows.</p>
+<p>However, one cannot talk about shellsort without specifying the increment sequence.
+If we assume the shell sequence (i.e. <span class="math">\(N/2, N/4, \dots, 2, 1\)</span>), then the running time
+is <span class="math">\(O(N)\)</span> as suggested by <a href="https://www.cs.rochester.edu/~brown/172/exams/2ndmidterm_ans_13.pdf">this answer</a>,
+which I'll copy below for future reference.</p>
+<p>Shellsort is just a bunch of insertion sorts. For a given increment <span class="math">\(I\)</span>, there will
+be <span class="math">\(I\)</span> subarrays to sort by insertion, each of length <span class="math">\(N/I\)</span>. We know that insertion
+sort requires time <span class="math">\(O(m^2)\)</span> to sort a reverse-sorted array of length <span class="math">\(m\)</span>. Here, <span class="math">\(m\)</span>
+will be (<span class="math">\(N/I\)</span>) for each subarray. Thus one subarray will cost <span class="math">\((N/I)^2\)</span> to sort. 
+There are <span class="math">\(I\)</span> subarrays, so the total cost will be <span class="math">\(I * (N/I)^2 = N^2/I\)</span>. But that 
+is the cost just for a single increment. The total time for all of the iterations must be
+<span class="math">\(N^2/(N/2) + N^2/(N/4) + N^2/(N/8) + \dots + N^2/2 + N^2/1 = 2N + 4N + \dots + N^2/2 + N^2/1\)</span> .
+If we factor out an <span class="math">\(N\)</span>, we get <span class="math">\(N(2+4+\dots+N/2+N)\)</span> . In parenthesis is the sum of powers of 
+2 from 2 to <span class="math">\(N\)</span>, which is approximately equalt to <span class="math">\(2N\)</span>. Therefore, the total cost
+is <span class="math">\(N(2N) = 2N^2 = O(N^2)\)</span>.</p>
 <h3>MAW 7.10</h3>
 <blockquote>
 <p>Do either of the following modifications to the Shellsort routine coded in 
