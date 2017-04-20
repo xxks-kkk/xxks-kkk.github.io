@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-04-18T10:03:00+08:00</updated><entry><title>Sorting prelim</title><link href="http://zhu45.org/posts/2017/Apr/18/sorting-prelim/" rel="alternate"></link><published>2017-04-18T10:03:00+08:00</published><updated>2017-04-18T10:03:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-18:posts/2017/Apr/18/sorting-prelim/</id><summary type="html">&lt;p&gt;Chapter 7: Sorting will have some rigorous analysis of the sorting algorithms
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-04-21T23:48:00+08:00</updated><entry><title>Introducing the "Andrew Ng's ML course study notes"</title><link href="http://zhu45.org/posts/2017/Apr/21/introducing-the-andrew-ngs-ml-course-study-notes/" rel="alternate"></link><published>2017-04-21T23:48:00+08:00</published><updated>2017-04-21T23:48:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-21:posts/2017/Apr/21/introducing-the-andrew-ngs-ml-course-study-notes/</id><summary type="html">&lt;p&gt;I finally enrolled in Andrew Ng's machine learning course on 
+&lt;a href="https://www.coursera.org/learn/machine-learning/home/welcome"&gt;Coursera&lt;/a&gt;. Here is 
+my expectation for this course:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Get a fun intro to machine learning field. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I studied mathematics, statistics, and took AI course when I was an undergraduate
+but I never had an intro to ML formally. All the work I have done so far has
+a very strong relationship with ML but they don't really target on ML specifically.
+So, I think Andrew Ng's ML course is probably a great intro to this field.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In preparation for my graduate studies.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I'm thinking of pursuing a research career in NLP and robotics but I need to some
+ground work to see if they are actually fun like I'm picturing in my mind. In addition,
+before actually taking graduate level related courses, there might be some gaps I
+need to fill out. So I think Andrew Ng's course may be a greate bridge course
+to get me warm up for the serious graduate level ML studies.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Take a break from Algo studies and keep myself motivated.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I'm currently working on a reading project to finish MAW by the end of this September.
+The progress so far is on track and I'm having a lot of fun with the book. However,
+sometimes, I want to experience some different flavor of dishes and take a break. In 
+addition, I'm thinking of the next reading project I'm going to do. It's highly likely
+going to be a book in linear algebra. I have taken linear algebra before in the college
+but I found the subject can become quite boring very soon if you don't have specific
+problems or needs want to address. Hopefully, Andrew Ng's course will help me to
+find some motivation to study linear algebra well.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Start to make résumé ML-ish&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I'm working in DB field but I always want to do ML by nature judged by my performance
+in the ML-related courses. Taking ML course on coursera and having a nice badge on
+my LinkedIn may greatly help me to market my ML expertise in the future?&lt;/p&gt;</summary><category term="ml"></category><category term="coursera"></category></entry><entry><title>Sorting prelim</title><link href="http://zhu45.org/posts/2017/Apr/18/sorting-prelim/" rel="alternate"></link><published>2017-04-18T10:03:00+08:00</published><updated>2017-04-18T10:03:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-18:posts/2017/Apr/18/sorting-prelim/</id><summary type="html">&lt;p&gt;Chapter 7: Sorting will have some rigorous analysis of the sorting algorithms
 (no wonder as suggested by the title of the book). Some meta-concepts related with
 sorting appeard at the very beginning of the chapter. I usually push them to the
 end-chapter summary post but this time I decide to do a writeup beforehand because 
@@ -14,9 +48,11 @@ ground concepts first.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Here, for the input, we are given an array &lt;span class="math"&gt;\(A\)&lt;/span&gt; of data records, each with
 a key (which can be an integer, character, string, etc) as long as the following
-condition can be met:
-- There is an ordering on the set of possible keys
-- We can compare any two keys using &lt;span class="math"&gt;\(&amp;lt;, &amp;gt;, =\)&lt;/span&gt;&lt;/p&gt;
+condition can be met:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;There is an ordering on the set of possible keys&lt;/li&gt;
+&lt;li&gt;We can compare any two keys using &lt;span class="math"&gt;\(&amp;lt;, &amp;gt;, =\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -545,7 +581,9 @@ two queues takes &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time and th
 &lt;h2&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;Like the relation between splay trees and AVL trees, we want to have 
 &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; amortized cost per operation. In addition, we don't want
-to have any auxiliary information stored at the nodes. In this case,
+to have any auxiliary information stored at the nodes. In other words,
+we want to trade strict &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; operation for less space we need 
+to use for the data structure. In this case,
 like splay trees to AVL trees, we have Skew heaps to leftist heaps.&lt;/p&gt;
 &lt;h2&gt;Concept&lt;/h2&gt;
 &lt;p&gt;Skew heaps are binary trees with heap order, but there is no structural constraint
