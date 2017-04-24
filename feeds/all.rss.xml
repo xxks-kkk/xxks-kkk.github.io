@@ -1,5 +1,234 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Fri, 21 Apr 2017 23:48:00 +0800</lastBuildDate><item><title>Introducing the "Andrew Ng's ML course study notes"</title><link>http://zhu45.org/posts/2017/Apr/21/introducing-the-andrew-ngs-ml-course-study-notes/</link><description>&lt;p&gt;I finally enrolled in Andrew Ng's machine learning course on 
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Mon, 24 Apr 2017 21:33:00 +0800</lastBuildDate><item><title>Simple sorting alogorithms</title><link>http://zhu45.org/posts/2017/Apr/24/simple-sorting-alogorithms/</link><description>&lt;p&gt;insertion sort&lt;/p&gt;
+&lt;p&gt;This post summarizes three typical simple sorting algorithms: &lt;em&gt;bubble sort&lt;/em&gt;, 
+&lt;em&gt;selection sort&lt;/em&gt;, and &lt;em&gt;insertion sort&lt;/em&gt;. In chapter 6, MAW mainly talks about 
+&lt;em&gt;insertion sort&lt;/em&gt; but for the sake of completeness, I will include the other two as
+well.&lt;/p&gt;
+&lt;h2&gt;Bubble sort&lt;/h2&gt;
+&lt;h3&gt;Concept&lt;/h3&gt;
+&lt;p&gt;The idea for the bubble sort is to "bubble" larger elements to the end of array
+by comparing &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(i+1\)&lt;/span&gt;, and swapping if &lt;span class="math"&gt;\(A[i] &amp;gt; A[i+1]\)&lt;/span&gt;. We repeat this 
+from the first to the end of unsorted part of the array.&lt;/p&gt;
+&lt;p&gt;The following code demonstrates the actual algorithm&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#define SWAP(a,b)  {int t; t = a; a = b; b = t;}&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;bubbleSort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;// n passes thru the array&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;// from start to the end of unsorted part&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="n"&gt;SWAP&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;]);&lt;/span&gt; 
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The key for the alogorithm is that we only do the "bubble up" operation for the
+unsorted part. The following gives an example of the algorithm in action:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;| index    | 0  | 1  | 2  | 3  | 4  | 5  |
+| original | 34 | 8  | 64 | 51 | 32 | 21 |
+|----------|----|----|----|----|----|----|
+| pass 0   | 8  | 34 | 57 | 32 | 21 | 64 |
+| pass 1   | 8  | 34 | 32 | 21 | 51 | 64 |
+| pass 2   | 8  | 32 | 21 | 34 | 51 | 64 |
+| pass 3   | 8  | 21 | 32 | 34 | 51 | 64 |
+| pass 4   | 8  | 21 | 32 | 34 | 51 | 64 |
+| pass 5   | 8  | 21 | 32 | 34 | 51 | 64 |
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Analysis&lt;/h3&gt;
+&lt;p&gt;Bubble sort is stable and in place. The running time is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;, which is true
+for both worst case and average case. &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; can be achieved in the best case, where
+the array is sorted or mostly sorted (possible a few elements a place or two
+away from their correct spots).&lt;/p&gt;
+&lt;h2&gt;Selection sort&lt;/h2&gt;
+&lt;h3&gt;Concept&lt;/h3&gt;
+&lt;p&gt;The idea for selection sort is to scan array and select small key and swap it with 
+the first element of the array (i.e. &lt;span class="math"&gt;\(A[0]\)&lt;/span&gt;); scan remaining keys, select the smallest
+and swap with the second element (i.e. &lt;span class="math"&gt;\(A[1]\)&lt;/span&gt;); repeat the whole process until last 
+element is reached. In other words, after &lt;span class="math"&gt;\(i\)&lt;/span&gt;th pass, first &lt;span class="math"&gt;\(i\)&lt;/span&gt; elements are sorted and 
+in proper position.&lt;/p&gt;
+&lt;p&gt;Like the bubble sort, we divide the whole array into sorted part
+and unsorted part: we start with unsorted array and keep the sorted array at the beginning.
+Each time we scan the unsorted part of the array and decide which element should go next
+into the sorted part. However, unlike bubble sort, we build the sorted part from the
+beginning of the array (in bubble sort, we start with moving the largest element to 
+the end of array).&lt;/p&gt;
+&lt;p&gt;The following code demonstrates the actual algorithm&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;
+&lt;span class="nf"&gt;selectionSort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;min&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;min&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;min&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+        &lt;span class="n"&gt;min&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;swap&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;min&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;   
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Here is an example of the algorithm in action:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;| index    | 0  | 1  | 2  | 3  | 4  | 5  |
+| original | 34 | 8  | 64 | 51 | 32 | 21 |
+|----------|----|----|----|----|----|----|
+| pass 0   | 8  | 34 | 64 | 51 | 32 | 21 |
+| pass 1   | 8  | 21 | 64 | 51 | 32 | 34 |
+| pass 2   | 8  | 21 | 32 | 51 | 64 | 34 |
+| pass 3   | 8  | 21 | 32 | 34 | 64 | 51 |
+| pass 4   | 8  | 21 | 32 | 34 | 51 | 64 |
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Analysis&lt;/h3&gt;
+&lt;p&gt;The selection sort is NOT STABLE but in place. Selection sort is not sensitive
+to the input and thus running time should be the same in best, average, and worst cases:
+We go through &lt;span class="math"&gt;\(N-1\)&lt;/span&gt; passes with &lt;span class="math"&gt;\(N-1, \dots, 1\)&lt;/span&gt; comparisons, which is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Since selection sort is insensitive to the data, it's good if we want to have our
+sort routine always take the same time.&lt;/p&gt;
+&lt;h2&gt;Insertion sort&lt;/h2&gt;
+&lt;h3&gt;Concept&lt;/h3&gt;
+&lt;p&gt;The idea for insertion sort is that we insert an as-yet-unprocessed record
+int a sorted list of the records processed so far. In details, insertion sort
+consists of &lt;span class="math"&gt;\(N-1\)&lt;/span&gt; passes. For pass &lt;span class="math"&gt;\(P = 1\)&lt;/span&gt; through &lt;span class="math"&gt;\(N-1\)&lt;/span&gt;, insertion sort ensures
+that the elements in positions &lt;span class="math"&gt;\(0\)&lt;/span&gt; through &lt;span class="math"&gt;\(p\)&lt;/span&gt; are in sorted order. In pass &lt;span class="math"&gt;\(P\)&lt;/span&gt;,
+we move the element in position &lt;span class="math"&gt;\(P\)&lt;/span&gt; left until its correct place is found among
+the first &lt;span class="math"&gt;\(P+1\)&lt;/span&gt; elements.&lt;/p&gt;
+&lt;p&gt;The following code demonstrates the actual algorithm&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;
+&lt;span class="nf"&gt;insertionSort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;P&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;P&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;tmp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;P&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;P&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;tmp&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+    &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Here is an example of the algorithm in action:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;| index    | 0  | 1  | 2  | 3  | 4  | 5  |
+| original | 34 | 8  | 64 | 51 | 32 | 21 |
+|----------|----|----|----|----|----|----|
+| pass 1   | 8  | 34 | 64 | 51 | 32 | 21 |
+| pass 2   | 8  | 34 | 64 | 51 | 32 | 21 |
+| pass 3   | 8  | 34 | 51 | 64 | 32 | 21 |
+| pass 4   | 8  | 32 | 34 | 51 | 64 | 21 |
+| pass 5   | 8  | 21 | 32 | 34 | 51 | 64 |
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Analysis&lt;/h3&gt;
+&lt;p&gt;Due to the nested loops, the running time is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;, which can be achieved
+when the input array is in reverse sorted order. In the best case, where 
+the input array is already sorted, the running time is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;. For the average
+case, the running time is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;. In fact, the bound is tight for both average case
+and worst case: &lt;span class="math"&gt;\(\Theta (N^2)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;In addition, insertion sort is stable and in place. Insertion sort is the most 
+effectively used on input array with roughly &lt;span class="math"&gt;\(N &amp;lt; 20\)&lt;/span&gt; and for almost sorted array.&lt;/p&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href="https://youtu.be/8Kp-8OGwphY"&gt;bubble sort video&lt;/a&gt;, 
+&lt;a href="https://youtu.be/f8hXR_Hvybo"&gt;selection sort video&lt;/a&gt;, 
+&lt;a href="https://youtu.be/DFG-XuyPYUQ"&gt;insertion sort video&lt;/a&gt; and 
+&lt;a href="https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html"&gt;this animation&lt;/a&gt;
+can help you understand the concept.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;A Lower Bound for Simple Sorting Algorithms&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;An &lt;strong&gt;inversion&lt;/strong&gt; is a pair of elements in wrong order (i.e. &lt;span class="math"&gt;\(i &amp;lt; j\)&lt;/span&gt; but &lt;span class="math"&gt;\(A[i] &amp;gt; A[j]\)&lt;/span&gt;).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Simple sorting algorithms presented in this post swap adjacenet elements
+(explicitly or implicitly) removes one inversion per swap. This makes the running
+time proportional to number of inversions in array.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The average number of inversions in an array of &lt;span class="math"&gt;\(N\)&lt;/span&gt; distinct numbers is &lt;span class="math"&gt;\(N(N-1)/4\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Any algorithm that sorts by exchanging adjacent elements requires &lt;span class="math"&gt;\(\Omega (N^2)\)&lt;/span&gt; time
+on average. This is due to the fact that each adjacent swap removes only one inversion.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As you can tell, to break &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt; barrier, we must remove more than one inversion
+for each swap. Adjacent elements swap will certainly not help us to achieve this goal.
+The idea is that we try to swap the elements that are far apart and hopefully we can 
+remove more than one inversion for each swap. Shell sort is the first algorithm
+to break &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt; running time. I'll talk about it in my next post.&lt;/p&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;MAW Chapter 7&lt;/li&gt;
+&lt;li&gt;https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt&lt;/li&gt;
+&lt;li&gt;https://www.cs.rochester.edu/~brown/172/lectures/12_sort1/12sort1.html&lt;/li&gt;
+&lt;li&gt;https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf&lt;/li&gt;
+&lt;li&gt;http://web.mit.edu/1.124/LectureNotes/sorting.html&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Mon, 24 Apr 2017 21:33:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-24:posts/2017/Apr/24/simple-sorting-alogorithms/</guid><category>sorting</category><category>maw</category></item><item><title>Introducing the "Andrew Ng's ML course study notes"</title><link>http://zhu45.org/posts/2017/Apr/21/introducing-the-andrew-ngs-ml-course-study-notes/</link><description>&lt;p&gt;I finally enrolled in Andrew Ng's machine learning course on 
 &lt;a href="https://www.coursera.org/learn/machine-learning/home/welcome"&gt;Coursera&lt;/a&gt;. Here is 
 my expectation for this course:&lt;/p&gt;
 &lt;ul&gt;
