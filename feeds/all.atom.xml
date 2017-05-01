@@ -1,5 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-04-24T21:33:00+08:00</updated><entry><title>Simple sorting alogorithms</title><link href="http://zhu45.org/posts/2017/Apr/24/simple-sorting-alogorithms/" rel="alternate"></link><published>2017-04-24T21:33:00+08:00</published><updated>2017-04-24T21:33:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-24:posts/2017/Apr/24/simple-sorting-alogorithms/</id><summary type="html">&lt;p&gt;This post summarizes three typical simple sorting algorithms: &lt;em&gt;bubble sort&lt;/em&gt;, 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-05-01T21:33:00+08:00</updated><entry><title>Shell sort</title><link href="http://zhu45.org/posts/2017/May/01/shell-sort/" rel="alternate"></link><published>2017-05-01T21:33:00+08:00</published><updated>2017-05-01T21:33:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-01:posts/2017/May/01/shell-sort/</id><summary type="html">&lt;p&gt;Per the final paragraph of the &lt;a href="http://zhu45.org/posts/2017/Apr/24/simple-sorting-algorithms/"&gt;last post&lt;/a&gt;,
+the algorithm needs to avoid doing adjacent swap (in other words, comparing elements that are distant) 
+so that we can have the opportunity to remove more than one inversion for each swap, which
+can break &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt; barrier. This is exactly what shellsort tries to achieve. &lt;/p&gt;
+&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;p&gt;Shellsort is referred as &lt;em&gt;diminishing increment&lt;/em&gt; sort: it works by swapping
+non-adjacent elements; the distance between comparisons decreases as the 
+algorithm runs until the last phase, in which adjacent elements are compared.&lt;/p&gt;
+&lt;p&gt;Concretely, shellsort uses an increment sequence &lt;span class="math"&gt;\(h_1, h_2, \dots, h_t\)&lt;/span&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;We start with &lt;span class="math"&gt;\(k=t\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Sort all subsequences of elements that are &lt;span class="math"&gt;\(h_k\)&lt;/span&gt; apart so that &lt;span class="math"&gt;\(A[i] \le A[i+h_k]\)&lt;/span&gt; for all i.
+In other words, all elements spaced &lt;span class="math"&gt;\(h_k\)&lt;/span&gt; apart are sorted. (&lt;span class="math"&gt;\(h_k\)&lt;/span&gt;-sort)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Go to the next smaller increment &lt;span class="math"&gt;\(h_{k-1}\)&lt;/span&gt; and repeat until &lt;span class="math"&gt;\(k = 1\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Any increment sequence will do as long as the last increment is 1 (i.e. &lt;span class="math"&gt;\(h_1 = 1\)&lt;/span&gt;).
+However, choosing the increment is a practice of art: some choices dominate others.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A popular but poor choice for incremenet sequence is: &lt;span class="math"&gt;\(h_t = \lfloor{N/2}\rfloor\)&lt;/span&gt; and
+&lt;span class="math"&gt;\(h_k = \lfloor{h_{k+1}/2}\rfloor\)&lt;/span&gt; proposed by shell. &lt;/p&gt;
+&lt;p&gt;Here is the shellsort using Shell's increments:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;
+&lt;span class="nf"&gt;shellSort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;increment&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;increment&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;increment&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;increment&lt;/span&gt; &lt;span class="o"&gt;/=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;increment&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;tmp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+      &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="n"&gt;increment&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="n"&gt;increment&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;increment&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+          &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;increment&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;
+          &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;As suggested by the algorithm above, the general strategy to &lt;span class="math"&gt;\(h_k\)&lt;/span&gt;-sort is
+for each position, &lt;span class="math"&gt;\(i\)&lt;/span&gt;, in &lt;span class="math"&gt;\(h_k, h_k+1, \dots, N-1,\)&lt;/span&gt; place the element in 
+the correct spot among &lt;span class="math"&gt;\(i, i-h_k, i-2h_k\)&lt;/span&gt;, etc.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Here is an example of the algorithm in action (using Shell's increment sequence):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;| index        | 0  | 1  | 2  | 3  | 4  | 5  | 6  | 7  | 8  | 9  | 10 | 11 | 12 |
+| original     | 81 | 94 | 11 | 96 | 12 | 35 | 17 | 95 | 28 | 58 | 41 | 75 | 15 |
+|--------------|----|----|----|----|----|----|----|----|----|----|----|----|----|
+| After 6-sort | 15 | 94 | 11 | 58 | 12 | 35 | 17 | 95 | 28 | 96 | 41 | 75 | 81 |
+| After 3-sort | 15 | 12 | 11 | 17 | 41 | 28 | 58 | 94 | 35 | 81 | 95 | 75 | 96 |
+| After 1-sort | 11 | 12 | 15 | 17 | 28 | 35 | 41 | 58 | 75 | 81 | 94 | 95 | 96 |
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Analysis&lt;/h2&gt;
+&lt;p&gt;The running time of shellsort depends on how we pick the increment sequence. MAW gives 
+running time for two commonly-seen increment sequences:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The worst-case running time of Shellsort, using Shell's increments, is &lt;span class="math"&gt;\(\Theta(N^2)\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;The worst-case running time of Shellsort, using Hibbard's increments (&lt;span class="math"&gt;\(1,3,7, \dots, 2^k-1\)&lt;/span&gt;), is &lt;span class="math"&gt;\(\Theta(N^{3/2})\)&lt;/span&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The key difference between Hibbard's increments and Shell's increments is the adjacent
+increments have no common factors. The problem with Shell's increments is that
+we keep comparing the same elements over and over again. We need to increment
+so that different elements are in different passes.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The average case time is &lt;span class="math"&gt;\(O(N^{3/2})\)&lt;/span&gt; by using Hibbard's increments. The worst case time
+is the sequence when smallest elements in odd positions, largest in even positions (i.e. 2,11,4,12,6,13,8,14)
+when we use shell's sequence. Only last pass (i.e. &lt;span class="math"&gt;\(h_1 = 1\)&lt;/span&gt;) will do the work and it becomes 
+an insertion sort with &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;. The best case can happen when we set the increment sequence to be 1
+for any pass and we have a sorted array. In this case, we have &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Shellsort is good for up to &lt;span class="math"&gt;\(N \approx 10000\)&lt;/span&gt; and its simplcity makes it a favorite.&lt;/p&gt;
+&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;an &lt;span class="math"&gt;\(h_k-sorted\)&lt;/span&gt; array that is then &lt;span class="math"&gt;\(h_{k-1}\)&lt;/span&gt; sorted remains &lt;span class="math"&gt;\(h_k\)&lt;/span&gt; sorted (why algorithm works).&lt;/li&gt;
+&lt;li&gt;the action of an &lt;span class="math"&gt;\(h_k\)&lt;/span&gt;-sort is to perform an insertion sort on &lt;span class="math"&gt;\(h_k\)&lt;/span&gt; independent subarrays with size about &lt;span class="math"&gt;\(N/h_k\)&lt;/span&gt; elements
+(i.e. &lt;span class="math"&gt;\(h_k = 6\)&lt;/span&gt; then there are 6 subarrays(by index): {0,6,12}, {1,7}, {2,8}, {3,9}, {4,10}, {5,11}).&lt;/li&gt;
+&lt;li&gt;a larger increment swaps more distant pairs (natural derivation of the above property).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;MAW Chapter 7&lt;/li&gt;
+&lt;li&gt;https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt&lt;/li&gt;
+&lt;li&gt;https://www.cs.rochester.edu/~brown/172/lectures/12_sort1/12sort1.html&lt;/li&gt;
+&lt;li&gt;https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf&lt;/li&gt;
+&lt;li&gt;https://courses.cs.washington.edu/courses/cse373/01sp/Lect16_2up.pdf&lt;/li&gt;
+&lt;li&gt;http://web.mit.edu/1.124/LectureNotes/sorting.html&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="sorting"></category><category term="maw"></category></entry><entry><title>Simple sorting algorithms</title><link href="http://zhu45.org/posts/2017/Apr/24/simple-sorting-algorithms/" rel="alternate"></link><published>2017-04-24T21:33:00+08:00</published><updated>2017-04-24T21:33:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-24:posts/2017/Apr/24/simple-sorting-algorithms/</id><summary type="html">&lt;p&gt;This post summarizes three typical simple sorting algorithms: &lt;em&gt;bubble sort&lt;/em&gt;, 
 &lt;em&gt;selection sort&lt;/em&gt;, and &lt;em&gt;insertion sort&lt;/em&gt;. In chapter 7, MAW mainly talks about 
 &lt;em&gt;insertion sort&lt;/em&gt; but for the sake of completeness, I will include the other two as
 well.&lt;/p&gt;
@@ -475,7 +631,7 @@ than &lt;span class="math"&gt;\(h_k\)&lt;/span&gt; from its rightful position. T
 for a constant &lt;span class="math"&gt;\(c\)&lt;/span&gt;, which implies &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; increments, then the bound follows.&lt;/p&gt;
 &lt;p&gt;However, one cannot talk about shellsort without specifying the increment sequence.
 If we assume the shell sequence (i.e. &lt;span class="math"&gt;\(N/2, N/4, \dots, 2, 1\)&lt;/span&gt;), then the running time
-is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; as suggested by &lt;a href="https://www.cs.rochester.edu/~brown/172/exams/2ndmidterm_ans_13.pdf"&gt;this answer&lt;/a&gt;,
+is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt; as suggested by &lt;a href="https://www.cs.rochester.edu/~brown/172/exams/2ndmidterm_ans_13.pdf"&gt;this answer&lt;/a&gt;,
 which I'll copy below for future reference.&lt;/p&gt;
 &lt;p&gt;Shellsort is just a bunch of insertion sorts. For a given increment &lt;span class="math"&gt;\(I\)&lt;/span&gt;, there will
 be &lt;span class="math"&gt;\(I\)&lt;/span&gt; subarrays to sort by insertion, each of length &lt;span class="math"&gt;\(N/I\)&lt;/span&gt;. We know that insertion
