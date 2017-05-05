@@ -1,9 +1,435 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-05-01T21:33:00+08:00</updated><entry><title>Shell sort</title><link href="http://zhu45.org/posts/2017/May/01/shell-sort/" rel="alternate"></link><published>2017-05-01T21:33:00+08:00</published><updated>2017-05-01T21:33:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-01:posts/2017/May/01/shell-sort/</id><summary type="html">&lt;p&gt;Per the final paragraph of the &lt;a href="http://zhu45.org/posts/2017/Apr/24/simple-sorting-algorithms/"&gt;last post&lt;/a&gt;,
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-05-05T16:18:00+08:00</updated><entry><title>Andrew Ng's ML Week 01 - 03</title><link href="http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/" rel="alternate"></link><published>2017-05-05T16:18:00+08:00</published><updated>2017-05-05T16:18:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-05:posts/2017/May/05/andrew-ngs-ml-week-01-03/</id><summary type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#ml-overview"&gt;ML overview&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#what-is-ml"&gt;What is ML?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#types-of-ml-problems"&gt;Types of ML problems&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#notation"&gt;Notation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#linear-regression"&gt;Linear regression&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#in-theory"&gt;In theory&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#in-practice"&gt;In practice&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#linear-regression-with-regularization"&gt;Linear regression with regularization&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#in-theory_1"&gt;In theory&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#in-practice_1"&gt;In practice&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#logistic-regression"&gt;Logistic regression&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#in-theory_2"&gt;In theory&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#in-practice_2"&gt;In practice&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#logistic-regression-with-regularization"&gt;Logistic regression with regularization&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#in-theory_3"&gt;In theory&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#in-practice_3"&gt;In practice&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;p&gt;In my &lt;a href="http://zhu45.org/posts/2017/Apr/21/introducing-the-andrew-ngs-ml-course-study-notes/"&gt;introducing post&lt;/a&gt;, I mention that
+I decide to write summary post weekly for the course. However, in practice, I find
+it is very hard to do. This is mainly because I want to keep the progress in MAW 
+reading while meet the coursework deadlines. So, I decide to do the summary post
+based upon the module of the material itself.&lt;/p&gt;
+&lt;p&gt;In addition, like MAW reading posts, I will focus on the reflection and the post itself
+may not be self-contained. However, this may happen rarely.&lt;/p&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Coursera has really well-designed programming assignment that really helps to understand
+both concepts and its actual implementation. All the code snippets listed in the below
+and upcoming posts are availabe &lt;a href="https://github.com/xxks-kkk/Code-for-blog/tree/master/2017/andrew-ng-ml"&gt;in my code-for-blog repo&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id="ml-overview"&gt;ML overview&lt;/h2&gt;
+&lt;h3 id="what-is-ml"&gt;What is ML?&lt;/h3&gt;
+&lt;p&gt;The biggest take-away for me is that ML is to solve the problems that
+cannot be easily solved by the programming. As mentioned by Prof. Andrew, we
+know how to program the shortest path from A to B but we may have hard time
+to program a solution to do image tagging, email spam checking, and so on.
+The way we solve those problems is by teaching computers to do things like us
+through learning algorithms.&lt;/p&gt;
+&lt;p&gt;There are a lot of examples about ML mentioned in the video:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Database mining: large datasets from growth of automation/web (i.e. web click data,
+medical records, biology, engineering)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Applications can't program by hand. (i.e. autonomous helicopter, 
+handwriting recognition, most of NLP, CV)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Self-customizing programs (i.e. Amazon, Netflix product recommendations)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Understanding human learning (brain, real AI)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There are two definitions for ML: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Arthur Samuel: the field of study that gives computers the ability to learn
+without being explicitly programmed. (older, informal definition)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Tom Mitchell: A computer program is said to learn from experience &lt;span class="math"&gt;\(E\)&lt;/span&gt; with respect
+to some class of tasks &lt;span class="math"&gt;\(T\)&lt;/span&gt; and performance measure &lt;span class="math"&gt;\(P\)&lt;/span&gt;, if its performance at tasks in &lt;span class="math"&gt;\(T\)&lt;/span&gt;,
+as measured by &lt;span class="math"&gt;\(P\)&lt;/span&gt;, improves with experience &lt;span class="math"&gt;\(E\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Take playing checkers as an example. &lt;span class="math"&gt;\(E = \text{the experience of playing many games of checkers}\)&lt;/span&gt;;
+&lt;span class="math"&gt;\(T = \text{the task of playing checkers}\)&lt;/span&gt;; &lt;span class="math"&gt;\(P = \text{the probability that the program will win the next game}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;h3 id="types-of-ml-problems"&gt;Types of ML problems&lt;/h3&gt;
+&lt;p&gt;There are two general types:  Supervised learning and Unsupervised learning.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Supervised learning: 'right' answer given&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Regression: predict continuous valued output&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;EX1: given data about the size of houses on the real estate market, try to predict their price.&lt;/li&gt;
+&lt;li&gt;EX2: given a picture of a person, we predict their age on the basis of the given picture.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Classification: predict results in a discrete output (categories)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;EX1: predict whether the house sells for more or less than the asking price.&lt;/li&gt;
+&lt;li&gt;EX2: given a patient with a tumor, we predict whether the tumor is malignant or benign.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Unsupervised learning: little or no idea what our resuls should look like. We can
+derive structure from data where we don't necessarily know the effect of the variables.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Clustering: take a collection of 1,000,000 different genes, and find a way to automatically group
+these genes into groups that are somehow similar or related by different variables (i.e. lifespan, location, roles)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Non-clustering: the "cocktail party algorithm" allows you to find structure in a 
+chaotic environment (i.e. identifying individual voices and music from a mesh of sounds at a cocktail party)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Other application fields: organize computing clusters, social network analysis, market segmentation, 
+astronomical data analysis&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="notation"&gt;Notation&lt;/h2&gt;
+&lt;p&gt;A few notation used throughout the course:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(n = \text{number of features}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(m = \text{number of training examples}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(x^{(i)} = \text{input (features) of }i\text{th training example}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(x_j^{(i)} = \text{value of feature }j \text{ in }i\text{th training example}\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="linear-regression"&gt;Linear regression&lt;/h2&gt;
+&lt;h3 id="in-theory"&gt;In theory&lt;/h3&gt;
+&lt;p&gt;For linear regression, our hypothesis is &lt;/p&gt;
+&lt;div class="math"&gt;$$
+h_\theta(x) = \theta_0 x_0 + \theta_1 x_1 + \dots + \theta_n x_n = \theta^T x  
+$$&lt;/div&gt;
+&lt;p&gt;where &lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{align}
+&amp;amp; x = \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \in \mathbb{R} ^{n+1}  \label{eq:1} &amp;amp;
+&amp;amp; \theta = \begin{bmatrix} \theta_0 \\ \theta_1 \\ \vdots \\ \theta_n \end{bmatrix} \in \mathbb{R} ^{n+1}
+\end{align}
+$$&lt;/div&gt;
+&lt;p&gt;and our cost function is &lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{equation}
+J(\theta) = \frac{1}{2m} \sum_{i=1}^m(\theta^T x^{(i)}-y(i))^2 \label{eq:2}
+\end{equation}
+$$&lt;/div&gt;
+&lt;p&gt;In order to find &lt;span class="math"&gt;\(\theta\)&lt;/span&gt; that minimizes our cost function &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt;. Two methods are available for us:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Gradient Descent&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="math"&gt;$$
+\begin{align} 
+\text{Repeat\{ } &amp;amp;&amp;amp;  \nonumber\\
+&amp;amp;&amp;amp; \theta_j := \theta_j - \alpha \times \frac{1}{m} \sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)} &amp;amp;&amp;amp;
+\text{(simultaneously update $\theta_j$ for $j = 0, 1, \dots, n$)}  \label{eq:3}\\
+\text{\}} \nonumber
+\end{align}
+$$&lt;/div&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; is called learning rate, which determines "the step we take downhill" and the part afterwards decides
+which direction we want to go (derived by taking partial derivatives against &lt;span class="math"&gt;\(\theta_j\)&lt;/span&gt;).&lt;/p&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;We may need to do feature scaling &amp;amp; pick up learning rate &lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; wisely when we work with gradient descent.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Normal Equation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We just directly calculate the partial derivatives for every &lt;span class="math"&gt;\(\theta_j\)&lt;/span&gt; and set it equals to zero 
+(i.e &lt;span class="math"&gt;\(\frac{\partial}{\partial \theta_j}J(\theta) = 0\)&lt;/span&gt; for every &lt;span class="math"&gt;\(j\)&lt;/span&gt;) and we get:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{equation}
+\theta = (X^TX)^{-1}X^Ty \label{eq:4}
+\end{equation}
+$$&lt;/div&gt;
+&lt;p&gt;where &lt;span class="math"&gt;\(X\)&lt;/span&gt; is called &lt;em&gt;design matrix&lt;/em&gt;, and it has form&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{align*} 
+&amp;amp; x = \left[\begin{array}{ccc} - &amp;amp; (x^{(1)})^T &amp;amp; - \\ - &amp;amp; (x^{(2)})^T &amp;amp; - \\ &amp;amp; \vdots &amp;amp; \\ - &amp;amp; (x^{(m)})^T &amp;amp; -\end{array} \right] &amp;amp;
+x^{(i)} = \begin{bmatrix}x_0^{(i)} \\ \vdots \\ x_n^{(i)} \end{bmatrix} \in \mathbb{R} ^{n+1}
+\end{align*}
+$$&lt;/div&gt;
+&lt;h3 id="in-practice"&gt;In practice&lt;/h3&gt;
+&lt;p&gt;One tricky thing I find out when I work through quiz and programming problems 
+is the gap between the mathematical representation and the actual implementation.&lt;/p&gt;
+&lt;p&gt;For the cost function \ref{eq:2}, we implement it in Octave as following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;J&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;where &lt;/p&gt;
+&lt;div class="math"&gt;$$
+X = \begin{bmatrix} 
+x_0^{(1)} &amp;amp;&amp;amp; x_1^{(1)} &amp;amp;&amp;amp; \dots &amp;amp;&amp;amp; x_n^{(1)} \\
+x_0^{(2)} &amp;amp;&amp;amp; x_1^{(2)} &amp;amp;&amp;amp; \dots &amp;amp;&amp;amp; x_n^{(2)} \\
+\vdots \\
+x_0^{(m)} &amp;amp;&amp;amp; x_1^{(m)} &amp;amp;&amp;amp; \dots &amp;amp;&amp;amp; x_n^{(m)}
+\end{bmatrix}
+$$&lt;/div&gt;
+&lt;p&gt;Note that &lt;span class="math"&gt;\(X\)&lt;/span&gt; here is different from \ref{eq:1} because &lt;span class="math"&gt;\(X\)&lt;/span&gt; here is to faciltate
+the vectorized cost function calculation in program (i.e Octave) and it is natural
+fit with how the data actually loaded into the program.&lt;/p&gt;
+&lt;p&gt;Also, if you take a look at our octave calculation above, we explictly avoid doing
+summation in \ref{eq:2}. We can put both vectorized form used in octave and mathematical
+definition side by side to see the pattern:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+J(\theta) = \frac{1}{2m}(X\theta-y)^T(X\theta-y) = \frac{1}{2m} \sum_{i=1}^m(\theta^T x^{(i)}-y(i))^2
+$$&lt;/div&gt;
+&lt;p&gt;Matrix transpose times matrix itself is a commonly-seen technique that is used to
+avoid explictly summation.&lt;/p&gt;
+&lt;p&gt;For gradient descent, we can calculate like the following in octave:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;theta&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;alpha&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;&amp;#39;*&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let me use an example to illustrate why we can calculate \ref{eq:3} like above.
+Suppose &lt;span class="math"&gt;\(m = 4\)&lt;/span&gt; with &lt;span class="math"&gt;\(h_\theta(x) = \theta_0x_0+\theta_1x_1\)&lt;/span&gt;.
+Then, we have&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{align*} 
+X = \begin{bmatrix}
+x_0^{(1)} &amp;amp;&amp;amp; x_1^{(1)} \\
+x_0^{(2)} &amp;amp;&amp;amp; x_1^{(2)} \\
+x_0^{(3)} &amp;amp;&amp;amp; x_1^{(3)} \\
+x_0^{(4)} &amp;amp;&amp;amp; x_1^{(4)} \\
+\end{bmatrix} &amp;amp;&amp;amp;
+\theta = \begin{bmatrix} \theta_0 \\ \theta_1 \end{bmatrix} &amp;amp;&amp;amp;
+h_\theta(x^{(i)}) - y^{(i)} = \begin{bmatrix}
+\theta_0 + \theta_1x_1^{(1)} - y^{(1)} \\
+\vdots \\
+\theta_0 + \theta_1x_1^{(4)} - y^{(4)}
+\end{bmatrix}
+\end{align*}
+$$&lt;/div&gt;
+&lt;p&gt;so now we can show why:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{eqnarray*}
+\sum_{i=1}^{m}(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)} \text{ for all $j$ } &amp;amp;=&amp;amp;
+(\theta_0 + \theta_1x_1^{(1)} - y^{(1)}) \begin{bmatrix} x_0^{(1)} \\ x_1^{(1)} \end{bmatrix} + 
+\dots + (\theta_0 + \theta_1x_1^{(4)} - y^{(4)}) \begin{bmatrix} x_0^{(4)} \\ x_1^{(4)} \end{bmatrix} \\
+&amp;amp;=&amp;amp; \begin{bmatrix} x_0^{(1)} &amp;amp;&amp;amp; x_0^{(2)} &amp;amp;&amp;amp; x_0^{(3)} &amp;amp;&amp;amp; x_0^{(4)} \\
+x_1^{(1)} &amp;amp;&amp;amp; x_1^{(2)} &amp;amp;&amp;amp; x_1^{(3)} &amp;amp;&amp;amp; x_1^{(4)}
+\end{bmatrix} 
+\begin{bmatrix}
+\theta_0 + \theta_1x_1^{(1)} - y^{(1)} \\
+\vdots \\
+\theta_0 + \theta_1x_1^{(4)} - y^{(4)}
+\end{bmatrix}
+\end{eqnarray*}
+$$&lt;/div&gt;
+&lt;p&gt;For normal equation, we can calculate like the following in octave:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;pinv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;&amp;#39;*&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;&amp;#39;*&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This is no different than \ref{eq:4} we mentioned above.&lt;/p&gt;
+&lt;h2 id="linear-regression-with-regularization"&gt;Linear regression with regularization&lt;/h2&gt;
+&lt;p&gt;Quite often, we may face &lt;em&gt;overfitting&lt;/em&gt; issue, which can be fixed by either reduce number of features or
+regularization.&lt;/p&gt;
+&lt;p&gt;Regularization is to keep all the features, but reduce magnitude (values) of parameters &lt;span class="math"&gt;\(\theta_j\)&lt;/span&gt;. By
+doing so, we can make our hypothesis simpler and less prone to overfitting.&lt;/p&gt;
+&lt;h3 id="in-theory_1"&gt;In theory&lt;/h3&gt;
+&lt;p&gt;With regularization, our new cost function becomes &lt;/p&gt;
+&lt;div class="math"&gt;$$
+J(\theta) = \frac{1}{2m}\Big[ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 + 
+\underbrace{\lambda \sum_{j=1}^n \theta_j^2\Big]}_\textrm{regularization term}
+$$&lt;/div&gt;
+&lt;p&gt;The regularization parameter &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; controls the tradeoff between "fit the data well" and
+"keep parameters small to avoid overfitting".  If &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; is set to an extremely large
+value, then we may face "underfit" issue (i.e. all &lt;span class="math"&gt;\(\theta_j\)&lt;/span&gt; for &lt;span class="math"&gt;\(j = 1, \dots, n\)&lt;/span&gt; close to 0).&lt;/p&gt;
+&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;We don't penalize &lt;span class="math"&gt;\(\theta_0\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Since our cost function has changed, both gradient descent and normal equation have to adjust accordingly:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Gradient Descent&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="math"&gt;$$
+\begin{align*} 
+\text{Repeat\{ } &amp;amp;&amp;amp; \\
+\theta_0 := \theta_0 - \alpha \times \frac{1}{m} \sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_0^{(i)} &amp;amp;&amp;amp; \\
+\theta_j := \theta_j - \alpha \times \lbrack \frac{1}{m} \sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)} + 
+\frac{\lambda}{m}\theta_j\rbrack &amp;amp;&amp;amp; (j = 1,2,3, \dots, n) \\
+\text{\}}
+\end{align*}
+$$&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;Normal Equation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="math"&gt;$$
+\theta = (X^TX + \lambda
+\begin{bmatrix} 
+0 &amp;amp;&amp;amp;    &amp;amp;&amp;amp;   &amp;amp;&amp;amp;       \\
+  &amp;amp;&amp;amp; 1  &amp;amp;&amp;amp;   &amp;amp;&amp;amp;       \\
+  &amp;amp;&amp;amp;    &amp;amp;&amp;amp; \ddots &amp;amp;&amp;amp;  \\
+  &amp;amp;&amp;amp;    &amp;amp;&amp;amp;   &amp;amp;&amp;amp;  1
+\end{bmatrix}
+)^{-1}X^Ty
+$$&lt;/div&gt;
+&lt;p&gt;we want &lt;span class="math"&gt;\(\lambda &amp;gt; 0\)&lt;/span&gt; so that the matrix is invertible.&lt;/p&gt;
+&lt;h3 id="in-practice_1"&gt;In practice&lt;/h3&gt;
+&lt;p&gt;Linear regression regularization implementation doesn't differ from no-regularization
+implementation in terms of matrices implementation technique. I'll show a code snippet
+for logistic regression with regularization below as hint for this section.&lt;/p&gt;
+&lt;h2 id="logistic-regression"&gt;Logistic regression&lt;/h2&gt;
+&lt;h3 id="in-theory_2"&gt;In theory&lt;/h3&gt;
+&lt;p&gt;Logistic regression hypothesis is &lt;/p&gt;
+&lt;div class="math"&gt;$$
+h_\theta(x) = g(\theta^Tx) \text{ where $g(z) = \frac{1}{1+e^{-z}}$}
+$$&lt;/div&gt;
+&lt;p&gt;This hypothesis can be intrepreted as the probability that &lt;span class="math"&gt;\(y = 1\)&lt;/span&gt; given &lt;span class="math"&gt;\(x\)&lt;/span&gt; and &lt;span class="math"&gt;\(\theta\)&lt;/span&gt;
+(i.e. &lt;span class="math"&gt;\(h_\theta(x) = P(y = 0 | x;\theta)\)&lt;/span&gt;)&lt;/p&gt;
+&lt;p&gt;Then the cost function &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; is&lt;/p&gt;
+&lt;div class="math"&gt;$$
+J(\theta) = -\frac{1}{m}\sum_{i=1}^m \lbrack 
+(y^{(i)}\logh_\theta(x^{(i)}) + (1-y^{(i)})\log(1-h_\theta(x^{(i)})))\rbrack
+$$&lt;/div&gt;
+&lt;p&gt;To minimize cost function &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; we can of course use gradient descent. Surprisingly,
+the gradient descent for logistic regression is exactly the same as the gradient descent
+for linear regression \ref{eq:3}. &lt;/p&gt;
+&lt;p&gt;However, in the course, we directly use the &lt;code&gt;fminunc&lt;/code&gt; from Octave to do the optimization.
+Internally, the function use advanced optimization technique that can avoid manually picking
+&lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; in gradient descent and find the optimal &lt;span class="math"&gt;\(\theta\)&lt;/span&gt; faster than gradient descent.&lt;/p&gt;
+&lt;h3 id="in-practice_2"&gt;In practice&lt;/h3&gt;
+&lt;p&gt;The implementation for cost function and gradient descent for logistic regression
+should be no hard for us now:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c"&gt;% cost function for logistic regression&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nb"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt;
+                 &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="o"&gt;&amp;#39;*&lt;/span&gt;&lt;span class="nb"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sigmoid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt;       
+                 &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;#39;*&lt;/span&gt;&lt;span class="nb"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;sigmoid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt;    
+             &lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="c"&gt;% gradient descent for logist regression&lt;/span&gt;
+&lt;span class="n"&gt;grad&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;&amp;#39;*&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sigmoid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id="logistic-regression-with-regularization"&gt;Logistic regression with regularization&lt;/h2&gt;
+&lt;h3 id="in-theory_3"&gt;In theory&lt;/h3&gt;
+&lt;p&gt;The cost function for regualarized logistic regression is following:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+J(\theta) = -\frac{1}{m}\sum_{i=1}^m \lbrack 
+(y^{(i)}\logh_\theta(x^{(i)}) + (1-y^{(i)})\log(1-h_\theta(x^{(i)})))\rbrack
++ \frac{\lambda}{2m}\sum_{j=1}^n\theta_j^2
+$$&lt;/div&gt;
+&lt;p&gt;and the gradient descent looks exactly the same as the regualarized linear regression.&lt;/p&gt;
+&lt;h3 id="in-practice_3"&gt;In practice&lt;/h3&gt;
+&lt;p&gt;The following code chunk shows the cost function and gradient descent for regularized
+logistic regression:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;length&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;     &lt;span class="c"&gt;% number of training examples&lt;/span&gt;
+&lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;size&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;   &lt;span class="c"&gt;% number of theta parameters&lt;/span&gt;
+
+&lt;span class="n"&gt;J&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;grad&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;zeros&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="n"&gt;J&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nb"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt;
+               &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="o"&gt;&amp;#39;*&lt;/span&gt;&lt;span class="nb"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sigmoid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt;
+               &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;#39;*&lt;/span&gt;&lt;span class="nb"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;sigmoid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt;
+             &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt;
+          &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;lambda&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;#39;*&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="n"&gt;grad&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;&amp;#39;*&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sigmoid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;))(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;grad&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt;  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;&amp;#39;*&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sigmoid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;lambda&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="ml"></category><category term="coursera"></category></entry><entry><title>Shell sort</title><link href="http://zhu45.org/posts/2017/May/01/shell-sort/" rel="alternate"></link><published>2017-05-01T21:33:00+08:00</published><updated>2017-05-01T21:33:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-01:posts/2017/May/01/shell-sort/</id><summary type="html">&lt;p&gt;Per the final paragraph of the &lt;a href="http://zhu45.org/posts/2017/Apr/24/simple-sorting-algorithms/"&gt;last post&lt;/a&gt;,
 the algorithm needs to avoid doing adjacent swap (in other words, comparing elements that are distant) 
 so that we can have the opportunity to remove more than one inversion for each swap, which
 can break &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt; barrier. This is exactly what shellsort tries to achieve. &lt;/p&gt;
-&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;h2 id="concept"&gt;Concept&lt;/h2&gt;
 &lt;p&gt;Shellsort is referred as &lt;em&gt;diminishing increment&lt;/em&gt; sort: it works by swapping
 non-adjacent elements; the distance between comparisons decreases as the 
 algorithm runs until the last phase, in which adjacent elements are compared.&lt;/p&gt;
@@ -63,7 +489,7 @@ the correct spot among &lt;span class="math"&gt;\(i, i-h_k, i-2h_k\)&lt;/span&gt
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Analysis&lt;/h2&gt;
+&lt;h2 id="analysis"&gt;Analysis&lt;/h2&gt;
 &lt;p&gt;The running time of shellsort depends on how we pick the increment sequence. MAW gives 
 running time for two commonly-seen increment sequences:&lt;/p&gt;
 &lt;ul&gt;
@@ -83,14 +509,14 @@ when we use shell's sequence. Only last pass (i.e. &lt;span class="math"&gt;\(h_
 an insertion sort with &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;. The best case can happen when we set the increment sequence to be 1
 for any pass and we have a sorted array. In this case, we have &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;Shellsort is good for up to &lt;span class="math"&gt;\(N \approx 10000\)&lt;/span&gt; and its simplcity makes it a favorite.&lt;/p&gt;
-&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;h2 id="properties"&gt;Properties&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;an &lt;span class="math"&gt;\(h_k-sorted\)&lt;/span&gt; array that is then &lt;span class="math"&gt;\(h_{k-1}\)&lt;/span&gt; sorted remains &lt;span class="math"&gt;\(h_k\)&lt;/span&gt; sorted (why algorithm works).&lt;/li&gt;
 &lt;li&gt;the action of an &lt;span class="math"&gt;\(h_k\)&lt;/span&gt;-sort is to perform an insertion sort on &lt;span class="math"&gt;\(h_k\)&lt;/span&gt; independent subarrays with size about &lt;span class="math"&gt;\(N/h_k\)&lt;/span&gt; elements
 (i.e. &lt;span class="math"&gt;\(h_k = 6\)&lt;/span&gt; then there are 6 subarrays(by index): {0,6,12}, {1,7}, {2,8}, {3,9}, {4,10}, {5,11}).&lt;/li&gt;
 &lt;li&gt;a larger increment swaps more distant pairs (natural derivation of the above property).&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 7&lt;/li&gt;
 &lt;li&gt;https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt&lt;/li&gt;
@@ -115,7 +541,7 @@ for any pass and we have a sorted array. In this case, we have &lt;span class="m
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -159,8 +585,8 @@ for any pass and we have a sorted array. In this case, we have &lt;span class="m
 &lt;em&gt;selection sort&lt;/em&gt;, and &lt;em&gt;insertion sort&lt;/em&gt;. In chapter 7, MAW mainly talks about 
 &lt;em&gt;insertion sort&lt;/em&gt; but for the sake of completeness, I will include the other two as
 well.&lt;/p&gt;
-&lt;h2&gt;Bubble sort&lt;/h2&gt;
-&lt;h3&gt;Concept&lt;/h3&gt;
+&lt;h2 id="bubble-sort"&gt;Bubble sort&lt;/h2&gt;
+&lt;h3 id="concept"&gt;Concept&lt;/h3&gt;
 &lt;p&gt;The idea for the bubble sort is to "bubble" larger elements to the end of array
 by comparing &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(i+1\)&lt;/span&gt;, and swapping if &lt;span class="math"&gt;\(A[i] &amp;gt; A[i+1]\)&lt;/span&gt;. We repeat this 
 from the first to the end of unsorted part of the array.&lt;/p&gt;
@@ -190,13 +616,13 @@ unsorted part. The following gives an example of the algorithm in action:&lt;/p&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;Analysis&lt;/h3&gt;
+&lt;h3 id="analysis"&gt;Analysis&lt;/h3&gt;
 &lt;p&gt;Bubble sort is stable and in place. The running time is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;, which is true
 for both worst case and average case. &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; can be achieved in the best case, where
 the array is sorted or mostly sorted (possible a few elements a place or two
 away from their correct spots).&lt;/p&gt;
-&lt;h2&gt;Selection sort&lt;/h2&gt;
-&lt;h3&gt;Concept&lt;/h3&gt;
+&lt;h2 id="selection-sort"&gt;Selection sort&lt;/h2&gt;
+&lt;h3 id="concept_1"&gt;Concept&lt;/h3&gt;
 &lt;p&gt;The idea for selection sort is to scan array and select small key and swap it with 
 the first element of the array (i.e. &lt;span class="math"&gt;\(A[0]\)&lt;/span&gt;); scan remaining keys, select the smallest
 and swap with the second element (i.e. &lt;span class="math"&gt;\(A[1]\)&lt;/span&gt;); repeat the whole process until last 
@@ -237,14 +663,14 @@ the end of array).&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;Analysis&lt;/h3&gt;
+&lt;h3 id="analysis_1"&gt;Analysis&lt;/h3&gt;
 &lt;p&gt;The selection sort is NOT STABLE but in place. Selection sort is not sensitive
 to the input and thus running time should be the same in best, average, and worst cases:
 We go through &lt;span class="math"&gt;\(N-1\)&lt;/span&gt; passes with &lt;span class="math"&gt;\(N-1, \dots, 1\)&lt;/span&gt; comparisons, which is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;Since selection sort is insensitive to the data, it's good if we want to have our
 sort routine always take the same time.&lt;/p&gt;
-&lt;h2&gt;Insertion sort&lt;/h2&gt;
-&lt;h3&gt;Concept&lt;/h3&gt;
+&lt;h2 id="insertion-sort"&gt;Insertion sort&lt;/h2&gt;
+&lt;h3 id="concept_2"&gt;Concept&lt;/h3&gt;
 &lt;p&gt;The idea for insertion sort is that we insert an as-yet-unprocessed record
 int a sorted list of the records processed so far. In details, insertion sort
 consists of &lt;span class="math"&gt;\(N-1\)&lt;/span&gt; passes. For pass &lt;span class="math"&gt;\(P = 1\)&lt;/span&gt; through &lt;span class="math"&gt;\(N-1\)&lt;/span&gt;, insertion sort ensures
@@ -280,7 +706,7 @@ the first &lt;span class="math"&gt;\(P+1\)&lt;/span&gt; elements.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;Analysis&lt;/h3&gt;
+&lt;h3 id="analysis_2"&gt;Analysis&lt;/h3&gt;
 &lt;p&gt;Due to the nested loops, the running time is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;, which can be achieved
 when the input array is in reverse sorted order. In the best case, where 
 the input array is already sorted, the running time is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;. For the average
@@ -296,7 +722,7 @@ effectively used on input array with roughly &lt;span class="math"&gt;\(N &amp;l
 &lt;a href="https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html"&gt;this animation&lt;/a&gt;
 can help you understand the concept.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h2&gt;A Lower Bound for Simple Sorting Algorithms&lt;/h2&gt;
+&lt;h2 id="a-lower-bound-for-simple-sorting-algorithms"&gt;A Lower Bound for Simple Sorting Algorithms&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;An &lt;strong&gt;inversion&lt;/strong&gt; is a pair of elements in wrong order (i.e. &lt;span class="math"&gt;\(i &amp;lt; j\)&lt;/span&gt; but &lt;span class="math"&gt;\(A[i] &amp;gt; A[j]\)&lt;/span&gt;).&lt;/p&gt;
@@ -319,7 +745,7 @@ for each swap. Adjacent elements swap will certainly not help us to achieve this
 The idea is that we try to swap the elements that are far apart and hopefully we can 
 remove more than one inversion for each swap. Shell sort is the first algorithm
 to break &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt; running time. I'll talk about it in my next post.&lt;/p&gt;
-&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 7&lt;/li&gt;
 &lt;li&gt;https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt&lt;/li&gt;
@@ -343,7 +769,7 @@ to break &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt; running time. I'll tal
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -417,13 +843,16 @@ find some motivation to study linear algebra well.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;p&gt;I'm working in DB field but I always want to do ML by nature judged by my performance
 in the ML-related courses. Taking ML course on coursera and having a nice badge on
-my LinkedIn may greatly help me to market my ML expertise in the future?&lt;/p&gt;</summary><category term="ml"></category><category term="coursera"></category></entry><entry><title>Sorting prelim</title><link href="http://zhu45.org/posts/2017/Apr/18/sorting-prelim/" rel="alternate"></link><published>2017-04-18T10:03:00+08:00</published><updated>2017-04-18T10:03:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-18:posts/2017/Apr/18/sorting-prelim/</id><summary type="html">&lt;p&gt;Chapter 7: Sorting will have some rigorous analysis of the sorting algorithms
+my LinkedIn may greatly help me to market my ML expertise in the future?&lt;/p&gt;
+&lt;p&gt;My current plan is to finish the coursera version first, and then move on to 
+&lt;a href="http://cs229.stanford.edu/materials.html"&gt;CS229&lt;/a&gt; version if time permits. 
+I want to take an agile approach to this material by doing iteratively build-up.&lt;/p&gt;</summary><category term="ml"></category><category term="coursera"></category></entry><entry><title>Sorting prelim</title><link href="http://zhu45.org/posts/2017/Apr/18/sorting-prelim/" rel="alternate"></link><published>2017-04-18T10:03:00+08:00</published><updated>2017-04-18T10:03:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-18:posts/2017/Apr/18/sorting-prelim/</id><summary type="html">&lt;p&gt;Chapter 7: Sorting will have some rigorous analysis of the sorting algorithms
 (no wonder as suggested by the title of the book). Some meta-concepts related with
 sorting appeard at the very beginning of the chapter. I usually push them to the
 end-chapter summary post but this time I decide to do a writeup beforehand because 
 I find it is really hard to talk about various sorting schemes without setting up some
 ground concepts first.&lt;/p&gt;
-&lt;h2&gt;Definitions&lt;/h2&gt;
+&lt;h2 id="definitions"&gt;Definitions&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Sorting problem: Given an array &lt;span class="math"&gt;\(A\)&lt;/span&gt;, output &lt;span class="math"&gt;\(A\)&lt;/span&gt; such that: 
   For any &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(J\)&lt;/span&gt;, if &lt;span class="math"&gt;\(i &amp;lt; j\)&lt;/span&gt;, then &lt;span class="math"&gt;\(A[i] \le A[j]\)&lt;/span&gt;.&lt;/li&gt;
@@ -485,7 +914,7 @@ performance.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 7&lt;/li&gt;
 &lt;li&gt;https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt&lt;/li&gt;
@@ -508,7 +937,7 @@ performance.&lt;/li&gt;
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -548,9 +977,9 @@ performance.&lt;/li&gt;
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</summary><category term="sorting"></category><category term="maw"></category></entry><entry><title>MAW Chapter 7: Sorting writing questions</title><link href="http://zhu45.org/posts/2017/Apr/15/maw-chapter-7-sorting-writing-questions/" rel="alternate"></link><published>2017-04-15T23:54:00+08:00</published><updated>2017-04-15T23:54:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-15:posts/2017/Apr/15/maw-chapter-7-sorting-writing-questions/</id><summary type="html">&lt;h2&gt;Solutions&lt;/h2&gt;
+&lt;/script&gt;</summary><category term="sorting"></category><category term="maw"></category></entry><entry><title>MAW Chapter 7: Sorting writing questions</title><link href="http://zhu45.org/posts/2017/Apr/15/maw-chapter-7-sorting-writing-questions/" rel="alternate"></link><published>2017-04-15T23:54:00+08:00</published><updated>2017-04-15T23:54:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-15:posts/2017/Apr/15/maw-chapter-7-sorting-writing-questions/</id><summary type="html">&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
 &lt;p&gt;including: MAW 7.1, 7.2, 7.3, 7.4, 7.5.a, 7.9, 7.10, &lt;/p&gt;
-&lt;h3&gt;MAW 7.1&lt;/h3&gt;
+&lt;h3 id="maw-71"&gt;MAW 7.1&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Sort the sequence 3,1,4,1,5,9,2,6,5 using insertion sort.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -568,13 +997,13 @@ performance.&lt;/li&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;MAW 7.2&lt;/h3&gt;
+&lt;h3 id="maw-72"&gt;MAW 7.2&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;What is the running time of insertion sort if all keys are equal?&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;If you take a look at the code on p. 220, you can see that inner for loop checks
 &lt;code&gt;A[j-1] &amp;gt; tmp&lt;/code&gt; and it will fail immediately. Thus, the running time is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;.&lt;/p&gt;
-&lt;h3&gt;MAW 7.3&lt;/h3&gt;
+&lt;h3 id="maw-73"&gt;MAW 7.3&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Suppose we exchange elements &lt;span class="math"&gt;\(A[i]\)&lt;/span&gt; and &lt;span class="math"&gt;\(A[i+k]\)&lt;/span&gt;, which were originally
 out of order. Prove that at least 1 and at most &lt;span class="math"&gt;\(2k-1\)&lt;/span&gt; inversions are removed.&lt;/p&gt;
@@ -590,7 +1019,7 @@ than &lt;span class="math"&gt;\(A[i]\)&lt;/span&gt; points to the same inversion
 For instance, for &lt;span class="math"&gt;\(A[i+1]\)&lt;/span&gt;, two inversions are &lt;span class="math"&gt;\(A[i]\)&lt;/span&gt; and &lt;span class="math"&gt;\(A[i+1]\)&lt;/span&gt;, and &lt;span class="math"&gt;\(A[i+1]\)&lt;/span&gt; and
 &lt;span class="math"&gt;\(A[i+k]\)&lt;/span&gt; (i.e. for sequence 10,4,3, by swapping 10 and 3, we remove inversion {10,4}
 and {4,3}). Thus, a maximum of &lt;span class="math"&gt;\(2(k-1)+1 = 2k-1\)&lt;/span&gt;.&lt;/p&gt;
-&lt;h3&gt;MAW 7.4&lt;/h3&gt;
+&lt;h3 id="maw-74"&gt;MAW 7.4&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Show the result of running Shellsort on the input 9,8,7,6,5,4,3,2,1 using the
 increments {1,3,7}&lt;/p&gt;
@@ -604,7 +1033,7 @@ increments {1,3,7}&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;MAW 7.5.a&lt;/h3&gt;
+&lt;h3 id="maw-75a"&gt;MAW 7.5.a&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;What is the running time of Shellsort using the two-increment sequence {1,2}?&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -615,7 +1044,7 @@ of about &lt;span class="math"&gt;\(N/h_k\)&lt;/span&gt; elements. Then, by theo
 is &lt;span class="math"&gt;\(\Omega(N^2)\)&lt;/span&gt;. By the same argument, the 2-sort is two insertion sorts of size &lt;span class="math"&gt;\(N/2\)&lt;/span&gt;,
 so the cost of that pass is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;. The 1-sort is also &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;, so the upper bound
 for the algorithm is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;. &lt;/p&gt;
-&lt;h3&gt;MAW 7.9&lt;/h3&gt;
+&lt;h3 id="maw-79"&gt;MAW 7.9&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Determine the running time (i.e. number of swaps) of Shellsort for &lt;/p&gt;
 &lt;p&gt;a. sorted input&lt;/p&gt;
@@ -643,7 +1072,7 @@ is the cost just for a single increment. The total time for all of the iteration
 If we factor out an &lt;span class="math"&gt;\(N\)&lt;/span&gt;, we get &lt;span class="math"&gt;\(N(2+4+\dots+N/2+N)\)&lt;/span&gt; . In parenthesis is the sum of powers of 
 2 from 2 to &lt;span class="math"&gt;\(N\)&lt;/span&gt;, which is approximately equalt to &lt;span class="math"&gt;\(2N\)&lt;/span&gt;. Therefore, the total cost
 is &lt;span class="math"&gt;\(N(2N) = 2N^2 = O(N^2)\)&lt;/span&gt;.&lt;/p&gt;
-&lt;h3&gt;MAW 7.10&lt;/h3&gt;
+&lt;h3 id="maw-710"&gt;MAW 7.10&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Do either of the following modifications to the Shellsort routine coded in 
 Fig. 7.4 affect the worst case running time?&lt;/p&gt;
@@ -678,7 +1107,7 @@ the proof of theorem 7.4, we can have the worst case running time &lt;span class
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -780,7 +1209,7 @@ binary heap does. This is why we propose a new structure called
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -821,13 +1250,13 @@ binary heap does. This is why we propose a new structure called
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;</summary><category term="meta"></category><category term="maw"></category><category term="heaps"></category></entry><entry><title>Binomial queue</title><link href="http://zhu45.org/posts/2017/Apr/08/binomial-queue/" rel="alternate"></link><published>2017-04-08T23:33:00+08:00</published><updated>2017-04-08T23:33:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-08:posts/2017/Apr/08/binomial-queue/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;binomial queue&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
-&lt;h2&gt;Motivation&lt;/h2&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;We want to have a data structure that support merging, insertion, and deleteMin
 in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time per operation, and at the same time, like binary heap, we 
 want to have insertion takes constant time on average. The latter part is not possible
 with skew heap or leftist heap. &lt;/p&gt;
 &lt;p&gt;The data structure we have is called &lt;em&gt;binomial queue&lt;/em&gt;.&lt;/p&gt;
-&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;h2 id="concept"&gt;Concept&lt;/h2&gt;
 &lt;p&gt;Binomial queues is a collection of heap-ordered trees. Each of the heap-ordered
 trees is called a &lt;em&gt;binomial tree&lt;/em&gt; with the following constraints:&lt;/p&gt;
 &lt;ul&gt;
@@ -839,7 +1268,7 @@ binomial tree, &lt;span class="math"&gt;\(B_{k-1}\)&lt;/span&gt;.&lt;/li&gt;
 &lt;p&gt;The picture below shows a binomial queue consisting of six elements
 with two binomial trees &lt;span class="math"&gt;\(B_1\)&lt;/span&gt; and &lt;span class="math"&gt;\(B_2\)&lt;/span&gt;:&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/binomial-queue.PNG" alt="binomial queue example"/&gt;&lt;/p&gt;
-&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;h2 id="properties"&gt;Properties&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;A binomial tree &lt;span class="math"&gt;\(B_k\)&lt;/span&gt;, consists of a root with children &lt;span class="math"&gt;\(B_0, B_1, \dots, B_{k-1}\)&lt;/span&gt;.&lt;/li&gt;
 &lt;li&gt;Binomial trees of height &lt;span class="math"&gt;\(k\)&lt;/span&gt; have exactly &lt;span class="math"&gt;\(2^k\)&lt;/span&gt; nodes&lt;/li&gt;
@@ -850,8 +1279,8 @@ For instances, a priority queue of size 13 could be represented by &lt;span clas
 only represents &lt;span class="math"&gt;\(13\)&lt;/span&gt; in binary but also represents the fact that &lt;span class="math"&gt;\(B_3, B_2, B_0\)&lt;/span&gt;
 are present and &lt;span class="math"&gt;\(B_1\)&lt;/span&gt; is not.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Operations&lt;/h2&gt;
-&lt;h3&gt;Merge&lt;/h3&gt;
+&lt;h2 id="operations"&gt;Operations&lt;/h2&gt;
+&lt;h3 id="merge"&gt;Merge&lt;/h3&gt;
 &lt;p&gt;The merge is performed by essentially adding the two queues together. Let's illustrate
 through merging two binomial queues &lt;span class="math"&gt;\(H_1\)&lt;/span&gt; and &lt;span class="math"&gt;\(H_2\)&lt;/span&gt; shown below:&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/binomial-queue-merge-01.PNG" alt="binomial queue merge 01"/&gt;&lt;/p&gt;
@@ -868,10 +1297,10 @@ binomial tree, &lt;span class="math"&gt;\(B_{k-1}\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/binomial-queue-merge-02.PNG" alt="binomial queue merge 02"/&gt;&lt;/p&gt;
 &lt;p&gt;and the final result of merging looks like:&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/binomial-queue-merge-03.PNG" alt="binomial queue merge 03"/&gt;&lt;/p&gt;
-&lt;h3&gt;Insertion&lt;/h3&gt;
+&lt;h3 id="insertion"&gt;Insertion&lt;/h3&gt;
 &lt;p&gt;Insertion is just a special case of merging, since we merely create a one-node tree
 and perform a merge.&lt;/p&gt;
-&lt;h3&gt;DeleteMin&lt;/h3&gt;
+&lt;h3 id="deletemin"&gt;DeleteMin&lt;/h3&gt;
 &lt;ol&gt;
 &lt;li&gt;find the binomial tree with the smallest root. Let this tree be &lt;span class="math"&gt;\(B_k\)&lt;/span&gt;, and let the original priority queue be &lt;span class="math"&gt;\(H\)&lt;/span&gt;. &lt;/li&gt;
 &lt;li&gt;Remove the binomial tree &lt;span class="math"&gt;\(B_k\)&lt;/span&gt; from the forest of trees in &lt;span class="math"&gt;\(H\)&lt;/span&gt;, forming the new binomial queue &lt;span class="math"&gt;\(H'\)&lt;/span&gt;. &lt;/li&gt;
@@ -888,20 +1317,20 @@ and perform a merge.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;For actual implementation details, please see MAW p. 208 - 211.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h2&gt;Runtime analysis&lt;/h2&gt;
-&lt;h3&gt;Merge&lt;/h3&gt;
+&lt;h2 id="runtime-analysis"&gt;Runtime analysis&lt;/h2&gt;
+&lt;h3 id="merge_1"&gt;Merge&lt;/h3&gt;
 &lt;p&gt;Since merging two binomial trees takes constant time with almost any reasonable
 implementation, and there are &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; binomial trees (think of representing
 the size of priority queue in terms of binary, and we need to do &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; division),
 the merge takes &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time.&lt;/p&gt;
-&lt;h3&gt;Insertion&lt;/h3&gt;
+&lt;h3 id="insertion_1"&gt;Insertion&lt;/h3&gt;
 &lt;p&gt;The worst-case time of this operation is &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;. However, this actually can be
 constant on average. Details see MAW p.205.&lt;/p&gt;
-&lt;h3&gt;DeleteMin&lt;/h3&gt;
+&lt;h3 id="deletemin_1"&gt;DeleteMin&lt;/h3&gt;
 &lt;p&gt;We take &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time to find the tree containing the minimum element. We take
 constant time to create the queues &lt;span class="math"&gt;\(H'\)&lt;/span&gt; and &lt;span class="math"&gt;\(H''\)&lt;/span&gt;. Merging these
 two queues takes &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time and thus, the operation overall takes &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;.&lt;/p&gt;
-&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 6&lt;/li&gt;
 &lt;/ul&gt;
@@ -921,7 +1350,7 @@ two queues takes &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time and th
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -962,24 +1391,24 @@ two queues takes &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time and th
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;</summary><category term="heaps"></category><category term="maw"></category></entry><entry><title>Skew heap</title><link href="http://zhu45.org/posts/2017/Apr/05/skew-heap/" rel="alternate"></link><published>2017-04-05T23:33:00+08:00</published><updated>2017-04-05T23:33:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-05:posts/2017/Apr/05/skew-heap/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;skew heap&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
-&lt;h2&gt;Motivation&lt;/h2&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;Like the relation between splay trees and AVL trees, we want to have 
 &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; amortized cost per operation. In addition, we don't want
 to have any auxiliary information stored at the nodes. In other words,
 we want to trade strict &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; operation for less space we need 
 to use for the data structure. In this case,
 like splay trees to AVL trees, we have Skew heaps to leftist heaps.&lt;/p&gt;
-&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;h2 id="concept"&gt;Concept&lt;/h2&gt;
 &lt;p&gt;Skew heaps are binary trees with heap order, but there is no structural constraint
 on these trees. This means that we don't need the binary tree to be complete 
 (i.e. binary heap) or left heavy (i.e. leftist heap).&lt;/p&gt;
 &lt;p&gt;In addition, we don't store &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; information in the node.&lt;/p&gt;
-&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;h2 id="properties"&gt;Properties&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;A perfectly balanced tree forms if the keys &lt;span class="math"&gt;\(1\)&lt;/span&gt; to &lt;span class="math"&gt;\(2^k-1\)&lt;/span&gt; are inserted in order
 into an initially empty skew heap.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Operations&lt;/h2&gt;
+&lt;h2 id="operations"&gt;Operations&lt;/h2&gt;
 &lt;p&gt;Skew heap is extremely similar with leftist heap in terms of &lt;code&gt;merge&lt;/code&gt; operation. 
 There is only one difference: for leftist heap, we check to see whether the 
 left and right children satisfy the leftist heap order property and swap them
@@ -996,11 +1425,11 @@ we &lt;strong&gt;always&lt;/strong&gt; swap the left &amp;amp; right subtrees at
 &lt;p&gt;The end result is actually leftist heap but there is no guaranteed that this is
 always the case. If you take a look, &lt;span class="math"&gt;\(H_1\)&lt;/span&gt; is not lefist heap.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h2&gt;Runtime analysis&lt;/h2&gt;
+&lt;h2 id="runtime-analysis"&gt;Runtime analysis&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;merge&lt;/code&gt;, &lt;code&gt;deleteMin&lt;/code&gt;, and &lt;code&gt;insert&lt;/code&gt; are all running in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; amortized time.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 6&lt;/li&gt;
 &lt;li&gt;http://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/heaps.pdf&lt;/li&gt;
@@ -1021,7 +1450,7 @@ always the case. If you take a look, &lt;span class="math"&gt;\(H_1\)&lt;/span&g
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -1062,11 +1491,11 @@ always the case. If you take a look, &lt;span class="math"&gt;\(H_1\)&lt;/span&g
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;</summary><category term="heaps"></category><category term="maw"></category></entry><entry><title>Leftist heap</title><link href="http://zhu45.org/posts/2017/Apr/04/leftist-heap/" rel="alternate"></link><published>2017-04-04T10:30:00+08:00</published><updated>2017-04-04T10:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-04:posts/2017/Apr/04/leftist-heap/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;leftist heaps&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
-&lt;h2&gt;Motivation&lt;/h2&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;Merge two priority queues into one can be a very hard operation to do. For binary
 heap, this can be done at &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;. However, we want to do better. Leftist heap
 is a priority queue that supports merge operation in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;.&lt;/p&gt;
-&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;h2 id="concept"&gt;Concept&lt;/h2&gt;
 &lt;p&gt;The idea for leftist heap is that we want to make the tree structure imbalance
 as much as possible to make merge fast. This is achieved by leftist heap property.&lt;/p&gt;
 &lt;ul&gt;
@@ -1091,7 +1520,7 @@ a &lt;em&gt;leftist tree&lt;/em&gt;. A leftist heap is simply a leftist tree wit
 &lt;p&gt;The number in the each node below is the &lt;span class="math"&gt;\(Npl\)&lt;/span&gt; of that node. By the leftist property,
 only the left tree is leftist.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/leftist-tree-example.PNG" alt="leftist tree example" style="width: 700px;"/&gt;&lt;/p&gt;
-&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;h2 id="properties"&gt;Properties&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;If rightmost path of leftist tree has &lt;span class="math"&gt;\(r\)&lt;/span&gt; nodes, then the whole tree has at least
 &lt;span class="math"&gt;\(2^r-1\)&lt;/span&gt; nodes. &lt;/li&gt;
@@ -1106,8 +1535,8 @@ then we can have a &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; &lt;code&
 &lt;li&gt;A perfectly balanced tree forms if keys 1 to &lt;span class="math"&gt;\(2^k-1\)&lt;/span&gt; are inserted in order into an
 initially empty leftist heap.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Operations&lt;/h2&gt;
-&lt;h3&gt;&lt;code&gt;merge(H1, H2)&lt;/code&gt;&lt;/h3&gt;
+&lt;h2 id="operations"&gt;Operations&lt;/h2&gt;
+&lt;h3 id="mergeh1-h2"&gt;&lt;code&gt;merge(H1, H2)&lt;/code&gt;&lt;/h3&gt;
 &lt;p&gt;As with &lt;a href="http://zhu45.org/posts/2017/Feb/13/splay-tree/"&gt;splay&lt;/a&gt; in splay trees, &lt;code&gt;merge&lt;/code&gt; is
 the fundamental operation that is used to implement other operations in leftist 
 heap(i.e., &lt;code&gt;insert&lt;/code&gt;, &lt;code&gt;deleteMin&lt;/code&gt;). &lt;/p&gt;
@@ -1153,7 +1582,7 @@ swap step.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;insert&lt;/h3&gt;
+&lt;h3 id="insert"&gt;insert&lt;/h3&gt;
 &lt;p&gt;We can carry out insertion by making the item to be inserted a one-node heap
 and perform a merge. &lt;/p&gt;
 &lt;p&gt;Reference section offers a link to visualize the whole insertion process. The
@@ -1174,7 +1603,7 @@ actual implementation is on maw p.199 and copied below:&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;deleteMin&lt;/h3&gt;
+&lt;h3 id="deletemin"&gt;deleteMin&lt;/h3&gt;
 &lt;p&gt;deleteMin can be done by remove the root and merge the left and subtree tree into
 a new leftist heap.&lt;/p&gt;
 &lt;p&gt;The actual implementation is on maw p.200 and copied below:&lt;/p&gt;
@@ -1195,17 +1624,17 @@ a new leftist heap.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;BuildHeap&lt;/h3&gt;
+&lt;h3 id="buildheap"&gt;BuildHeap&lt;/h3&gt;
 &lt;p&gt;As described in MAW 6.22, we can perform &lt;code&gt;BuildHeap&lt;/code&gt; in linear time for leftist 
 heaps by considering each element as a one-node leftist heap, placing all these
 heaps on a queue, and performing the following step: Until only one heap is on 
 the queue, dequeue two heaps, merge them, and enqueue the result.&lt;/p&gt;
 &lt;p&gt;This algorithm is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; in the worst time.&lt;/p&gt;
-&lt;h2&gt;Runtime analysis&lt;/h2&gt;
+&lt;h2 id="runtime-analysis"&gt;Runtime analysis&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;merge&lt;/code&gt;, &lt;code&gt;deleteMin&lt;/code&gt;, and &lt;code&gt;insert&lt;/code&gt; are all running in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 6&lt;/li&gt;
 &lt;li&gt;http://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/heaps.pdf&lt;/li&gt;
@@ -1228,7 +1657,7 @@ the queue, dequeue two heaps, merge them, and enqueue the result.&lt;/p&gt;
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -1269,11 +1698,11 @@ the queue, dequeue two heaps, merge them, and enqueue the result.&lt;/p&gt;
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;</summary><category term="heaps"></category><category term="maw"></category></entry><entry><title>Binary heap</title><link href="http://zhu45.org/posts/2017/Apr/02/binary-heap/" rel="alternate"></link><published>2017-04-02T11:30:00+08:00</published><updated>2017-04-02T11:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-02:posts/2017/Apr/02/binary-heap/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;binary heap&lt;/em&gt; and its generalization &lt;em&gt;d-heap&lt;/em&gt; part in MAW Chapter 6.&lt;/p&gt;
-&lt;h2&gt;Motivation&lt;/h2&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;The motivation for priority queue majorly comes from the fact that not all things
 are equally weighted. I'll summarize the applications of priority queues in my
 end-chapter summary post. &lt;/p&gt;
-&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;h2 id="concept"&gt;Concept&lt;/h2&gt;
 &lt;p&gt;A binary heap is a binary tree (NOT a BST) that is:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Complete (structure property):&lt;/li&gt;
@@ -1295,21 +1724,21 @@ its children.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Here are some examples:&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/binary-heap.PNG" alt="binary heap examples" style="width: 700px;"/&gt;&lt;/p&gt;
-&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;h2 id="properties"&gt;Properties&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Since complete binary tree of height &lt;span class="math"&gt;\(h\)&lt;/span&gt; has between &lt;span class="math"&gt;\(2^h\)&lt;/span&gt; and &lt;span class="math"&gt;\(2^{h+1}-1\)&lt;/span&gt; nodes, 
   the height of a binary heap is &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;.&lt;/li&gt;
 &lt;li&gt;For binary heaps, &lt;code&gt;BuildHeap&lt;/code&gt; does at most &lt;span class="math"&gt;\(2N-2\)&lt;/span&gt; comparisons between elements.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Remarks on implementation&lt;/h2&gt;
+&lt;h2 id="remarks-on-implementation"&gt;Remarks on implementation&lt;/h2&gt;
 &lt;p&gt;We use array as the actual implementation for the binary heap above. 
 For any element in array position &lt;span class="math"&gt;\(i\)&lt;/span&gt;, the left child is in position &lt;span class="math"&gt;\(2i\)&lt;/span&gt;, the
 right child is in the cell after the left child &lt;span class="math"&gt;\((2i+1)\)&lt;/span&gt;, and the parent is in position
 &lt;span class="math"&gt;\(\lfloor i/2 \rfloor\)&lt;/span&gt;. Position 0 is used as a sentinel.&lt;/p&gt;
 &lt;p&gt;The reason we use the array implementation is that dealing with pointers are quite
 expensive to do.&lt;/p&gt;
-&lt;h2&gt;Operations&lt;/h2&gt;
-&lt;h3&gt;Insert&lt;/h3&gt;
+&lt;h2 id="operations"&gt;Operations&lt;/h2&gt;
+&lt;h3 id="insert"&gt;Insert&lt;/h3&gt;
 &lt;p&gt;We add the value as the new node at the end of the array, which is the next avaliable
 location in the tree. Then, we need to maintain the heap order property by doing 
 a simple insertion sort operation on the path from the new place to the root to find
@@ -1329,7 +1758,7 @@ needs to test: 1. if it has reached the top node A[1] 2. if parent &lt;span clas
 The first test can be avoid by using sentinel b/c it then becomes a special case
 of second test.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h3&gt;DeleteMin&lt;/h3&gt;
+&lt;h3 id="deletemin"&gt;DeleteMin&lt;/h3&gt;
 &lt;p&gt;We delete and return the value at root node in this operation. Same as the insert, 
 we need to maintain the binary heap properties. &lt;/p&gt;
 &lt;p&gt;By removing the root node's value, we have a "hole" at the root. We use the last
@@ -1343,21 +1772,21 @@ place for it in the tree. This is called &lt;em&gt;percolate down&lt;/em&gt;.&lt
 &lt;li&gt;Copy smaller child up and go down one level&lt;/li&gt;
 &lt;li&gt;Done if both children are &lt;span class="math"&gt;\(\ge\)&lt;/span&gt; item or reached a leaf node&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3&gt;Other heap operations&lt;/h3&gt;
+&lt;h3 id="other-heap-operations"&gt;Other heap operations&lt;/h3&gt;
 &lt;p&gt;The following operations (with &lt;span class="math"&gt;\(P\)&lt;/span&gt; argument) require the position of every element in the heap known
 by some other method in order to make them cheap to perform.&lt;/p&gt;
-&lt;h4&gt;&lt;code&gt;DecreaseKey&lt;/code&gt;(P, &lt;span class="math"&gt;\(\delta\)&lt;/span&gt;, H)&lt;/h4&gt;
+&lt;h4 id="decreasekeyp-delta-h"&gt;&lt;code&gt;DecreaseKey&lt;/code&gt;(P, &lt;span class="math"&gt;\(\delta\)&lt;/span&gt;, H)&lt;/h4&gt;
 &lt;p&gt;decrease the key value of node at position &lt;span class="math"&gt;\(P\)&lt;/span&gt; by a positive amount &lt;span class="math"&gt;\(\delta\)&lt;/span&gt;. We 
 can first subtract &lt;span class="math"&gt;\(\delta\)&lt;/span&gt; from current value at &lt;span class="math"&gt;\(P\)&lt;/span&gt;. Then we &lt;em&gt;percolate up&lt;/em&gt; to fix.
 This requires &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time.&lt;/p&gt;
-&lt;h4&gt;&lt;code&gt;IncreaseKey&lt;/code&gt;(P, &lt;span class="math"&gt;\(\delta\)&lt;/span&gt;, H)&lt;/h4&gt;
+&lt;h4 id="increasekeyp-delta-h"&gt;&lt;code&gt;IncreaseKey&lt;/code&gt;(P, &lt;span class="math"&gt;\(\delta\)&lt;/span&gt;, H)&lt;/h4&gt;
 &lt;p&gt;increase the key value of node at position &lt;span class="math"&gt;\(P\)&lt;/span&gt; by a positive amount &lt;span class="math"&gt;\(\delta\)&lt;/span&gt;. We
 can add &lt;span class="math"&gt;\(\delta\)&lt;/span&gt; to current value at &lt;span class="math"&gt;\(P\)&lt;/span&gt; then &lt;em&gt;percolate down&lt;/em&gt; to fix. This requires
 &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time.&lt;/p&gt;
-&lt;h4&gt;&lt;code&gt;Delete(P,H)&lt;/code&gt;&lt;/h4&gt;
+&lt;h4 id="deleteph"&gt;&lt;code&gt;Delete(P,H)&lt;/code&gt;&lt;/h4&gt;
 &lt;p&gt;removes the node at position &lt;span class="math"&gt;\(P\)&lt;/span&gt; from the heap. We can use &lt;code&gt;DecreaseKey&lt;/code&gt;(P, &lt;span class="math"&gt;\(\infty\)&lt;/span&gt;, H)
 followed by &lt;code&gt;DeleteMin&lt;/code&gt;. The running time is &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;.&lt;/p&gt;
-&lt;h4&gt;&lt;code&gt;Buildheap(H)&lt;/code&gt;&lt;/h4&gt;
+&lt;h4 id="buildheaph"&gt;&lt;code&gt;Buildheap(H)&lt;/code&gt;&lt;/h4&gt;
 &lt;p&gt;takes as input &lt;span class="math"&gt;\(N\)&lt;/span&gt; keys and construct a binary heap from it. This is known as Floyd's algorithm.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Place the &lt;span class="math"&gt;\(N\)&lt;/span&gt; keys into the tree in order. This satisfies the structure property.&lt;/li&gt;
@@ -1369,11 +1798,11 @@ followed by &lt;code&gt;DeleteMin&lt;/code&gt;. The running time is &lt;span cla
 
 
 &lt;p&gt;This alogrithm runs in &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; time. Detailed proof see MAW p.189.&lt;/p&gt;
-&lt;h4&gt;&lt;code&gt;Merge(H1,H2)&lt;/code&gt;&lt;/h4&gt;
+&lt;h4 id="mergeh1h2"&gt;&lt;code&gt;Merge(H1,H2)&lt;/code&gt;&lt;/h4&gt;
 &lt;p&gt;We merge two heaps &lt;span class="math"&gt;\(H1\)&lt;/span&gt; and &lt;span class="math"&gt;\(H2\)&lt;/span&gt; of size &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;. &lt;span class="math"&gt;\(H1\)&lt;/span&gt; and &lt;span class="math"&gt;\(H2\)&lt;/span&gt; are stored in two
 arrays. We can do &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; insert but this requires &lt;span class="math"&gt;\(O(N\log N)\)&lt;/span&gt; time. We can do better
 by copy &lt;span class="math"&gt;\(H2\)&lt;/span&gt; at the end of &lt;span class="math"&gt;\(H1\)&lt;/span&gt; and use &lt;code&gt;BuildHeap&lt;/code&gt;. This requires &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; time.&lt;/p&gt;
-&lt;h2&gt;Runtime analysis&lt;/h2&gt;
+&lt;h2 id="runtime-analysis"&gt;Runtime analysis&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Space: &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; (an array of size &lt;span class="math"&gt;\(N+1\)&lt;/span&gt;)&lt;/li&gt;
 &lt;li&gt;Insert: &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;&lt;/li&gt;
@@ -1387,7 +1816,7 @@ binary heap support insertion in &lt;em&gt;constant average&lt;/em&gt; time per 
 &lt;ul&gt;
 &lt;li&gt;DeleteMin: &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1&gt;d-heaps&lt;/h1&gt;
+&lt;h1 id="d-heaps"&gt;d-heaps&lt;/h1&gt;
 &lt;p&gt;d-heaps is the generalization of binary heap: we have &lt;span class="math"&gt;\(d\)&lt;/span&gt; children instead of 2.
 Similar to B-tree, this structure will makes the heaps shallower and is useful for
 heaps too big for memory. &lt;/p&gt;
@@ -1396,7 +1825,7 @@ the minimum of &lt;span class="math"&gt;\(d\)&lt;/span&gt; children (in binary h
 &lt;code&gt;DeleteMin&lt;/code&gt;, for example, takes &lt;span class="math"&gt;\(O(d\log_d N)\)&lt;/span&gt;. Other operations runtime adjusts similarly.&lt;/p&gt;
 &lt;p&gt;In terms of array implementation, for entry located in position &lt;span class="math"&gt;\(i\)&lt;/span&gt;, the parent is
 at &lt;span class="math"&gt;\(\lfloor{\frac{i + (d-2)}{d}}\rfloor\)&lt;/span&gt; and the children are at &lt;span class="math"&gt;\(id-(d-2), \dots, id+1\)&lt;/span&gt;.&lt;/p&gt;
-&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 6&lt;/li&gt;
 &lt;li&gt;https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture4.pdf&lt;/li&gt;
@@ -1419,7 +1848,7 @@ at &lt;span class="math"&gt;\(\lfloor{\frac{i + (d-2)}{d}}\rfloor\)&lt;/span&gt;
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -1459,9 +1888,9 @@ at &lt;span class="math"&gt;\(\lfloor{\frac{i + (d-2)}{d}}\rfloor\)&lt;/span&gt;
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</summary><category term="heaps"></category><category term="maw"></category></entry><entry><title>MAW Chapter 6: Priority Queues (Heaps) writing questions</title><link href="http://zhu45.org/posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/" rel="alternate"></link><published>2017-03-26T12:01:00+08:00</published><updated>2017-03-26T12:01:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-26:posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/</id><summary type="html">&lt;h2&gt;Solutions&lt;/h2&gt;
+&lt;/script&gt;</summary><category term="heaps"></category><category term="maw"></category></entry><entry><title>MAW Chapter 6: Priority Queues (Heaps) writing questions</title><link href="http://zhu45.org/posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/" rel="alternate"></link><published>2017-03-26T12:01:00+08:00</published><updated>2017-03-26T12:01:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-26:posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/</id><summary type="html">&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
 &lt;p&gt;including: MAW 6.6, 6.7, 6.9, 6.13, 6.14, 6.16, 6.17, 6.27, 6.28,&lt;/p&gt;
-&lt;h3&gt;MAW 6.6&lt;/h3&gt;
+&lt;h3 id="maw-66"&gt;MAW 6.6&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;How many nodes are in the large heap in Figure 6.13?&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1473,7 +1902,7 @@ one when taking a right child. Then, we have the following calculation:
 &lt;span class="math"&gt;\(2(2(2(2(2(2(2i+1)+1)))))+1 = 225\)&lt;/span&gt;. The picture below shows the path from the root 
 to the node in the last position:&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/maw-6-6.PNG" alt="MAW 6.6"/&gt;&lt;/p&gt;
-&lt;h3&gt;MAW 6.7&lt;/h3&gt;
+&lt;h3 id="maw-67"&gt;MAW 6.7&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;b. show that a heap of eight elements can be constructed in eight comparisons between 
    heap elements.&lt;/p&gt;
@@ -1489,7 +1918,7 @@ and we get the following:&lt;/p&gt;
 &lt;p&gt;Then we need to restore the binary heap property because "a" node has three children.
 This can be done by the eighth compariosn between "b" and "c". If "c" is less than "b",
 then "b" is made a child of "c". Otherwise, both "c" and "d" are made children of "b".&lt;/p&gt;
-&lt;h3&gt;MAW 6.9&lt;/h3&gt;
+&lt;h3 id="maw-69"&gt;MAW 6.9&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;a. Give an algorithm to find all nodes less than some value, X, in a binary heap.
    Your algorithm should run in &lt;span class="math"&gt;\(O(K)\)&lt;/span&gt;, where &lt;span class="math"&gt;\(K\)&lt;/span&gt; is the number of nodes output.&lt;/p&gt;
@@ -1507,7 +1936,7 @@ the procedure has to call each node of the heap.&lt;/p&gt;
    this chapter?&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Yes. It works for leftist heap, skew heap, and d-heaps.&lt;/p&gt;
-&lt;h3&gt;MAW 6.13&lt;/h3&gt;
+&lt;h3 id="maw-613"&gt;MAW 6.13&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;If a d-heap is stored as an array, for an entry located in position &lt;span class="math"&gt;\(i\)&lt;/span&gt;,
 where are the parents and children?&lt;/p&gt;
@@ -1552,7 +1981,7 @@ parent of &lt;span class="math"&gt;\(i\)&lt;/span&gt;.&lt;/p&gt;
 &lt;div class="math"&gt;$$
 \lfloor{\frac{i + (d-2)}{d}}\rfloor
 $$&lt;/div&gt;
-&lt;h2&gt;MAW 6.14&lt;/h2&gt;
+&lt;h2 id="maw-614"&gt;MAW 6.14&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Suppose we need to perform &lt;span class="math"&gt;\(M\)&lt;/span&gt; &lt;code&gt;PercolateUp&lt;/code&gt; and &lt;span class="math"&gt;\(N\)&lt;/span&gt; &lt;code&gt;DeleteMiin&lt;/code&gt; on a d-heap
 that initially has &lt;span class="math"&gt;\(N\)&lt;/span&gt; elements.&lt;/p&gt;
@@ -1583,7 +2012,7 @@ $$&lt;/div&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(d = max(2, M/N)\)&lt;/span&gt; (See the related discussion at the end of Section 11.4)&lt;/p&gt;
 &lt;!--http://mail.csis.ul.ie/~cs4115/resources/sol10.pdf--&gt;
 
-&lt;h2&gt;MAW 6.16&lt;/h2&gt;
+&lt;h2 id="maw-616"&gt;MAW 6.16&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Merge the two leftist heaps in Figure 6.58&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1603,13 +2032,13 @@ the heap with the smaller root.&lt;/p&gt;
 &lt;/ol&gt;
 &lt;p&gt;The following shows the steps to get the final answer for this problem:&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/maw-6-16-solution.jpg" alt="MAW 6.16 solution" style="width:700px;height:400px"/&gt;&lt;/p&gt;
-&lt;h2&gt;MAW 6.17&lt;/h2&gt;
+&lt;h2 id="maw-617"&gt;MAW 6.17&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Show the result of inserting keys 1 to 15 in order into an initially empty leftist heap.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Use &lt;a href="https://www.cs.usfca.edu/~galles/visualization/LeftistHeap.html"&gt;this wonderful site&lt;/a&gt;
 to see the whole process of insertion.&lt;/p&gt;
-&lt;h2&gt;MAW 6.27&lt;/h2&gt;
+&lt;h2 id="maw-627"&gt;MAW 6.27&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Prove that a binomial tree &lt;span class="math"&gt;\(B_k\)&lt;/span&gt; has binomial trees &lt;span class="math"&gt;\(B_0, B_1, \dots, B_{k-1}\)&lt;/span&gt;
 as children of the root.&lt;/p&gt;
@@ -1627,7 +2056,7 @@ by 2, we have &lt;span class="math"&gt;\(2^k = 2 + 2 + \dots + 2^{k-1}\)&lt;/spa
 A &lt;span class="math"&gt;\(B_k\)&lt;/span&gt; tree is fromed by attaching a &lt;span class="math"&gt;\(B_{k-1}\)&lt;/span&gt; tree to the root of a &lt;span class="math"&gt;\(B_{k-1}\)&lt;/span&gt; tree.
 Thus, by induction, it contains a &lt;span class="math"&gt;\(B_0\)&lt;/span&gt; through &lt;span class="math"&gt;\(B_{k-2}\)&lt;/span&gt; tree, as well as the
 newly attached &lt;span class="math"&gt;\(B_{k-1}\)&lt;/span&gt; tree, proving the claim.&lt;/p&gt;
-&lt;h2&gt;MAW 6.28&lt;/h2&gt;
+&lt;h2 id="maw-628"&gt;MAW 6.28&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Prove that a binomial tree of height &lt;span class="math"&gt;\(k\)&lt;/span&gt; has &lt;span class="math"&gt;\({k \choose d}\)&lt;/span&gt; nodes at depth &lt;span class="math"&gt;\(d\)&lt;/span&gt;.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1655,7 +2084,7 @@ $$&lt;/div&gt;
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -1859,7 +2288,7 @@ constraint:&lt;/p&gt;
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -1899,9 +2328,9 @@ constraint:&lt;/p&gt;
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</summary><category term="meta"></category><category term="maw"></category><category term="hashing"></category></entry><entry><title>MAW Chapter 5: Hashing writing questions</title><link href="http://zhu45.org/posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/" rel="alternate"></link><published>2017-03-16T17:41:00+08:00</published><updated>2017-03-16T17:41:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-16:posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/</id><summary type="html">&lt;h2&gt;Solutions&lt;/h2&gt;
+&lt;/script&gt;</summary><category term="meta"></category><category term="maw"></category><category term="hashing"></category></entry><entry><title>MAW Chapter 5: Hashing writing questions</title><link href="http://zhu45.org/posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/" rel="alternate"></link><published>2017-03-16T17:41:00+08:00</published><updated>2017-03-16T17:41:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-16:posts/2017/Mar/16/maw-chapter-5-hashing-writing-questions/</id><summary type="html">&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
 &lt;p&gt;including: MAW 5.4, 5.5, 5.6, 5.10, 5.11&lt;/p&gt;
-&lt;h3&gt;MAW 5.4&lt;/h3&gt;
+&lt;h3 id="maw-54"&gt;MAW 5.4&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;A large number of deletions in a separate chaining hash table can cause the 
 table to be fairly empty, which wastes space. In this case, we can rehash to 
@@ -1920,7 +2349,7 @@ either 100 insertions or 100 deletions until a new rehash is required. &lt;/p&gt
 &lt;p&gt;If we know that insertions are more frequent than deletions, then we might choose &lt;span class="math"&gt;\(p\)&lt;/span&gt;
 to be somewhat larger. All in all, we play around the relation between &lt;span class="math"&gt;\(2N-2Np\)&lt;/span&gt; and 
 &lt;span class="math"&gt;\(pN\)&lt;/span&gt; depends on which operation we favorite.&lt;/p&gt;
-&lt;h3&gt;MAW 5.5&lt;/h3&gt;
+&lt;h3 id="maw-55"&gt;MAW 5.5&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;An alternative collision resolution strategy is to define a sequence, &lt;span class="math"&gt;\(F(i) = r_i\)&lt;/span&gt;,
 where &lt;span class="math"&gt;\(r_0 = 0\)&lt;/span&gt; and &lt;span class="math"&gt;\(r_1, r_2, \dots, r_N\)&lt;/span&gt; is a random permutation of the first &lt;span class="math"&gt;\(N\)&lt;/span&gt;
@@ -1942,7 +2371,7 @@ an insert and for a successful search?&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;The running time is probably similar to quadratic probing. The advantage here is that 
 the insertion can't fail unless the table is full.&lt;/p&gt;
-&lt;h3&gt;MAW 5.6&lt;/h3&gt;
+&lt;h3 id="maw-56"&gt;MAW 5.6&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;What are the advantages and disadvantages of the various collision resolution strategies?&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1958,7 +2387,7 @@ would be so expensive that it wouldn't matter and would almost certainly point u
 weakness in the hash function. &lt;/p&gt;
 &lt;p&gt;Double hashing eliminates primary and secondary clustering but the computation of a second
 hash function can be costly. &lt;/p&gt;
-&lt;h3&gt;MAW 5.10&lt;/h3&gt;
+&lt;h3 id="maw-510"&gt;MAW 5.10&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Describe a procedure that avoids initializing a hash table (at the expense of memory).&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1968,7 +2397,7 @@ the address (or number) of the slot onto the stack and set the &lt;code&gt;Where
 to the top of the stack. When we access a hash table slot, we check that &lt;code&gt;WhereOnStack&lt;/code&gt;
 points to a valid part of the stack and that the entry in the (middle of the) stack that is 
 pointed to by the &lt;code&gt;WhereOnStack&lt;/code&gt; field has that hash table slot as an address.&lt;/p&gt;
-&lt;h3&gt;MAW 5.11&lt;/h3&gt;
+&lt;h3 id="maw-511"&gt;MAW 5.11&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Suppose we want to find the first occurrence of a string &lt;span class="math"&gt;\(P_1P_2\dots P_k\)&lt;/span&gt; in a long 
 input string &lt;span class="math"&gt;\(A_1A_2\dots A_N\)&lt;/span&gt;. We can solve this problem by hashing the pattern string,
@@ -2020,7 +2449,7 @@ matches.&lt;/p&gt;
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -2100,7 +2529,7 @@ k-d Tree (MAW 4.46), and B*-tree (MAW 4.38).&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 </summary><category term="meta"></category><category term="maw"></category></entry><entry><title>B-Tree</title><link href="http://zhu45.org/posts/2017/Mar/11/b-tree/" rel="alternate"></link><published>2017-03-11T21:32:00+08:00</published><updated>2017-03-11T21:32:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-11:posts/2017/Mar/11/b-tree/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;B tree&lt;/em&gt; part in MAW Chapter 4.&lt;/p&gt;
-&lt;h2&gt;Motivation&lt;/h2&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;So far we have assumed that an entire data structure can be stored in the main memory. 
 However, this is not true in reality because if we have more data than can fit in main 
 memory, we have to store data structure on disk. In this case, number of disk 
@@ -2108,7 +2537,7 @@ accesses will dominate the running time because they are very expensive comparin
 processor speed. Then, when we design a data structure, we have to try our best to minimize
 the number of disk accesses. Under the context of tree structure, B-tree is a structure
 that tries to read as much information as possible in every disk access operation.&lt;/p&gt;
-&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;h2 id="concept"&gt;Concept&lt;/h2&gt;
 &lt;p&gt;B-tree is by far the most chaoatic defined structure in the sense that different people
 have slightly different definitions. I'll follow MAW's definition and points out how MAW's definition
 is different from the other commonly seen definition.&lt;/p&gt;
@@ -2125,7 +2554,7 @@ is different from the other commonly seen definition.&lt;/p&gt;
 the actual data to be stored in both leaves and internal nodes, which is not the case in our definition. In some &lt;span class="math"&gt;\(B^+-\)&lt;/span&gt;tree definition,
 the leaves are connected as a linked list so that we don't have to restart the search from the root once we already traverse down to the 
 leaf if we want a record that is on a leaf really close to the leaf we currently at. &lt;/p&gt;
-&lt;h2&gt;Examples&lt;/h2&gt;
+&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
 &lt;p&gt;Some typical examples in B-tree are of order 4 (known as 2-3-4 tree) and 3 (known as 2-3 tree).&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/2-3-tree.PNG" alt="2-3-tree" style="width: 700px;"/&gt;&lt;/p&gt;
 &lt;p&gt;B-tree is a structure that is widely used in the database system. The following picture shows a more real B-tree example. 
@@ -2135,7 +2564,7 @@ the customer information can be found in the customer table.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/real-b-tree.PNG" alt="real-b-tree" style="width: 700px;"/&gt;&lt;/p&gt;
 &lt;p&gt;In this example, once we continue down the tree and locate the phone number we are searching for, we use the RID to fetch the 
 rest of the customer record from the table. In this case, we use 4 disk accesses.&lt;/p&gt;
-&lt;h2&gt;Operations&lt;/h2&gt;
+&lt;h2 id="operations"&gt;Operations&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Find:&lt;/li&gt;
 &lt;/ul&gt;
@@ -2153,7 +2582,7 @@ to actually implement one. Stanford paper listed in the reference section do a c
 a real-life B-tree deletion which may be complicated for the learner. &lt;/p&gt;
 &lt;p&gt;The strategy we use for deletion is that we want to find the key to be deleted and remove it first. Then, if the leaf underflows, we borrow from 
 a neighbor. If leaf underflows and can't borrow, we merge nodes and delete parent.&lt;/p&gt;
-&lt;h2&gt;Runtime analysis&lt;/h2&gt;
+&lt;h2 id="runtime-analysis"&gt;Runtime analysis&lt;/h2&gt;
 &lt;p&gt;We first show that height &lt;span class="math"&gt;\(H\)&lt;/span&gt; is logarithmic in number of data items &lt;span class="math"&gt;\(N\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(M \ge 2\)&lt;/span&gt;. Because all nodes are at least half full (except root may have
 only 2 children) and all leaves are at the same level, the minimum number od data items &lt;span class="math"&gt;\(N\)&lt;/span&gt; for a height &lt;span class="math"&gt;\(H\)&lt;/span&gt; tree is &lt;/p&gt;
 &lt;div class="math"&gt;$$
@@ -2169,7 +2598,7 @@ $$&lt;/div&gt;
 O(depth &lt;span class="math"&gt;\(\times \log M\)&lt;/span&gt;) = &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; because &lt;span class="math"&gt;\(M\)&lt;/span&gt; is small compared to &lt;span class="math"&gt;\(N\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;Insertion and deletion doesn't different from &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; because the unique manipulation takes constant amount of work and the number 
 of times this unique manipulation is proportional to the height of tree.&lt;/p&gt;
-&lt;h2&gt;Pros &amp;amp; Cons of data structure&lt;/h2&gt;
+&lt;h2 id="pros-cons-of-data-structure"&gt;Pros &amp;amp; Cons of data structure&lt;/h2&gt;
 &lt;p&gt;What makes B-trees so disk friendly?&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -2189,7 +2618,7 @@ of times this unique manipulation is proportional to the height of tree.&lt;/p&g
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 4&lt;/li&gt;
 &lt;li&gt;https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture15.pdf&lt;/li&gt;
@@ -2214,7 +2643,7 @@ of times this unique manipulation is proportional to the height of tree.&lt;/p&g
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -2255,14 +2684,14 @@ of times this unique manipulation is proportional to the height of tree.&lt;/p&g
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;</summary><category term="trees"></category><category term="maw"></category></entry><entry><title>Splay Tree</title><link href="http://zhu45.org/posts/2017/Feb/13/splay-tree/" rel="alternate"></link><published>2017-02-13T01:12:00+08:00</published><updated>2017-02-13T01:12:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-02-13:posts/2017/Feb/13/splay-tree/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;Splay tree&lt;/em&gt; part in MAW Chapter 4.&lt;/p&gt;
-&lt;h2&gt;Motivation&lt;/h2&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;Ordinary BST has no balance conditions and thus, it is possible for a whole sequnece of &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; accesses to take place. This cumulative running time 
 then becomes noticeable. So, we introduce the balance condition on BST to improve our running time. One way to do so is to enforce a balance condition
 when nodes change (i.e. insert or delete) like AVL. However, this data structure is hard to code and rebalancing costs time. In addition, sometimes it is 
 OK for us to have &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; operation as long as it occurs infrequently. In other words, A search data structure with &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; worst-case time, but a &lt;em&gt;guarantee&lt;/em&gt;
 of at most &lt;span class="math"&gt;\(O(M \log N)\)&lt;/span&gt; for any &lt;span class="math"&gt;\(M\)&lt;/span&gt; consecutive operations, is good enough. Splay tree meets our needs. It is a data structure that 
 lies right in-between BST (no balance condition) and AVL (very strict balance condition).&lt;/p&gt;
-&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;h2 id="concept"&gt;Concept&lt;/h2&gt;
 &lt;p&gt;A splay tree is a type of balanced binary search tree. Structurally, it is identical to an ordinary binary search tree; the only difference is in the 
 algorithms for finding, inserting, and deleting entries. Specifically, splay tree is a self-adjusting tree, which the structure get organized over time
 as nodes are accessed (i.e., insert, delete, or find). This makes sense because if we don't re-structure the tree each time we access an node, then 
@@ -2311,12 +2740,12 @@ apply the rules until x is at the root of the tree.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Implementation details&lt;/h2&gt;
+&lt;h2 id="implementation-details"&gt;Implementation details&lt;/h2&gt;
 &lt;p&gt;Splay tree is really a flexible data structure in the sense that there are many options to implement 
 the "splay" rules and corresponding tree operations and still have the property hold. Reference &lt;a href="https://en.wikipedia.org/wiki/Splay_tree"&gt;wiki&lt;/a&gt;
 for complete summary. Here, I only mention some of my findings. Please note that depends on how you implement your operations, the resulting tree
 may be different (i.e. different insert algorithm may result in different tree structure but there root will be the same).&lt;/p&gt;
-&lt;h3&gt;Insertion (bottom-up)&lt;/h3&gt;
+&lt;h3 id="insertion-bottom-up"&gt;Insertion (bottom-up)&lt;/h3&gt;
 &lt;p&gt;There are two ways to do this. The first way is to use "split" to split the tree based upon the insertion value. By the property of splaying, 
 we will either have the insertion value (already inside the tree) or the parent of the insertion point at the root. Then we can make our insertion 
 value as the new root and adjust the orginal tree to form the new tree. For example,  if the insertion value &lt;code&gt;elem&lt;/code&gt; smaller than the root, we do&lt;/p&gt;
@@ -2333,30 +2762,30 @@ value as the new root and adjust the orginal tree to form the new tree. For exam
 we know &lt;code&gt;T&lt;/code&gt;'s left subtree's values are smaller than &lt;code&gt;elem&lt;/code&gt; as well. This is because 
 if there is any node &lt;span class="math"&gt;\(x\)&lt;/span&gt; greater than &lt;code&gt;elem&lt;/code&gt; but smaller than &lt;code&gt;T&lt;/code&gt;'s value, then &lt;code&gt;T&lt;/code&gt; should be &lt;span class="math"&gt;\(x\)&lt;/span&gt; instead (by splaying), which is a contradiction.&lt;/p&gt;
 &lt;p&gt;The second way is to do BST insertion first and then splay the insertion value, which is really straightforward and easy to code. &lt;/p&gt;
-&lt;h2&gt;Deletion (bottom-up)&lt;/h2&gt;
+&lt;h2 id="deletion-bottom-up"&gt;Deletion (bottom-up)&lt;/h2&gt;
 &lt;p&gt;Correspondingly there are two methods to deletion as well. The first way is to splay the to-be-deleted node. This puts the node at the root. If it is
 deleted, we get two subtrees &lt;span class="math"&gt;\(T_L\)&lt;/span&gt; and &lt;span class="math"&gt;\(T_R\)&lt;/span&gt;. If we find the largest element in &lt;span class="math"&gt;\(T_L\)&lt;/span&gt;, then this element is rotated to the root of &lt;span class="math"&gt;\(T_L\)&lt;/span&gt;, and 
 &lt;span class="math"&gt;\(T_L\)&lt;/span&gt; will now have a root with no right child. We can finish the deletion by making &lt;span class="math"&gt;\(T_R\)&lt;/span&gt; the right child.&lt;/p&gt;
 &lt;p&gt;The second way is to do BST deletion first, and then splay the parent of the deletion point to the root. It is quite similar to BST deletion and see
 the implementation &lt;a href="https://github.com/xxks-kkk/algo/blob/master/trees/splay/splay.c"&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;h2 id="properties"&gt;Properties&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;any &lt;span class="math"&gt;\(M\)&lt;/span&gt; consecutive tree operations starting from an empty tree take at most &lt;span class="math"&gt;\(O(M \log N)\)&lt;/span&gt; time.&lt;/li&gt;
 &lt;li&gt;Even though the worst-case running time is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; for operation, the amortized cost of the operation is &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;.&lt;/li&gt;
 &lt;li&gt;if all nodes in a splay tree are accessed in sequential order, the resulting tree consists of a chain of left children. (MAW 4.26.a)&lt;/li&gt;
 &lt;li&gt;if all nodes in a splay tree are accessed in sequential order, then the total access time is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;, regardless of the initial tree.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Pros &amp;amp; Cons of data structure&lt;/h2&gt;
+&lt;h2 id="pros-cons-of-data-structure"&gt;Pros &amp;amp; Cons of data structure&lt;/h2&gt;
 &lt;p&gt;Splay tree is simpler and easier to program. Because of its implicity, splay tree insertion and deletion is typically faster in practice.
 Find operation can be faster or slower, depending on circumstances. Splay trees are designed to give especially fast access to nodes that 
 have been accessed recently, so they really excel in applications where a small fraction of the nodes are the targets of most of the find operation.&lt;/p&gt;
-&lt;h2&gt;Todo&lt;/h2&gt;
+&lt;h2 id="todo"&gt;Todo&lt;/h2&gt;
 &lt;p&gt;This post does not cover every part of the splay tree. This post will be updated once I complete the following two parts study:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 11 gives a thorough study of the amortized cost of the splay tree operations &lt;span class="math"&gt;\(O( \log N)\)&lt;/span&gt;.&lt;/li&gt;
 &lt;li&gt;MAW Chapter 12 gives implementation details on top-down splay tree.  &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;http://www.cs.cmu.edu/afs/cs/academic/class/15859-f05/www/documents/splay-trees.txt&lt;/li&gt;
 &lt;li&gt;http://web.stanford.edu/class/archive/cs/cs166/cs166.1146/lectures/08/Small08.pdf (proof of properties in a concise structure)&lt;/li&gt;
@@ -2380,7 +2809,7 @@ have been accessed recently, so they really excel in applications where a small 
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -2421,13 +2850,13 @@ have been accessed recently, so they really excel in applications where a small 
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;</summary><category term="trees"></category><category term="maw"></category></entry><entry><title>AVL Tree</title><link href="http://zhu45.org/posts/2017/Feb/05/avl-tree/" rel="alternate"></link><published>2017-02-05T10:43:00+08:00</published><updated>2017-02-05T10:43:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-02-05:posts/2017/Feb/05/avl-tree/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;AVL tree&lt;/em&gt; part in MAW Chapter 4.&lt;/p&gt;
-&lt;h2&gt;Motivation&lt;/h2&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;/h2&gt;
 &lt;p&gt;All BST operations are &lt;span class="math"&gt;\(O(H)\)&lt;/span&gt; time, where &lt;span class="math"&gt;\(H\)&lt;/span&gt; is the height of the tree. In the worst case
 scenario, when the tree is degenerated, &lt;span class="math"&gt;\(H = N\)&lt;/span&gt;, where &lt;span class="math"&gt;\(N\)&lt;/span&gt; is the number of nodes.
 Thus, the problem with BST is that it can get unbalanced and lead to the worst running time.
 AVL tree is one of algorithms for keeping BST balanced (others including red-black trees, splay trees, B-trees).
 Its approach to balancing tree is that we want a pretty good balance (allow a little out of balance).&lt;/p&gt;
-&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;h2 id="concept"&gt;Concept&lt;/h2&gt;
 &lt;p&gt;AVL tree is a &lt;em&gt;guaranteed&lt;/em&gt; &lt;span class="math"&gt;\(O(log N)\)&lt;/span&gt; binary search tree. It is identical to a BST, except 
 that for every node in the tree, the height of the left and right subtrees can differ by at most 1.
 (The height of an empty tree is defined to be -1).&lt;/p&gt;
@@ -2435,7 +2864,7 @@ that for every node in the tree, the height of the left and right subtrees can d
 &lt;p&gt;For simplicity, we really omit the actual data part of the node. The following picture demonstrate
 what AVL tree should really look like:&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/AVL-real.PNG" alt="AVL-tree-real" style="height: 300px; width: 700px;"/&gt;&lt;/p&gt;
-&lt;h2&gt;Insertion&lt;/h2&gt;
+&lt;h2 id="insertion"&gt;Insertion&lt;/h2&gt;
 &lt;p&gt;AVL tree insertion is based upon BST insertion with two addition treatments:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Update the height information of the nodes on the path from the root to the insertion point.&lt;/li&gt;
@@ -2467,7 +2896,7 @@ Here is the detail steps:&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;See MAW p.117 insertion 13 for an example.&lt;/p&gt;
-&lt;h2&gt;Deletion&lt;/h2&gt;
+&lt;h2 id="deletion"&gt;Deletion&lt;/h2&gt;
 &lt;p&gt;Deletion, in fact, is extremely similar to the insertion in the sense that: &lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;It is based upon BST deletion with extra treatment towards node height information and AVL property&lt;/li&gt;
@@ -2499,7 +2928,7 @@ to decide what rotation we should use (like insertion). Thus, we have the follow
 
 &lt;p&gt;Of course, the following simple example may help you understand the code chunk above:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="AVL-deletion" src="http://zhu45.org/images/AVL-deletion.PNG" /&gt;&lt;/p&gt;
-&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;h2 id="properties"&gt;Properties&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;For every node of the AVL tree, &lt;span class="math"&gt;\(|Height(left child) - Height(right child)| \le 1\)&lt;/span&gt;.&lt;/li&gt;
 &lt;li&gt;Running time for "find", "insert", "delete" is &lt;em&gt;guaranteed&lt;/em&gt; to be &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;.&lt;/li&gt;
@@ -2507,7 +2936,7 @@ to decide what rotation we should use (like insertion). Thus, we have the follow
   (see &lt;a href="http://zhu45.org/posts/2017/Jan/26/maw-chapter-4-tree-writing-questions/"&gt;this post&lt;/a&gt; for the proof)&lt;/li&gt;
 &lt;li&gt;For an insertion, there is &lt;em&gt;at most one&lt;/em&gt; rotation (used in non-recursive insertion routine).&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Pros &amp;amp; Cons of data structure&lt;/h2&gt;
+&lt;h2 id="pros-cons-of-data-structure"&gt;Pros &amp;amp; Cons of data structure&lt;/h2&gt;
 &lt;p&gt;Pros:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Search is &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; since AVL trees are always balanced.&lt;/li&gt;
@@ -2524,7 +2953,7 @@ to decide what rotation we should use (like insertion). Thus, we have the follow
   many consecutive operations is fast (e.g. Splay trees). In other words,
   If &lt;em&gt;amortized&lt;/em&gt; logarithmic time is enough, use splay trees.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 4&lt;/li&gt;
 &lt;li&gt;https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture12.pdf &lt;/li&gt;
@@ -2548,7 +2977,7 @@ to decide what rotation we should use (like insertion). Thus, we have the follow
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -2603,7 +3032,7 @@ which is the textbook I used.&lt;/p&gt;
 &lt;p&gt;This note is practical-oriented. I will skip the proof of the theorem whenever possible.
 If you are interested in the proof side of the universe, please read the book.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h2&gt;TOC&lt;/h2&gt;
+&lt;h2 id="toc"&gt;TOC&lt;/h2&gt;
 &lt;p&gt;The post will be organized in the following format:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Linear homogeneous recurrence relation with constant coefficients&lt;ul&gt;
@@ -2621,7 +3050,7 @@ If you are interested in the proof side of the universe, please read the book.&l
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Linear homogeneous recurrence relation with constant coefficients&lt;/h2&gt;
+&lt;h2 id="linear-homogeneous-recurrence-relation-with-constant-coefficients"&gt;Linear homogeneous recurrence relation with constant coefficients&lt;/h2&gt;
 &lt;p&gt;&lt;em&gt;Definition:&lt;/em&gt; Let &lt;span class="math"&gt;\(h_0, h_1, h_2, \dots, h_n, \dots\)&lt;/span&gt; be a sequence of numbers. This sequence is 
 said to satisfy a &lt;strong&gt;linear recurrence relation of order &lt;span class="math"&gt;\(k\)&lt;/span&gt;&lt;/strong&gt;, provided that there
 exist quantities &lt;span class="math"&gt;\(a_1, a_2, \dots, a_k,\)&lt;/span&gt; with &lt;span class="math"&gt;\(a_k \ne 0\)&lt;/span&gt;, and a quantity &lt;span class="math"&gt;\(b_n\)&lt;/span&gt;
@@ -2642,7 +3071,7 @@ $$&lt;/div&gt;
 &lt;p&gt;&lt;em&gt;Definition:&lt;/em&gt; The linear recurrence relation \ref{eq:1} is called &lt;strong&gt;homogeneous&lt;/strong&gt; 
 provided that &lt;span class="math"&gt;\(b_n\)&lt;/span&gt; is zero and is said to have &lt;strong&gt;constant coefficients&lt;/strong&gt; provided that
 &lt;span class="math"&gt;\(a_1, a_2, \dots, a_k\)&lt;/span&gt; are constants.&lt;/p&gt;
-&lt;h3&gt;Method 1: Characteristic equation&lt;/h3&gt;
+&lt;h3 id="method-1-characteristic-equation"&gt;Method 1: Characteristic equation&lt;/h3&gt;
 &lt;p&gt;&lt;em&gt;Theorem 7.4.1:&lt;/em&gt; Let &lt;span class="math"&gt;\(q\)&lt;/span&gt; be a nonzero number. Then &lt;span class="math"&gt;\(h_n = q^n\)&lt;/span&gt; is a solution of the
 linear homogeneous recurrence relation&lt;/p&gt;
 &lt;div class="math"&gt;$$
@@ -2755,7 +3184,7 @@ $$&lt;/div&gt;
 &gt; of a polynomial equation. Sometimes finding the roots of characteristic equation can be quite diffcult. That's what second method tries to address.
 &gt; If you find out that characteristic equation is really diffcult to solve, you can always use "generating function" method.--&gt;
 
-&lt;h3&gt;Method 2: Generating function&lt;/h3&gt;
+&lt;h3 id="method-2-generating-function"&gt;Method 2: Generating function&lt;/h3&gt;
 &lt;p&gt;&lt;em&gt;Definition:&lt;/em&gt; Let &lt;span class="math"&gt;\(h_0, h_1, h_2, \dots, h_n, \dots\)&lt;/span&gt; be an infinite sequence of numbers. Its &lt;strong&gt;generating function&lt;/strong&gt; is defined to be the infinite
 series&lt;/p&gt;
 &lt;div class="math"&gt;$$
@@ -2846,9 +3275,9 @@ $$&lt;/div&gt;
 denominator of &lt;span class="math"&gt;\(g(x)\)&lt;/span&gt; can be tricky for high degree polynomials. I need more practice on solving recurrence
 relation to decide which method is superior under what kind of situation.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h2&gt;Linear nonhomogeneous recurrence relation with constant coefficients&lt;/h2&gt;
+&lt;h2 id="linear-nonhomogeneous-recurrence-relation-with-constant-coefficients"&gt;Linear nonhomogeneous recurrence relation with constant coefficients&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;nonhomogeneous&lt;/strong&gt; means &lt;span class="math"&gt;\(b_n\)&lt;/span&gt; in \ref{eq:1} is no longer zero constant.&lt;/p&gt;
-&lt;h3&gt;Method 1: Characteristic equation&lt;/h3&gt;
+&lt;h3 id="method-1-characteristic-equation_1"&gt;Method 1: Characteristic equation&lt;/h3&gt;
 &lt;p&gt;&lt;em&gt;Steps:&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;1) Find the general solution of the homogeneous relation.&lt;/p&gt;
 &lt;p&gt;2) Find a particular solution of the nonhomogeneous relation.&lt;/p&gt;
@@ -2892,7 +3321,7 @@ $$&lt;/div&gt;
 &lt;p&gt;As you can see, solving recurrence relation using characteristic equation has strong connection with solving differential equations (both homogeneous and
 nonhomogeneous). &lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h3&gt;Method 2: Generating function&lt;/h3&gt;
+&lt;h3 id="method-2-generating-function_1"&gt;Method 2: Generating function&lt;/h3&gt;
 &lt;p&gt;There is nothing difference in using "generating function" method to solve nonhomogeneous than solve homogeneous recurrence relation. That's actually 
 a beauty of this method: nothing needs to tweak in order to work under different situation.&lt;/p&gt;
 &lt;p&gt;* ---- Note ---- *&lt;/p&gt;
@@ -2918,7 +3347,7 @@ Also, in the book, solving &lt;span class="math"&gt;\(h_n = h_{n-1} + n^3\)&lt;/
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -2959,7 +3388,7 @@ Also, in the book, solving &lt;span class="math"&gt;\(h_n = h_{n-1} + n^3\)&lt;/
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;</summary><category term="recursion"></category><category term="combinatorics"></category><category term="math"></category></entry><entry><title>Binary Tree &amp; Binary Search Tree</title><link href="http://zhu45.org/posts/2017/Jan/29/binary-tree-binary-search-tree/" rel="alternate"></link><published>2017-01-29T13:20:00+08:00</published><updated>2017-01-29T13:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-01-29:posts/2017/Jan/29/binary-tree-binary-search-tree/</id><summary type="html">&lt;p&gt;This is the summary of &lt;em&gt;binary tree&lt;/em&gt; and &lt;em&gt;binary search tree&lt;/em&gt; part in MAW Chapter 4.&lt;/p&gt;
-&lt;h2&gt;Concept&lt;/h2&gt;
+&lt;h2 id="concept"&gt;Concept&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;A &lt;em&gt;binary tree&lt;/em&gt; is a tree in which no node can have more than two children. &lt;/li&gt;
 &lt;li&gt;An important application of binary trees is &lt;em&gt;binary search tree&lt;/em&gt;: for every node,
@@ -2967,7 +3396,7 @@ Also, in the book, solving &lt;span class="math"&gt;\(h_n = h_{n-1} + n^3\)&lt;/
   the key value in &lt;span class="math"&gt;\(X\)&lt;/span&gt;, and the values of all the keys in its right subtree are larger
   than the key value in &lt;span class="math"&gt;\(X\)&lt;/span&gt; (&lt;em&gt;BST-property&lt;/em&gt;).&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Classification of binary trees&lt;/h2&gt;
+&lt;h2 id="classification-of-binary-trees"&gt;Classification of binary trees&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;A &lt;em&gt;full&lt;/em&gt; binary tree (proper binary tree or 2-tree) is a binary tree in which each node
   has exactly zero or two children.&lt;/li&gt;
@@ -2992,7 +3421,7 @@ Also, in the book, solving &lt;span class="math"&gt;\(h_n = h_{n-1} + n^3\)&lt;/
   subtrees of every node differ in height by no more than 1. Yes, &lt;a href="http://zhu45.org/posts/2017/Feb/05/avl-tree/"&gt;AVL tree&lt;/a&gt;
   definition.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Properties&lt;/h2&gt;
+&lt;h2 id="properties"&gt;Properties&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;The average depth of binary tree is &lt;span class="math"&gt;\(O(\sqrt{n})\)&lt;/span&gt;&lt;/li&gt;
 &lt;li&gt;A binary tree of &lt;span class="math"&gt;\(N\)&lt;/span&gt; nodes, there are &lt;span class="math"&gt;\(N+1\)&lt;/span&gt; &lt;code&gt;NULL&lt;/code&gt; pointers representing children (MAW 4.4)&lt;/li&gt;
@@ -3017,7 +3446,7 @@ Also, in the book, solving &lt;span class="math"&gt;\(h_n = h_{n-1} + n^3\)&lt;/
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 4&lt;/li&gt;
 &lt;li&gt;https://en.wikipedia.org/wiki/Binary_tree&lt;/li&gt;
@@ -3039,7 +3468,7 @@ Also, in the book, solving &lt;span class="math"&gt;\(h_n = h_{n-1} + n^3\)&lt;/
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -3083,7 +3512,7 @@ Also, in the book, solving &lt;span class="math"&gt;\(h_n = h_{n-1} + n^3\)&lt;/
 great insights on the general techniques in solving algorithmatic proving questions.
 So, I decide to record them in this single post. Of course, this post will be continually
 updated as I work through the chapter.&lt;/p&gt;
-&lt;h2&gt;Insights&lt;/h2&gt;
+&lt;h2 id="insights"&gt;Insights&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Recursive tree definition is a natural fit with induction (i.e., MAW 4.5, 4.6, 4.7).&lt;/li&gt;
 &lt;li&gt;Usually there are two ways to prove a problem in tree, one direction is from induction
@@ -3093,9 +3522,9 @@ updated as I work through the chapter.&lt;/p&gt;
   In addition, always remember we want to convert the problem for &lt;span class="math"&gt;\(n+1\)&lt;/span&gt; into the same problem but 
   with the inductive step on &lt;span class="math"&gt;\(n\)&lt;/span&gt;. (MAW 4.17)&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2&gt;Solutions&lt;/h2&gt;
+&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
 &lt;p&gt;including: MAW 4.4, 4.5, 4.6, 4.7, 4.14, 4.15, 4.16, 4.17, 4.23, 4.24, 4.25, 4.26.a, 4.43&lt;/p&gt;
-&lt;h3&gt;MAW 4.4&lt;/h3&gt;
+&lt;h3 id="maw-44"&gt;MAW 4.4&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Show that in a binary tree of &lt;span class="math"&gt;\(N\)&lt;/span&gt; nodes, there are &lt;span class="math"&gt;\(N + 1\)&lt;/span&gt; &lt;code&gt;NULL&lt;/code&gt; pointers
 representing children.&lt;/p&gt;
@@ -3113,7 +3542,7 @@ exist. Since each edge connects some node to its parent, and every node except
 the root has one parent. In other words, each node, except the root node, has one incoming
 pointer from its parent. So, we have &lt;span class="math"&gt;\(N-1\)&lt;/span&gt; edges existing. Thus the remaining
 &lt;span class="math"&gt;\(2N - (N-1) = N+1\)&lt;/span&gt; edges are actually non-existing. Thus, we have &lt;span class="math"&gt;\(N+1\)&lt;/span&gt; &lt;code&gt;NULL&lt;/code&gt; pointers.&lt;/p&gt;
-&lt;h3&gt;MAW 4.5&lt;/h3&gt;
+&lt;h3 id="maw-45"&gt;MAW 4.5&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Show that the maximum number of nodes in a binary tree of height &lt;span class="math"&gt;\(H\)&lt;/span&gt; is &lt;span class="math"&gt;\(2^{H+1}-1\)&lt;/span&gt;.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3138,7 +3567,7 @@ $$&lt;/div&gt;
 n = \sum_{i=0}^{h} 2^i = 2^{h+1} - 1 \text{where n is the number of nodes} 
 \end{equation}
 $$&lt;/div&gt;
-&lt;h3&gt;MAW 4.6&lt;/h3&gt;
+&lt;h3 id="maw-46"&gt;MAW 4.6&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;A &lt;em&gt;full node&lt;/em&gt; is a node with two children. Prove that the number of full nodes
 plus one is equal to the number of leaves in a nonempty binary tree.&lt;/p&gt;
@@ -3184,7 +3613,7 @@ tree will have one less leaf and one less full node.&lt;/p&gt;
 hypothesis there are &lt;span class="math"&gt;\(k+1\)&lt;/span&gt; leaves. Add all the nodes that were removed back into the 
 tree the same way to create the original tree. We are adding one full node and 
 one leaf node. Therefore, we have &lt;span class="math"&gt;\(k+1\)&lt;/span&gt; full nodes with &lt;span class="math"&gt;\(k+2\)&lt;/span&gt; leaves.&lt;/p&gt;
-&lt;h3&gt;MAW 4.7&lt;/h3&gt;
+&lt;h3 id="maw-47"&gt;MAW 4.7&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Suppose a binary tree has leaves &lt;span class="math"&gt;\(l_{1}, l_{2}, ..., l_{M}\)&lt;/span&gt; at depths
 &lt;span class="math"&gt;\(d_{1}, d_{2}, ...,d_{M}\)&lt;/span&gt;, repectively. Prove that &lt;span class="math"&gt;\(\sum_{i=1}^M 2^{-d_{i}} \leq 1\)&lt;/span&gt;
@@ -3215,7 +3644,7 @@ is contradiction to the equality.&lt;/p&gt;
   is really good as an intro to the field because it doesn't make the material look very daunting and super technical,
   which some &lt;a href="http://circuit.ucsd.edu/~yhk/ece154c-spr16/pdfs/LectureNotes01.pdf"&gt;lecture note&lt;/a&gt; manages to achieve.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h3&gt;MAW 4.14&lt;/h3&gt;
+&lt;h3 id="maw-414"&gt;MAW 4.14&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Prove that the depth of a random binary search tree (depth of the deepest node) is &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;, on average.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3339,7 +3768,7 @@ because only one &lt;span class="math"&gt;\(Z_{n,i}\)&lt;/span&gt; can be &lt;sp
 &lt;span class="math"&gt;\(Z_{n,i}\)&lt;/span&gt; is independent of &lt;span class="math"&gt;\(Y_{i-1}\)&lt;/span&gt; and &lt;span class="math"&gt;\(Y_{n-i}\)&lt;/span&gt;. However, I don't think so as the height of the tree &lt;span class="math"&gt;\(h_n\)&lt;/span&gt;, which &lt;span class="math"&gt;\(Y_n\)&lt;/span&gt; is constructed from 
 depends on which element we pick first. I tend to think about &lt;span class="math"&gt;\(E[Y_n]\)&lt;/span&gt; as expectation of the conditional expectation.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h3&gt;MAW 4.15&lt;/h3&gt;
+&lt;h3 id="maw-415"&gt;MAW 4.15&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;a. Give a precise expression for the minimum number of nodes in an AVL tree of height &lt;span class="math"&gt;\(H\)&lt;/span&gt;.
 b. What is the minimum number of nodes in an AVL tree of height 15? &lt;/p&gt;
@@ -3376,7 +3805,7 @@ We need to wait until the whole solution (homogeneous part + particular part).&l
 &lt;p&gt;By \ref{eqn:2}, we see that &lt;span class="math"&gt;\(S(H) \ge \Big(\frac{1+\sqrt 5}{2}\Big)^H\)&lt;/span&gt;. Suppose we have &lt;span class="math"&gt;\(N\)&lt;/span&gt; nodes in an AVL 
 tree of height &lt;span class="math"&gt;\(H\)&lt;/span&gt;. Then &lt;span class="math"&gt;\(N \ge S(H) \ge \Big(\frac{1+\sqrt 5}{2}\Big)^H\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(\phi = \frac{1+\sqrt 5}{2}\)&lt;/span&gt;, then
 we have &lt;span class="math"&gt;\(\log _\phi N \ge H\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(H \le 1.44\log _2 N = O(\log N)\)&lt;/span&gt;.&lt;/p&gt;
-&lt;h3&gt;MAW 4.16&lt;/h3&gt;
+&lt;h3 id="maw-416"&gt;MAW 4.16&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Show the result of inserting 2,1,4,5,9,3,6,7 into an initially empty AVL tree.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3385,7 +3814,7 @@ we have &lt;span class="math"&gt;\(\log _\phi N \ge H\)&lt;/span&gt;, which is &
 &lt;/a&gt;&lt;/p&gt;
 &lt;!--[![maw-4-16](/images/maw-4-16.png)](https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/trees/graphviz-src/maw-4-16.gv)--&gt;
 
-&lt;h3&gt;MAW 4.17&lt;/h3&gt;
+&lt;h3 id="maw-417"&gt;MAW 4.17&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Keys &lt;span class="math"&gt;\(1, 2, \dots, 2^k-1\)&lt;/span&gt; are inserted in order into an initially empty AVL tree. Prove that the resulting tree
 is perfectly balanced.&lt;/p&gt;
@@ -3427,17 +3856,17 @@ subtree of height &lt;span class="math"&gt;\(h-1\)&lt;/span&gt;. See the followi
 &lt;p&gt;&lt;img src="/images/maw-4-17-4.PNG" alt="maw-4-17-4" style="height: 400px;"/&gt;&lt;/p&gt;
 &lt;p&gt;Since the left and right subtrees are perfectly balanced (height &lt;span class="math"&gt;\(h-1\)&lt;/span&gt;), the whole
 tree is perfectly balanced.&lt;/p&gt;
-&lt;h3&gt;MAW 4.23&lt;/h3&gt;
+&lt;h3 id="maw-423"&gt;MAW 4.23&lt;/h3&gt;
 &lt;p&gt;&lt;img src="/images/maw-4-23.JPG" alt="maw-4-23" style="width: 700px;"/&gt;&lt;/p&gt;
-&lt;h3&gt;MAW 4.24&lt;/h3&gt;
+&lt;h3 id="maw-424"&gt;MAW 4.24&lt;/h3&gt;
 &lt;p&gt;&lt;img src="/images/maw-4-24.PNG" alt="maw-4-24" style="width: 700px;"/&gt;&lt;/p&gt;
-&lt;h3&gt;MAW 4.25&lt;/h3&gt;
+&lt;h3 id="maw-425"&gt;MAW 4.25&lt;/h3&gt;
 &lt;p&gt;This problem is solved through brute-force calculation. You can reference the example
 from figure 4.46 to figure 4.55. I calculate for internal path length of the 
 tree and &lt;code&gt;find(1)&lt;/code&gt;, &lt;code&gt;find(2)&lt;/code&gt;. The answer is slightly off than the solution manual.
 May need to double check.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/maw-4-26.JPG" alt="maw-4-26" style="width: 700px; height: 400px;"/&gt;&lt;/p&gt;
-&lt;h3&gt;MAW 4.26&lt;/h3&gt;
+&lt;h3 id="maw-426"&gt;MAW 4.26&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;a. Show that if all nodes in a splay tree are accessed in sequential order, 
 the resulting tree consists of a chain of left children.&lt;/p&gt;
@@ -3453,7 +3882,7 @@ position for &lt;span class="math"&gt;\(N+1\)&lt;/span&gt; node: the right child
 then by BST, &lt;span class="math"&gt;\(N+1\)&lt;/span&gt; node's value is smaller than root's value and bigger than left most node's value.
 This violates the induction hypothesis because we are no longer access a splay tree in sequential order.
 Now we simply swap the right child of the root with root and we get a chain of left children. &lt;/p&gt;
-&lt;h3&gt;MAW 4.43&lt;/h3&gt;
+&lt;h3 id="maw-443"&gt;MAW 4.43&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;a. Show that via AVL single rotations, any binary search tree &lt;span class="math"&gt;\(T_1\)&lt;/span&gt; can be transformed into another
 search tree &lt;span class="math"&gt;\(T_2\)&lt;/span&gt; (with the same keys).
@@ -3486,7 +3915,7 @@ Since we could do &lt;span class="math"&gt;\(N\)&lt;/span&gt; rotations, then th
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -3637,7 +4066,7 @@ equal to the height of the tree.&lt;/li&gt;
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -3812,7 +4241,7 @@ in the coming posts).&lt;/li&gt;
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -3962,7 +4391,7 @@ numCalls.c:27:1:main    64      static
 &lt;p&gt;As you can see, &lt;code&gt;Fib&lt;/code&gt; only uses &lt;code&gt;48 bytes&lt;/code&gt; and it's quite unlikely to drain out our stack space. 
 But, of course, the runing time is another thing. I mean it's going to be very slow to get the output
 for &lt;span class="math"&gt;\(N = 50\)&lt;/span&gt;.&lt;/p&gt;
-&lt;h2&gt;Future work&lt;/h2&gt;
+&lt;h2 id="future-work"&gt;Future work&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;a href="http://vulms.vu.edu.pk/Courses/CS201/Downloads/p60-robertson.pdf"&gt;This paper&lt;/a&gt; mentions that 
@@ -3994,7 +4423,7 @@ for &lt;span class="math"&gt;\(N = 50\)&lt;/span&gt;.&lt;/p&gt;
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -4872,18 +5301,18 @@ Then, it looks something like this&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;If system &lt;tt class="docutils literal"&gt;fls&lt;/tt&gt; is defined as strong, my &lt;tt class="docutils literal"&gt;fls&lt;/tt&gt; implementation will be overridden.&lt;/p&gt;
 &lt;/div&gt;
-</summary><category term="c"></category><category term="double-linked-list"></category></entry><entry><title>Josephus Problem</title><link href="http://zhu45.org/posts/2016/Dec/31/josephus-problem/" rel="alternate"></link><published>2016-12-31T20:24:00+08:00</published><updated>2016-12-31T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-31:posts/2016/Dec/31/josephus-problem/</id><summary type="html">&lt;h2&gt;Preface&lt;/h2&gt;
+</summary><category term="c"></category><category term="double-linked-list"></category></entry><entry><title>Josephus Problem</title><link href="http://zhu45.org/posts/2016/Dec/31/josephus-problem/" rel="alternate"></link><published>2016-12-31T20:24:00+08:00</published><updated>2016-12-31T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-31:posts/2016/Dec/31/josephus-problem/</id><summary type="html">&lt;h2 id="preface"&gt;Preface&lt;/h2&gt;
 &lt;p&gt;This is actually MAW 3.10. I gradually realize how dense MAW is.
 In the &lt;a href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/"&gt;previous problem&lt;/a&gt;,
 I write almost 500 lines of code. For this one, the problem is not really diffcult to solve if we implement a program 
 that follows the game rule exactly. However, I figure it is a good chance to dig a little deeper to learn somewhat
 fully from the question.&lt;/p&gt;
 &lt;p&gt;Let's start to dive in.&lt;/p&gt;
-&lt;h2&gt;Overview&lt;/h2&gt;
+&lt;h2 id="overview"&gt;Overview&lt;/h2&gt;
 &lt;p&gt;I first describe the &lt;em&gt;Josephus problem&lt;/em&gt; in general. Then, I present a closed form solution to 
 solve a special case of the original problem.
 Afterwards, I present a recurrence solution to solve the general problem. &lt;/p&gt;
-&lt;h2&gt;Josephus problem&lt;/h2&gt;
+&lt;h2 id="josephus-problem"&gt;Josephus problem&lt;/h2&gt;
 &lt;p&gt;The &lt;em&gt;Josephus problem&lt;/em&gt; is the following game: &lt;span class="math"&gt;\(N\)&lt;/span&gt; people, numbered &lt;span class="math"&gt;\(1\)&lt;/span&gt; to &lt;span class="math"&gt;\(N\)&lt;/span&gt;, are
 sitting in a circle. Starting at person 1, a hot potato is passed. the &lt;span class="math"&gt;\(M\)&lt;/span&gt;th person 
 holding the hot potato is eliminated, the circle closes ranks, and the
@@ -4900,7 +5329,7 @@ In MAW description, &lt;span class="math"&gt;\(M = 0\)&lt;/span&gt; and &lt;span
 elimination order. Similarly, in the book, &lt;span class="math"&gt;\(M = 1\)&lt;/span&gt; when we have &lt;span class="math"&gt;\(2\)&lt;/span&gt;, &lt;span class="math"&gt;\(4\)&lt;/span&gt;, &lt;span class="math"&gt;\(1\)&lt;/span&gt;, &lt;span class="math"&gt;\(5\)&lt;/span&gt; elimination order for the second example.  Mathematically, 
 &lt;span class="math"&gt;\(M_{new} = M_{MAW} + 1\)&lt;/span&gt;.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h2&gt;Josephus problem with &lt;span class="math"&gt;\(M = 2\)&lt;/span&gt;&lt;/h2&gt;
+&lt;h2 id="josephus-problem-with-m-2"&gt;Josephus problem with &lt;span class="math"&gt;\(M = 2\)&lt;/span&gt;&lt;/h2&gt;
 &lt;p&gt;Let's first discuss a special case of the Josephus Problem: &lt;span class="math"&gt;\(M = 2\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;In the following, &lt;span class="math"&gt;\(n\)&lt;/span&gt; denotes the number of 
 people in the initial circle, and &lt;span class="math"&gt;\(m\)&lt;/span&gt; denotes the count for each step. In other words, &lt;span class="math"&gt;\(m-1\)&lt;/span&gt; people
@@ -5027,13 +5456,13 @@ recurrence of \ref{eq:1} and \ref{eq:2}, which is (1.11) in the book. This has n
 with the Josephus problem and I'm guessing the reason why the author want to talk about 
 the solution to the generalized recurrence is to illustrate dynamic programming philosophy.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h2&gt;General solution&lt;/h2&gt;
+&lt;h2 id="general-solution"&gt;General solution&lt;/h2&gt;
 &lt;p&gt;/&lt;em&gt;The big picture here is we need to find out the relative position of the final survivor to the
 "first" person during each recursive call and then calculate the actual position for actual &lt;span class="math"&gt;\(n\)&lt;/span&gt;&lt;/em&gt;/&lt;/p&gt;
 &lt;p&gt;The general solution utilitizes the dynamic programming paradigm by performing the first step
 and using the solution of the subproblem we create to solve the initial problem. 
 In terms of the solution, there is a difference when we start with the first person as &lt;span class="math"&gt;\(1\)&lt;/span&gt; or &lt;span class="math"&gt;\(0\)&lt;/span&gt;.&lt;/p&gt;
-&lt;h3&gt;Starting from 1&lt;/h3&gt;
+&lt;h3 id="starting-from-1"&gt;Starting from 1&lt;/h3&gt;
 &lt;p&gt;The key insight is the following: the result of &lt;span class="math"&gt;\(J(n,m)\)&lt;/span&gt; is best NOT thought of as the &lt;em&gt;number&lt;/em&gt; that is the 
 Josephus survivor, but rather as the &lt;em&gt;index&lt;/em&gt; of the number that is the Josephus survivor. &lt;/p&gt;
 &lt;p&gt;Let's first take a look an example when &lt;span class="math"&gt;\(n = 6\)&lt;/span&gt; and &lt;span class="math"&gt;\(m = 2\)&lt;/span&gt;.&lt;/p&gt;
@@ -5130,7 +5559,7 @@ zero-indexing.&lt;/p&gt;
 &lt;p&gt;which simplifies to:&lt;/p&gt;
 &lt;div class="math"&gt;$$(m-1 + J(n-1, m)) \bmod n + 1$$&lt;/div&gt;
 &lt;p&gt;Notice that &lt;span class="math"&gt;\(J(1,m) = 1\)&lt;/span&gt;, which indicates that we're one-indexed.&lt;/p&gt;
-&lt;h3&gt;Starting from 0&lt;/h3&gt;
+&lt;h3 id="starting-from-0"&gt;Starting from 0&lt;/h3&gt;
 &lt;p&gt;Since we are not in zero-indexed. Our &lt;span class="math"&gt;\(J(6,2)\)&lt;/span&gt; example looks like the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;| index | 0 | 1 | 2 | 3 | 4 | 5 |
 |-------|---|---|---|---|---|---|
@@ -5172,7 +5601,7 @@ zero-indexing.&lt;/p&gt;
 
 &lt;!-- Use the recurrence relation we just derived. --&gt;
 
-&lt;h2&gt;What's left out&lt;/h2&gt;
+&lt;h2 id="whats-left-out"&gt;What's left out&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://blue.butler.edu/~phenders/InRoads/MathCounts8.pdf"&gt;Equivalence Class Solution&lt;/a&gt; is interesting to check out.&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://www.scribd.com/document/3567390/Rank-Trees"&gt;Rank tree&lt;/a&gt; as a data sturcture is worth to check out to solve this problem. &lt;a href="http://www.imt.ro/romjist/Volum12/Number12_1/pdf/02-MCosulschi.pdf"&gt;This paper&lt;/a&gt; gives a more detailed analysis.&lt;/li&gt;
@@ -5213,7 +5642,7 @@ zero-indexing.&lt;/p&gt;
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -5594,7 +6023,7 @@ because the integer we construct will no longer be &lt;tt class="docutils litera
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -6064,7 +6493,7 @@ However, if &lt;span class="math"&gt;\(M\)&lt;/span&gt; is very small in compari
     if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
@@ -6171,7 +6600,7 @@ specified in this file to generate our archive page.&lt;/p&gt;
  {% endblock %}
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;Let's first take a look at what archive page we can get from this code.&lt;/p&gt;
-&lt;img alt="" src="/images/pelican-hack-1.png" /&gt;
+&lt;img alt="pelican-hack-1 result" src="/images/pelican-hack-1.png" /&gt;
 &lt;p&gt;Line[1],[2] illustrates how usually template file get organized. Usually, we create
 a basic html file that specifies the layout of our site, which is &lt;tt class="docutils literal"&gt;base.html&lt;/tt&gt; in my case.
 Then, we want to extends this basic html to tailor to different needs. Inside &lt;tt class="docutils literal"&gt;base.html&lt;/tt&gt;,

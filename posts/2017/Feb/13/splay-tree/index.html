@@ -41,17 +41,17 @@
             <h1>Splay Tree</h1>
             <p class="date">Written on <time datetime="2017-02-13T01:12:00+08:00">Feb 13, 2017</time></p>
         </header>
-
+        
         <article>
             <p>This is the summary of <em>Splay tree</em> part in MAW Chapter 4.</p>
-<h2>Motivation</h2>
+<h2 id="motivation">Motivation</h2>
 <p>Ordinary BST has no balance conditions and thus, it is possible for a whole sequnece of <span class="math">\(O(N)\)</span> accesses to take place. This cumulative running time 
 then becomes noticeable. So, we introduce the balance condition on BST to improve our running time. One way to do so is to enforce a balance condition
 when nodes change (i.e. insert or delete) like AVL. However, this data structure is hard to code and rebalancing costs time. In addition, sometimes it is 
 OK for us to have <span class="math">\(O(N)\)</span> operation as long as it occurs infrequently. In other words, A search data structure with <span class="math">\(O(N)\)</span> worst-case time, but a <em>guarantee</em>
 of at most <span class="math">\(O(M \log N)\)</span> for any <span class="math">\(M\)</span> consecutive operations, is good enough. Splay tree meets our needs. It is a data structure that 
 lies right in-between BST (no balance condition) and AVL (very strict balance condition).</p>
-<h2>Concept</h2>
+<h2 id="concept">Concept</h2>
 <p>A splay tree is a type of balanced binary search tree. Structurally, it is identical to an ordinary binary search tree; the only difference is in the 
 algorithms for finding, inserting, and deleting entries. Specifically, splay tree is a self-adjusting tree, which the structure get organized over time
 as nodes are accessed (i.e., insert, delete, or find). This makes sense because if we don't re-structure the tree each time we access an node, then 
@@ -100,12 +100,12 @@ apply the rules until x is at the root of the tree.</p>
 </pre></div>
 
 
-<h2>Implementation details</h2>
+<h2 id="implementation-details">Implementation details</h2>
 <p>Splay tree is really a flexible data structure in the sense that there are many options to implement 
 the "splay" rules and corresponding tree operations and still have the property hold. Reference <a href="https://en.wikipedia.org/wiki/Splay_tree">wiki</a>
 for complete summary. Here, I only mention some of my findings. Please note that depends on how you implement your operations, the resulting tree
 may be different (i.e. different insert algorithm may result in different tree structure but there root will be the same).</p>
-<h3>Insertion (bottom-up)</h3>
+<h3 id="insertion-bottom-up">Insertion (bottom-up)</h3>
 <p>There are two ways to do this. The first way is to use "split" to split the tree based upon the insertion value. By the property of splaying, 
 we will either have the insertion value (already inside the tree) or the parent of the insertion point at the root. Then we can make our insertion 
 value as the new root and adjust the orginal tree to form the new tree. For example,  if the insertion value <code>elem</code> smaller than the root, we do</p>
@@ -122,30 +122,30 @@ value as the new root and adjust the orginal tree to form the new tree. For exam
 we know <code>T</code>'s left subtree's values are smaller than <code>elem</code> as well. This is because 
 if there is any node <span class="math">\(x\)</span> greater than <code>elem</code> but smaller than <code>T</code>'s value, then <code>T</code> should be <span class="math">\(x\)</span> instead (by splaying), which is a contradiction.</p>
 <p>The second way is to do BST insertion first and then splay the insertion value, which is really straightforward and easy to code. </p>
-<h2>Deletion (bottom-up)</h2>
+<h2 id="deletion-bottom-up">Deletion (bottom-up)</h2>
 <p>Correspondingly there are two methods to deletion as well. The first way is to splay the to-be-deleted node. This puts the node at the root. If it is
 deleted, we get two subtrees <span class="math">\(T_L\)</span> and <span class="math">\(T_R\)</span>. If we find the largest element in <span class="math">\(T_L\)</span>, then this element is rotated to the root of <span class="math">\(T_L\)</span>, and 
 <span class="math">\(T_L\)</span> will now have a root with no right child. We can finish the deletion by making <span class="math">\(T_R\)</span> the right child.</p>
 <p>The second way is to do BST deletion first, and then splay the parent of the deletion point to the root. It is quite similar to BST deletion and see
 the implementation <a href="https://github.com/xxks-kkk/algo/blob/master/trees/splay/splay.c">here</a>.</p>
-<h2>Properties</h2>
+<h2 id="properties">Properties</h2>
 <ul>
 <li>any <span class="math">\(M\)</span> consecutive tree operations starting from an empty tree take at most <span class="math">\(O(M \log N)\)</span> time.</li>
 <li>Even though the worst-case running time is <span class="math">\(O(N)\)</span> for operation, the amortized cost of the operation is <span class="math">\(O(\log N)\)</span>.</li>
 <li>if all nodes in a splay tree are accessed in sequential order, the resulting tree consists of a chain of left children. (MAW 4.26.a)</li>
 <li>if all nodes in a splay tree are accessed in sequential order, then the total access time is <span class="math">\(O(N)\)</span>, regardless of the initial tree.</li>
 </ul>
-<h2>Pros &amp; Cons of data structure</h2>
+<h2 id="pros-cons-of-data-structure">Pros &amp; Cons of data structure</h2>
 <p>Splay tree is simpler and easier to program. Because of its implicity, splay tree insertion and deletion is typically faster in practice.
 Find operation can be faster or slower, depending on circumstances. Splay trees are designed to give especially fast access to nodes that 
 have been accessed recently, so they really excel in applications where a small fraction of the nodes are the targets of most of the find operation.</p>
-<h2>Todo</h2>
+<h2 id="todo">Todo</h2>
 <p>This post does not cover every part of the splay tree. This post will be updated once I complete the following two parts study:</p>
 <ul>
 <li>MAW Chapter 11 gives a thorough study of the amortized cost of the splay tree operations <span class="math">\(O( \log N)\)</span>.</li>
 <li>MAW Chapter 12 gives implementation details on top-down splay tree.  </li>
 </ul>
-<h2>Reference</h2>
+<h2 id="reference">Reference</h2>
 <ul>
 <li>http://www.cs.cmu.edu/afs/cs/academic/class/15859-f05/www/documents/splay-trees.txt</li>
 <li>http://web.stanford.edu/class/archive/cs/cs166/cs166.1146/lectures/08/Small08.pdf (proof of properties in a concise structure)</li>
@@ -169,7 +169,7 @@ have been accessed recently, so they really excel in applications where a small 
     if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +

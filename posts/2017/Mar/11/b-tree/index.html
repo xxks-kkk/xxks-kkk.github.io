@@ -41,10 +41,10 @@
             <h1>B-Tree</h1>
             <p class="date">Written on <time datetime="2017-03-11T21:32:00+08:00">Mar 11, 2017</time></p>
         </header>
-
+        
         <article>
             <p>This is the summary of <em>B tree</em> part in MAW Chapter 4.</p>
-<h2>Motivation</h2>
+<h2 id="motivation">Motivation</h2>
 <p>So far we have assumed that an entire data structure can be stored in the main memory. 
 However, this is not true in reality because if we have more data than can fit in main 
 memory, we have to store data structure on disk. In this case, number of disk 
@@ -52,7 +52,7 @@ accesses will dominate the running time because they are very expensive comparin
 processor speed. Then, when we design a data structure, we have to try our best to minimize
 the number of disk accesses. Under the context of tree structure, B-tree is a structure
 that tries to read as much information as possible in every disk access operation.</p>
-<h2>Concept</h2>
+<h2 id="concept">Concept</h2>
 <p>B-tree is by far the most chaoatic defined structure in the sense that different people
 have slightly different definitions. I'll follow MAW's definition and points out how MAW's definition
 is different from the other commonly seen definition.</p>
@@ -69,7 +69,7 @@ is different from the other commonly seen definition.</p>
 the actual data to be stored in both leaves and internal nodes, which is not the case in our definition. In some <span class="math">\(B^+-\)</span>tree definition,
 the leaves are connected as a linked list so that we don't have to restart the search from the root once we already traverse down to the 
 leaf if we want a record that is on a leaf really close to the leaf we currently at. </p>
-<h2>Examples</h2>
+<h2 id="examples">Examples</h2>
 <p>Some typical examples in B-tree are of order 4 (known as 2-3-4 tree) and 3 (known as 2-3 tree).</p>
 <p><img src="/images/2-3-tree.PNG" alt="2-3-tree" style="width: 700px;"/></p>
 <p>B-tree is a structure that is widely used in the database system. The following picture shows a more real B-tree example. 
@@ -79,7 +79,7 @@ the customer information can be found in the customer table.</p>
 <p><img src="/images/real-b-tree.PNG" alt="real-b-tree" style="width: 700px;"/></p>
 <p>In this example, once we continue down the tree and locate the phone number we are searching for, we use the RID to fetch the 
 rest of the customer record from the table. In this case, we use 4 disk accesses.</p>
-<h2>Operations</h2>
+<h2 id="operations">Operations</h2>
 <ul>
 <li>Find:</li>
 </ul>
@@ -97,7 +97,7 @@ to actually implement one. Stanford paper listed in the reference section do a c
 a real-life B-tree deletion which may be complicated for the learner. </p>
 <p>The strategy we use for deletion is that we want to find the key to be deleted and remove it first. Then, if the leaf underflows, we borrow from 
 a neighbor. If leaf underflows and can't borrow, we merge nodes and delete parent.</p>
-<h2>Runtime analysis</h2>
+<h2 id="runtime-analysis">Runtime analysis</h2>
 <p>We first show that height <span class="math">\(H\)</span> is logarithmic in number of data items <span class="math">\(N\)</span>. Let <span class="math">\(M \ge 2\)</span>. Because all nodes are at least half full (except root may have
 only 2 children) and all leaves are at the same level, the minimum number od data items <span class="math">\(N\)</span> for a height <span class="math">\(H\)</span> tree is </p>
 <div class="math">$$
@@ -113,7 +113,7 @@ $$</div>
 O(depth <span class="math">\(\times \log M\)</span>) = <span class="math">\(O(\log N)\)</span> because <span class="math">\(M\)</span> is small compared to <span class="math">\(N\)</span>.</p>
 <p>Insertion and deletion doesn't different from <span class="math">\(O(\log N)\)</span> because the unique manipulation takes constant amount of work and the number 
 of times this unique manipulation is proportional to the height of tree.</p>
-<h2>Pros &amp; Cons of data structure</h2>
+<h2 id="pros-cons-of-data-structure">Pros &amp; Cons of data structure</h2>
 <p>What makes B-trees so disk friendly?</p>
 <ul>
 <li>
@@ -133,7 +133,7 @@ of times this unique manipulation is proportional to the height of tree.</p>
 </ul>
 </li>
 </ul>
-<h2>Reference</h2>
+<h2 id="reference">Reference</h2>
 <ul>
 <li>MAW Chapter 4</li>
 <li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture15.pdf</li>
@@ -158,7 +158,7 @@ of times this unique manipulation is proportional to the height of tree.</p>
     if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +

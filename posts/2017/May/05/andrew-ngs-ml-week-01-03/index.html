@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Andrew Ng's ML Week 01 - 03
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+            <div class="container">
+
+<header class="blog-header">
+    <h1><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+        <a href="../../../../../quotes.html" style="padding: 10px">QUOTES</a>
+        <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+        <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a>
+    </nav>
+</header>
+
+    <div class="post">
+        <header>
+            <h1>Andrew Ng's ML Week 01 - 03</h1>
+            <p class="date">Written on <time datetime="2017-05-05T16:18:00+08:00">May 05, 2017</time></p>
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#ml-overview">ML overview</a><ul>
+<li><a href="#what-is-ml">What is ML?</a></li>
+<li><a href="#types-of-ml-problems">Types of ML problems</a></li>
+</ul>
+</li>
+<li><a href="#notation">Notation</a></li>
+<li><a href="#linear-regression">Linear regression</a><ul>
+<li><a href="#in-theory">In theory</a></li>
+<li><a href="#in-practice">In practice</a></li>
+</ul>
+</li>
+<li><a href="#linear-regression-with-regularization">Linear regression with regularization</a><ul>
+<li><a href="#in-theory_1">In theory</a></li>
+<li><a href="#in-practice_1">In practice</a></li>
+</ul>
+</li>
+<li><a href="#logistic-regression">Logistic regression</a><ul>
+<li><a href="#in-theory_2">In theory</a></li>
+<li><a href="#in-practice_2">In practice</a></li>
+</ul>
+</li>
+<li><a href="#logistic-regression-with-regularization">Logistic regression with regularization</a><ul>
+<li><a href="#in-theory_3">In theory</a></li>
+<li><a href="#in-practice_3">In practice</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>In my <a href="../../../../../posts/2017/Apr/21/introducing-the-andrew-ngs-ml-course-study-notes/">introducing post</a>, I mention that
+I decide to write summary post weekly for the course. However, in practice, I find
+it is very hard to do. This is mainly because I want to keep the progress in MAW 
+reading while meet the coursework deadlines. So, I decide to do the summary post
+based upon the module of the material itself.</p>
+<p>In addition, like MAW reading posts, I will focus on the reflection and the post itself
+may not be self-contained. However, this may happen rarely.</p>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>Coursera has really well-designed programming assignment that really helps to understand
+both concepts and its actual implementation. All the code snippets listed in the below
+and upcoming posts are availabe <a href="https://github.com/xxks-kkk/Code-for-blog/tree/master/2017/andrew-ng-ml">in my code-for-blog repo</a>.</p>
+</blockquote>
+<h2 id="ml-overview">ML overview</h2>
+<h3 id="what-is-ml">What is ML?</h3>
+<p>The biggest take-away for me is that ML is to solve the problems that
+cannot be easily solved by the programming. As mentioned by Prof. Andrew, we
+know how to program the shortest path from A to B but we may have hard time
+to program a solution to do image tagging, email spam checking, and so on.
+The way we solve those problems is by teaching computers to do things like us
+through learning algorithms.</p>
+<p>There are a lot of examples about ML mentioned in the video:</p>
+<ul>
+<li>
+<p>Database mining: large datasets from growth of automation/web (i.e. web click data,
+medical records, biology, engineering)</p>
+</li>
+<li>
+<p>Applications can't program by hand. (i.e. autonomous helicopter, 
+handwriting recognition, most of NLP, CV)</p>
+</li>
+<li>
+<p>Self-customizing programs (i.e. Amazon, Netflix product recommendations)</p>
+</li>
+<li>
+<p>Understanding human learning (brain, real AI)</p>
+</li>
+</ul>
+<p>There are two definitions for ML: </p>
+<ul>
+<li>
+<p>Arthur Samuel: the field of study that gives computers the ability to learn
+without being explicitly programmed. (older, informal definition)</p>
+</li>
+<li>
+<p>Tom Mitchell: A computer program is said to learn from experience <span class="math">\(E\)</span> with respect
+to some class of tasks <span class="math">\(T\)</span> and performance measure <span class="math">\(P\)</span>, if its performance at tasks in <span class="math">\(T\)</span>,
+as measured by <span class="math">\(P\)</span>, improves with experience <span class="math">\(E\)</span>.</p>
+</li>
+</ul>
+<p>Take playing checkers as an example. <span class="math">\(E = \text{the experience of playing many games of checkers}\)</span>;
+<span class="math">\(T = \text{the task of playing checkers}\)</span>; <span class="math">\(P = \text{the probability that the program will win the next game}\)</span>.</p>
+<h3 id="types-of-ml-problems">Types of ML problems</h3>
+<p>There are two general types:  Supervised learning and Unsupervised learning.</p>
+<ul>
+<li>
+<p>Supervised learning: 'right' answer given</p>
+<ul>
+<li>
+<p>Regression: predict continuous valued output</p>
+<ul>
+<li>EX1: given data about the size of houses on the real estate market, try to predict their price.</li>
+<li>EX2: given a picture of a person, we predict their age on the basis of the given picture.</li>
+</ul>
+</li>
+<li>
+<p>Classification: predict results in a discrete output (categories)</p>
+<ul>
+<li>EX1: predict whether the house sells for more or less than the asking price.</li>
+<li>EX2: given a patient with a tumor, we predict whether the tumor is malignant or benign.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Unsupervised learning: little or no idea what our resuls should look like. We can
+derive structure from data where we don't necessarily know the effect of the variables.</p>
+<ul>
+<li>
+<p>Clustering: take a collection of 1,000,000 different genes, and find a way to automatically group
+these genes into groups that are somehow similar or related by different variables (i.e. lifespan, location, roles)</p>
+</li>
+<li>
+<p>Non-clustering: the "cocktail party algorithm" allows you to find structure in a 
+chaotic environment (i.e. identifying individual voices and music from a mesh of sounds at a cocktail party)</p>
+</li>
+<li>
+<p>Other application fields: organize computing clusters, social network analysis, market segmentation, 
+astronomical data analysis</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="notation">Notation</h2>
+<p>A few notation used throughout the course:</p>
+<ul>
+<li><span class="math">\(n = \text{number of features}\)</span></li>
+<li><span class="math">\(m = \text{number of training examples}\)</span></li>
+<li><span class="math">\(x^{(i)} = \text{input (features) of }i\text{th training example}\)</span></li>
+<li><span class="math">\(x_j^{(i)} = \text{value of feature }j \text{ in }i\text{th training example}\)</span></li>
+</ul>
+<h2 id="linear-regression">Linear regression</h2>
+<h3 id="in-theory">In theory</h3>
+<p>For linear regression, our hypothesis is </p>
+<div class="math">$$
+h_\theta(x) = \theta_0 x_0 + \theta_1 x_1 + \dots + \theta_n x_n = \theta^T x  
+$$</div>
+<p>where </p>
+<div class="math">$$
+\begin{align}
+&amp; x = \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \in \mathbb{R} ^{n+1}  \label{eq:1} &amp;
+&amp; \theta = \begin{bmatrix} \theta_0 \\ \theta_1 \\ \vdots \\ \theta_n \end{bmatrix} \in \mathbb{R} ^{n+1}
+\end{align}
+$$</div>
+<p>and our cost function is </p>
+<div class="math">$$
+\begin{equation}
+J(\theta) = \frac{1}{2m} \sum_{i=1}^m(\theta^T x^{(i)}-y(i))^2 \label{eq:2}
+\end{equation}
+$$</div>
+<p>In order to find <span class="math">\(\theta\)</span> that minimizes our cost function <span class="math">\(J(\theta)\)</span>. Two methods are available for us:</p>
+<ul>
+<li>Gradient Descent</li>
+</ul>
+<div class="math">$$
+\begin{align} 
+\text{Repeat\{ } &amp;&amp;  \nonumber\\
+&amp;&amp; \theta_j := \theta_j - \alpha \times \frac{1}{m} \sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)} &amp;&amp;
+\text{(simultaneously update $\theta_j$ for $j = 0, 1, \dots, n$)}  \label{eq:3}\\
+\text{\}} \nonumber
+\end{align}
+$$</div>
+<p><span class="math">\(\alpha\)</span> is called learning rate, which determines "the step we take downhill" and the part afterwards decides
+which direction we want to go (derived by taking partial derivatives against <span class="math">\(\theta_j\)</span>).</p>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>We may need to do feature scaling &amp; pick up learning rate <span class="math">\(\alpha\)</span> wisely when we work with gradient descent.</p>
+</blockquote>
+<ul>
+<li>Normal Equation</li>
+</ul>
+<p>We just directly calculate the partial derivatives for every <span class="math">\(\theta_j\)</span> and set it equals to zero 
+(i.e <span class="math">\(\frac{\partial}{\partial \theta_j}J(\theta) = 0\)</span> for every <span class="math">\(j\)</span>) and we get:</p>
+<div class="math">$$
+\begin{equation}
+\theta = (X^TX)^{-1}X^Ty \label{eq:4}
+\end{equation}
+$$</div>
+<p>where <span class="math">\(X\)</span> is called <em>design matrix</em>, and it has form</p>
+<div class="math">$$
+\begin{align*} 
+&amp; x = \left[\begin{array}{ccc} - &amp; (x^{(1)})^T &amp; - \\ - &amp; (x^{(2)})^T &amp; - \\ &amp; \vdots &amp; \\ - &amp; (x^{(m)})^T &amp; -\end{array} \right] &amp;
+x^{(i)} = \begin{bmatrix}x_0^{(i)} \\ \vdots \\ x_n^{(i)} \end{bmatrix} \in \mathbb{R} ^{n+1}
+\end{align*}
+$$</div>
+<h3 id="in-practice">In practice</h3>
+<p>One tricky thing I find out when I work through quiz and programming problems 
+is the gap between the mathematical representation and the actual implementation.</p>
+<p>For the cost function \ref{eq:2}, we implement it in Octave as following:</p>
+<div class="highlight"><pre><span></span><span class="n">J</span> <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span> <span class="o">-</span> <span class="n">y</span><span class="p">);</span> 
+</pre></div>
+
+
+<p>where </p>
+<div class="math">$$
+X = \begin{bmatrix} 
+x_0^{(1)} &amp;&amp; x_1^{(1)} &amp;&amp; \dots &amp;&amp; x_n^{(1)} \\
+x_0^{(2)} &amp;&amp; x_1^{(2)} &amp;&amp; \dots &amp;&amp; x_n^{(2)} \\
+\vdots \\
+x_0^{(m)} &amp;&amp; x_1^{(m)} &amp;&amp; \dots &amp;&amp; x_n^{(m)}
+\end{bmatrix}
+$$</div>
+<p>Note that <span class="math">\(X\)</span> here is different from \ref{eq:1} because <span class="math">\(X\)</span> here is to faciltate
+the vectorized cost function calculation in program (i.e Octave) and it is natural
+fit with how the data actually loaded into the program.</p>
+<p>Also, if you take a look at our octave calculation above, we explictly avoid doing
+summation in \ref{eq:2}. We can put both vectorized form used in octave and mathematical
+definition side by side to see the pattern:</p>
+<div class="math">$$
+J(\theta) = \frac{1}{2m}(X\theta-y)^T(X\theta-y) = \frac{1}{2m} \sum_{i=1}^m(\theta^T x^{(i)}-y(i))^2
+$$</div>
+<p>Matrix transpose times matrix itself is a commonly-seen technique that is used to
+avoid explictly summation.</p>
+<p>For gradient descent, we can calculate like the following in octave:</p>
+<div class="highlight"><pre><span></span><span class="n">theta</span> <span class="p">=</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">*</span> <span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span><span class="o">&#39;*</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span> <span class="o">-</span> <span class="n">y</span><span class="p">));</span>
+</pre></div>
+
+
+<p>Let me use an example to illustrate why we can calculate \ref{eq:3} like above.
+Suppose <span class="math">\(m = 4\)</span> with <span class="math">\(h_\theta(x) = \theta_0x_0+\theta_1x_1\)</span>.
+Then, we have</p>
+<div class="math">$$
+\begin{align*} 
+X = \begin{bmatrix}
+x_0^{(1)} &amp;&amp; x_1^{(1)} \\
+x_0^{(2)} &amp;&amp; x_1^{(2)} \\
+x_0^{(3)} &amp;&amp; x_1^{(3)} \\
+x_0^{(4)} &amp;&amp; x_1^{(4)} \\
+\end{bmatrix} &amp;&amp;
+\theta = \begin{bmatrix} \theta_0 \\ \theta_1 \end{bmatrix} &amp;&amp;
+h_\theta(x^{(i)}) - y^{(i)} = \begin{bmatrix}
+\theta_0 + \theta_1x_1^{(1)} - y^{(1)} \\
+\vdots \\
+\theta_0 + \theta_1x_1^{(4)} - y^{(4)}
+\end{bmatrix}
+\end{align*}
+$$</div>
+<p>so now we can show why:</p>
+<div class="math">$$
+\begin{eqnarray*}
+\sum_{i=1}^{m}(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)} \text{ for all $j$ } &amp;=&amp;
+(\theta_0 + \theta_1x_1^{(1)} - y^{(1)}) \begin{bmatrix} x_0^{(1)} \\ x_1^{(1)} \end{bmatrix} + 
+\dots + (\theta_0 + \theta_1x_1^{(4)} - y^{(4)}) \begin{bmatrix} x_0^{(4)} \\ x_1^{(4)} \end{bmatrix} \\
+&amp;=&amp; \begin{bmatrix} x_0^{(1)} &amp;&amp; x_0^{(2)} &amp;&amp; x_0^{(3)} &amp;&amp; x_0^{(4)} \\
+x_1^{(1)} &amp;&amp; x_1^{(2)} &amp;&amp; x_1^{(3)} &amp;&amp; x_1^{(4)}
+\end{bmatrix} 
+\begin{bmatrix}
+\theta_0 + \theta_1x_1^{(1)} - y^{(1)} \\
+\vdots \\
+\theta_0 + \theta_1x_1^{(4)} - y^{(4)}
+\end{bmatrix}
+\end{eqnarray*}
+$$</div>
+<p>For normal equation, we can calculate like the following in octave:</p>
+<div class="highlight"><pre><span></span><span class="n">theta</span> <span class="p">=</span> <span class="nb">pinv</span><span class="p">(</span><span class="n">X</span><span class="o">&#39;*</span><span class="n">X</span><span class="p">)</span><span class="o">*</span><span class="n">X</span><span class="o">&#39;*</span><span class="n">y</span><span class="p">;</span>
+</pre></div>
+
+
+<p>This is no different than \ref{eq:4} we mentioned above.</p>
+<h2 id="linear-regression-with-regularization">Linear regression with regularization</h2>
+<p>Quite often, we may face <em>overfitting</em> issue, which can be fixed by either reduce number of features or
+regularization.</p>
+<p>Regularization is to keep all the features, but reduce magnitude (values) of parameters <span class="math">\(\theta_j\)</span>. By
+doing so, we can make our hypothesis simpler and less prone to overfitting.</p>
+<h3 id="in-theory_1">In theory</h3>
+<p>With regularization, our new cost function becomes </p>
+<div class="math">$$
+J(\theta) = \frac{1}{2m}\Big[ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 + 
+\underbrace{\lambda \sum_{j=1}^n \theta_j^2\Big]}_\textrm{regularization term}
+$$</div>
+<p>The regularization parameter <span class="math">\(\lambda\)</span> controls the tradeoff between "fit the data well" and
+"keep parameters small to avoid overfitting".  If <span class="math">\(\lambda\)</span> is set to an extremely large
+value, then we may face "underfit" issue (i.e. all <span class="math">\(\theta_j\)</span> for <span class="math">\(j = 1, \dots, n\)</span> close to 0).</p>
+<p>* ---- Note ---- *</p>
+<blockquote>
+<p>We don't penalize <span class="math">\(\theta_0\)</span>.</p>
+</blockquote>
+<p>Since our cost function has changed, both gradient descent and normal equation have to adjust accordingly:</p>
+<ul>
+<li>Gradient Descent</li>
+</ul>
+<div class="math">$$
+\begin{align*} 
+\text{Repeat\{ } &amp;&amp; \\
+\theta_0 := \theta_0 - \alpha \times \frac{1}{m} \sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_0^{(i)} &amp;&amp; \\
+\theta_j := \theta_j - \alpha \times \lbrack \frac{1}{m} \sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)} + 
+\frac{\lambda}{m}\theta_j\rbrack &amp;&amp; (j = 1,2,3, \dots, n) \\
+\text{\}}
+\end{align*}
+$$</div>
+<ul>
+<li>Normal Equation</li>
+</ul>
+<div class="math">$$
+\theta = (X^TX + \lambda
+\begin{bmatrix} 
+0 &amp;&amp;    &amp;&amp;   &amp;&amp;       \\
+  &amp;&amp; 1  &amp;&amp;   &amp;&amp;       \\
+  &amp;&amp;    &amp;&amp; \ddots &amp;&amp;  \\
+  &amp;&amp;    &amp;&amp;   &amp;&amp;  1
+\end{bmatrix}
+)^{-1}X^Ty
+$$</div>
+<p>we want <span class="math">\(\lambda &gt; 0\)</span> so that the matrix is invertible.</p>
+<h3 id="in-practice_1">In practice</h3>
+<p>Linear regression regularization implementation doesn't differ from no-regularization
+implementation in terms of matrices implementation technique. I'll show a code snippet
+for logistic regression with regularization below as hint for this section.</p>
+<h2 id="logistic-regression">Logistic regression</h2>
+<h3 id="in-theory_2">In theory</h3>
+<p>Logistic regression hypothesis is </p>
+<div class="math">$$
+h_\theta(x) = g(\theta^Tx) \text{ where $g(z) = \frac{1}{1+e^{-z}}$}
+$$</div>
+<p>This hypothesis can be intrepreted as the probability that <span class="math">\(y = 1\)</span> given <span class="math">\(x\)</span> and <span class="math">\(\theta\)</span>
+(i.e. <span class="math">\(h_\theta(x) = P(y = 0 | x;\theta)\)</span>)</p>
+<p>Then the cost function <span class="math">\(J(\theta)\)</span> is</p>
+<div class="math">$$
+J(\theta) = -\frac{1}{m}\sum_{i=1}^m \lbrack 
+(y^{(i)}\logh_\theta(x^{(i)}) + (1-y^{(i)})\log(1-h_\theta(x^{(i)})))\rbrack
+$$</div>
+<p>To minimize cost function <span class="math">\(J(\theta)\)</span> we can of course use gradient descent. Surprisingly,
+the gradient descent for logistic regression is exactly the same as the gradient descent
+for linear regression \ref{eq:3}. </p>
+<p>However, in the course, we directly use the <code>fminunc</code> from Octave to do the optimization.
+Internally, the function use advanced optimization technique that can avoid manually picking
+<span class="math">\(\alpha\)</span> in gradient descent and find the optimal <span class="math">\(\theta\)</span> faster than gradient descent.</p>
+<h3 id="in-practice_2">In practice</h3>
+<p>The implementation for cost function and gradient descent for logistic regression
+should be no hard for us now:</p>
+<div class="highlight"><pre><span></span><span class="c">% cost function for logistic regression</span>
+<span class="n">J</span> <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span> <span class="p">...</span>
+                 <span class="o">-</span><span class="n">y</span><span class="o">&#39;*</span><span class="nb">log</span><span class="p">(</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">))</span><span class="o">-</span> <span class="p">...</span>       
+                 <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">&#39;*</span><span class="nb">log</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">))</span> <span class="p">...</span>    
+             <span class="p">);</span>
+
+<span class="c">% gradient descent for logist regression</span>
+<span class="n">grad</span> <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">X</span><span class="o">&#39;*</span><span class="p">(</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">);</span>
+</pre></div>
+
+
+<h2 id="logistic-regression-with-regularization">Logistic regression with regularization</h2>
+<h3 id="in-theory_3">In theory</h3>
+<p>The cost function for regualarized logistic regression is following:</p>
+<div class="math">$$
+J(\theta) = -\frac{1}{m}\sum_{i=1}^m \lbrack 
+(y^{(i)}\logh_\theta(x^{(i)}) + (1-y^{(i)})\log(1-h_\theta(x^{(i)})))\rbrack
++ \frac{\lambda}{2m}\sum_{j=1}^n\theta_j^2
+$$</div>
+<p>and the gradient descent looks exactly the same as the regualarized linear regression.</p>
+<h3 id="in-practice_3">In practice</h3>
+<p>The following code chunk shows the cost function and gradient descent for regularized
+logistic regression:</p>
+<div class="highlight"><pre><span></span><span class="n">m</span> <span class="p">=</span> <span class="nb">length</span><span class="p">(</span><span class="n">y</span><span class="p">);</span>     <span class="c">% number of training examples</span>
+<span class="n">t</span> <span class="p">=</span> <span class="nb">size</span><span class="p">(</span><span class="n">theta</span><span class="p">);</span>   <span class="c">% number of theta parameters</span>
+
+<span class="n">J</span> <span class="p">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">grad</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
+
+<span class="n">J</span> <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span> <span class="p">...</span>
+               <span class="o">-</span><span class="n">y</span><span class="o">&#39;*</span><span class="nb">log</span><span class="p">(</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">))</span> <span class="p">...</span>
+               <span class="o">-</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">&#39;*</span><span class="nb">log</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">))</span> <span class="p">...</span>
+             <span class="p">)</span> <span class="p">...</span>
+          <span class="o">+</span> <span class="n">lambda</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">m</span> <span class="o">*</span> <span class="n">theta</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span> <span class="n">t</span><span class="p">)</span><span class="o">&#39;*</span><span class="n">theta</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span> <span class="n">t</span><span class="p">);</span>
+
+<span class="n">grad</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">X</span><span class="o">&#39;*</span><span class="p">(</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">))(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">grad</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="n">t</span><span class="p">)</span> <span class="p">=</span>  <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">X</span><span class="o">&#39;*</span><span class="p">(</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="n">lambda</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)(</span><span class="mi">2</span><span class="p">:</span> <span class="n">t</span><span class="p">);</span>
+</pre></div>
+
+
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/machine-learning.html">Machine Learning</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+<!--                            <li><a href="../../../../../about-zack.html">About</a></li>
+                <li><a href="../../../../../blog2">Blog</a></li>
+                <li><a href="../../../../../quotes.html">Quotes</a></li>
+                <li><a href="../../../../../projects.html">Projects</a></li>
+-->
+    </ul>
+
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

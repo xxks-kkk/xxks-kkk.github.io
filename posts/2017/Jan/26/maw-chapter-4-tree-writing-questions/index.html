@@ -41,13 +41,13 @@
             <h1>MAW Chapter 4: Tree writing questions</h1>
             <p class="date">Written on <time datetime="2017-01-26T17:41:00+08:00">Jan 26, 2017</time></p>
         </header>
-
+        
         <article>
             <p>There are a lot of writing questions in Chapter 4. Some questions offer
 great insights on the general techniques in solving algorithmatic proving questions.
 So, I decide to record them in this single post. Of course, this post will be continually
 updated as I work through the chapter.</p>
-<h2>Insights</h2>
+<h2 id="insights">Insights</h2>
 <ul>
 <li>Recursive tree definition is a natural fit with induction (i.e., MAW 4.5, 4.6, 4.7).</li>
 <li>Usually there are two ways to prove a problem in tree, one direction is from induction
@@ -57,9 +57,9 @@ updated as I work through the chapter.</p>
   In addition, always remember we want to convert the problem for <span class="math">\(n+1\)</span> into the same problem but 
   with the inductive step on <span class="math">\(n\)</span>. (MAW 4.17)</li>
 </ul>
-<h2>Solutions</h2>
+<h2 id="solutions">Solutions</h2>
 <p>including: MAW 4.4, 4.5, 4.6, 4.7, 4.14, 4.15, 4.16, 4.17, 4.23, 4.24, 4.25, 4.26.a, 4.43</p>
-<h3>MAW 4.4</h3>
+<h3 id="maw-44">MAW 4.4</h3>
 <blockquote>
 <p>Show that in a binary tree of <span class="math">\(N\)</span> nodes, there are <span class="math">\(N + 1\)</span> <code>NULL</code> pointers
 representing children.</p>
@@ -77,7 +77,7 @@ exist. Since each edge connects some node to its parent, and every node except
 the root has one parent. In other words, each node, except the root node, has one incoming
 pointer from its parent. So, we have <span class="math">\(N-1\)</span> edges existing. Thus the remaining
 <span class="math">\(2N - (N-1) = N+1\)</span> edges are actually non-existing. Thus, we have <span class="math">\(N+1\)</span> <code>NULL</code> pointers.</p>
-<h3>MAW 4.5</h3>
+<h3 id="maw-45">MAW 4.5</h3>
 <blockquote>
 <p>Show that the maximum number of nodes in a binary tree of height <span class="math">\(H\)</span> is <span class="math">\(2^{H+1}-1\)</span>.</p>
 </blockquote>
@@ -102,7 +102,7 @@ $$</div>
 n = \sum_{i=0}^{h} 2^i = 2^{h+1} - 1 \text{where n is the number of nodes} 
 \end{equation}
 $$</div>
-<h3>MAW 4.6</h3>
+<h3 id="maw-46">MAW 4.6</h3>
 <blockquote>
 <p>A <em>full node</em> is a node with two children. Prove that the number of full nodes
 plus one is equal to the number of leaves in a nonempty binary tree.</p>
@@ -148,7 +148,7 @@ tree will have one less leaf and one less full node.</p>
 hypothesis there are <span class="math">\(k+1\)</span> leaves. Add all the nodes that were removed back into the 
 tree the same way to create the original tree. We are adding one full node and 
 one leaf node. Therefore, we have <span class="math">\(k+1\)</span> full nodes with <span class="math">\(k+2\)</span> leaves.</p>
-<h3>MAW 4.7</h3>
+<h3 id="maw-47">MAW 4.7</h3>
 <blockquote>
 <p>Suppose a binary tree has leaves <span class="math">\(l_{1}, l_{2}, ..., l_{M}\)</span> at depths
 <span class="math">\(d_{1}, d_{2}, ...,d_{M}\)</span>, repectively. Prove that <span class="math">\(\sum_{i=1}^M 2^{-d_{i}} \leq 1\)</span>
@@ -179,7 +179,7 @@ is contradiction to the equality.</p>
   is really good as an intro to the field because it doesn't make the material look very daunting and super technical,
   which some <a href="http://circuit.ucsd.edu/~yhk/ece154c-spr16/pdfs/LectureNotes01.pdf">lecture note</a> manages to achieve.</p>
 </blockquote>
-<h3>MAW 4.14</h3>
+<h3 id="maw-414">MAW 4.14</h3>
 <blockquote>
 <p>Prove that the depth of a random binary search tree (depth of the deepest node) is <span class="math">\(O(\log N)\)</span>, on average.</p>
 </blockquote>
@@ -303,7 +303,7 @@ because only one <span class="math">\(Z_{n,i}\)</span> can be <span class="math"
 <span class="math">\(Z_{n,i}\)</span> is independent of <span class="math">\(Y_{i-1}\)</span> and <span class="math">\(Y_{n-i}\)</span>. However, I don't think so as the height of the tree <span class="math">\(h_n\)</span>, which <span class="math">\(Y_n\)</span> is constructed from 
 depends on which element we pick first. I tend to think about <span class="math">\(E[Y_n]\)</span> as expectation of the conditional expectation.</p>
 </blockquote>
-<h3>MAW 4.15</h3>
+<h3 id="maw-415">MAW 4.15</h3>
 <blockquote>
 <p>a. Give a precise expression for the minimum number of nodes in an AVL tree of height <span class="math">\(H\)</span>.
 b. What is the minimum number of nodes in an AVL tree of height 15? </p>
@@ -340,7 +340,7 @@ We need to wait until the whole solution (homogeneous part + particular part).</
 <p>By \ref{eqn:2}, we see that <span class="math">\(S(H) \ge \Big(\frac{1+\sqrt 5}{2}\Big)^H\)</span>. Suppose we have <span class="math">\(N\)</span> nodes in an AVL 
 tree of height <span class="math">\(H\)</span>. Then <span class="math">\(N \ge S(H) \ge \Big(\frac{1+\sqrt 5}{2}\Big)^H\)</span>. Let <span class="math">\(\phi = \frac{1+\sqrt 5}{2}\)</span>, then
 we have <span class="math">\(\log _\phi N \ge H\)</span>, which is <span class="math">\(H \le 1.44\log _2 N = O(\log N)\)</span>.</p>
-<h3>MAW 4.16</h3>
+<h3 id="maw-416">MAW 4.16</h3>
 <blockquote>
 <p>Show the result of inserting 2,1,4,5,9,3,6,7 into an initially empty AVL tree.</p>
 </blockquote>
@@ -349,7 +349,7 @@ we have <span class="math">\(\log _\phi N \ge H\)</span>, which is <span class="
 </a></p>
 <!--[![maw-4-16](/images/maw-4-16.png)](https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/trees/graphviz-src/maw-4-16.gv)-->
 
-<h3>MAW 4.17</h3>
+<h3 id="maw-417">MAW 4.17</h3>
 <blockquote>
 <p>Keys <span class="math">\(1, 2, \dots, 2^k-1\)</span> are inserted in order into an initially empty AVL tree. Prove that the resulting tree
 is perfectly balanced.</p>
@@ -391,17 +391,17 @@ subtree of height <span class="math">\(h-1\)</span>. See the following picture:<
 <p><img src="/images/maw-4-17-4.PNG" alt="maw-4-17-4" style="height: 400px;"/></p>
 <p>Since the left and right subtrees are perfectly balanced (height <span class="math">\(h-1\)</span>), the whole
 tree is perfectly balanced.</p>
-<h3>MAW 4.23</h3>
+<h3 id="maw-423">MAW 4.23</h3>
 <p><img src="/images/maw-4-23.JPG" alt="maw-4-23" style="width: 700px;"/></p>
-<h3>MAW 4.24</h3>
+<h3 id="maw-424">MAW 4.24</h3>
 <p><img src="/images/maw-4-24.PNG" alt="maw-4-24" style="width: 700px;"/></p>
-<h3>MAW 4.25</h3>
+<h3 id="maw-425">MAW 4.25</h3>
 <p>This problem is solved through brute-force calculation. You can reference the example
 from figure 4.46 to figure 4.55. I calculate for internal path length of the 
 tree and <code>find(1)</code>, <code>find(2)</code>. The answer is slightly off than the solution manual.
 May need to double check.</p>
 <p><img src="/images/maw-4-26.JPG" alt="maw-4-26" style="width: 700px; height: 400px;"/></p>
-<h3>MAW 4.26</h3>
+<h3 id="maw-426">MAW 4.26</h3>
 <blockquote>
 <p>a. Show that if all nodes in a splay tree are accessed in sequential order, 
 the resulting tree consists of a chain of left children.</p>
@@ -417,7 +417,7 @@ position for <span class="math">\(N+1\)</span> node: the right child of the root
 then by BST, <span class="math">\(N+1\)</span> node's value is smaller than root's value and bigger than left most node's value.
 This violates the induction hypothesis because we are no longer access a splay tree in sequential order.
 Now we simply swap the right child of the root with root and we get a chain of left children. </p>
-<h3>MAW 4.43</h3>
+<h3 id="maw-443">MAW 4.43</h3>
 <blockquote>
 <p>a. Show that via AVL single rotations, any binary search tree <span class="math">\(T_1\)</span> can be transformed into another
 search tree <span class="math">\(T_2\)</span> (with the same keys).
@@ -450,7 +450,7 @@ Since we could do <span class="math">\(N\)</span> rotations, then the result fol
     if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +

@@ -41,27 +41,27 @@
             <h1>Skew heap</h1>
             <p class="date">Written on <time datetime="2017-04-05T23:33:00+08:00">Apr 05, 2017</time></p>
         </header>
-
+        
         <article>
             <p>This is the summary of <em>skew heap</em> part in MAW Chapter 6.</p>
-<h2>Motivation</h2>
+<h2 id="motivation">Motivation</h2>
 <p>Like the relation between splay trees and AVL trees, we want to have 
 <span class="math">\(O(\log N)\)</span> amortized cost per operation. In addition, we don't want
 to have any auxiliary information stored at the nodes. In other words,
 we want to trade strict <span class="math">\(O(\log N)\)</span> operation for less space we need 
 to use for the data structure. In this case,
 like splay trees to AVL trees, we have Skew heaps to leftist heaps.</p>
-<h2>Concept</h2>
+<h2 id="concept">Concept</h2>
 <p>Skew heaps are binary trees with heap order, but there is no structural constraint
 on these trees. This means that we don't need the binary tree to be complete 
 (i.e. binary heap) or left heavy (i.e. leftist heap).</p>
 <p>In addition, we don't store <span class="math">\(Npl\)</span> information in the node.</p>
-<h2>Properties</h2>
+<h2 id="properties">Properties</h2>
 <ul>
 <li>A perfectly balanced tree forms if the keys <span class="math">\(1\)</span> to <span class="math">\(2^k-1\)</span> are inserted in order
 into an initially empty skew heap.</li>
 </ul>
-<h2>Operations</h2>
+<h2 id="operations">Operations</h2>
 <p>Skew heap is extremely similar with leftist heap in terms of <code>merge</code> operation. 
 There is only one difference: for leftist heap, we check to see whether the 
 left and right children satisfy the leftist heap order property and swap them
@@ -78,11 +78,11 @@ we <strong>always</strong> swap the left &amp; right subtrees at each step of me
 <p>The end result is actually leftist heap but there is no guaranteed that this is
 always the case. If you take a look, <span class="math">\(H_1\)</span> is not lefist heap.</p>
 </blockquote>
-<h2>Runtime analysis</h2>
+<h2 id="runtime-analysis">Runtime analysis</h2>
 <ul>
 <li><code>merge</code>, <code>deleteMin</code>, and <code>insert</code> are all running in <span class="math">\(O(\log N)\)</span> amortized time.</li>
 </ul>
-<h2>Reference</h2>
+<h2 id="reference">Reference</h2>
 <ul>
 <li>MAW Chapter 6</li>
 <li>http://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/heaps.pdf</li>
@@ -103,7 +103,7 @@ always the case. If you take a look, <span class="math">\(H_1\)</span> is not le
     if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +

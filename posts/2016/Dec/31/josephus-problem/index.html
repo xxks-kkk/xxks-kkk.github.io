@@ -41,20 +41,20 @@
             <h1>Josephus Problem</h1>
             <p class="date">Written on <time datetime="2016-12-31T20:24:00+08:00">Dec 31, 2016</time></p>
         </header>
-
+        
         <article>
-            <h2>Preface</h2>
+            <h2 id="preface">Preface</h2>
 <p>This is actually MAW 3.10. I gradually realize how dense MAW is.
 In the <a href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">previous problem</a>,
 I write almost 500 lines of code. For this one, the problem is not really diffcult to solve if we implement a program 
 that follows the game rule exactly. However, I figure it is a good chance to dig a little deeper to learn somewhat
 fully from the question.</p>
 <p>Let's start to dive in.</p>
-<h2>Overview</h2>
+<h2 id="overview">Overview</h2>
 <p>I first describe the <em>Josephus problem</em> in general. Then, I present a closed form solution to 
 solve a special case of the original problem.
 Afterwards, I present a recurrence solution to solve the general problem. </p>
-<h2>Josephus problem</h2>
+<h2 id="josephus-problem">Josephus problem</h2>
 <p>The <em>Josephus problem</em> is the following game: <span class="math">\(N\)</span> people, numbered <span class="math">\(1\)</span> to <span class="math">\(N\)</span>, are
 sitting in a circle. Starting at person 1, a hot potato is passed. the <span class="math">\(M\)</span>th person 
 holding the hot potato is eliminated, the circle closes ranks, and the
@@ -71,7 +71,7 @@ In MAW description, <span class="math">\(M = 0\)</span> and <span class="math">\
 elimination order. Similarly, in the book, <span class="math">\(M = 1\)</span> when we have <span class="math">\(2\)</span>, <span class="math">\(4\)</span>, <span class="math">\(1\)</span>, <span class="math">\(5\)</span> elimination order for the second example.  Mathematically, 
 <span class="math">\(M_{new} = M_{MAW} + 1\)</span>.</p>
 </blockquote>
-<h2>Josephus problem with <span class="math">\(M = 2\)</span></h2>
+<h2 id="josephus-problem-with-m-2">Josephus problem with <span class="math">\(M = 2\)</span></h2>
 <p>Let's first discuss a special case of the Josephus Problem: <span class="math">\(M = 2\)</span>.</p>
 <p>In the following, <span class="math">\(n\)</span> denotes the number of 
 people in the initial circle, and <span class="math">\(m\)</span> denotes the count for each step. In other words, <span class="math">\(m-1\)</span> people
@@ -198,13 +198,13 @@ recurrence of \ref{eq:1} and \ref{eq:2}, which is (1.11) in the book. This has n
 with the Josephus problem and I'm guessing the reason why the author want to talk about 
 the solution to the generalized recurrence is to illustrate dynamic programming philosophy.</p>
 </blockquote>
-<h2>General solution</h2>
+<h2 id="general-solution">General solution</h2>
 <p>/<em>The big picture here is we need to find out the relative position of the final survivor to the
 "first" person during each recursive call and then calculate the actual position for actual <span class="math">\(n\)</span></em>/</p>
 <p>The general solution utilitizes the dynamic programming paradigm by performing the first step
 and using the solution of the subproblem we create to solve the initial problem. 
 In terms of the solution, there is a difference when we start with the first person as <span class="math">\(1\)</span> or <span class="math">\(0\)</span>.</p>
-<h3>Starting from 1</h3>
+<h3 id="starting-from-1">Starting from 1</h3>
 <p>The key insight is the following: the result of <span class="math">\(J(n,m)\)</span> is best NOT thought of as the <em>number</em> that is the 
 Josephus survivor, but rather as the <em>index</em> of the number that is the Josephus survivor. </p>
 <p>Let's first take a look an example when <span class="math">\(n = 6\)</span> and <span class="math">\(m = 2\)</span>.</p>
@@ -301,7 +301,7 @@ zero-indexing.</p>
 <p>which simplifies to:</p>
 <div class="math">$$(m-1 + J(n-1, m)) \bmod n + 1$$</div>
 <p>Notice that <span class="math">\(J(1,m) = 1\)</span>, which indicates that we're one-indexed.</p>
-<h3>Starting from 0</h3>
+<h3 id="starting-from-0">Starting from 0</h3>
 <p>Since we are not in zero-indexed. Our <span class="math">\(J(6,2)\)</span> example looks like the following:</p>
 <div class="highlight"><pre><span></span>| index | 0 | 1 | 2 | 3 | 4 | 5 |
 |-------|---|---|---|---|---|---|
@@ -343,7 +343,7 @@ zero-indexing.</p>
 
 <!-- Use the recurrence relation we just derived. -->
 
-<h2>What's left out</h2>
+<h2 id="whats-left-out">What's left out</h2>
 <ul>
 <li><a href="http://blue.butler.edu/~phenders/InRoads/MathCounts8.pdf">Equivalence Class Solution</a> is interesting to check out.</li>
 <li><a href="https://www.scribd.com/document/3567390/Rank-Trees">Rank tree</a> as a data sturcture is worth to check out to solve this problem. <a href="http://www.imt.ro/romjist/Volum12/Number12_1/pdf/02-MCosulschi.pdf">This paper</a> gives a more detailed analysis.</li>
@@ -384,7 +384,7 @@ zero-indexing.</p>
     if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +

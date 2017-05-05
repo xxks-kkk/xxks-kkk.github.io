@@ -41,16 +41,16 @@
             <h1>Binomial queue</h1>
             <p class="date">Written on <time datetime="2017-04-08T23:33:00+08:00">Apr 08, 2017</time></p>
         </header>
-
+        
         <article>
             <p>This is the summary of <em>binomial queue</em> part in MAW Chapter 6.</p>
-<h2>Motivation</h2>
+<h2 id="motivation">Motivation</h2>
 <p>We want to have a data structure that support merging, insertion, and deleteMin
 in <span class="math">\(O(\log N)\)</span> time per operation, and at the same time, like binary heap, we 
 want to have insertion takes constant time on average. The latter part is not possible
 with skew heap or leftist heap. </p>
 <p>The data structure we have is called <em>binomial queue</em>.</p>
-<h2>Concept</h2>
+<h2 id="concept">Concept</h2>
 <p>Binomial queues is a collection of heap-ordered trees. Each of the heap-ordered
 trees is called a <em>binomial tree</em> with the following constraints:</p>
 <ul>
@@ -62,7 +62,7 @@ binomial tree, <span class="math">\(B_{k-1}\)</span>.</li>
 <p>The picture below shows a binomial queue consisting of six elements
 with two binomial trees <span class="math">\(B_1\)</span> and <span class="math">\(B_2\)</span>:</p>
 <p><img src="/images/binomial-queue.PNG" alt="binomial queue example"/></p>
-<h2>Properties</h2>
+<h2 id="properties">Properties</h2>
 <ul>
 <li>A binomial tree <span class="math">\(B_k\)</span>, consists of a root with children <span class="math">\(B_0, B_1, \dots, B_{k-1}\)</span>.</li>
 <li>Binomial trees of height <span class="math">\(k\)</span> have exactly <span class="math">\(2^k\)</span> nodes</li>
@@ -73,8 +73,8 @@ For instances, a priority queue of size 13 could be represented by <span class="
 only represents <span class="math">\(13\)</span> in binary but also represents the fact that <span class="math">\(B_3, B_2, B_0\)</span>
 are present and <span class="math">\(B_1\)</span> is not.</li>
 </ul>
-<h2>Operations</h2>
-<h3>Merge</h3>
+<h2 id="operations">Operations</h2>
+<h3 id="merge">Merge</h3>
 <p>The merge is performed by essentially adding the two queues together. Let's illustrate
 through merging two binomial queues <span class="math">\(H_1\)</span> and <span class="math">\(H_2\)</span> shown below:</p>
 <p><img src="/images/binomial-queue-merge-01.PNG" alt="binomial queue merge 01"/></p>
@@ -91,10 +91,10 @@ binomial tree, <span class="math">\(B_{k-1}\)</span>.</p>
 <p><img src="/images/binomial-queue-merge-02.PNG" alt="binomial queue merge 02"/></p>
 <p>and the final result of merging looks like:</p>
 <p><img src="/images/binomial-queue-merge-03.PNG" alt="binomial queue merge 03"/></p>
-<h3>Insertion</h3>
+<h3 id="insertion">Insertion</h3>
 <p>Insertion is just a special case of merging, since we merely create a one-node tree
 and perform a merge.</p>
-<h3>DeleteMin</h3>
+<h3 id="deletemin">DeleteMin</h3>
 <ol>
 <li>find the binomial tree with the smallest root. Let this tree be <span class="math">\(B_k\)</span>, and let the original priority queue be <span class="math">\(H\)</span>. </li>
 <li>Remove the binomial tree <span class="math">\(B_k\)</span> from the forest of trees in <span class="math">\(H\)</span>, forming the new binomial queue <span class="math">\(H'\)</span>. </li>
@@ -111,20 +111,20 @@ and perform a merge.</p>
 <blockquote>
 <p>For actual implementation details, please see MAW p. 208 - 211.</p>
 </blockquote>
-<h2>Runtime analysis</h2>
-<h3>Merge</h3>
+<h2 id="runtime-analysis">Runtime analysis</h2>
+<h3 id="merge_1">Merge</h3>
 <p>Since merging two binomial trees takes constant time with almost any reasonable
 implementation, and there are <span class="math">\(O(\log N)\)</span> binomial trees (think of representing
 the size of priority queue in terms of binary, and we need to do <span class="math">\(O(\log N)\)</span> division),
 the merge takes <span class="math">\(O(\log N)\)</span> time.</p>
-<h3>Insertion</h3>
+<h3 id="insertion_1">Insertion</h3>
 <p>The worst-case time of this operation is <span class="math">\(O(\log N)\)</span>. However, this actually can be
 constant on average. Details see MAW p.205.</p>
-<h3>DeleteMin</h3>
+<h3 id="deletemin_1">DeleteMin</h3>
 <p>We take <span class="math">\(O(\log N)\)</span> time to find the tree containing the minimum element. We take
 constant time to create the queues <span class="math">\(H'\)</span> and <span class="math">\(H''\)</span>. Merging these
 two queues takes <span class="math">\(O(\log N)\)</span> time and thus, the operation overall takes <span class="math">\(O(\log N)\)</span>.</p>
-<h2>Reference</h2>
+<h2 id="reference">Reference</h2>
 <ul>
 <li>MAW Chapter 6</li>
 </ul>
@@ -144,7 +144,7 @@ two queues takes <span class="math">\(O(\log N)\)</span> time and thus, the oper
     if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +

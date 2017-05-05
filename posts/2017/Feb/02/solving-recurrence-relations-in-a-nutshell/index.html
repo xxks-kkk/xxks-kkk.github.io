@@ -41,7 +41,7 @@
             <h1>Solving recurrence relations in a nutshell</h1>
             <p class="date">Written on <time datetime="2017-02-02T01:05:00+08:00">Feb 02, 2017</time></p>
         </header>
-
+        
         <article>
             <p>Able to solve recurrence relation is a very important skill when we study data structures
 and algorithm. This is a ability that I used to be familar with when I took combinatorics
@@ -58,7 +58,7 @@ which is the textbook I used.</p>
 <p>This note is practical-oriented. I will skip the proof of the theorem whenever possible.
 If you are interested in the proof side of the universe, please read the book.</p>
 </blockquote>
-<h2>TOC</h2>
+<h2 id="toc">TOC</h2>
 <p>The post will be organized in the following format:</p>
 <ul>
 <li>Linear homogeneous recurrence relation with constant coefficients<ul>
@@ -76,7 +76,7 @@ If you are interested in the proof side of the universe, please read the book.</
 </ul>
 </li>
 </ul>
-<h2>Linear homogeneous recurrence relation with constant coefficients</h2>
+<h2 id="linear-homogeneous-recurrence-relation-with-constant-coefficients">Linear homogeneous recurrence relation with constant coefficients</h2>
 <p><em>Definition:</em> Let <span class="math">\(h_0, h_1, h_2, \dots, h_n, \dots\)</span> be a sequence of numbers. This sequence is 
 said to satisfy a <strong>linear recurrence relation of order <span class="math">\(k\)</span></strong>, provided that there
 exist quantities <span class="math">\(a_1, a_2, \dots, a_k,\)</span> with <span class="math">\(a_k \ne 0\)</span>, and a quantity <span class="math">\(b_n\)</span>
@@ -97,7 +97,7 @@ $$</div>
 <p><em>Definition:</em> The linear recurrence relation \ref{eq:1} is called <strong>homogeneous</strong> 
 provided that <span class="math">\(b_n\)</span> is zero and is said to have <strong>constant coefficients</strong> provided that
 <span class="math">\(a_1, a_2, \dots, a_k\)</span> are constants.</p>
-<h3>Method 1: Characteristic equation</h3>
+<h3 id="method-1-characteristic-equation">Method 1: Characteristic equation</h3>
 <p><em>Theorem 7.4.1:</em> Let <span class="math">\(q\)</span> be a nonzero number. Then <span class="math">\(h_n = q^n\)</span> is a solution of the
 linear homogeneous recurrence relation</p>
 <div class="math">$$
@@ -210,7 +210,7 @@ $$</div>
 > of a polynomial equation. Sometimes finding the roots of characteristic equation can be quite diffcult. That's what second method tries to address.
 > If you find out that characteristic equation is really diffcult to solve, you can always use "generating function" method.-->
 
-<h3>Method 2: Generating function</h3>
+<h3 id="method-2-generating-function">Method 2: Generating function</h3>
 <p><em>Definition:</em> Let <span class="math">\(h_0, h_1, h_2, \dots, h_n, \dots\)</span> be an infinite sequence of numbers. Its <strong>generating function</strong> is defined to be the infinite
 series</p>
 <div class="math">$$
@@ -301,9 +301,9 @@ $$</div>
 denominator of <span class="math">\(g(x)\)</span> can be tricky for high degree polynomials. I need more practice on solving recurrence
 relation to decide which method is superior under what kind of situation.</p>
 </blockquote>
-<h2>Linear nonhomogeneous recurrence relation with constant coefficients</h2>
+<h2 id="linear-nonhomogeneous-recurrence-relation-with-constant-coefficients">Linear nonhomogeneous recurrence relation with constant coefficients</h2>
 <p><strong>nonhomogeneous</strong> means <span class="math">\(b_n\)</span> in \ref{eq:1} is no longer zero constant.</p>
-<h3>Method 1: Characteristic equation</h3>
+<h3 id="method-1-characteristic-equation_1">Method 1: Characteristic equation</h3>
 <p><em>Steps:</em></p>
 <p>1) Find the general solution of the homogeneous relation.</p>
 <p>2) Find a particular solution of the nonhomogeneous relation.</p>
@@ -347,7 +347,7 @@ $$</div>
 <p>As you can see, solving recurrence relation using characteristic equation has strong connection with solving differential equations (both homogeneous and
 nonhomogeneous). </p>
 </blockquote>
-<h3>Method 2: Generating function</h3>
+<h3 id="method-2-generating-function_1">Method 2: Generating function</h3>
 <p>There is nothing difference in using "generating function" method to solve nonhomogeneous than solve homogeneous recurrence relation. That's actually 
 a beauty of this method: nothing needs to tweak in order to work under different situation.</p>
 <p>* ---- Note ---- *</p>
@@ -373,7 +373,7 @@ Also, in the book, solving <span class="math">\(h_n = h_{n-1} + n^3\)</span> on 
     if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +

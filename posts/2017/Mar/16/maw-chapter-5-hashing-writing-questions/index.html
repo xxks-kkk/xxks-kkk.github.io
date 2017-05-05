@@ -41,11 +41,11 @@
             <h1>MAW Chapter 5: Hashing writing questions</h1>
             <p class="date">Written on <time datetime="2017-03-16T17:41:00+08:00">Mar 16, 2017</time></p>
         </header>
-
+        
         <article>
-            <h2>Solutions</h2>
+            <h2 id="solutions">Solutions</h2>
 <p>including: MAW 5.4, 5.5, 5.6, 5.10, 5.11</p>
-<h3>MAW 5.4</h3>
+<h3 id="maw-54">MAW 5.4</h3>
 <blockquote>
 <p>A large number of deletions in a separate chaining hash table can cause the 
 table to be fairly empty, which wastes space. In this case, we can rehash to 
@@ -64,7 +64,7 @@ either 100 insertions or 100 deletions until a new rehash is required. </p>
 <p>If we know that insertions are more frequent than deletions, then we might choose <span class="math">\(p\)</span>
 to be somewhat larger. All in all, we play around the relation between <span class="math">\(2N-2Np\)</span> and 
 <span class="math">\(pN\)</span> depends on which operation we favorite.</p>
-<h3>MAW 5.5</h3>
+<h3 id="maw-55">MAW 5.5</h3>
 <blockquote>
 <p>An alternative collision resolution strategy is to define a sequence, <span class="math">\(F(i) = r_i\)</span>,
 where <span class="math">\(r_0 = 0\)</span> and <span class="math">\(r_1, r_2, \dots, r_N\)</span> is a random permutation of the first <span class="math">\(N\)</span>
@@ -86,7 +86,7 @@ an insert and for a successful search?</p>
 </blockquote>
 <p>The running time is probably similar to quadratic probing. The advantage here is that 
 the insertion can't fail unless the table is full.</p>
-<h3>MAW 5.6</h3>
+<h3 id="maw-56">MAW 5.6</h3>
 <blockquote>
 <p>What are the advantages and disadvantages of the various collision resolution strategies?</p>
 </blockquote>
@@ -102,7 +102,7 @@ would be so expensive that it wouldn't matter and would almost certainly point u
 weakness in the hash function. </p>
 <p>Double hashing eliminates primary and secondary clustering but the computation of a second
 hash function can be costly. </p>
-<h3>MAW 5.10</h3>
+<h3 id="maw-510">MAW 5.10</h3>
 <blockquote>
 <p>Describe a procedure that avoids initializing a hash table (at the expense of memory).</p>
 </blockquote>
@@ -112,7 +112,7 @@ the address (or number) of the slot onto the stack and set the <code>WhereOnStac
 to the top of the stack. When we access a hash table slot, we check that <code>WhereOnStack</code>
 points to a valid part of the stack and that the entry in the (middle of the) stack that is 
 pointed to by the <code>WhereOnStack</code> field has that hash table slot as an address.</p>
-<h3>MAW 5.11</h3>
+<h3 id="maw-511">MAW 5.11</h3>
 <blockquote>
 <p>Suppose we want to find the first occurrence of a string <span class="math">\(P_1P_2\dots P_k\)</span> in a long 
 input string <span class="math">\(A_1A_2\dots A_N\)</span>. We can solve this problem by hashing the pattern string,
@@ -164,7 +164,7 @@ matches.</p>
     if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +

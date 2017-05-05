@@ -41,11 +41,11 @@
             <h1>MAW Chapter 6: Priority Queues (Heaps) writing questions</h1>
             <p class="date">Written on <time datetime="2017-03-26T12:01:00+08:00">Mar 26, 2017</time></p>
         </header>
-
+        
         <article>
-            <h2>Solutions</h2>
+            <h2 id="solutions">Solutions</h2>
 <p>including: MAW 6.6, 6.7, 6.9, 6.13, 6.14, 6.16, 6.17, 6.27, 6.28,</p>
-<h3>MAW 6.6</h3>
+<h3 id="maw-66">MAW 6.6</h3>
 <blockquote>
 <p>How many nodes are in the large heap in Figure 6.13?</p>
 </blockquote>
@@ -57,7 +57,7 @@ one when taking a right child. Then, we have the following calculation:
 <span class="math">\(2(2(2(2(2(2(2i+1)+1)))))+1 = 225\)</span>. The picture below shows the path from the root 
 to the node in the last position:</p>
 <p><img src="/images/maw-6-6.PNG" alt="MAW 6.6"/></p>
-<h3>MAW 6.7</h3>
+<h3 id="maw-67">MAW 6.7</h3>
 <blockquote>
 <p>b. show that a heap of eight elements can be constructed in eight comparisons between 
    heap elements.</p>
@@ -73,7 +73,7 @@ and we get the following:</p>
 <p>Then we need to restore the binary heap property because "a" node has three children.
 This can be done by the eighth compariosn between "b" and "c". If "c" is less than "b",
 then "b" is made a child of "c". Otherwise, both "c" and "d" are made children of "b".</p>
-<h3>MAW 6.9</h3>
+<h3 id="maw-69">MAW 6.9</h3>
 <blockquote>
 <p>a. Give an algorithm to find all nodes less than some value, X, in a binary heap.
    Your algorithm should run in <span class="math">\(O(K)\)</span>, where <span class="math">\(K\)</span> is the number of nodes output.</p>
@@ -91,7 +91,7 @@ the procedure has to call each node of the heap.</p>
    this chapter?</p>
 </blockquote>
 <p>Yes. It works for leftist heap, skew heap, and d-heaps.</p>
-<h3>MAW 6.13</h3>
+<h3 id="maw-613">MAW 6.13</h3>
 <blockquote>
 <p>If a d-heap is stored as an array, for an entry located in position <span class="math">\(i\)</span>,
 where are the parents and children?</p>
@@ -136,7 +136,7 @@ parent of <span class="math">\(i\)</span>.</p>
 <div class="math">$$
 \lfloor{\frac{i + (d-2)}{d}}\rfloor
 $$</div>
-<h2>MAW 6.14</h2>
+<h2 id="maw-614">MAW 6.14</h2>
 <blockquote>
 <p>Suppose we need to perform <span class="math">\(M\)</span> <code>PercolateUp</code> and <span class="math">\(N\)</span> <code>DeleteMiin</code> on a d-heap
 that initially has <span class="math">\(N\)</span> elements.</p>
@@ -167,7 +167,7 @@ $$</div>
 <p><span class="math">\(d = max(2, M/N)\)</span> (See the related discussion at the end of Section 11.4)</p>
 <!--http://mail.csis.ul.ie/~cs4115/resources/sol10.pdf-->
 
-<h2>MAW 6.16</h2>
+<h2 id="maw-616">MAW 6.16</h2>
 <blockquote>
 <p>Merge the two leftist heaps in Figure 6.58</p>
 </blockquote>
@@ -187,13 +187,13 @@ the heap with the smaller root.</p>
 </ol>
 <p>The following shows the steps to get the final answer for this problem:</p>
 <p><img src="/images/maw-6-16-solution.jpg" alt="MAW 6.16 solution" style="width:700px;height:400px"/></p>
-<h2>MAW 6.17</h2>
+<h2 id="maw-617">MAW 6.17</h2>
 <blockquote>
 <p>Show the result of inserting keys 1 to 15 in order into an initially empty leftist heap.</p>
 </blockquote>
 <p>Use <a href="https://www.cs.usfca.edu/~galles/visualization/LeftistHeap.html">this wonderful site</a>
 to see the whole process of insertion.</p>
-<h2>MAW 6.27</h2>
+<h2 id="maw-627">MAW 6.27</h2>
 <blockquote>
 <p>Prove that a binomial tree <span class="math">\(B_k\)</span> has binomial trees <span class="math">\(B_0, B_1, \dots, B_{k-1}\)</span>
 as children of the root.</p>
@@ -211,7 +211,7 @@ by 2, we have <span class="math">\(2^k = 2 + 2 + \dots + 2^{k-1}\)</span>, which
 A <span class="math">\(B_k\)</span> tree is fromed by attaching a <span class="math">\(B_{k-1}\)</span> tree to the root of a <span class="math">\(B_{k-1}\)</span> tree.
 Thus, by induction, it contains a <span class="math">\(B_0\)</span> through <span class="math">\(B_{k-2}\)</span> tree, as well as the
 newly attached <span class="math">\(B_{k-1}\)</span> tree, proving the claim.</p>
-<h2>MAW 6.28</h2>
+<h2 id="maw-628">MAW 6.28</h2>
 <blockquote>
 <p>Prove that a binomial tree of height <span class="math">\(k\)</span> has <span class="math">\({k \choose d}\)</span> nodes at depth <span class="math">\(d\)</span>.</p>
 </blockquote>
@@ -239,7 +239,7 @@ $$</div>
     if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +

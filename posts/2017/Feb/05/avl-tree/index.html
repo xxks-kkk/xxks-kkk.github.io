@@ -41,16 +41,16 @@
             <h1>AVL Tree</h1>
             <p class="date">Written on <time datetime="2017-02-05T10:43:00+08:00">Feb 05, 2017</time></p>
         </header>
-
+        
         <article>
             <p>This is the summary of <em>AVL tree</em> part in MAW Chapter 4.</p>
-<h2>Motivation</h2>
+<h2 id="motivation">Motivation</h2>
 <p>All BST operations are <span class="math">\(O(H)\)</span> time, where <span class="math">\(H\)</span> is the height of the tree. In the worst case
 scenario, when the tree is degenerated, <span class="math">\(H = N\)</span>, where <span class="math">\(N\)</span> is the number of nodes.
 Thus, the problem with BST is that it can get unbalanced and lead to the worst running time.
 AVL tree is one of algorithms for keeping BST balanced (others including red-black trees, splay trees, B-trees).
 Its approach to balancing tree is that we want a pretty good balance (allow a little out of balance).</p>
-<h2>Concept</h2>
+<h2 id="concept">Concept</h2>
 <p>AVL tree is a <em>guaranteed</em> <span class="math">\(O(log N)\)</span> binary search tree. It is identical to a BST, except 
 that for every node in the tree, the height of the left and right subtrees can differ by at most 1.
 (The height of an empty tree is defined to be -1).</p>
@@ -58,7 +58,7 @@ that for every node in the tree, the height of the left and right subtrees can d
 <p>For simplicity, we really omit the actual data part of the node. The following picture demonstrate
 what AVL tree should really look like:</p>
 <p><img src="/images/AVL-real.PNG" alt="AVL-tree-real" style="height: 300px; width: 700px;"/></p>
-<h2>Insertion</h2>
+<h2 id="insertion">Insertion</h2>
 <p>AVL tree insertion is based upon BST insertion with two addition treatments:</p>
 <ul>
 <li>Update the height information of the nodes on the path from the root to the insertion point.</li>
@@ -90,7 +90,7 @@ Here is the detail steps:</p>
 </li>
 </ol>
 <p>See MAW p.117 insertion 13 for an example.</p>
-<h2>Deletion</h2>
+<h2 id="deletion">Deletion</h2>
 <p>Deletion, in fact, is extremely similar to the insertion in the sense that: </p>
 <ul>
 <li>It is based upon BST deletion with extra treatment towards node height information and AVL property</li>
@@ -122,7 +122,7 @@ to decide what rotation we should use (like insertion). Thus, we have the follow
 
 <p>Of course, the following simple example may help you understand the code chunk above:</p>
 <p><img alt="AVL-deletion" src="../../../../../images/AVL-deletion.PNG" /></p>
-<h2>Properties</h2>
+<h2 id="properties">Properties</h2>
 <ul>
 <li>For every node of the AVL tree, <span class="math">\(|Height(left child) - Height(right child)| \le 1\)</span>.</li>
 <li>Running time for "find", "insert", "delete" is <em>guaranteed</em> to be <span class="math">\(O(\log N)\)</span>.</li>
@@ -130,7 +130,7 @@ to decide what rotation we should use (like insertion). Thus, we have the follow
   (see <a href="../../../../../posts/2017/Jan/26/maw-chapter-4-tree-writing-questions/">this post</a> for the proof)</li>
 <li>For an insertion, there is <em>at most one</em> rotation (used in non-recursive insertion routine).</li>
 </ul>
-<h2>Pros &amp; Cons of data structure</h2>
+<h2 id="pros-cons-of-data-structure">Pros &amp; Cons of data structure</h2>
 <p>Pros:</p>
 <ul>
 <li>Search is <span class="math">\(O(\log N)\)</span> since AVL trees are always balanced.</li>
@@ -147,7 +147,7 @@ to decide what rotation we should use (like insertion). Thus, we have the follow
   many consecutive operations is fast (e.g. Splay trees). In other words,
   If <em>amortized</em> logarithmic time is enough, use splay trees.</li>
 </ul>
-<h2>Reference</h2>
+<h2 id="reference">Reference</h2>
 <ul>
 <li>MAW Chapter 4</li>
 <li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture12.pdf </li>
@@ -171,7 +171,7 @@ to decide what rotation we should use (like insertion). Thus, we have the follow
     if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_CHTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
