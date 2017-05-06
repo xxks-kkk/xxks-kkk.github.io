@@ -80,7 +80,6 @@ reading while meet the coursework deadlines. So, I decide to do the summary post
 based upon the module of the material itself.</p>
 <p>In addition, like MAW reading posts, I will focus on the reflection and the post itself
 may not be self-contained. However, this may happen rarely.</p>
-<p>* ---- Note ---- *</p>
 <blockquote>
 <p>Coursera has really well-designed programming assignment that really helps to understand
 both concepts and its actual implementation. All the code snippets listed in the below
@@ -206,11 +205,7 @@ $$</div>
 \end{align}
 $$</div>
 <p><span class="math">\(\alpha\)</span> is called learning rate, which determines "the step we take downhill" and the part afterwards decides
-which direction we want to go (derived by taking partial derivatives against <span class="math">\(\theta_j\)</span>).</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>We may need to do feature scaling &amp; pick up learning rate <span class="math">\(\alpha\)</span> wisely when we work with gradient descent.</p>
-</blockquote>
+which direction we want to go (derived by taking partial derivatives against <span class="math">\(\theta_j\)</span>)<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>.</p>
 <ul>
 <li>Normal Equation</li>
 </ul>
@@ -224,7 +219,7 @@ $$</div>
 <p>where <span class="math">\(X\)</span> is called <em>design matrix</em>, and it has form</p>
 <div class="math">$$
 \begin{align*} 
-&amp; x = \left[\begin{array}{ccc} - &amp; (x^{(1)})^T &amp; - \\ - &amp; (x^{(2)})^T &amp; - \\ &amp; \vdots &amp; \\ - &amp; (x^{(m)})^T &amp; -\end{array} \right] &amp;
+&amp; X = \left[\begin{array}{ccc} - &amp; (x^{(1)})^T &amp; - \\ - &amp; (x^{(2)})^T &amp; - \\ &amp; \vdots &amp; \\ - &amp; (x^{(m)})^T &amp; -\end{array} \right] &amp;
 x^{(i)} = \begin{bmatrix}x_0^{(i)} \\ \vdots \\ x_n^{(i)} \end{bmatrix} \in \mathbb{R} ^{n+1}
 \end{align*}
 $$</div>
@@ -315,11 +310,7 @@ J(\theta) = \frac{1}{2m}\Big[ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 +
 $$</div>
 <p>The regularization parameter <span class="math">\(\lambda\)</span> controls the tradeoff between "fit the data well" and
 "keep parameters small to avoid overfitting".  If <span class="math">\(\lambda\)</span> is set to an extremely large
-value, then we may face "underfit" issue (i.e. all <span class="math">\(\theta_j\)</span> for <span class="math">\(j = 1, \dots, n\)</span> close to 0).</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>We don't penalize <span class="math">\(\theta_0\)</span>.</p>
-</blockquote>
+value, then we may face "underfit" issue (i.e. all <span class="math">\(\theta_j\)</span> for <span class="math">\(j = 1, \dots, n\)</span> close to 0)<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>.</p>
 <p>Since our cost function has changed, both gradient descent and normal equation have to adjust accordingly:</p>
 <ul>
 <li>Gradient Descent</li>
@@ -413,6 +404,17 @@ logistic regression:</p>
 </pre></div>
 
 
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>We may need to do feature scaling &amp; pick up learning rate <span class="math">\(\alpha\)</span> wisely when we work with gradient descent.&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>We don't penalize <span class="math">\(\theta_0\)</span>.&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",

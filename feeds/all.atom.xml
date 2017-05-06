@@ -36,7 +36,6 @@ reading while meet the coursework deadlines. So, I decide to do the summary post
 based upon the module of the material itself.&lt;/p&gt;
 &lt;p&gt;In addition, like MAW reading posts, I will focus on the reflection and the post itself
 may not be self-contained. However, this may happen rarely.&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Coursera has really well-designed programming assignment that really helps to understand
 both concepts and its actual implementation. All the code snippets listed in the below
@@ -162,11 +161,7 @@ $$&lt;/div&gt;
 \end{align}
 $$&lt;/div&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; is called learning rate, which determines "the step we take downhill" and the part afterwards decides
-which direction we want to go (derived by taking partial derivatives against &lt;span class="math"&gt;\(\theta_j\)&lt;/span&gt;).&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;We may need to do feature scaling &amp;amp; pick up learning rate &lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; wisely when we work with gradient descent.&lt;/p&gt;
-&lt;/blockquote&gt;
+which direction we want to go (derived by taking partial derivatives against &lt;span class="math"&gt;\(\theta_j\)&lt;/span&gt;)&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Normal Equation&lt;/li&gt;
 &lt;/ul&gt;
@@ -180,7 +175,7 @@ $$&lt;/div&gt;
 &lt;p&gt;where &lt;span class="math"&gt;\(X\)&lt;/span&gt; is called &lt;em&gt;design matrix&lt;/em&gt;, and it has form&lt;/p&gt;
 &lt;div class="math"&gt;$$
 \begin{align*} 
-&amp;amp; x = \left[\begin{array}{ccc} - &amp;amp; (x^{(1)})^T &amp;amp; - \\ - &amp;amp; (x^{(2)})^T &amp;amp; - \\ &amp;amp; \vdots &amp;amp; \\ - &amp;amp; (x^{(m)})^T &amp;amp; -\end{array} \right] &amp;amp;
+&amp;amp; X = \left[\begin{array}{ccc} - &amp;amp; (x^{(1)})^T &amp;amp; - \\ - &amp;amp; (x^{(2)})^T &amp;amp; - \\ &amp;amp; \vdots &amp;amp; \\ - &amp;amp; (x^{(m)})^T &amp;amp; -\end{array} \right] &amp;amp;
 x^{(i)} = \begin{bmatrix}x_0^{(i)} \\ \vdots \\ x_n^{(i)} \end{bmatrix} \in \mathbb{R} ^{n+1}
 \end{align*}
 $$&lt;/div&gt;
@@ -271,11 +266,7 @@ J(\theta) = \frac{1}{2m}\Big[ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 +
 $$&lt;/div&gt;
 &lt;p&gt;The regularization parameter &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; controls the tradeoff between "fit the data well" and
 "keep parameters small to avoid overfitting".  If &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; is set to an extremely large
-value, then we may face "underfit" issue (i.e. all &lt;span class="math"&gt;\(\theta_j\)&lt;/span&gt; for &lt;span class="math"&gt;\(j = 1, \dots, n\)&lt;/span&gt; close to 0).&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;We don't penalize &lt;span class="math"&gt;\(\theta_0\)&lt;/span&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
+value, then we may face "underfit" issue (i.e. all &lt;span class="math"&gt;\(\theta_j\)&lt;/span&gt; for &lt;span class="math"&gt;\(j = 1, \dots, n\)&lt;/span&gt; close to 0)&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
 &lt;p&gt;Since our cost function has changed, both gradient descent and normal equation have to adjust accordingly:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Gradient Descent&lt;/li&gt;
@@ -369,6 +360,17 @@ logistic regression:&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;We may need to do feature scaling &amp;amp; pick up learning rate &lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; wisely when we work with gradient descent.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;We don't penalize &lt;span class="math"&gt;\(\theta_0\)&lt;/span&gt;.&amp;#160;&lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -854,20 +856,10 @@ I find it is really hard to talk about various sorting schemes without setting u
 ground concepts first.&lt;/p&gt;
 &lt;h2 id="definitions"&gt;Definitions&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;Sorting problem: Given an array &lt;span class="math"&gt;\(A\)&lt;/span&gt;, output &lt;span class="math"&gt;\(A\)&lt;/span&gt; such that: 
-  For any &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(J\)&lt;/span&gt;, if &lt;span class="math"&gt;\(i &amp;lt; j\)&lt;/span&gt;, then &lt;span class="math"&gt;\(A[i] \le A[j]\)&lt;/span&gt;.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Here, for the input, we are given an array &lt;span class="math"&gt;\(A\)&lt;/span&gt; of data records, each with
-a key (which can be an integer, character, string, etc) as long as the following
-condition can be met:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;There is an ordering on the set of possible keys&lt;/li&gt;
-&lt;li&gt;We can compare any two keys using &lt;span class="math"&gt;\(&amp;lt;, &amp;gt;, =\)&lt;/span&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Sorting problem: Given an array &lt;span class="math"&gt;\(A\)&lt;/span&gt;, output &lt;span class="math"&gt;\(A\)&lt;/span&gt; such that: 
+  For any &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(J\)&lt;/span&gt;, if &lt;span class="math"&gt;\(i &amp;lt; j\)&lt;/span&gt;, then &lt;span class="math"&gt;\(A[i] \le A[j]\)&lt;/span&gt;.&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Sorting algorithm using comparison operators (i.e &lt;span class="math"&gt;\(&amp;lt;, &amp;gt;, =\)&lt;/span&gt;) is known as
 &lt;strong&gt;comparison-based sorting&lt;/strong&gt;. Another major type is called &lt;strong&gt;counting sort&lt;/strong&gt; (i.e. Radix sort).&lt;/p&gt;
@@ -877,31 +869,17 @@ condition can be met:&lt;/p&gt;
 if the data is on the disk, we call it &lt;strong&gt;external sorting&lt;/strong&gt;.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;An algorithm requires &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt; extra space is known as an &lt;strong&gt;in place&lt;/strong&gt; sorting algorithm.&lt;/p&gt;
+&lt;p&gt;An algorithm requires &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt; extra space is known as an &lt;strong&gt;in place&lt;/strong&gt; sorting algorithm.&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Under the context of the sorting, we may ask: Does the sorting algorithm require extra
-memory to sort the collection of items? Do we need to copy and temporarily store some 
-subset of the keys/data records?&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;A sorting algorithm is &lt;strong&gt;stable&lt;/strong&gt; if elements with equal keys are left in the same
+&lt;li&gt;
+&lt;p&gt;A sorting algorithm is &lt;strong&gt;stable&lt;/strong&gt; &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt; if elements with equal keys are left in the same
 order as they occur in the input. In other words, we can ask ourself the question:
 Does it rearrange the order of input data records which have the same key value
 (duplicates)? If the answer is No, then the sorting algorithm is &lt;em&gt;stable&lt;/em&gt;.
 One example is that Phone book is sorted by name. 
 Now let's sort the book by country - is the list still sorted by name within each country?
-As you can tell, it is an extremely important property for databases.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;When we evaluate the performance of a sorting algorithm, we usually evaluate it
-from three perspectives: &lt;em&gt;running time&lt;/em&gt;, &lt;em&gt;memory requirements (aka space)&lt;/em&gt;, 
-and &lt;em&gt;stability&lt;/em&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
+As you can tell, it is an extremely important property for databases.&lt;/p&gt;
+&lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;There will be three kinds of running time mentioned in the sorting analysis:&lt;/p&gt;
 &lt;ul&gt;
@@ -914,13 +892,33 @@ performance.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
-&lt;ul&gt;
+&lt;h2 id="links-to-resources"&gt;Links to resources&lt;/h2&gt;
+&lt;p&gt;Here are some of the resources I found helpful while preparing this article:&lt;/p&gt;
+&lt;ol&gt;
 &lt;li&gt;MAW Chapter 7&lt;/li&gt;
-&lt;li&gt;https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt&lt;/li&gt;
-&lt;li&gt;https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf&lt;/li&gt;
-&lt;li&gt;http://web.mit.edu/1.124/LectureNotes/sorting.html&lt;/li&gt;
-&lt;/ul&gt;
+&lt;li&gt;&lt;a href="https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt"&gt;Sorting cheat sheet from Duke U.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf"&gt;Lecture material from U.Washington&lt;/a&gt; and
+&lt;a href="http://web.mit.edu/1.124/LectureNotes/sorting.html"&gt;MIT&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;Here, for the input, we are given an array &lt;span class="math"&gt;\(A\)&lt;/span&gt; of data records, each with
+a key (which can be an integer, character, string, etc) as long as the following
+condition can be met: 1. There is an ordering on the set of possible keys 2. We can compare any two keys using &lt;span class="math"&gt;\(&amp;lt;, &amp;gt;, =\)&lt;/span&gt;&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;Under the context of the sorting, we may ask: Does the sorting algorithm require extra
+memory to sort the collection of items? Do we need to copy and temporarily store some 
+subset of the keys/data records?&amp;#160;&lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:3"&gt;
+&lt;p&gt;When we evaluate the performance of a sorting algorithm, we usually evaluate it
+from three perspectives: &lt;em&gt;running time&lt;/em&gt;, &lt;em&gt;memory requirements (aka space)&lt;/em&gt;, and &lt;em&gt;stability&lt;/em&gt;.&amp;#160;&lt;a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",

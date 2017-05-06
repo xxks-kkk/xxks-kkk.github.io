@@ -51,20 +51,10 @@ I find it is really hard to talk about various sorting schemes without setting u
 ground concepts first.</p>
 <h2 id="definitions">Definitions</h2>
 <ul>
-<li>Sorting problem: Given an array <span class="math">\(A\)</span>, output <span class="math">\(A\)</span> such that: 
-  For any <span class="math">\(i\)</span> and <span class="math">\(J\)</span>, if <span class="math">\(i &lt; j\)</span>, then <span class="math">\(A[i] \le A[j]\)</span>.</li>
-</ul>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>Here, for the input, we are given an array <span class="math">\(A\)</span> of data records, each with
-a key (which can be an integer, character, string, etc) as long as the following
-condition can be met:</p>
-<ul>
-<li>There is an ordering on the set of possible keys</li>
-<li>We can compare any two keys using <span class="math">\(&lt;, &gt;, =\)</span></li>
-</ul>
-</blockquote>
-<ul>
+<li>
+<p>Sorting problem: Given an array <span class="math">\(A\)</span>, output <span class="math">\(A\)</span> such that: 
+  For any <span class="math">\(i\)</span> and <span class="math">\(J\)</span>, if <span class="math">\(i &lt; j\)</span>, then <span class="math">\(A[i] \le A[j]\)</span>.<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup></p>
+</li>
 <li>
 <p>Sorting algorithm using comparison operators (i.e <span class="math">\(&lt;, &gt;, =\)</span>) is known as
 <strong>comparison-based sorting</strong>. Another major type is called <strong>counting sort</strong> (i.e. Radix sort).</p>
@@ -74,31 +64,17 @@ condition can be met:</p>
 if the data is on the disk, we call it <strong>external sorting</strong>.</p>
 </li>
 <li>
-<p>An algorithm requires <span class="math">\(O(1)\)</span> extra space is known as an <strong>in place</strong> sorting algorithm.</p>
+<p>An algorithm requires <span class="math">\(O(1)\)</span> extra space is known as an <strong>in place</strong> sorting algorithm.<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup></p>
 </li>
-</ul>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>Under the context of the sorting, we may ask: Does the sorting algorithm require extra
-memory to sort the collection of items? Do we need to copy and temporarily store some 
-subset of the keys/data records?</p>
-</blockquote>
-<ul>
-<li>A sorting algorithm is <strong>stable</strong> if elements with equal keys are left in the same
+<li>
+<p>A sorting algorithm is <strong>stable</strong> <sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup> if elements with equal keys are left in the same
 order as they occur in the input. In other words, we can ask ourself the question:
 Does it rearrange the order of input data records which have the same key value
 (duplicates)? If the answer is No, then the sorting algorithm is <em>stable</em>.
 One example is that Phone book is sorted by name. 
 Now let's sort the book by country - is the list still sorted by name within each country?
-As you can tell, it is an extremely important property for databases.</li>
-</ul>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>When we evaluate the performance of a sorting algorithm, we usually evaluate it
-from three perspectives: <em>running time</em>, <em>memory requirements (aka space)</em>, 
-and <em>stability</em>.</p>
-</blockquote>
-<ul>
+As you can tell, it is an extremely important property for databases.</p>
+</li>
 <li>
 <p>There will be three kinds of running time mentioned in the sorting analysis:</p>
 <ul>
@@ -111,13 +87,33 @@ performance.</li>
 </ul>
 </li>
 </ul>
-<h2 id="reference">Reference</h2>
-<ul>
+<h2 id="links-to-resources">Links to resources</h2>
+<p>Here are some of the resources I found helpful while preparing this article:</p>
+<ol>
 <li>MAW Chapter 7</li>
-<li>https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt</li>
-<li>https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf</li>
-<li>http://web.mit.edu/1.124/LectureNotes/sorting.html</li>
-</ul>
+<li><a href="https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt">Sorting cheat sheet from Duke U.</a></li>
+<li><a href="https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf">Lecture material from U.Washington</a> and
+<a href="http://web.mit.edu/1.124/LectureNotes/sorting.html">MIT</a></li>
+</ol>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Here, for the input, we are given an array <span class="math">\(A\)</span> of data records, each with
+a key (which can be an integer, character, string, etc) as long as the following
+condition can be met: 1. There is an ordering on the set of possible keys 2. We can compare any two keys using <span class="math">\(&lt;, &gt;, =\)</span>&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Under the context of the sorting, we may ask: Does the sorting algorithm require extra
+memory to sort the collection of items? Do we need to copy and temporarily store some 
+subset of the keys/data records?&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>When we evaluate the performance of a sorting algorithm, we usually evaluate it
+from three perspectives: <em>running time</em>, <em>memory requirements (aka space)</em>, and <em>stability</em>.&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
