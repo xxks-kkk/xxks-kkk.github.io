@@ -435,7 +435,7 @@ can break &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt; barrier. This is exac
 &lt;p&gt;Shellsort is referred as &lt;em&gt;diminishing increment&lt;/em&gt; sort: it works by swapping
 non-adjacent elements; the distance between comparisons decreases as the 
 algorithm runs until the last phase, in which adjacent elements are compared.&lt;/p&gt;
-&lt;p&gt;Concretely, shellsort uses an increment sequence &lt;span class="math"&gt;\(h_1, h_2, \dots, h_t\)&lt;/span&gt;:&lt;/p&gt;
+&lt;p&gt;Concretely, shellsort uses an increment sequence &lt;span class="math"&gt;\(h_1, h_2, \dots, h_t\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;We start with &lt;span class="math"&gt;\(k=t\)&lt;/span&gt;&lt;/p&gt;
@@ -448,14 +448,9 @@ In other words, all elements spaced &lt;span class="math"&gt;\(h_k\)&lt;/span&gt
 &lt;p&gt;Go to the next smaller increment &lt;span class="math"&gt;\(h_{k-1}\)&lt;/span&gt; and repeat until &lt;span class="math"&gt;\(k = 1\)&lt;/span&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Any increment sequence will do as long as the last increment is 1 (i.e. &lt;span class="math"&gt;\(h_1 = 1\)&lt;/span&gt;).
-However, choosing the increment is a practice of art: some choices dominate others.&lt;/p&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;A popular but poor choice for incremenet sequence is: &lt;span class="math"&gt;\(h_t = \lfloor{N/2}\rfloor\)&lt;/span&gt; and
 &lt;span class="math"&gt;\(h_k = \lfloor{h_{k+1}/2}\rfloor\)&lt;/span&gt; proposed by shell. &lt;/p&gt;
-&lt;p&gt;Here is the shellsort using Shell's increments:&lt;/p&gt;
+&lt;p&gt;Here is the shellsort using Shell's increments &lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;
 &lt;span class="nf"&gt;shellSort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;{&lt;/span&gt;
@@ -475,12 +470,6 @@ However, choosing the increment is a practice of art: some choices dominate othe
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;As suggested by the algorithm above, the general strategy to &lt;span class="math"&gt;\(h_k\)&lt;/span&gt;-sort is
-for each position, &lt;span class="math"&gt;\(i\)&lt;/span&gt;, in &lt;span class="math"&gt;\(h_k, h_k+1, \dots, N-1,\)&lt;/span&gt; place the element in 
-the correct spot among &lt;span class="math"&gt;\(i, i-h_k, i-2h_k\)&lt;/span&gt;, etc.&lt;/p&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;Here is an example of the algorithm in action (using Shell's increment sequence):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;| index        | 0  | 1  | 2  | 3  | 4  | 5  | 6  | 7  | 8  | 9  | 10 | 11 | 12 |
 | original     | 81 | 94 | 11 | 96 | 12 | 35 | 17 | 95 | 28 | 58 | 41 | 75 | 15 |
@@ -496,15 +485,8 @@ the correct spot among &lt;span class="math"&gt;\(i, i-h_k, i-2h_k\)&lt;/span&gt
 running time for two commonly-seen increment sequences:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The worst-case running time of Shellsort, using Shell's increments, is &lt;span class="math"&gt;\(\Theta(N^2)\)&lt;/span&gt;.&lt;/li&gt;
-&lt;li&gt;The worst-case running time of Shellsort, using Hibbard's increments (&lt;span class="math"&gt;\(1,3,7, \dots, 2^k-1\)&lt;/span&gt;), is &lt;span class="math"&gt;\(\Theta(N^{3/2})\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;The worst-case running time of Shellsort, using Hibbard's increments (&lt;span class="math"&gt;\(1,3,7, \dots, 2^k-1\)&lt;/span&gt;) &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;, is &lt;span class="math"&gt;\(\Theta(N^{3/2})\)&lt;/span&gt;.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;The key difference between Hibbard's increments and Shell's increments is the adjacent
-increments have no common factors. The problem with Shell's increments is that
-we keep comparing the same elements over and over again. We need to increment
-so that different elements are in different passes.&lt;/p&gt;
-&lt;/blockquote&gt;
 &lt;p&gt;The average case time is &lt;span class="math"&gt;\(O(N^{3/2})\)&lt;/span&gt; by using Hibbard's increments. The worst case time
 is the sequence when smallest elements in odd positions, largest in even positions (i.e. 2,11,4,12,6,13,8,14)
 when we use shell's sequence. Only last pass (i.e. &lt;span class="math"&gt;\(h_1 = 1\)&lt;/span&gt;) will do the work and it becomes 
@@ -518,15 +500,36 @@ for any pass and we have a sorted array. In this case, we have &lt;span class="m
 (i.e. &lt;span class="math"&gt;\(h_k = 6\)&lt;/span&gt; then there are 6 subarrays(by index): {0,6,12}, {1,7}, {2,8}, {3,9}, {4,10}, {5,11}).&lt;/li&gt;
 &lt;li&gt;a larger increment swaps more distant pairs (natural derivation of the above property).&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
-&lt;ul&gt;
+&lt;h2 id="links-to-resources"&gt;Links to resources&lt;/h2&gt;
+&lt;p&gt;Here are some of the resources I found helpful while preparing this article:&lt;/p&gt;
+&lt;ol&gt;
 &lt;li&gt;MAW Chapter 7&lt;/li&gt;
-&lt;li&gt;https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt&lt;/li&gt;
-&lt;li&gt;https://www.cs.rochester.edu/~brown/172/lectures/12_sort1/12sort1.html&lt;/li&gt;
-&lt;li&gt;https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf&lt;/li&gt;
-&lt;li&gt;https://courses.cs.washington.edu/courses/cse373/01sp/Lect16_2up.pdf&lt;/li&gt;
-&lt;li&gt;http://web.mit.edu/1.124/LectureNotes/sorting.html&lt;/li&gt;
-&lt;/ul&gt;
+&lt;li&gt;&lt;a href="https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt"&gt;Sorting cheat sheet from Duke U.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf"&gt;Lecture 15&lt;/a&gt; and
+&lt;a href="https://courses.cs.washington.edu/courses/cse373/01sp/Lect16_2up.pdf"&gt;lecture 16&lt;/a&gt; from U.Washington&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://web.mit.edu/1.124/LectureNotes/sorting.html"&gt;Notes from MIT&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.cs.rochester.edu/~brown/172/lectures/12_sort1/12sort1.html"&gt;Lecture from U.Rochester&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;Any increment sequence will do as long as the last increment is 1 (i.e. &lt;span class="math"&gt;\(h_1 = 1\)&lt;/span&gt;).
+However, choosing the increment is a practice of art: some choices dominate others.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;As suggested by the algorithm above, the general strategy to &lt;span class="math"&gt;\(h_k\)&lt;/span&gt;-sort is
+for each position, &lt;span class="math"&gt;\(i\)&lt;/span&gt;, in &lt;span class="math"&gt;\(h_k, h_k+1, \dots, N-1,\)&lt;/span&gt; place the element in 
+the correct spot among &lt;span class="math"&gt;\(i, i-h_k, i-2h_k\)&lt;/span&gt;, etc.&amp;#160;&lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:3"&gt;
+&lt;p&gt;The key difference between Hibbard's increments and Shell's increments is the adjacent
+increments have no common factors. The problem with Shell's increments is that
+we keep comparing the same elements over and over again. We need to increment
+so that different elements are in different passes.&amp;#160;&lt;a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
