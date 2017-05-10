@@ -66,7 +66,7 @@
         
         <article>
             <h2 id="solutions">Solutions</h2>
-<p>including: MAW 7.1, 7.2, 7.3, 7.4, 7.5.a, 7.9, 7.10, </p>
+<p>including: MAW 7.1, 7.2, 7.3, 7.4, 7.5.a, 7.9, 7.10, 7.11, 7.12, </p>
 <h3 id="maw-71">MAW 7.1</h3>
 <blockquote>
 <p>Sort the sequence 3,1,4,1,5,9,2,6,5 using insertion sort.</p>
@@ -179,6 +179,45 @@ the increment sequence will be <span class="math">\(45, 21 (22-1), 9, 3, 1\)</sp
 </blockquote>
 <p>In this case, conseuctive increments are relatively prime and by the argument in 
 the proof of theorem 7.4, we can have the worst case running time <span class="math">\(O(N^{3/2})\)</span>.</p>
+<h3 id="maw-711">MAW 7.11</h3>
+<blockquote>
+<p>Show how heapsort processes the input 142, 543, 123, 65, 453, 879, 572, 434, 111, 242, 
+811, 102.</p>
+</blockquote>
+<p>The input is read in as it appears in the question. Then, we first build the heap with 
+the result looks like</p>
+<div class="highlight"><pre><span></span>879, 811, 572, 434, 543, 123, 142, 65, 111, 242, 453, 102
+</pre></div>
+
+
+<p><span class="math">\(879\)</span> is removed from the heap and placed at the end. We'll put <em>|</em> to separate the elements
+that are sorted and not part of the heap. <span class="math">\(102\)</span> is placed in the hole and bubbled down, obtaining</p>
+<div class="highlight"><pre><span></span>811, 543, 572, 434, 453, 123, 142, 65, 111, 242, 102, | 879
+</pre></div>
+
+
+<p>continuing the process, we obtain</p>
+<div class="highlight"><pre><span></span>572, 543, 142, 434, 453, 123, 102, 65, 111, 242, | 811, 879
+543, 453, 142, 434, 242, 123, 102, 65, 111, | 572, 811, 879
+453, 434, 142, 111, 242, 123, 102, 65, | 543, 572, 811, 879
+434, 242, 142, 111, 65, 123, 102, | 453, 543, 572, 811, 879
+242, 111, 142, 102, 65, 123, | 434, 453, 543, 572, 811, 879
+142, 111, 123, 102, 65, | 242, 434, 453, 543, 572, 811, 879
+123, 111, 65, 102, | 142, 242, 434, 453, 543, 572, 811, 879
+111, 102, 65, | 123, 142, 242, 434, 453, 543, 572, 811, 879
+102, 65, | 111, 123, 142, 242, 434, 453, 543, 572, 811, 879
+65, | 102, 111, 123, 142, 242, 434, 453, 543, 572, 811, 879
+| 65, 102, 111, 123, 142, 242, 434, 453, 543, 572, 811, 879
+</pre></div>
+
+
+<h3 id="maw-712">MAW 7.12</h3>
+<blockquote>
+<p>a. What is the running time of heapsort for presorted input?</p>
+</blockquote>
+<p>Still <span class="math">\(O(N\log N)\)</span>. Heapsort uses at least (roughly) 
+<span class="math">\(N\log N\)</span> comparisons on any input, so there are no particularly
+good inputs.</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",

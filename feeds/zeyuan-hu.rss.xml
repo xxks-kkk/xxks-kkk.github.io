@@ -979,7 +979,7 @@ from three perspectives: &lt;em&gt;running time&lt;/em&gt;, &lt;em&gt;memory req
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Tue, 18 Apr 2017 10:03:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-18:posts/2017/Apr/18/sorting-prelim/</guid><category>sorting</category><category>maw</category></item><item><title>MAW Chapter 7: Sorting writing questions</title><link>http://zhu45.org/posts/2017/Apr/15/maw-chapter-7-sorting-writing-questions/</link><description>&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
-&lt;p&gt;including: MAW 7.1, 7.2, 7.3, 7.4, 7.5.a, 7.9, 7.10, &lt;/p&gt;
+&lt;p&gt;including: MAW 7.1, 7.2, 7.3, 7.4, 7.5.a, 7.9, 7.10, 7.11, 7.12, &lt;/p&gt;
 &lt;h3 id="maw-71"&gt;MAW 7.1&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Sort the sequence 3,1,4,1,5,9,2,6,5 using insertion sort.&lt;/p&gt;
@@ -1092,6 +1092,45 @@ the increment sequence will be &lt;span class="math"&gt;\(45, 21 (22-1), 9, 3, 1
 &lt;/blockquote&gt;
 &lt;p&gt;In this case, conseuctive increments are relatively prime and by the argument in 
 the proof of theorem 7.4, we can have the worst case running time &lt;span class="math"&gt;\(O(N^{3/2})\)&lt;/span&gt;.&lt;/p&gt;
+&lt;h3 id="maw-711"&gt;MAW 7.11&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Show how heapsort processes the input 142, 543, 123, 65, 453, 879, 572, 434, 111, 242, 
+811, 102.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The input is read in as it appears in the question. Then, we first build the heap with 
+the result looks like&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;879, 811, 572, 434, 543, 123, 142, 65, 111, 242, 453, 102
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;span class="math"&gt;\(879\)&lt;/span&gt; is removed from the heap and placed at the end. We'll put &lt;em&gt;|&lt;/em&gt; to separate the elements
+that are sorted and not part of the heap. &lt;span class="math"&gt;\(102\)&lt;/span&gt; is placed in the hole and bubbled down, obtaining&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;811, 543, 572, 434, 453, 123, 142, 65, 111, 242, 102, | 879
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;continuing the process, we obtain&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;572, 543, 142, 434, 453, 123, 102, 65, 111, 242, | 811, 879
+543, 453, 142, 434, 242, 123, 102, 65, 111, | 572, 811, 879
+453, 434, 142, 111, 242, 123, 102, 65, | 543, 572, 811, 879
+434, 242, 142, 111, 65, 123, 102, | 453, 543, 572, 811, 879
+242, 111, 142, 102, 65, 123, | 434, 453, 543, 572, 811, 879
+142, 111, 123, 102, 65, | 242, 434, 453, 543, 572, 811, 879
+123, 111, 65, 102, | 142, 242, 434, 453, 543, 572, 811, 879
+111, 102, 65, | 123, 142, 242, 434, 453, 543, 572, 811, 879
+102, 65, | 111, 123, 142, 242, 434, 453, 543, 572, 811, 879
+65, | 102, 111, 123, 142, 242, 434, 453, 543, 572, 811, 879
+| 65, 102, 111, 123, 142, 242, 434, 453, 543, 572, 811, 879
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3 id="maw-712"&gt;MAW 7.12&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;a. What is the running time of heapsort for presorted input?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Still &lt;span class="math"&gt;\(O(N\log N)\)&lt;/span&gt;. Heapsort uses at least (roughly) 
+&lt;span class="math"&gt;\(N\log N\)&lt;/span&gt; comparisons on any input, so there are no particularly
+good inputs.&lt;/p&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
