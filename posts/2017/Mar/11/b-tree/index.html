@@ -95,8 +95,8 @@ Suppose we have a large customer table with gigabytes of data and an index is cr
 customer table to speed up search. Phone numbers stored in sorted order with information (page and slot) on where the rest of 
 the customer information can be found in the customer table.</p>
 <p><img src="/images/real-b-tree.PNG" alt="real-b-tree" style="width: 700px;"/></p>
-<p>In this example, once we continue down the tree and locate the phone number we are searching for, we use the RID to fetch the 
-rest of the customer record from the table. In this case, we use 4 disk accesses.</p>
+<p>In this example, once we continue down the tree and locate the phone number we are searching for, we use the RID to fetch the rest of the customer record from the table. In this case, we use 4 page accesses to get the full customer
+record from the table.</p>
 <h2 id="operations">Operations</h2>
 <ul>
 <li>Find:</li>
@@ -151,14 +151,16 @@ of times this unique manipulation is proportional to the height of tree.</p>
 </ul>
 </li>
 </ul>
-<h2 id="reference">Reference</h2>
+<h2 id="links-to-resources">Links to resources</h2>
+<p>Here are some of the resources I found helpful while preparing this article:</p>
 <ul>
 <li>MAW Chapter 4</li>
-<li>https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture15.pdf</li>
-<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf</li>
-<li>https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture9.pdf</li>
-<li>http://www.cs.yale.edu/homes/aspnes/pinewiki/BTrees.html</li>
-<li>http://ilpubs.stanford.edu:8090/85/1/1995-19.pdf</li>
+<li>Lecture slides <a href="https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture15.pdf">15</a>,
+<a href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf">8</a>, and 
+<a href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture9.pdf">9</a>
+from U.Washington</li>
+<li><a href="http://www.cs.yale.edu/homes/aspnes/pinewiki/BTrees.html">Yale pinewiki on B-tree</a></li>
+<li><a href="http://ilpubs.stanford.edu:8090/85/1/1995-19.pdf">Stanford B-tree implementation paper</a></li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",

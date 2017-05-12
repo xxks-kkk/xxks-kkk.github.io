@@ -2602,8 +2602,8 @@ Suppose we have a large customer table with gigabytes of data and an index is cr
 customer table to speed up search. Phone numbers stored in sorted order with information (page and slot) on where the rest of 
 the customer information can be found in the customer table.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/real-b-tree.PNG" alt="real-b-tree" style="width: 700px;"/&gt;&lt;/p&gt;
-&lt;p&gt;In this example, once we continue down the tree and locate the phone number we are searching for, we use the RID to fetch the 
-rest of the customer record from the table. In this case, we use 4 disk accesses.&lt;/p&gt;
+&lt;p&gt;In this example, once we continue down the tree and locate the phone number we are searching for, we use the RID to fetch the rest of the customer record from the table. In this case, we use 4 page accesses to get the full customer
+record from the table.&lt;/p&gt;
 &lt;h2 id="operations"&gt;Operations&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Find:&lt;/li&gt;
@@ -2658,14 +2658,16 @@ of times this unique manipulation is proportional to the height of tree.&lt;/p&g
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;h2 id="links-to-resources"&gt;Links to resources&lt;/h2&gt;
+&lt;p&gt;Here are some of the resources I found helpful while preparing this article:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 4&lt;/li&gt;
-&lt;li&gt;https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture15.pdf&lt;/li&gt;
-&lt;li&gt;https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf&lt;/li&gt;
-&lt;li&gt;https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture9.pdf&lt;/li&gt;
-&lt;li&gt;http://www.cs.yale.edu/homes/aspnes/pinewiki/BTrees.html&lt;/li&gt;
-&lt;li&gt;http://ilpubs.stanford.edu:8090/85/1/1995-19.pdf&lt;/li&gt;
+&lt;li&gt;Lecture slides &lt;a href="https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture15.pdf"&gt;15&lt;/a&gt;,
+&lt;a href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture8.pdf"&gt;8&lt;/a&gt;, and 
+&lt;a href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture9.pdf"&gt;9&lt;/a&gt;
+from U.Washington&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.cs.yale.edu/homes/aspnes/pinewiki/BTrees.html"&gt;Yale pinewiki on B-tree&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://ilpubs.stanford.edu:8090/85/1/1995-19.pdf"&gt;Stanford B-tree implementation paper&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
