@@ -495,7 +495,7 @@ for any pass and we have a sorted array. In this case, we have &lt;span class="m
 &lt;p&gt;Shellsort is good for up to &lt;span class="math"&gt;\(N \approx 10000\)&lt;/span&gt; and its simplcity makes it a favorite.&lt;/p&gt;
 &lt;h2 id="properties"&gt;Properties&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;an &lt;span class="math"&gt;\(h_k-sorted\)&lt;/span&gt; array that is then &lt;span class="math"&gt;\(h_{k-1}\)&lt;/span&gt; sorted remains &lt;span class="math"&gt;\(h_k\)&lt;/span&gt; sorted (why algorithm works).&lt;/li&gt;
+&lt;li&gt;an &lt;span class="math"&gt;\(h_k\)&lt;/span&gt;-sorted array that is then &lt;span class="math"&gt;\(h_{k-1}\)&lt;/span&gt; sorted remains &lt;span class="math"&gt;\(h_k\)&lt;/span&gt; sorted (why algorithm works).&lt;/li&gt;
 &lt;li&gt;the action of an &lt;span class="math"&gt;\(h_k\)&lt;/span&gt;-sort is to perform an insertion sort on &lt;span class="math"&gt;\(h_k\)&lt;/span&gt; independent subarrays with size about &lt;span class="math"&gt;\(N/h_k\)&lt;/span&gt; elements
 (i.e. &lt;span class="math"&gt;\(h_k = 6\)&lt;/span&gt; then there are 6 subarrays(by index): {0,6,12}, {1,7}, {2,8}, {3,9}, {4,10}, {5,11}).&lt;/li&gt;
 &lt;li&gt;a larger increment swaps more distant pairs (natural derivation of the above property).&lt;/li&gt;
@@ -589,7 +589,28 @@ so that different elements are in different passes.&amp;#160;&lt;a class="footno
 &lt;/script&gt;</summary><category term="sorting"></category><category term="maw"></category></entry><entry><title>Simple sorting algorithms</title><link href="http://zhu45.org/posts/2017/Apr/24/simple-sorting-algorithms/" rel="alternate"></link><published>2017-04-24T21:33:00+08:00</published><updated>2017-04-24T21:33:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-24:posts/2017/Apr/24/simple-sorting-algorithms/</id><summary type="html">&lt;p&gt;This post summarizes three typical simple sorting algorithms: &lt;em&gt;bubble sort&lt;/em&gt;, 
 &lt;em&gt;selection sort&lt;/em&gt;, and &lt;em&gt;insertion sort&lt;/em&gt;. In chapter 7, MAW mainly talks about 
 &lt;em&gt;insertion sort&lt;/em&gt; but for the sake of completeness, I will include the other two as
-well.&lt;/p&gt;
+well &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#bubble-sort"&gt;Bubble sort&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#concept"&gt;Concept&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#analysis"&gt;Analysis&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#selection-sort"&gt;Selection sort&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#concept_1"&gt;Concept&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#analysis_1"&gt;Analysis&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#insertion-sort"&gt;Insertion sort&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#concept_2"&gt;Concept&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#analysis_2"&gt;Analysis&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#a-lower-bound-for-simple-sorting-algorithms"&gt;A Lower Bound for Simple Sorting Algorithms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#links-to-resources"&gt;Links to resources&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
 &lt;h2 id="bubble-sort"&gt;Bubble sort&lt;/h2&gt;
 &lt;h3 id="concept"&gt;Concept&lt;/h3&gt;
 &lt;p&gt;The idea for the bubble sort is to "bubble" larger elements to the end of array
@@ -677,7 +698,7 @@ sort routine always take the same time.&lt;/p&gt;
 &lt;h2 id="insertion-sort"&gt;Insertion sort&lt;/h2&gt;
 &lt;h3 id="concept_2"&gt;Concept&lt;/h3&gt;
 &lt;p&gt;The idea for insertion sort is that we insert an as-yet-unprocessed record
-int a sorted list of the records processed so far. In details, insertion sort
+into a sorted list of the records processed so far. In details, insertion sort
 consists of &lt;span class="math"&gt;\(N-1\)&lt;/span&gt; passes. For pass &lt;span class="math"&gt;\(P = 1\)&lt;/span&gt; through &lt;span class="math"&gt;\(N-1\)&lt;/span&gt;, insertion sort ensures
 that the elements in positions &lt;span class="math"&gt;\(0\)&lt;/span&gt; through &lt;span class="math"&gt;\(p\)&lt;/span&gt; are in sorted order. In pass &lt;span class="math"&gt;\(P\)&lt;/span&gt;,
 we move the element in position &lt;span class="math"&gt;\(P\)&lt;/span&gt; left until its correct place is found among
@@ -719,14 +740,6 @@ case, the running time is &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt;. In f
 and worst case: &lt;span class="math"&gt;\(\Theta (N^2)\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;In addition, insertion sort is stable and in place. Insertion sort is the most 
 effectively used on input array with roughly &lt;span class="math"&gt;\(N &amp;lt; 20\)&lt;/span&gt; and for almost sorted array.&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href="https://youtu.be/8Kp-8OGwphY"&gt;bubble sort video&lt;/a&gt;, 
-&lt;a href="https://youtu.be/f8hXR_Hvybo"&gt;selection sort video&lt;/a&gt;, 
-&lt;a href="https://youtu.be/DFG-XuyPYUQ"&gt;insertion sort video&lt;/a&gt; and 
-&lt;a href="https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html"&gt;this animation&lt;/a&gt;
-can help you understand the concept.&lt;/p&gt;
-&lt;/blockquote&gt;
 &lt;h2 id="a-lower-bound-for-simple-sorting-algorithms"&gt;A Lower Bound for Simple Sorting Algorithms&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -750,14 +763,26 @@ for each swap. Adjacent elements swap will certainly not help us to achieve this
 The idea is that we try to swap the elements that are far apart and hopefully we can 
 remove more than one inversion for each swap. Shell sort is the first algorithm
 to break &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt; running time. I'll talk about it in my next post.&lt;/p&gt;
-&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
-&lt;ul&gt;
+&lt;h2 id="links-to-resources"&gt;Links to resources&lt;/h2&gt;
+&lt;p&gt;Here are some of the resources I found helpful while preparing this article:&lt;/p&gt;
+&lt;ol&gt;
 &lt;li&gt;MAW Chapter 7&lt;/li&gt;
-&lt;li&gt;https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt&lt;/li&gt;
-&lt;li&gt;https://www.cs.rochester.edu/~brown/172/lectures/12_sort1/12sort1.html&lt;/li&gt;
-&lt;li&gt;https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf&lt;/li&gt;
-&lt;li&gt;http://web.mit.edu/1.124/LectureNotes/sorting.html&lt;/li&gt;
-&lt;/ul&gt;
+&lt;li&gt;&lt;a href="https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt"&gt;Sorting cheat sheet from Duke U.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf"&gt;Lecture 15&lt;/a&gt; from U.Washington&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://web.mit.edu/1.124/LectureNotes/sorting.html"&gt;Notes from MIT&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.cs.rochester.edu/~brown/172/lectures/12_sort1/12sort1.html"&gt;Lecture from U.Rochester&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;&lt;a href="https://youtu.be/8Kp-8OGwphY"&gt;bubble sort video&lt;/a&gt;, &lt;a href="https://youtu.be/f8hXR_Hvybo"&gt;selection sort video&lt;/a&gt;, 
+&lt;a href="https://youtu.be/DFG-XuyPYUQ"&gt;insertion sort video&lt;/a&gt; and 
+&lt;a href="https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html"&gt;this animation&lt;/a&gt;
+can help you understand the concept.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -2635,7 +2660,7 @@ $$&lt;/div&gt;
 &lt;li&gt;Depth of B-tree storing &lt;span class="math"&gt;\(N\)&lt;/span&gt; items is &lt;span class="math"&gt;\(O(\log_{\lceil{M/2}\rceil}N)\)&lt;/span&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Find then takes &lt;span class="math"&gt;\(O(\log M)\)&lt;/span&gt; to do binary search on each node to determine which branch to take. Then the total time is 
-O(depth &lt;span class="math"&gt;\(\times \log M\)&lt;/span&gt;) = &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; because &lt;span class="math"&gt;\(M\)&lt;/span&gt; is small compared to &lt;span class="math"&gt;\(N\)&lt;/span&gt;.&lt;/p&gt;
+&lt;span class="math"&gt;\(O(depth \times \log M)\)&lt;/span&gt; = &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; because &lt;span class="math"&gt;\(M\)&lt;/span&gt; is small compared to &lt;span class="math"&gt;\(N\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;Insertion and deletion doesn't different from &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; because the unique manipulation takes constant amount of work and the number 
 of times this unique manipulation is proportional to the height of tree.&lt;/p&gt;
 &lt;h2 id="pros-cons-of-data-structure"&gt;Pros &amp;amp; Cons of data structure&lt;/h2&gt;

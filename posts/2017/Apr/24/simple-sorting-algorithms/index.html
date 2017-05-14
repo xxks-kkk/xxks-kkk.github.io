@@ -64,7 +64,28 @@
             <p>This post summarizes three typical simple sorting algorithms: <em>bubble sort</em>, 
 <em>selection sort</em>, and <em>insertion sort</em>. In chapter 7, MAW mainly talks about 
 <em>insertion sort</em> but for the sake of completeness, I will include the other two as
-well.</p>
+well <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>.</p>
+<div class="toc">
+<ul>
+<li><a href="#bubble-sort">Bubble sort</a><ul>
+<li><a href="#concept">Concept</a></li>
+<li><a href="#analysis">Analysis</a></li>
+</ul>
+</li>
+<li><a href="#selection-sort">Selection sort</a><ul>
+<li><a href="#concept_1">Concept</a></li>
+<li><a href="#analysis_1">Analysis</a></li>
+</ul>
+</li>
+<li><a href="#insertion-sort">Insertion sort</a><ul>
+<li><a href="#concept_2">Concept</a></li>
+<li><a href="#analysis_2">Analysis</a></li>
+</ul>
+</li>
+<li><a href="#a-lower-bound-for-simple-sorting-algorithms">A Lower Bound for Simple Sorting Algorithms</a></li>
+<li><a href="#links-to-resources">Links to resources</a></li>
+</ul>
+</div>
 <h2 id="bubble-sort">Bubble sort</h2>
 <h3 id="concept">Concept</h3>
 <p>The idea for the bubble sort is to "bubble" larger elements to the end of array
@@ -152,7 +173,7 @@ sort routine always take the same time.</p>
 <h2 id="insertion-sort">Insertion sort</h2>
 <h3 id="concept_2">Concept</h3>
 <p>The idea for insertion sort is that we insert an as-yet-unprocessed record
-int a sorted list of the records processed so far. In details, insertion sort
+into a sorted list of the records processed so far. In details, insertion sort
 consists of <span class="math">\(N-1\)</span> passes. For pass <span class="math">\(P = 1\)</span> through <span class="math">\(N-1\)</span>, insertion sort ensures
 that the elements in positions <span class="math">\(0\)</span> through <span class="math">\(p\)</span> are in sorted order. In pass <span class="math">\(P\)</span>,
 we move the element in position <span class="math">\(P\)</span> left until its correct place is found among
@@ -194,14 +215,6 @@ case, the running time is <span class="math">\(O(N^2)\)</span>. In fact, the bou
 and worst case: <span class="math">\(\Theta (N^2)\)</span>.</p>
 <p>In addition, insertion sort is stable and in place. Insertion sort is the most 
 effectively used on input array with roughly <span class="math">\(N &lt; 20\)</span> and for almost sorted array.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p><a href="https://youtu.be/8Kp-8OGwphY">bubble sort video</a>, 
-<a href="https://youtu.be/f8hXR_Hvybo">selection sort video</a>, 
-<a href="https://youtu.be/DFG-XuyPYUQ">insertion sort video</a> and 
-<a href="https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html">this animation</a>
-can help you understand the concept.</p>
-</blockquote>
 <h2 id="a-lower-bound-for-simple-sorting-algorithms">A Lower Bound for Simple Sorting Algorithms</h2>
 <ul>
 <li>
@@ -225,14 +238,26 @@ for each swap. Adjacent elements swap will certainly not help us to achieve this
 The idea is that we try to swap the elements that are far apart and hopefully we can 
 remove more than one inversion for each swap. Shell sort is the first algorithm
 to break <span class="math">\(O(N^2)\)</span> running time. I'll talk about it in my next post.</p>
-<h2 id="reference">Reference</h2>
-<ul>
+<h2 id="links-to-resources">Links to resources</h2>
+<p>Here are some of the resources I found helpful while preparing this article:</p>
+<ol>
 <li>MAW Chapter 7</li>
-<li>https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt</li>
-<li>https://www.cs.rochester.edu/~brown/172/lectures/12_sort1/12sort1.html</li>
-<li>https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf</li>
-<li>http://web.mit.edu/1.124/LectureNotes/sorting.html</li>
-</ul>
+<li><a href="https://www.cs.duke.edu/courses/fall01/cps100/notes/sorting_cheat.txt">Sorting cheat sheet from Duke U.</a></li>
+<li><a href="https://courses.cs.washington.edu/courses/cse373/01sp/Lect15.pdf">Lecture 15</a> from U.Washington</li>
+<li><a href="http://web.mit.edu/1.124/LectureNotes/sorting.html">Notes from MIT</a></li>
+<li><a href="https://www.cs.rochester.edu/~brown/172/lectures/12_sort1/12sort1.html">Lecture from U.Rochester</a></li>
+</ol>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p><a href="https://youtu.be/8Kp-8OGwphY">bubble sort video</a>, <a href="https://youtu.be/f8hXR_Hvybo">selection sort video</a>, 
+<a href="https://youtu.be/DFG-XuyPYUQ">insertion sort video</a> and 
+<a href="https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html">this animation</a>
+can help you understand the concept.&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
