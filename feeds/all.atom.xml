@@ -1,5 +1,290 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-05-05T16:18:00+08:00</updated><entry><title>Andrew Ng's ML Week 01 - 03</title><link href="http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/" rel="alternate"></link><published>2017-05-05T16:18:00+08:00</published><updated>2017-05-05T16:18:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-05:posts/2017/May/05/andrew-ngs-ml-week-01-03/</id><summary type="html">&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-05-23T22:20:00+08:00</updated><entry><title>Andrew Ng's ML Week 04 - 05</title><link href="http://zhu45.org/posts/2017/May/23/andrew-ngs-ml-week-04-05/" rel="alternate"></link><published>2017-05-23T22:20:00+08:00</published><updated>2017-05-23T22:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-23:posts/2017/May/23/andrew-ngs-ml-week-04-05/</id><summary type="html">&lt;p&gt;Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
+It is especially heplful when there are many features and hence, many combinations
+for the &lt;a href="http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/"&gt;linear or logistic regressions&lt;/a&gt;. 
+Interestingly, I have studied neural networks
+&lt;a href="https://www.dropbox.com/s/hkym4s135amgmxv/HU.pdf?dl=0"&gt;previously&lt;/a&gt; 
+when I was a student at college. It may feel different when we revisit old friend.&lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#model"&gt;Model&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#representations"&gt;Representations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#train-a-neural-network"&gt;Train a neural network&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#1-pick-a-network-architecture"&gt;1. Pick a network architecture&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#2-randomly-initialize-weights"&gt;2. Randomly initialize weights&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#3-forward-propagation"&gt;3. Forward propagation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#4-cost-function-jtheta"&gt;4. Cost function \(J(\theta)\)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#5-backpropagation"&gt;5. Backpropagation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#implementation-details"&gt;Implementation details&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="model"&gt;Model&lt;/h2&gt;
+&lt;h3 id="representations"&gt;Representations&lt;/h3&gt;
+&lt;p&gt;Below picture shows a typical neural network (I'll use NN as a shorthand). &lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="http://zhu45.org/images/nn2.png" /&gt; &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(L =\)&lt;/span&gt; total number of layers in network (i.e. &lt;span class="math"&gt;\(L = 4\)&lt;/span&gt; for the above NN)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(S_l =\)&lt;/span&gt; number of units (not counting bias unit) in layer &lt;span class="math"&gt;\(l\)&lt;/span&gt; 
+(i.e., &lt;span class="math"&gt;\(S_1 = 3\)&lt;/span&gt;, &lt;span class="math"&gt;\(S_2 = S_3 = 5\)&lt;/span&gt;, &lt;span class="math"&gt;\(S_4 = S_L = 4\)&lt;/span&gt;)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(a_i^l =\)&lt;/span&gt; "activation" of unit &lt;span class="math"&gt;\(i\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(l\)&lt;/span&gt;. In fact, input features
+&lt;span class="math"&gt;\(x_0, x_1, x_2, x_3\)&lt;/span&gt; can also be represented as &lt;span class="math"&gt;\(a_0^{(1)}, a_1^{(1)}, a_1^{(2)}, a_1^{(3)}\)&lt;/span&gt;
+respectively.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\Theta^{(l)} =\)&lt;/span&gt; matrix of weights controlling function mapping from layer &lt;span class="math"&gt;\(l\)&lt;/span&gt; to layer &lt;span class="math"&gt;\(l+1\)&lt;/span&gt;.
+For example, &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="math"&gt;$$
+\Theta^{(1)} = \begin{bmatrix} 
+\theta_{10}^{(1)} &amp;amp;&amp;amp; \theta_{11}^{(1)} &amp;amp;&amp;amp; \theta_{12}^{(1)} &amp;amp;&amp;amp; \theta_{13}^{(1)} \\
+\theta_{20}^{(1)} &amp;amp;&amp;amp; \theta_{21}^{(1)} &amp;amp;&amp;amp; \theta_{22}^{(1)} &amp;amp;&amp;amp; \theta_{23}^{(1)} \\
+\dots \\
+\theta_{50}^{(1)} &amp;amp;&amp;amp; \theta_{51}^{(1)} &amp;amp;&amp;amp; \theta_{52}^{(1)} &amp;amp;&amp;amp; \theta_{53}^{(1)} \\
+\end{bmatrix}
+$$&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(K =\)&lt;/span&gt; number of neurons in the output layer (i.e. &lt;span class="math"&gt;\(S_L = K\)&lt;/span&gt;). In other words, &lt;span class="math"&gt;\(k\)&lt;/span&gt; represents the number of classes
+in multi-class classification. This indicates that &lt;span class="math"&gt;\(h_\theta(x) = \mathbb{R}^K\)&lt;/span&gt;. &lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;With the above notations, we have the following property:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If NN has &lt;span class="math"&gt;\(S_l\)&lt;/span&gt; units in layer &lt;span class="math"&gt;\(l\)&lt;/span&gt;, &lt;span class="math"&gt;\(S_{l+1}\)&lt;/span&gt; units in layer &lt;span class="math"&gt;\(l+1\)&lt;/span&gt;, then &lt;span class="math"&gt;\(\Theta^{(l)}\)&lt;/span&gt; will be dimension 
+&lt;span class="math"&gt;\(S_{l+1} \times (S_l + 1)\)&lt;/span&gt;. &lt;span class="math"&gt;\(+1\)&lt;/span&gt; comes from the bias unit (shown in yellow in above NN picture). &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="train-a-neural-network"&gt;Train a neural network&lt;/h3&gt;
+&lt;h4 id="1-pick-a-network-architecture"&gt;1. Pick a network architecture&lt;/h4&gt;
+&lt;p&gt;The first step is to pick a network architecture. Specifically, the connectivity patterns between neurons. Prof. Ng 
+says a reasonable default is to either have &lt;span class="math"&gt;\(1\)&lt;/span&gt; hidden layer, or if &lt;span class="math"&gt;\(&amp;gt;1\)&lt;/span&gt; hidden layer, have the same number of 
+hidden units in every layer. Usually, the more hidden units the better. &lt;/p&gt;
+&lt;h4 id="2-randomly-initialize-weights"&gt;2. Randomly initialize weights&lt;/h4&gt;
+&lt;p&gt;Zero initialization is considered bad for NN (i.e. &lt;span class="math"&gt;\(\theta_{ij}^{l} = 0\)&lt;/span&gt; for all &lt;span class="math"&gt;\(i,j,l\)&lt;/span&gt;) because our activation output and
+gradient will all be identical and essentially we comput one feature in this network. That's why we need to randomly 
+initialize the weights for symmetry breaking. &lt;/p&gt;
+&lt;p&gt;One effective strategy is to randomly select values for &lt;span class="math"&gt;\(\theta_{ij}^{l}\)&lt;/span&gt; uniformly in the range 
+[&lt;span class="math"&gt;\(-\epsilon_\text{init}\)&lt;/span&gt;,&lt;span class="math"&gt;\(\epsilon_\text{init}\)&lt;/span&gt;]. We can choose &lt;span class="math"&gt;\(\epsilon_\text{init}\)&lt;/span&gt; based upon
+the number of units in the network. A good choice of &lt;span class="math"&gt;\(\epsilon_\text{init}\)&lt;/span&gt; is 
+&lt;span class="math"&gt;\(\epsilon_\text{init} = \frac{\sqrt{6}}{\sqrt{L_\text{in} + L_\text{out}}}\)&lt;/span&gt;, where
+&lt;span class="math"&gt;\(L_\text{in} = S_l\)&lt;/span&gt; and &lt;span class="math"&gt;\(L_\text{out} = S_{l+1}\)&lt;/span&gt;, which are the the number of units
+in the layers adjacent to &lt;span class="math"&gt;\(\Theta^{(l)}\)&lt;/span&gt;. Take above NN as an example, our 
+&lt;span class="math"&gt;\(\epsilon_\text{init}\)&lt;/span&gt; will be &lt;span class="math"&gt;\(0.87\)&lt;/span&gt;, which is calculated from &lt;span class="math"&gt;\(\frac{\sqrt{6}}{\sqrt{3+5}}\)&lt;/span&gt;. &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;h4 id="3-forward-propagation"&gt;3. Forward propagation&lt;/h4&gt;
+&lt;p&gt;The next step we need to do is to use forward propagation to get &lt;span class="math"&gt;\(h_\theta(x^{(i)})\)&lt;/span&gt; for any &lt;span class="math"&gt;\(x^{(i)}\)&lt;/span&gt;.
+Let's use above NN as an example to demonstrate how forward propagation is done. There are
+&lt;span class="math"&gt;\(4\)&lt;/span&gt; output units in the output layer and thus, our &lt;span class="math"&gt;\(h_\theta(x^{(i)})\)&lt;/span&gt; looks like&lt;/p&gt;
+&lt;div class="math"&gt;$$
+h_\theta(x^{(i)}) = \begin{bmatrix}
+a_1^{(4)} \\
+a_2^{(4)} \\
+a_3^{(4)} \\
+a_4^{(4)} \\
+\end{bmatrix}
+$$&lt;/div&gt;
+&lt;p&gt;The general idea for the forward propagation is that we take in the input from previous 
+layer, and multiply with our weights, and then apply our sigmoid function to get the
+activation value for the current layer. We start with the input layer and do this 
+iteratively until we get to output layer, which its activation value will be our 
+&lt;span class="math"&gt;\(h_\theta(x^{(i)})\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Concretely, let's first represent our input layer (with bias term) as  &lt;span class="math"&gt;\(x\)&lt;/span&gt; and 
+define a new variable &lt;span class="math"&gt;\(z^{(j)}\)&lt;/span&gt; as following:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{align*}
+&amp;amp; x = \begin{bmatrix} x_0 \\ x_1 \\ \dots \\ x_n \end{bmatrix}
+&amp;amp;&amp;amp;
+z^{(j)} = \begin{bmatrix} z_1^{(j)} \\ z_2^{(j)} \\ \dots \\ z_n^{(j)} \end{bmatrix}
+\end{align*}
+$$&lt;/div&gt;
+&lt;p&gt;Then, we can calculate the activation value &lt;span class="math"&gt;\(a^{(j)}\)&lt;/span&gt; for the layer j as follows
+(treating &lt;span class="math"&gt;\(x = a^{(1)}\)&lt;/span&gt;):&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Add bias term &lt;span class="math"&gt;\(a_0^{(j-1)} = 1\)&lt;/span&gt; to &lt;span class="math"&gt;\(a^{(j-1)}\)&lt;/span&gt; and our new &lt;span class="math"&gt;\(a^{(j-1)}\)&lt;/span&gt; looks like &lt;/p&gt;
+&lt;p&gt;
+&lt;div class="math"&gt;$$
+a^{(j-1)} = \begin{bmatrix} a_0^{(j-1)} \\ a_1^{(j-1)} \\ \dots \\ a_n^{(j-1)} \end{bmatrix}
+$$&lt;/div&gt;
+&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Calculate &lt;span class="math"&gt;\(z^{(j)}\)&lt;/span&gt; as follows:&lt;/p&gt;
+&lt;p&gt;
+&lt;div class="math"&gt;$$
+z^{(j)} = \Theta^{(j-1)}a^{(j-1)}
+$$&lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;Here, &lt;span class="math"&gt;\(\Theta^{(j-1)}\)&lt;/span&gt; has dimension &lt;span class="math"&gt;\(S_j \times (S_{j-1} + 1)\)&lt;/span&gt; and &lt;span class="math"&gt;\(a^{(j-1)}\)&lt;/span&gt; has 
+dimension &lt;span class="math"&gt;\((S_{j-1} + 1) \times 1\)&lt;/span&gt;. Then, our vector &lt;span class="math"&gt;\(z^{(j)}\)&lt;/span&gt; has height &lt;span class="math"&gt;\(S_j\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We get a vector of our activation nodes for layer &lt;span class="math"&gt;\(j\)&lt;/span&gt; as follows:&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="math"&gt;$$
+a^{(j)} = g(z^{(j)})
+$$&lt;/div&gt;
+&lt;p&gt;We repeat these three steps and get &lt;span class="math"&gt;\(h_\theta(x^{(i)})\)&lt;/span&gt;, which in our NN is the activation
+value &lt;span class="math"&gt;\(a^{(4)}\)&lt;/span&gt; for &lt;span class="math"&gt;\(i\)&lt;/span&gt;-th training example. &lt;/p&gt;
+&lt;p&gt;One key intuition for forward propagation is that the whole process is just like logistic
+regression except that rather than using original feature &lt;span class="math"&gt;\(x_1, x_2, \dots, x_n\)&lt;/span&gt;, it uses
+new features &lt;span class="math"&gt;\(a^{(L-1)}\)&lt;/span&gt;, which are learned by the NN itself.&lt;/p&gt;
+&lt;h4 id="4-cost-function-jtheta"&gt;4. Cost function &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt;&lt;/h4&gt;
+&lt;p&gt;Now we need to compute the cost function &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; of the NN in order to minimize
+the classification error with the given data. Since NN shares a lot similarity with
+the logistic regression, it's no hard to imagine that the NN's cost function &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt;
+shares the similar form with the logistic regression's cost function:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+J(\theta) = - \frac{1}{m} [ \sum_{i=1}^m \sum_{k=1}^K y_k^{(i)} \log h_\theta(x^{(i)})_k + 
+(1 - y_k^{(i)}) \log(1-h_\theta(x^{(i)})_k)] + \frac{\lambda}{2m} 
+\sum_{l=1}^{L-1}\sum_{i=1}^{S_l}\sum_{j=1}^{S_l+1}(\theta_{ji}^{(l)})^2
+$$&lt;/div&gt;
+&lt;p&gt;Here, &lt;span class="math"&gt;\(h_\theta(x^{(i)})_k\)&lt;/span&gt; means the &lt;span class="math"&gt;\(k\)&lt;/span&gt;th output in the output layer. The second part of 
+the equation summs over all the weights &lt;span class="math"&gt;\(\theta_{ji}^{(l)}\)&lt;/span&gt; except the bias term (i.e. &lt;span class="math"&gt;\(i=0\)&lt;/span&gt;).&lt;/p&gt;
+&lt;h4 id="5-backpropagation"&gt;5. Backpropagation&lt;/h4&gt;
+&lt;p&gt;Once we have the cost function, our next step is to find the derivative terms 
+&lt;span class="math"&gt;\(\frac{\partial J(\theta)}{\partial \theta_{ij}^{(l)}}\)&lt;/span&gt; for every &lt;span class="math"&gt;\(i,k,l\)&lt;/span&gt; in order to use various octave 
+built-in method (i.e. &lt;code&gt;fminunc&lt;/code&gt;) to minimize &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; as a function of &lt;span class="math"&gt;\(\theta\)&lt;/span&gt;. We use backpropagation to do this.&lt;/p&gt;
+&lt;p&gt;The intuition for the backpropagation is the following: given a training example &lt;span class="math"&gt;\((x^{(i)}, y^{(i)})\)&lt;/span&gt;, we will
+first run forward propagation to compute all the activiations throughout the network, including the output units.
+Then, for each node &lt;span class="math"&gt;\(j\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(l\)&lt;/span&gt;, we would like to compute an "error term" &lt;span class="math"&gt;\(\delta_j^{(l)}\)&lt;/span&gt; that measures how
+much that node was "responsible" for any errors in our output. For an output node, we can directly measure the
+difference between the network's activation and the true target value, and use that to define &lt;span class="math"&gt;\(\delta_j^{(L)}\)&lt;/span&gt;.
+For the hidden units, we can compute &lt;span class="math"&gt;\(\delta_j^{l}\)&lt;/span&gt; based on a weighted average of the error terms of the nodes in layer
+&lt;span class="math"&gt;\((l+1)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Here is the algorithm in details: &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4" rel="footnote"&gt;4&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Given training set {&lt;span class="math"&gt;\((x^{(1)}, y^{(1)}), \dots, (x^{(m)}, y^{(m)})\)&lt;/span&gt;}&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Set &lt;span class="math"&gt;\(\Delta_{ij}^{(l)} = 0\)&lt;/span&gt; (for all &lt;span class="math"&gt;\(i,l,j\)&lt;/span&gt;)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;For i=1:m,&lt;/code&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;perform &lt;a href="#3-forward-propagation"&gt;forward propagation&lt;/a&gt; to compute &lt;span class="math"&gt;\(a^{(l)}\)&lt;/span&gt; for &lt;span class="math"&gt;\(l = 2, 3, \dots, L\)&lt;/span&gt; &lt;/li&gt;
+&lt;li&gt;using &lt;span class="math"&gt;\(y^{(i)}\)&lt;/span&gt;, compute &lt;span class="math"&gt;\(\delta^{(L)} = a^{(L)} - y^{(i)}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;compute &lt;span class="math"&gt;\(\delta^{(L-1)}, \delta^{(L-2)}, \dots, \delta^{(2)}\)&lt;/span&gt; using 
+&lt;span class="math"&gt;\(\delta^{(l)} = ((\Theta^{(l)})^T \delta^{(l+1)}).\ast a^{(l)}.\ast (1-a^{(l)})\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(\Delta_{ij}^{(l)} := \Delta_{ij}^{(l)} + a_j^{(l)}\delta_i^{(l+1)}\)&lt;/span&gt;
+   (Vectorized form is &lt;span class="math"&gt;\(\Delta^{(l)} := \Delta^{(l)} + \delta^{(l)}(a^{(l)})^T\)&lt;/span&gt;)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(D_{ij}^{(l)} := \frac{1}{m}\Delta_{ij}^{(m)} + \frac{\lambda}{m}\theta_{ij}^{(l)} \text{ if } j \ne 0\)&lt;/span&gt; and
+&lt;span class="math"&gt;\(D_{ij}^{(l)} := \frac{1}{m}\Delta_{ij}^{(m)} \text{ if } j = 0\)&lt;/span&gt;. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\frac{\partial J(\theta)}{\partial \theta_{ij}^{(l)}} = D_{ij}^{(l)}\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Intuitvely, backpropagation algorithm is alot like forward propagation running backward. We can then use gradient
+descent or advanced optimization method to try to minimize &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; as a function of parameters &lt;span class="math"&gt;\(\theta\)&lt;/span&gt; &lt;sup id="fnref:5"&gt;&lt;a class="footnote-ref" href="#fn:5" rel="footnote"&gt;5&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;h2 id="implementation-details"&gt;Implementation details&lt;/h2&gt;
+&lt;p&gt;Week 5's programming assignment on NN learning is the most challenging one I have met so far in this course. Initially, 
+I plan to go through lots of details in terms of implementation in this section. However, after I finish the model
+section above and take a look at the assignment code again, I realize that the algorithms described above reflect
+fair accurately on how the code should be written. &lt;/p&gt;
+&lt;p&gt;However, there is one point I want to emphasize &lt;span class="math"&gt;\(a_{(1)}\)&lt;/span&gt; is a vector with dimension &lt;span class="math"&gt;\(n \times 1\)&lt;/span&gt;. This is important
+if you want to apply the algorithms exactly. When I first coded the program, my &lt;span class="math"&gt;\(a_{(1)}\)&lt;/span&gt; is a row vector with dimension
+&lt;span class="math"&gt;\(1 \times n\)&lt;/span&gt;, which causes me much trouble for the rest of implementations.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;Notation here may look confusing. One example to help understand is
+&lt;span class="math"&gt;\(\theta_{10}^{1}\)&lt;/span&gt; means weight from &lt;span class="math"&gt;\(x_0\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(1\)&lt;/span&gt; to &lt;span class="math"&gt;\(a_1\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(2\)&lt;/span&gt;. In other words,
+&lt;span class="math"&gt;\(\theta_{ji}^{l}\)&lt;/span&gt; means weight from &lt;span class="math"&gt;\(a_i^{l}\)&lt;/span&gt; to &lt;span class="math"&gt;\(a_j^{l+1}\)&lt;/span&gt;. Then the rows in the
+matrix can be thought of as the weights from neurons in layer &lt;span class="math"&gt;\(l\)&lt;/span&gt; to corresponding &lt;span class="math"&gt;\(a_j\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(l+1\)&lt;/span&gt; 
+(i.e., 1st row in the above example means weights from layer &lt;span class="math"&gt;\(1\)&lt;/span&gt; to &lt;span class="math"&gt;\(a_1\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(2\)&lt;/span&gt;). 
+Explicitly, the number of columns in our current theta matrix is equal to the number of 
+nodes in our current layer (including the bias unit). The number of rows is equal to the number
+of nodes in the next layer (excluding the bias unit).&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;Usually, in our training sets {&lt;span class="math"&gt;\((x^{(1)}, y^{(1)}), \dots, (x^{(m)}, y^{(m)})\)&lt;/span&gt;}, we are given actual label (i.e. 
+&lt;span class="math"&gt;\(y^{(9)} = 10\)&lt;/span&gt; for handwritten digit recognition). However, we need to transform those labels into &lt;span class="math"&gt;\(\mathbb{R}^k\)&lt;/span&gt; by doing,for instance, create &lt;span class="math"&gt;\(\mathbb{R}^{10}\)&lt;/span&gt; vector with last position being &lt;span class="math"&gt;\(1\)&lt;/span&gt; and rest being &lt;span class="math"&gt;\(0\)&lt;/span&gt;
+as the representation for &lt;span class="math"&gt;\(y^{(9)} = 10\)&lt;/span&gt;.&amp;#160;&lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:3"&gt;
+&lt;p&gt;Here, it is unclear for me which two layers we should choose to calculate 
+&lt;span class="math"&gt;\(\epsilon_\text{init}\)&lt;/span&gt;. In the &lt;a href="https://github.com/xxks-kkk/Code-for-blog/tree/master/2017/andrew-ng-ml/machine-learning-ex4/ex4"&gt;programming assignment 4&lt;/a&gt;,
+the value is calculated from the layer 1 (input layer) and layer 2 (1st hidden layer).&amp;#160;&lt;a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:4"&gt;
+&lt;p&gt;Notice that we don't compute &lt;span class="math"&gt;\(\delta_{(1)}\)&lt;/span&gt; because &lt;span class="math"&gt;\(\delta_{(1)}\)&lt;/span&gt; is associated with the input layer, which are
+features we observed from the training examples. So, there are no "error" involved. In addition, &lt;span class="math"&gt;\(.\ast\)&lt;/span&gt; means we 
+do element-wise multiplication in octave.&amp;#160;&lt;a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:5"&gt;
+&lt;p&gt;You can use &lt;a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/andrew-ng-ml/machine-learning-ex4/ex4/computeNumericalGradient.m"&gt;gradient checking&lt;/a&gt; 
+to verify if the backpropagation is implemented correctly. &amp;#160;&lt;a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="ml"></category><category term="coursera"></category></entry><entry><title>Andrew Ng's ML Week 01 - 03</title><link href="http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/" rel="alternate"></link><published>2017-05-05T16:18:00+08:00</published><updated>2017-05-05T16:18:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-05:posts/2017/May/05/andrew-ngs-ml-week-01-03/</id><summary type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#ml-overview"&gt;ML overview&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href="#what-is-ml"&gt;What is ML?&lt;/a&gt;&lt;/li&gt;
@@ -299,6 +584,12 @@ $$&lt;/div&gt;
 implementation in terms of matrices implementation technique. I'll show a code snippet
 for logistic regression with regularization below as hint for this section.&lt;/p&gt;
 &lt;h2 id="logistic-regression"&gt;Logistic regression&lt;/h2&gt;
+&lt;p&gt;Logistic regression is used as a classification algorithm. It is better than the linear
+regression because 1) linear regression classification result is higly impacted by the
+outliers 2) linear regression result &lt;span class="math"&gt;\(h_\theta (x)\)&lt;/span&gt; can output value &lt;span class="math"&gt;\(&amp;gt;1\)&lt;/span&gt; or &lt;span class="math"&gt;\(&amp;lt;0\)&lt;/span&gt;, which
+doesn't fit with the nature of classification task.&lt;/p&gt;
+&lt;p&gt;In contrast, as we will see, logistic regression output &lt;span class="math"&gt;\(0 \ge h_\theta (x) \le 1\)&lt;/span&gt;, which
+can be intrepreted from probabily perspective.&lt;/p&gt;
 &lt;h3 id="in-theory_2"&gt;In theory&lt;/h3&gt;
 &lt;p&gt;Logistic regression hypothesis is &lt;/p&gt;
 &lt;div class="math"&gt;$$

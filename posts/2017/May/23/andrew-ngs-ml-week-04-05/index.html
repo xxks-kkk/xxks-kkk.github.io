@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Andrew Ng's ML Week 04 - 05
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+            <div class="container">
+
+<header class="blog-header">
+    <h1><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+        <a href="../../../../../quotes.html" style="padding: 10px">QUOTES</a>
+        <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+        <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a>
+    </nav>
+</header>
+
+    <div class="post">
+        <header>
+            <h1>Andrew Ng's ML Week 04 - 05</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2017-05-23T22:20:00+08:00"> May 23, 2017</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/ml.html">ml</a>
+        /
+	<a href="../../../../../tag/coursera.html">coursera</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <p>Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
+It is especially heplful when there are many features and hence, many combinations
+for the <a href="../../../../../posts/2017/May/05/andrew-ngs-ml-week-01-03/">linear or logistic regressions</a>. 
+Interestingly, I have studied neural networks
+<a href="https://www.dropbox.com/s/hkym4s135amgmxv/HU.pdf?dl=0">previously</a> 
+when I was a student at college. It may feel different when we revisit old friend.</p>
+<div class="toc">
+<ul>
+<li><a href="#model">Model</a><ul>
+<li><a href="#representations">Representations</a></li>
+<li><a href="#train-a-neural-network">Train a neural network</a><ul>
+<li><a href="#1-pick-a-network-architecture">1. Pick a network architecture</a></li>
+<li><a href="#2-randomly-initialize-weights">2. Randomly initialize weights</a></li>
+<li><a href="#3-forward-propagation">3. Forward propagation</a></li>
+<li><a href="#4-cost-function-jtheta">4. Cost function \(J(\theta)\)</a></li>
+<li><a href="#5-backpropagation">5. Backpropagation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#implementation-details">Implementation details</a></li>
+</ul>
+</div>
+<h2 id="model">Model</h2>
+<h3 id="representations">Representations</h3>
+<p>Below picture shows a typical neural network (I'll use NN as a shorthand). </p>
+<p><img alt="" src="../../../../../images/nn2.png" /> </p>
+<ul>
+<li>
+<p><span class="math">\(L =\)</span> total number of layers in network (i.e. <span class="math">\(L = 4\)</span> for the above NN)</p>
+</li>
+<li>
+<p><span class="math">\(S_l =\)</span> number of units (not counting bias unit) in layer <span class="math">\(l\)</span> 
+(i.e., <span class="math">\(S_1 = 3\)</span>, <span class="math">\(S_2 = S_3 = 5\)</span>, <span class="math">\(S_4 = S_L = 4\)</span>)</p>
+</li>
+<li>
+<p><span class="math">\(a_i^l =\)</span> "activation" of unit <span class="math">\(i\)</span> in layer <span class="math">\(l\)</span>. In fact, input features
+<span class="math">\(x_0, x_1, x_2, x_3\)</span> can also be represented as <span class="math">\(a_0^{(1)}, a_1^{(1)}, a_1^{(2)}, a_1^{(3)}\)</span>
+respectively.</p>
+</li>
+<li>
+<p><span class="math">\(\Theta^{(l)} =\)</span> matrix of weights controlling function mapping from layer <span class="math">\(l\)</span> to layer <span class="math">\(l+1\)</span>.
+For example, <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup></p>
+</li>
+</ul>
+<div class="math">$$
+\Theta^{(1)} = \begin{bmatrix} 
+\theta_{10}^{(1)} &amp;&amp; \theta_{11}^{(1)} &amp;&amp; \theta_{12}^{(1)} &amp;&amp; \theta_{13}^{(1)} \\
+\theta_{20}^{(1)} &amp;&amp; \theta_{21}^{(1)} &amp;&amp; \theta_{22}^{(1)} &amp;&amp; \theta_{23}^{(1)} \\
+\dots \\
+\theta_{50}^{(1)} &amp;&amp; \theta_{51}^{(1)} &amp;&amp; \theta_{52}^{(1)} &amp;&amp; \theta_{53}^{(1)} \\
+\end{bmatrix}
+$$</div>
+<ul>
+<li><span class="math">\(K =\)</span> number of neurons in the output layer (i.e. <span class="math">\(S_L = K\)</span>). In other words, <span class="math">\(k\)</span> represents the number of classes
+in multi-class classification. This indicates that <span class="math">\(h_\theta(x) = \mathbb{R}^K\)</span>. <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup></li>
+</ul>
+<p>With the above notations, we have the following property:</p>
+<ul>
+<li>If NN has <span class="math">\(S_l\)</span> units in layer <span class="math">\(l\)</span>, <span class="math">\(S_{l+1}\)</span> units in layer <span class="math">\(l+1\)</span>, then <span class="math">\(\Theta^{(l)}\)</span> will be dimension 
+<span class="math">\(S_{l+1} \times (S_l + 1)\)</span>. <span class="math">\(+1\)</span> comes from the bias unit (shown in yellow in above NN picture). </li>
+</ul>
+<h3 id="train-a-neural-network">Train a neural network</h3>
+<h4 id="1-pick-a-network-architecture">1. Pick a network architecture</h4>
+<p>The first step is to pick a network architecture. Specifically, the connectivity patterns between neurons. Prof. Ng 
+says a reasonable default is to either have <span class="math">\(1\)</span> hidden layer, or if <span class="math">\(&gt;1\)</span> hidden layer, have the same number of 
+hidden units in every layer. Usually, the more hidden units the better. </p>
+<h4 id="2-randomly-initialize-weights">2. Randomly initialize weights</h4>
+<p>Zero initialization is considered bad for NN (i.e. <span class="math">\(\theta_{ij}^{l} = 0\)</span> for all <span class="math">\(i,j,l\)</span>) because our activation output and
+gradient will all be identical and essentially we comput one feature in this network. That's why we need to randomly 
+initialize the weights for symmetry breaking. </p>
+<p>One effective strategy is to randomly select values for <span class="math">\(\theta_{ij}^{l}\)</span> uniformly in the range 
+[<span class="math">\(-\epsilon_\text{init}\)</span>,<span class="math">\(\epsilon_\text{init}\)</span>]. We can choose <span class="math">\(\epsilon_\text{init}\)</span> based upon
+the number of units in the network. A good choice of <span class="math">\(\epsilon_\text{init}\)</span> is 
+<span class="math">\(\epsilon_\text{init} = \frac{\sqrt{6}}{\sqrt{L_\text{in} + L_\text{out}}}\)</span>, where
+<span class="math">\(L_\text{in} = S_l\)</span> and <span class="math">\(L_\text{out} = S_{l+1}\)</span>, which are the the number of units
+in the layers adjacent to <span class="math">\(\Theta^{(l)}\)</span>. Take above NN as an example, our 
+<span class="math">\(\epsilon_\text{init}\)</span> will be <span class="math">\(0.87\)</span>, which is calculated from <span class="math">\(\frac{\sqrt{6}}{\sqrt{3+5}}\)</span>. <sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup></p>
+<h4 id="3-forward-propagation">3. Forward propagation</h4>
+<p>The next step we need to do is to use forward propagation to get <span class="math">\(h_\theta(x^{(i)})\)</span> for any <span class="math">\(x^{(i)}\)</span>.
+Let's use above NN as an example to demonstrate how forward propagation is done. There are
+<span class="math">\(4\)</span> output units in the output layer and thus, our <span class="math">\(h_\theta(x^{(i)})\)</span> looks like</p>
+<div class="math">$$
+h_\theta(x^{(i)}) = \begin{bmatrix}
+a_1^{(4)} \\
+a_2^{(4)} \\
+a_3^{(4)} \\
+a_4^{(4)} \\
+\end{bmatrix}
+$$</div>
+<p>The general idea for the forward propagation is that we take in the input from previous 
+layer, and multiply with our weights, and then apply our sigmoid function to get the
+activation value for the current layer. We start with the input layer and do this 
+iteratively until we get to output layer, which its activation value will be our 
+<span class="math">\(h_\theta(x^{(i)})\)</span>.</p>
+<p>Concretely, let's first represent our input layer (with bias term) as  <span class="math">\(x\)</span> and 
+define a new variable <span class="math">\(z^{(j)}\)</span> as following:</p>
+<div class="math">$$
+\begin{align*}
+&amp; x = \begin{bmatrix} x_0 \\ x_1 \\ \dots \\ x_n \end{bmatrix}
+&amp;&amp;
+z^{(j)} = \begin{bmatrix} z_1^{(j)} \\ z_2^{(j)} \\ \dots \\ z_n^{(j)} \end{bmatrix}
+\end{align*}
+$$</div>
+<p>Then, we can calculate the activation value <span class="math">\(a^{(j)}\)</span> for the layer j as follows
+(treating <span class="math">\(x = a^{(1)}\)</span>):</p>
+<ol>
+<li>
+<p>Add bias term <span class="math">\(a_0^{(j-1)} = 1\)</span> to <span class="math">\(a^{(j-1)}\)</span> and our new <span class="math">\(a^{(j-1)}\)</span> looks like </p>
+<p>
+<div class="math">$$
+a^{(j-1)} = \begin{bmatrix} a_0^{(j-1)} \\ a_1^{(j-1)} \\ \dots \\ a_n^{(j-1)} \end{bmatrix}
+$$</div>
+</p>
+</li>
+<li>
+<p>Calculate <span class="math">\(z^{(j)}\)</span> as follows:</p>
+<p>
+<div class="math">$$
+z^{(j)} = \Theta^{(j-1)}a^{(j-1)}
+$$</div>
+</p>
+<p>Here, <span class="math">\(\Theta^{(j-1)}\)</span> has dimension <span class="math">\(S_j \times (S_{j-1} + 1)\)</span> and <span class="math">\(a^{(j-1)}\)</span> has 
+dimension <span class="math">\((S_{j-1} + 1) \times 1\)</span>. Then, our vector <span class="math">\(z^{(j)}\)</span> has height <span class="math">\(S_j\)</span>.</p>
+</li>
+<li>
+<p>We get a vector of our activation nodes for layer <span class="math">\(j\)</span> as follows:</p>
+</li>
+</ol>
+<div class="math">$$
+a^{(j)} = g(z^{(j)})
+$$</div>
+<p>We repeat these three steps and get <span class="math">\(h_\theta(x^{(i)})\)</span>, which in our NN is the activation
+value <span class="math">\(a^{(4)}\)</span> for <span class="math">\(i\)</span>-th training example. </p>
+<p>One key intuition for forward propagation is that the whole process is just like logistic
+regression except that rather than using original feature <span class="math">\(x_1, x_2, \dots, x_n\)</span>, it uses
+new features <span class="math">\(a^{(L-1)}\)</span>, which are learned by the NN itself.</p>
+<h4 id="4-cost-function-jtheta">4. Cost function <span class="math">\(J(\theta)\)</span></h4>
+<p>Now we need to compute the cost function <span class="math">\(J(\theta)\)</span> of the NN in order to minimize
+the classification error with the given data. Since NN shares a lot similarity with
+the logistic regression, it's no hard to imagine that the NN's cost function <span class="math">\(J(\theta)\)</span>
+shares the similar form with the logistic regression's cost function:</p>
+<div class="math">$$
+J(\theta) = - \frac{1}{m} [ \sum_{i=1}^m \sum_{k=1}^K y_k^{(i)} \log h_\theta(x^{(i)})_k + 
+(1 - y_k^{(i)}) \log(1-h_\theta(x^{(i)})_k)] + \frac{\lambda}{2m} 
+\sum_{l=1}^{L-1}\sum_{i=1}^{S_l}\sum_{j=1}^{S_l+1}(\theta_{ji}^{(l)})^2
+$$</div>
+<p>Here, <span class="math">\(h_\theta(x^{(i)})_k\)</span> means the <span class="math">\(k\)</span>th output in the output layer. The second part of 
+the equation summs over all the weights <span class="math">\(\theta_{ji}^{(l)}\)</span> except the bias term (i.e. <span class="math">\(i=0\)</span>).</p>
+<h4 id="5-backpropagation">5. Backpropagation</h4>
+<p>Once we have the cost function, our next step is to find the derivative terms 
+<span class="math">\(\frac{\partial J(\theta)}{\partial \theta_{ij}^{(l)}}\)</span> for every <span class="math">\(i,k,l\)</span> in order to use various octave 
+built-in method (i.e. <code>fminunc</code>) to minimize <span class="math">\(J(\theta)\)</span> as a function of <span class="math">\(\theta\)</span>. We use backpropagation to do this.</p>
+<p>The intuition for the backpropagation is the following: given a training example <span class="math">\((x^{(i)}, y^{(i)})\)</span>, we will
+first run forward propagation to compute all the activiations throughout the network, including the output units.
+Then, for each node <span class="math">\(j\)</span> in layer <span class="math">\(l\)</span>, we would like to compute an "error term" <span class="math">\(\delta_j^{(l)}\)</span> that measures how
+much that node was "responsible" for any errors in our output. For an output node, we can directly measure the
+difference between the network's activation and the true target value, and use that to define <span class="math">\(\delta_j^{(L)}\)</span>.
+For the hidden units, we can compute <span class="math">\(\delta_j^{l}\)</span> based on a weighted average of the error terms of the nodes in layer
+<span class="math">\((l+1)\)</span>.</p>
+<p>Here is the algorithm in details: <sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">4</a></sup></p>
+<ul>
+<li>Given training set {<span class="math">\((x^{(1)}, y^{(1)}), \dots, (x^{(m)}, y^{(m)})\)</span>}</li>
+<li>
+<p>Set <span class="math">\(\Delta_{ij}^{(l)} = 0\)</span> (for all <span class="math">\(i,l,j\)</span>)</p>
+</li>
+<li>
+<p><code>For i=1:m,</code></p>
+<ol>
+<li>perform <a href="#3-forward-propagation">forward propagation</a> to compute <span class="math">\(a^{(l)}\)</span> for <span class="math">\(l = 2, 3, \dots, L\)</span> </li>
+<li>using <span class="math">\(y^{(i)}\)</span>, compute <span class="math">\(\delta^{(L)} = a^{(L)} - y^{(i)}\)</span></li>
+<li>compute <span class="math">\(\delta^{(L-1)}, \delta^{(L-2)}, \dots, \delta^{(2)}\)</span> using 
+<span class="math">\(\delta^{(l)} = ((\Theta^{(l)})^T \delta^{(l+1)}).\ast a^{(l)}.\ast (1-a^{(l)})\)</span></li>
+<li><span class="math">\(\Delta_{ij}^{(l)} := \Delta_{ij}^{(l)} + a_j^{(l)}\delta_i^{(l+1)}\)</span>
+   (Vectorized form is <span class="math">\(\Delta^{(l)} := \Delta^{(l)} + \delta^{(l)}(a^{(l)})^T\)</span>)</li>
+</ol>
+</li>
+<li>
+<p><span class="math">\(D_{ij}^{(l)} := \frac{1}{m}\Delta_{ij}^{(m)} + \frac{\lambda}{m}\theta_{ij}^{(l)} \text{ if } j \ne 0\)</span> and
+<span class="math">\(D_{ij}^{(l)} := \frac{1}{m}\Delta_{ij}^{(m)} \text{ if } j = 0\)</span>. </p>
+</li>
+<li>
+<p><span class="math">\(\frac{\partial J(\theta)}{\partial \theta_{ij}^{(l)}} = D_{ij}^{(l)}\)</span></p>
+</li>
+</ul>
+<p>Intuitvely, backpropagation algorithm is alot like forward propagation running backward. We can then use gradient
+descent or advanced optimization method to try to minimize <span class="math">\(J(\theta)\)</span> as a function of parameters <span class="math">\(\theta\)</span> <sup id="fnref:5"><a class="footnote-ref" href="#fn:5" rel="footnote">5</a></sup>.</p>
+<h2 id="implementation-details">Implementation details</h2>
+<p>Week 5's programming assignment on NN learning is the most challenging one I have met so far in this course. Initially, 
+I plan to go through lots of details in terms of implementation in this section. However, after I finish the model
+section above and take a look at the assignment code again, I realize that the algorithms described above reflect
+fair accurately on how the code should be written. </p>
+<p>However, there is one point I want to emphasize <span class="math">\(a_{(1)}\)</span> is a vector with dimension <span class="math">\(n \times 1\)</span>. This is important
+if you want to apply the algorithms exactly. When I first coded the program, my <span class="math">\(a_{(1)}\)</span> is a row vector with dimension
+<span class="math">\(1 \times n\)</span>, which causes me much trouble for the rest of implementations.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Notation here may look confusing. One example to help understand is
+<span class="math">\(\theta_{10}^{1}\)</span> means weight from <span class="math">\(x_0\)</span> in layer <span class="math">\(1\)</span> to <span class="math">\(a_1\)</span> in layer <span class="math">\(2\)</span>. In other words,
+<span class="math">\(\theta_{ji}^{l}\)</span> means weight from <span class="math">\(a_i^{l}\)</span> to <span class="math">\(a_j^{l+1}\)</span>. Then the rows in the
+matrix can be thought of as the weights from neurons in layer <span class="math">\(l\)</span> to corresponding <span class="math">\(a_j\)</span> in layer <span class="math">\(l+1\)</span> 
+(i.e., 1st row in the above example means weights from layer <span class="math">\(1\)</span> to <span class="math">\(a_1\)</span> in layer <span class="math">\(2\)</span>). 
+Explicitly, the number of columns in our current theta matrix is equal to the number of 
+nodes in our current layer (including the bias unit). The number of rows is equal to the number
+of nodes in the next layer (excluding the bias unit).&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Usually, in our training sets {<span class="math">\((x^{(1)}, y^{(1)}), \dots, (x^{(m)}, y^{(m)})\)</span>}, we are given actual label (i.e. 
+<span class="math">\(y^{(9)} = 10\)</span> for handwritten digit recognition). However, we need to transform those labels into <span class="math">\(\mathbb{R}^k\)</span> by doing,for instance, create <span class="math">\(\mathbb{R}^{10}\)</span> vector with last position being <span class="math">\(1\)</span> and rest being <span class="math">\(0\)</span>
+as the representation for <span class="math">\(y^{(9)} = 10\)</span>.&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Here, it is unclear for me which two layers we should choose to calculate 
+<span class="math">\(\epsilon_\text{init}\)</span>. In the <a href="https://github.com/xxks-kkk/Code-for-blog/tree/master/2017/andrew-ng-ml/machine-learning-ex4/ex4">programming assignment 4</a>,
+the value is calculated from the layer 1 (input layer) and layer 2 (1st hidden layer).&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>Notice that we don't compute <span class="math">\(\delta_{(1)}\)</span> because <span class="math">\(\delta_{(1)}\)</span> is associated with the input layer, which are
+features we observed from the training examples. So, there are no "error" involved. In addition, <span class="math">\(.\ast\)</span> means we 
+do element-wise multiplication in octave.&#160;<a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>You can use <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/andrew-ng-ml/machine-learning-ex4/ex4/computeNumericalGradient.m">gradient checking</a> 
+to verify if the backpropagation is implemented correctly. &#160;<a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/machine-learning.html">Machine Learning</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+<!--                            <li><a href="../../../../../about-zack.html">About</a></li>
+                <li><a href="../../../../../blog2">Blog</a></li>
+                <li><a href="../../../../../quotes.html">Quotes</a></li>
+                <li><a href="../../../../../projects.html">Projects</a></li>
+-->
+    </ul>
+
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
