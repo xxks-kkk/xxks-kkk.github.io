@@ -53,7 +53,7 @@ For example, &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel
 \end{bmatrix}
 $$&lt;/div&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;span class="math"&gt;\(K =\)&lt;/span&gt; number of neurons in the output layer (i.e. &lt;span class="math"&gt;\(S_L = K\)&lt;/span&gt;). In other words, &lt;span class="math"&gt;\(k\)&lt;/span&gt; represents the number of classes
+&lt;li&gt;&lt;span class="math"&gt;\(K =\)&lt;/span&gt; number of neurons in the output layer (i.e. &lt;span class="math"&gt;\(S_L = K\)&lt;/span&gt;). In other words, &lt;span class="math"&gt;\(K\)&lt;/span&gt; represents the number of classes
 in multi-class classification. This indicates that &lt;span class="math"&gt;\(h_\theta(x) = \mathbb{R}^K\)&lt;/span&gt;. &lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;With the above notations, we have the following property:&lt;/p&gt;
@@ -173,7 +173,7 @@ For the hidden units, we can compute &lt;span class="math"&gt;\(\delta_j^{l}\)&l
 &lt;li&gt;compute &lt;span class="math"&gt;\(\delta^{(L-1)}, \delta^{(L-2)}, \dots, \delta^{(2)}\)&lt;/span&gt; using 
 &lt;span class="math"&gt;\(\delta^{(l)} = ((\Theta^{(l)})^T \delta^{(l+1)}).\ast a^{(l)}.\ast (1-a^{(l)})\)&lt;/span&gt;&lt;/li&gt;
 &lt;li&gt;&lt;span class="math"&gt;\(\Delta_{ij}^{(l)} := \Delta_{ij}^{(l)} + a_j^{(l)}\delta_i^{(l+1)}\)&lt;/span&gt;
-   (Vectorized form is &lt;span class="math"&gt;\(\Delta^{(l)} := \Delta^{(l)} + \delta^{(l)}(a^{(l)})^T\)&lt;/span&gt;)&lt;/li&gt;
+   (Vectorized form is &lt;span class="math"&gt;\(\Delta^{(l)} := \Delta^{(l)} + \delta^{(l+1)}(a^{(l)})^T\)&lt;/span&gt;)&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;li&gt;
@@ -191,9 +191,14 @@ descent or advanced optimization method to try to minimize &lt;span class="math"
 I plan to go through lots of details in terms of implementation in this section. However, after I finish the model
 section above and take a look at the assignment code again, I realize that the algorithms described above reflect
 fair accurately on how the code should be written. &lt;/p&gt;
-&lt;p&gt;However, there is one point I want to emphasize &lt;span class="math"&gt;\(a_{(1)}\)&lt;/span&gt; is a vector with dimension &lt;span class="math"&gt;\(n \times 1\)&lt;/span&gt;. This is important
-if you want to apply the algorithms exactly. When I first coded the program, my &lt;span class="math"&gt;\(a_{(1)}\)&lt;/span&gt; is a row vector with dimension
+&lt;p&gt;However, there is one point I want to emphasize &lt;span class="math"&gt;\(a^{(1)}\)&lt;/span&gt; is a vector with dimension &lt;span class="math"&gt;\(n \times 1\)&lt;/span&gt;. This is important
+if you want to apply the algorithms exactly. When I first coded the program, my &lt;span class="math"&gt;\(a^{(1)}\)&lt;/span&gt; is a row vector with dimension
 &lt;span class="math"&gt;\(1 \times n\)&lt;/span&gt;, which causes me much trouble for the rest of implementations.&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\Delta^{(l)} := \Delta^{(l)} + \delta^{(l+1)}(a^{(l)})^T\)&lt;/span&gt; looks confusing for me as well 
+for the first time. My question is how many &lt;span class="math"&gt;\(\Delta^{(l)}\)&lt;/span&gt; are there. My trick is to take 
+a look at the last term of the equation. &lt;span class="math"&gt;\(\delta^{(l+1)}(a^{(l)})^T\)&lt;/span&gt; indicates that &lt;span class="math"&gt;\(\Delta^{(l)}\)&lt;/span&gt;
+starts with the second last layer and there is one until input layer (including).
+So, in our NN above, there are three &lt;span class="math"&gt;\(\Delta^{(l)}\)&lt;/span&gt; we should update. &lt;/p&gt;
 &lt;div class="footnote"&gt;
 &lt;hr /&gt;
 &lt;ol&gt;

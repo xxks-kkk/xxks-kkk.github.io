@@ -115,7 +115,7 @@ For example, <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnot
 \end{bmatrix}
 $$</div>
 <ul>
-<li><span class="math">\(K =\)</span> number of neurons in the output layer (i.e. <span class="math">\(S_L = K\)</span>). In other words, <span class="math">\(k\)</span> represents the number of classes
+<li><span class="math">\(K =\)</span> number of neurons in the output layer (i.e. <span class="math">\(S_L = K\)</span>). In other words, <span class="math">\(K\)</span> represents the number of classes
 in multi-class classification. This indicates that <span class="math">\(h_\theta(x) = \mathbb{R}^K\)</span>. <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup></li>
 </ul>
 <p>With the above notations, we have the following property:</p>
@@ -235,7 +235,7 @@ For the hidden units, we can compute <span class="math">\(\delta_j^{l}\)</span> 
 <li>compute <span class="math">\(\delta^{(L-1)}, \delta^{(L-2)}, \dots, \delta^{(2)}\)</span> using 
 <span class="math">\(\delta^{(l)} = ((\Theta^{(l)})^T \delta^{(l+1)}).\ast a^{(l)}.\ast (1-a^{(l)})\)</span></li>
 <li><span class="math">\(\Delta_{ij}^{(l)} := \Delta_{ij}^{(l)} + a_j^{(l)}\delta_i^{(l+1)}\)</span>
-   (Vectorized form is <span class="math">\(\Delta^{(l)} := \Delta^{(l)} + \delta^{(l)}(a^{(l)})^T\)</span>)</li>
+   (Vectorized form is <span class="math">\(\Delta^{(l)} := \Delta^{(l)} + \delta^{(l+1)}(a^{(l)})^T\)</span>)</li>
 </ol>
 </li>
 <li>
@@ -253,9 +253,14 @@ descent or advanced optimization method to try to minimize <span class="math">\(
 I plan to go through lots of details in terms of implementation in this section. However, after I finish the model
 section above and take a look at the assignment code again, I realize that the algorithms described above reflect
 fair accurately on how the code should be written. </p>
-<p>However, there is one point I want to emphasize <span class="math">\(a_{(1)}\)</span> is a vector with dimension <span class="math">\(n \times 1\)</span>. This is important
-if you want to apply the algorithms exactly. When I first coded the program, my <span class="math">\(a_{(1)}\)</span> is a row vector with dimension
+<p>However, there is one point I want to emphasize <span class="math">\(a^{(1)}\)</span> is a vector with dimension <span class="math">\(n \times 1\)</span>. This is important
+if you want to apply the algorithms exactly. When I first coded the program, my <span class="math">\(a^{(1)}\)</span> is a row vector with dimension
 <span class="math">\(1 \times n\)</span>, which causes me much trouble for the rest of implementations.</p>
+<p><span class="math">\(\Delta^{(l)} := \Delta^{(l)} + \delta^{(l+1)}(a^{(l)})^T\)</span> looks confusing for me as well 
+for the first time. My question is how many <span class="math">\(\Delta^{(l)}\)</span> are there. My trick is to take 
+a look at the last term of the equation. <span class="math">\(\delta^{(l+1)}(a^{(l)})^T\)</span> indicates that <span class="math">\(\Delta^{(l)}\)</span>
+starts with the second last layer and there is one until input layer (including).
+So, in our NN above, there are three <span class="math">\(\Delta^{(l)}\)</span> we should update. </p>
 <div class="footnote">
 <hr />
 <ol>
