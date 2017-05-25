@@ -1,5 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-05-23T22:20:00+08:00</updated><entry><title>Andrew Ng's ML Week 04 - 05</title><link href="http://zhu45.org/posts/2017/May/23/andrew-ngs-ml-week-04-05/" rel="alternate"></link><published>2017-05-23T22:20:00+08:00</published><updated>2017-05-23T22:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-23:posts/2017/May/23/andrew-ngs-ml-week-04-05/</id><summary type="html">&lt;p&gt;Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-05-25T22:20:00+08:00</updated><entry><title>Drawing a Neural Network through Graphviz</title><link href="http://zhu45.org/posts/2017/May/25/drawing-a-neural-network-through-graphviz/" rel="alternate"></link><published>2017-05-25T22:20:00+08:00</published><updated>2017-05-25T22:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-25:posts/2017/May/25/drawing-a-neural-network-through-graphviz/</id><summary type="html">&lt;h2 id="preface"&gt;Preface&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://graphviz.org/"&gt;Graphviz&lt;/a&gt; is a language (called DOT) and
+a set of tools to automatically generate graphs. It is widely used
+by researchers to do visualizations in papers. Essentially, you just
+need to provide a textual descritption of the graph regarding its topological
+structure (i.e. what nodes are, how they are connected, etc) and Graphviz will
+figure out the layout of the image by itself. Usually, the generated layout works
+out well but quite often, like this &lt;a href="https://hbfs.wordpress.com/2014/09/30/a-quick-primer-on-graphviz/"&gt;post&lt;/a&gt;
+mentioned, can be a "finicky beast". So, I decide to share some tips I learned about
+Graphviz.&lt;/p&gt;
+&lt;p&gt;Specifically, in this post, I'll demonstrate how we can draw the Neural Network shown in the 
+&lt;a href="http://zhu45.org/posts/2017/May/23/andrew-ngs-ml-week-04-05/"&gt;last post&lt;/a&gt; and use this as an example
+to show some tricks in Graphviz to tweak the layout &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;. Let's get started!&lt;/p&gt;
+&lt;h2 id="draw-a-neural-network"&gt;Draw a neural network&lt;/h2&gt;
+&lt;p&gt;If you do a quick search regarding "graphviz neural network example", you'll highly
+likely see the below picture:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="http://zhu45.org/images/multiclass_neural_network_example.png" /&gt; &lt;/p&gt;
+&lt;p&gt;This is probably the most simplest Graphviz demonstration on Neural Network. The
+code for this picture can be obtained &lt;a href="https://gist.github.com/thigm85/5760134"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;However, when I'm preparing my last post, I'm not quite satisified with the example above.
+I want to clearly label all the nodes in all layers and make distinction among feature
+input, bias term, hidden units, and output units. So, I decide to draw one on my own.&lt;/p&gt;
+&lt;p&gt;Here is the &lt;a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/nn3.dot"&gt;code&lt;/a&gt;
+that generates the picture below &lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;. Let me briefly
+highlights some key points in the code:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="http://zhu45.org/images/nn2.png" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;rankdir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;LR&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;splines&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;edge&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;style&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;invis&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;rankdir=LR&lt;/code&gt; makes the directed graphs drawn from top to bottom.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;splines=false&lt;/code&gt; controls how the edges are represented and in this case, edges 
+are drawn as line segments.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;edge[style=invis]&lt;/code&gt; forces edges to become invisible. This is a common trick to tweak
+graphviz layout. &lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;circle&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;color&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;yellow&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;style&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;filled&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fillcolor&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;yellow&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+  &lt;span class="n"&gt;x0&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt; 
+  &lt;span class="n"&gt;a02&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;sup&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;sup&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt; 
+  &lt;span class="n"&gt;a03&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;sup&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;sup&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;node[...]&lt;/code&gt; sets the default node property: specify the node shape, node color. This
+node property will apply to three nodes: &lt;code&gt;x0&lt;/code&gt;, &lt;code&gt;a02&lt;/code&gt;, &lt;code&gt;a03&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;x0 [label=&amp;lt;x&amp;lt;sub&amp;gt;0&amp;lt;/sub&amp;gt;&amp;gt;]&lt;/code&gt; specify the text label for node &lt;code&gt;x0&lt;/code&gt;. The text for label
+is specified in &lt;a href="http://www.graphviz.org/doc/info/shapes.html#html"&gt;HTML-like&lt;/a&gt; and this is 
+how we write subscript and superscript in Graphviz.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{...}&lt;/code&gt; specifies the scope of the node property. This code chunk as a whole shows
+how we can specify several nodes at the once with the same node property &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;rank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;same&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;x0&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;x1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;x2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;x3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;rank=same&lt;/code&gt; is another trick I'll talk about later. This specifies what "layer"
+(or "rank" by official term) a set of nodes belongs. You can read &lt;a href="http://www.graphviz.org/doc/info/attrs.html#d:rank"&gt;the official doc&lt;/a&gt; for the details.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;x0-&amp;gt;...-&amp;gt;x3&lt;/code&gt; specifies the relative position of the four nodes. Since the graph is
+arranged from left to right (indicate by &lt;code&gt;rankdir = LR&lt;/code&gt;), then the "layer" is vertical.
+Then by &lt;code&gt;x0-&amp;gt;...-&amp;gt;x3&lt;/code&gt;, the first node will be &lt;code&gt;x0&lt;/code&gt;, followed by &lt;code&gt;x1&lt;/code&gt;, and so on. Also,
+we have &lt;code&gt;edge[style=invis]&lt;/code&gt; and this will hide the edges among these four nodes. This 
+is how we draw the NN layers.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;a02&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;a03&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;This line is used to prevent tilting of the graph. As you can see, we specify
+how the nodes should be arranged in a layer but we don't much constraint on how
+the layers should be positioned except &lt;code&gt;rankdir=LR&lt;/code&gt;, which says layers should be 
+ordered from left to right. &lt;code&gt;a02-&amp;gt;a03&lt;/code&gt; says layer with &lt;code&gt;a02&lt;/code&gt; should be lined up with 
+layer with &lt;code&gt;a03&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;l0&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;plaintext&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;layer 1 (input layer)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;span class="n"&gt;l0&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;x0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;rank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;same&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;l0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;x0&lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;This code chunk is how we add label text to each layer. As you can see we use
+another node &lt;code&gt;l0&lt;/code&gt; with shape &lt;code&gt;plaintext&lt;/code&gt;, which says &lt;code&gt;l0&lt;/code&gt; is just a text message.
+Then we connect it with the first node of layer 1 &lt;code&gt;x0&lt;/code&gt;, which serves as attaching
+the text to the layer 1.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;edge&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;style&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;solid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tailport&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;headport&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;We specify the edge style again. This will only affect the edges after this setup
+not before. One small trick here is &lt;code&gt;tailport=e, headport=w&lt;/code&gt;. This will let all the edges
+point to the same position.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;x0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;x1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;x2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;x3&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;a12&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a22&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a32&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a42&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a52&lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;a02&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a12&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a22&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a32&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a42&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a52&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;a13&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a23&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a33&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a43&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a53&lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;a03&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a13&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a23&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a33&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a43&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;a53&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;O1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;O2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;O3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;O4&lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;This code chunk is how we actually draw the edges. In the simple example above,
+it explicitly draws the edges between two nodes. It is quite pain to do. Above code
+chunk provides a simpler way to achieve the same purpose.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="graphviz-tweaks"&gt;Graphviz tweaks&lt;/h2&gt;
+&lt;p&gt;From our NN drawing example, there are two recurring tricks when we tweak Graphviz 
+picture layout:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Invisible nodes/edges&lt;/li&gt;
+&lt;li&gt;Rank constraints&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="invisible-nodesedges"&gt;Invisible nodes/edges&lt;/h3&gt;
+&lt;p&gt;In the above example, we use invisible edges to specify the ordering of nodes within
+each NN layer. In addition, we use node with &lt;code&gt;plaintext&lt;/code&gt; shape to specify the text label
+in the layer.&lt;/p&gt;
+&lt;p&gt;Usually, we use invisible edges to specify what nodes should line up and sometimes
+we use invisible nodes to take up space to keep the graph in a specific structure.
+&lt;a href="https://stackoverflow.com/questions/7374108/graphviz-node-placement-and-rankdir"&gt;This SO post&lt;/a&gt;
+demonstrates how we can use invisible nodes and edges in combination to create 
+a fancy picture. 
+&lt;a href="https://stackoverflow.com/questions/27091591/graphviz-dot-vertical-alignment-of-nodes"&gt;This SO post&lt;/a&gt;
+is another example to show how to use "invisible edges" (it uses another trick called
+&lt;code&gt;group&lt;/code&gt; attribute).&lt;/p&gt;
+&lt;h3 id="rank-constraints"&gt;Rank constraints&lt;/h3&gt;
+&lt;p&gt;If you check &lt;a href="http://www.graphviz.org/doc/info/attrs.html#d:rank"&gt;official doc&lt;/a&gt;,
+here is what rank does:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Rank constraints on the nodes in a subgraph. If rank="same", 
+all nodes are placed on the same rank. If rank="min", all nodes are placed on the minimum rank. 
+If rank="source", all nodes are placed on the minimum rank, and the only nodes on the minimum 
+rank belong to some subgraph whose rank attribute is "source" or "min". Analogous criteria hold 
+for rank="max" and rank="sink". (Note: the minimum rank is topmost or leftmost, and the maximum 
+rank is bottommost or rightmost.)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Let's demonstrate this description with a simple example &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4" rel="footnote"&gt;4&lt;/a&gt;&lt;/sup&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;digraph&lt;/span&gt; &lt;span class="n"&gt;G&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;rank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;source&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;;}&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;rank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;same&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This example gives a graph with two rows. &lt;code&gt;a-&amp;gt;b&lt;/code&gt; is above &lt;code&gt;c-&amp;gt;d&lt;/code&gt;.
+However, if I change &lt;code&gt;{rank=source; a-&amp;gt;b;}&lt;/code&gt; to &lt;code&gt;{rank=min; a-&amp;gt;b;}&lt;/code&gt;, we'll
+end up with one row: &lt;code&gt;a-&amp;gt;b&lt;/code&gt; will be to the left of &lt;code&gt;c-&amp;gt;d&lt;/code&gt;. This is due to
+the difference between &lt;code&gt;min&lt;/code&gt; and &lt;code&gt;source&lt;/code&gt;: &lt;code&gt;min&lt;/code&gt; allows other subgraphs in the
+minimum rank. However, &lt;code&gt;source&lt;/code&gt; only allows other subgraphs of &lt;code&gt;min&lt;/code&gt; or &lt;code&gt;source&lt;/code&gt;
+to be on the minimum rank (we have &lt;code&gt;same&lt;/code&gt; in this case).&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sink&lt;/code&gt; and &lt;code&gt;max&lt;/code&gt; works similarly. For instance, the below example gives a picture
+with &lt;code&gt;c-&amp;gt;d&lt;/code&gt; at the top and &lt;code&gt;a-&amp;gt;b&lt;/code&gt; at the bottom:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;digraph&lt;/span&gt; &lt;span class="n"&gt;G&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;rank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;sink&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;;}&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;rank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;same&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;Of course, Graphviz is not the only tool that can produce beautiful pictures. 
+&lt;a href="http://www.texample.net/"&gt;TikZ&lt;/a&gt; is another popular tool. You can check out 
+&lt;a href="http://www.texample.net/tikz/examples/neural-network/"&gt;its NN example&lt;/a&gt; for comparison.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;Technically, the code used to generate the blog NN picture is 
+&lt;a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/nn2.dot"&gt;this one&lt;/a&gt;
+but the code I explained above is much more concise.&amp;#160;&lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:3"&gt;
+&lt;p&gt;Check out 
+&lt;a href="https://stackoverflow.com/questions/28853898/groups-of-nodes-with-the-same-attributes-in-graphviz-file"&gt;this SO post&lt;/a&gt;
+for more examples on grouping nodes with the same attributes.&amp;#160;&lt;a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:4"&gt;
+&lt;p&gt;The example is adapted from &lt;a href="https://stackoverflow.com/questions/6149834/rank-attribute-is-confusing-to-me"&gt;this SO post&lt;/a&gt;.&amp;#160;&lt;a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</summary><category term="ml"></category><category term="graphviz"></category></entry><entry><title>Andrew Ng's ML Week 04 - 05</title><link href="http://zhu45.org/posts/2017/May/23/andrew-ngs-ml-week-04-05/" rel="alternate"></link><published>2017-05-23T22:20:00+08:00</published><updated>2017-05-23T22:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-23:posts/2017/May/23/andrew-ngs-ml-week-04-05/</id><summary type="html">&lt;p&gt;Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
 It is especially heplful when there are many features and hence, many combinations
 for the &lt;a href="http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/"&gt;linear or logistic regressions&lt;/a&gt;. 
 Interestingly, I have studied neural networks
