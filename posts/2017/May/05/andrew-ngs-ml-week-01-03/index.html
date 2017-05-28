@@ -342,6 +342,17 @@ value, then we may face "underfit" issue (i.e. all <span class="math">\(\theta_j
 \text{\}} \nonumber
 \end{align}
 $$</div>
+<p>Here, it is might be a good time to write out the gradient explicitly (rather than embedding them in 
+the gradient descent algorithm). 
+<a href="http://eli.thegreenplace.net/2016/understanding-gradient-descent/">Gradient descent</a> 
+is only one of many algorithms that optimizes a given function. We will use other algorithms
+later in the course and the only thing they require is the gradients.</p>
+<div class="math">$$
+\begin{align*}
+\frac{\partial J(\theta)}{\partial \theta_0} &amp;=&amp; \frac{1}{m}\sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)} &amp;&amp; \text{ for } j = 0 \\
+\frac{\partial J(\theta)}{\partial \theta_j} &amp;=&amp; \Big(\frac{1}{m} \sum_{i=1}^m(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}\Big) + \frac{\lambda}{m}\theta_j &amp;&amp; \text{ for } j \ge 1
+\end{align*}
+$$</div>
 <ul>
 <li>Normal Equation</li>
 </ul>
@@ -358,8 +369,16 @@ $$</div>
 <p>we want <span class="math">\(\lambda &gt; 0\)</span> so that the matrix is invertible.</p>
 <h3 id="in-practice_1">In practice</h3>
 <p>Linear regression regularization implementation doesn't differ from no-regularization
-implementation in terms of matrices implementation technique. I'll show a code snippet
-for logistic regression with regularization below as hint for this section.</p>
+implementation in terms of matrices implementation technique. The following code chunk
+demonstrates a way to calculate the cost function <span class="math">\(J(\theta)\)</span> and the gradients (not gradient descent):</p>
+<div class="highlight"><pre><span></span><span class="n">J</span> <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="nb">sum</span><span class="p">((</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="n">lambda</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">theta</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span><span class="p">));</span>         
+<span class="n">G</span> <span class="p">=</span> <span class="p">(</span><span class="n">lambda</span><span class="o">/</span><span class="n">m</span><span class="p">)</span> <span class="o">.*</span> <span class="n">theta</span><span class="p">;</span>
+<span class="n">G</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">=</span> <span class="mi">0</span><span class="p">;</span> 
+<span class="n">grad</span> <span class="p">=</span> <span class="p">((</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="n">X</span><span class="o">&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span> <span class="o">-</span> <span class="n">y</span><span class="p">))</span> <span class="o">+</span> <span class="n">G</span><span class="p">;</span>
+<span class="n">grad</span> <span class="p">=</span> <span class="n">grad</span><span class="p">(:);</span>
+</pre></div>
+
+
 <h2 id="logistic-regression">Logistic regression</h2>
 <p>Logistic regression is used as a classification algorithm. It is better than the linear
 regression because 1) linear regression classification result is higly impacted by the
