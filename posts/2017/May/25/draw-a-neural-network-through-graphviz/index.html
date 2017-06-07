@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Draw a Neural Network through Graphviz
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+            <div class="container">
+
+<header class="blog-header">
+    <h1 id="site-title"><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+        <a href="../../../../../quotes.html" style="padding: 10px">QUOTES</a>
+        <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+        <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a>
+    </nav>
+</header>
+
+    <div class="post">
+        <header>
+            <h1 class="post-title">Draw a Neural Network through Graphviz</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2017-05-25T22:20:00+08:00"> May 25, 2017</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/ml.html">ml</a>
+        /
+	<a href="../../../../../tag/graphviz.html">graphviz</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <h2 id="preface">Preface</h2>
+<p><a href="http://graphviz.org/">Graphviz</a> is a language (called DOT) and
+a set of tools to automatically generate graphs. It is widely used
+by researchers to do visualizations in papers. Essentially, you just
+need to provide a textual descritption of the graph regarding its topological
+structure (i.e. what nodes are, how they are connected, etc) and Graphviz will
+figure out the layout of the image by itself. Usually, the generated layout works
+out well but quite often, like this <a href="https://hbfs.wordpress.com/2014/09/30/a-quick-primer-on-graphviz/">post</a>
+mentioned, can be a "finicky beast". So, I decide to share some tips I learned about
+Graphviz.</p>
+<p>Specifically, in this post, I'll demonstrate how we can draw the Neural Network shown in the 
+<a href="../../../../../posts/2017/May/23/andrew-ngs-ml-week-04-05/">last post</a> and use this as an example
+to show some tricks in Graphviz to tweak the layout <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>. Let's get started!</p>
+<h2 id="draw-a-neural-network">Draw a neural network</h2>
+<p>If you do a quick search regarding "graphviz neural network example", you'll highly
+likely see the below picture:</p>
+<p><img alt="" src="../../../../../images/multiclass_neural_network_example.png" /> </p>
+<p>This is probably the most simplest Graphviz demonstration on Neural Network. The
+code for this picture can be obtained <a href="https://gist.github.com/thigm85/5760134">here</a>.</p>
+<p>However, when I'm preparing my last post, I'm not quite satisified with the example above.
+I want to clearly label all the nodes in all layers and make distinction among feature
+input, bias term, hidden units, and output units. So, I decide to draw one on my own.</p>
+<p>Here is the <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/nn3.dot">code</a>
+that generates the picture below <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>. Let me briefly
+highlights some key points in the code:</p>
+<p><img alt="" src="../../../../../images/nn2.png" /></p>
+<div class="highlight"><pre><span></span><span class="n">rankdir</span> <span class="o">=</span> <span class="n">LR</span><span class="p">;</span>
+<span class="n">splines</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span>
+<span class="n">edge</span><span class="p">[</span><span class="n">style</span><span class="o">=</span><span class="n">invis</span><span class="p">];</span>
+</pre></div>
+
+
+<ol>
+<li><code>rankdir=LR</code> makes the directed graphs drawn from top to bottom.</li>
+<li><code>splines=false</code> controls how the edges are represented and in this case, edges 
+are drawn as line segments.</li>
+<li><code>edge[style=invis]</code> forces edges to become invisible. This is a common trick to tweak
+graphviz layout. </li>
+</ol>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="n">node</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">circle</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">yellow</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">filled</span><span class="p">,</span> <span class="n">fillcolor</span><span class="o">=</span><span class="n">yellow</span><span class="p">];</span>
+  <span class="n">x0</span> <span class="p">[</span><span class="n">label</span><span class="o">=&lt;</span><span class="n">x</span><span class="o">&lt;</span><span class="n">sub</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">&lt;/</span><span class="n">sub</span><span class="o">&gt;&gt;</span><span class="p">];</span> 
+  <span class="n">a02</span> <span class="p">[</span><span class="n">label</span><span class="o">=&lt;</span><span class="n">a</span><span class="o">&lt;</span><span class="n">sub</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">&lt;/</span><span class="n">sub</span><span class="o">&gt;&lt;</span><span class="n">sup</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">sup</span><span class="o">&gt;&gt;</span><span class="p">];</span> 
+  <span class="n">a03</span> <span class="p">[</span><span class="n">label</span><span class="o">=&lt;</span><span class="n">a</span><span class="o">&lt;</span><span class="n">sub</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">&lt;/</span><span class="n">sub</span><span class="o">&gt;&lt;</span><span class="n">sup</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">sup</span><span class="o">&gt;&gt;</span><span class="p">];</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ol>
+<li><code>node[...]</code> sets the default node property: specify the node shape, node color. This
+node property will apply to three nodes: <code>x0</code>, <code>a02</code>, <code>a03</code>.</li>
+<li><code>x0 [label=&lt;x&lt;sub&gt;0&lt;/sub&gt;&gt;]</code> specify the text label for node <code>x0</code>. The text for label
+is specified in <a href="http://www.graphviz.org/doc/info/shapes.html#html">HTML-like</a> and this is 
+how we write subscript and superscript in Graphviz.</li>
+<li><code>{...}</code> specifies the scope of the node property. This code chunk as a whole shows
+how we can specify several nodes at the once with the same node property <sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>.</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="n">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span>
+  <span class="n">x0</span><span class="o">-&gt;</span><span class="n">x1</span><span class="o">-&gt;</span><span class="n">x2</span><span class="o">-&gt;</span><span class="n">x3</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ol>
+<li><code>rank=same</code> is another trick I'll talk about later. This specifies what "layer"
+(or "rank" by official term) a set of nodes belongs. You can read <a href="http://www.graphviz.org/doc/info/attrs.html#d:rank">the official doc</a> for the details.</li>
+<li><code>x0-&gt;...-&gt;x3</code> specifies the relative position of the four nodes. Since the graph is
+arranged from left to right (indicate by <code>rankdir = LR</code>), then the "layer" is vertical.
+Then by <code>x0-&gt;...-&gt;x3</code>, the first node will be <code>x0</code>, followed by <code>x1</code>, and so on. Also,
+we have <code>edge[style=invis]</code> and this will hide the edges among these four nodes. This 
+is how we draw the NN layers.</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="n">a02</span><span class="o">-&gt;</span><span class="n">a03</span><span class="p">;</span>
+</pre></div>
+
+
+<ol>
+<li>This line is used to prevent tilting of the graph. As you can see, we specify
+how the nodes should be arranged in a layer but we don't much constraint on how
+the layers should be positioned except <code>rankdir=LR</code>, which says layers should be 
+ordered from left to right. <code>a02-&gt;a03</code> says layer with <code>a02</code> should be lined up with 
+layer with <code>a03</code>.</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="n">l0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">plaintext</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;layer 1 (input layer)&quot;</span><span class="p">];</span>
+<span class="n">l0</span><span class="o">-&gt;</span><span class="n">x0</span><span class="p">;</span>
+<span class="p">{</span><span class="n">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">l0</span><span class="p">;</span><span class="n">x0</span><span class="p">};</span>
+</pre></div>
+
+
+<ol>
+<li>This code chunk is how we add label text to each layer. As you can see we use
+another node <code>l0</code> with shape <code>plaintext</code>, which says <code>l0</code> is just a text message.
+Then we connect it with the first node of layer 1 <code>x0</code>, which serves as attaching
+the text to the layer 1.</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="n">edge</span><span class="p">[</span><span class="n">style</span><span class="o">=</span><span class="n">solid</span><span class="p">,</span> <span class="n">tailport</span><span class="o">=</span><span class="n">e</span><span class="p">,</span> <span class="n">headport</span><span class="o">=</span><span class="n">w</span><span class="p">];</span>
+</pre></div>
+
+
+<ol>
+<li>We specify the edge style again. This will only affect the edges after this setup
+not before. One small trick here is <code>tailport=e, headport=w</code>. This will let all the edges
+point to the same position.</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="n">x0</span><span class="p">;</span> <span class="n">x1</span><span class="p">;</span> <span class="n">x2</span><span class="p">;</span> <span class="n">x3</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">a12</span><span class="p">;</span><span class="n">a22</span><span class="p">;</span><span class="n">a32</span><span class="p">;</span><span class="n">a42</span><span class="p">;</span><span class="n">a52</span><span class="p">};</span>
+<span class="p">{</span><span class="n">a02</span><span class="p">;</span><span class="n">a12</span><span class="p">;</span><span class="n">a22</span><span class="p">;</span><span class="n">a32</span><span class="p">;</span><span class="n">a42</span><span class="p">;</span><span class="n">a52</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">a13</span><span class="p">;</span><span class="n">a23</span><span class="p">;</span><span class="n">a33</span><span class="p">;</span><span class="n">a43</span><span class="p">;</span><span class="n">a53</span><span class="p">};</span>
+<span class="p">{</span><span class="n">a03</span><span class="p">;</span><span class="n">a13</span><span class="p">;</span><span class="n">a23</span><span class="p">;</span><span class="n">a33</span><span class="p">;</span><span class="n">a43</span><span class="p">;</span><span class="n">a53</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">O1</span><span class="p">,</span><span class="n">O2</span><span class="p">,</span><span class="n">O3</span><span class="p">,</span><span class="n">O4</span><span class="p">};</span>
+</pre></div>
+
+
+<ol>
+<li>This code chunk is how we actually draw the edges. In the simple example above,
+it explicitly draws the edges between two nodes. It is quite pain to do. Above code
+chunk provides a simpler way to achieve the same purpose.</li>
+</ol>
+<h2 id="graphviz-tricks">Graphviz tricks</h2>
+<p>From our NN drawing example, there are two recurring tricks when we tweak Graphviz 
+picture layout:</p>
+<ul>
+<li>Invisible nodes/edges</li>
+<li>Rank constraints</li>
+</ul>
+<h3 id="invisible-nodesedges">Invisible nodes/edges</h3>
+<p>In the above example, we use invisible edges to specify the ordering of nodes within
+each NN layer. In addition, we use node with <code>plaintext</code> shape to specify the text label
+in the layer.</p>
+<p>Usually, we use invisible edges to specify what nodes should line up and sometimes
+we use invisible nodes to take up space to keep the graph in a specific structure.
+<a href="https://stackoverflow.com/questions/7374108/graphviz-node-placement-and-rankdir">This SO post</a>
+demonstrates how we can use invisible nodes and edges in combination to create 
+a fancy picture. 
+<a href="https://stackoverflow.com/questions/27091591/graphviz-dot-vertical-alignment-of-nodes">This SO post</a>
+is another example to show how to use "invisible edges" (it uses another trick called
+<code>group</code> attribute).</p>
+<h3 id="rank-constraints">Rank constraints</h3>
+<p>If you check <a href="http://www.graphviz.org/doc/info/attrs.html#d:rank">official doc</a>,
+here is what rank does:</p>
+<blockquote>
+<p>Rank constraints on the nodes in a subgraph. If rank="same", 
+all nodes are placed on the same rank. If rank="min", all nodes are placed on the minimum rank. 
+If rank="source", all nodes are placed on the minimum rank, and the only nodes on the minimum 
+rank belong to some subgraph whose rank attribute is "source" or "min". Analogous criteria hold 
+for rank="max" and rank="sink". (Note: the minimum rank is topmost or leftmost, and the maximum 
+rank is bottommost or rightmost.)</p>
+</blockquote>
+<p>Let's demonstrate this description with a simple example <sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">4</a></sup>:</p>
+<div class="highlight"><pre><span></span><span class="n">digraph</span> <span class="n">G</span>
+<span class="p">{</span>
+  <span class="p">{</span><span class="n">rank</span><span class="o">=</span><span class="n">source</span><span class="p">;</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">;}</span>
+  <span class="p">{</span><span class="n">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">d</span><span class="p">;}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>This example gives a graph with two rows. <code>a-&gt;b</code> is above <code>c-&gt;d</code>.
+However, if I change <code>{rank=source; a-&gt;b;}</code> to <code>{rank=min; a-&gt;b;}</code>, we'll
+end up with one row: <code>a-&gt;b</code> will be to the left of <code>c-&gt;d</code>. This is due to
+the difference between <code>min</code> and <code>source</code>: <code>min</code> allows other subgraphs in the
+minimum rank. However, <code>source</code> only allows other subgraphs of <code>min</code> or <code>source</code>
+to be on the minimum rank (we have <code>same</code> in this case).</p>
+<p><code>sink</code> and <code>max</code> works similarly. For instance, the below example gives a picture
+with <code>c-&gt;d</code> at the top and <code>a-&gt;b</code> at the bottom:</p>
+<div class="highlight"><pre><span></span><span class="n">digraph</span> <span class="n">G</span><span class="p">{</span>
+  <span class="p">{</span><span class="n">rank</span><span class="o">=</span><span class="n">sink</span><span class="p">;</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">;}</span>
+  <span class="p">{</span><span class="n">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">d</span><span class="p">;}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Of course, Graphviz is not the only tool that can produce beautiful pictures. 
+<a href="http://www.texample.net/">TikZ</a> is another popular tool. You can check out 
+<a href="http://www.texample.net/tikz/examples/neural-network/">its NN example</a> for comparison.&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Technically, the code used to generate the blog NN picture is 
+<a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/nn2.dot">this one</a>
+but the code I explained above is much more concise.&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Check out 
+<a href="https://stackoverflow.com/questions/28853898/groups-of-nodes-with-the-same-attributes-in-graphviz-file">this SO post</a>
+for more examples on grouping nodes with the same attributes.&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>The example is adapted from <a href="https://stackoverflow.com/questions/6149834/rank-attribute-is-confusing-to-me">this SO post</a>.&#160;<a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/tools.html">tools</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+<!--                            <li><a href="../../../../../about-zack.html">About</a></li>
+                <li><a href="../../../../../blog2">Blog</a></li>
+                <li><a href="../../../../../quotes.html">Quotes</a></li>
+                <li><a href="../../../../../projects.html">Projects</a></li>
+-->
+    </ul>
+
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

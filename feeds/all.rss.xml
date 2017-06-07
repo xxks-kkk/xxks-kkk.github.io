@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Thu, 25 May 2017 22:20:00 +0800</lastBuildDate><item><title>Drawing a Neural Network through Graphviz</title><link>http://zhu45.org/posts/2017/May/25/drawing-a-neural-network-through-graphviz/</link><description>&lt;h2 id="preface"&gt;Preface&lt;/h2&gt;
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Thu, 25 May 2017 22:20:00 +0800</lastBuildDate><item><title>Draw a Neural Network through Graphviz</title><link>http://zhu45.org/posts/2017/May/25/draw-a-neural-network-through-graphviz/</link><description>&lt;h2 id="preface"&gt;Preface&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://graphviz.org/"&gt;Graphviz&lt;/a&gt; is a language (called DOT) and
 a set of tools to automatically generate graphs. It is widely used
 by researchers to do visualizations in papers. Essentially, you just
@@ -115,7 +115,7 @@ point to the same position.&lt;/li&gt;
 it explicitly draws the edges between two nodes. It is quite pain to do. Above code
 chunk provides a simpler way to achieve the same purpose.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2 id="graphviz-tweaks"&gt;Graphviz tweaks&lt;/h2&gt;
+&lt;h2 id="graphviz-tricks"&gt;Graphviz tricks&lt;/h2&gt;
 &lt;p&gt;From our NN drawing example, there are two recurring tricks when we tweak Graphviz 
 picture layout:&lt;/p&gt;
 &lt;ul&gt;
@@ -191,10 +191,10 @@ for more examples on grouping nodes with the same attributes.&amp;#160;&lt;a cla
 &lt;p&gt;The example is adapted from &lt;a href="https://stackoverflow.com/questions/6149834/rank-attribute-is-confusing-to-me"&gt;this SO post&lt;/a&gt;.&amp;#160;&lt;a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Thu, 25 May 2017 22:20:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-05-25:posts/2017/May/25/drawing-a-neural-network-through-graphviz/</guid><category>ml</category><category>graphviz</category></item><item><title>Andrew Ng's ML Week 04 - 05</title><link>http://zhu45.org/posts/2017/May/23/andrew-ngs-ml-week-04-05/</link><description>&lt;p&gt;Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Thu, 25 May 2017 22:20:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-05-25:posts/2017/May/25/draw-a-neural-network-through-graphviz/</guid><category>ml</category><category>graphviz</category></item><item><title>Andrew Ng's ML Week 04 - 05</title><link>http://zhu45.org/posts/2017/May/23/andrew-ngs-ml-week-04-05/</link><description>&lt;p&gt;Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
 It is especially heplful when there are many features and hence, many combinations
 for the &lt;a href="http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/"&gt;linear or logistic regressions&lt;/a&gt;. 
-Interestingly, I have studied neural networks
+Interestingly, I studied neural networks
 &lt;a href="https://www.dropbox.com/s/hkym4s135amgmxv/HU.pdf?dl=0"&gt;previously&lt;/a&gt; 
 when I was a student at college. It may feel different when we revisit old friend.&lt;/p&gt;
 &lt;div class="toc"&gt;
@@ -762,7 +762,7 @@ value, then we may face "underfit" issue (i.e. all &lt;span class="math"&gt;\(\t
 \text{\}} \nonumber
 \end{align}
 $$&lt;/div&gt;
-&lt;p&gt;Here, it is might be a good time to write out the gradient explicitly (rather than embedding them in 
+&lt;p&gt;Here, it might be a good time to write out the gradient explicitly (rather than embedding them in 
 the gradient descent algorithm). 
 &lt;a href="http://eli.thegreenplace.net/2016/understanding-gradient-descent/"&gt;Gradient descent&lt;/a&gt; 
 is only one of many algorithms that optimizes a given function. We will use other algorithms
@@ -3161,7 +3161,7 @@ a real-life B-tree deletion which may be complicated for the learner. &lt;/p&gt;
 a neighbor. If leaf underflows and can't borrow, we merge nodes and delete parent.&lt;/p&gt;
 &lt;h2 id="runtime-analysis"&gt;Runtime analysis&lt;/h2&gt;
 &lt;p&gt;We first show that height &lt;span class="math"&gt;\(H\)&lt;/span&gt; is logarithmic in number of data items &lt;span class="math"&gt;\(N\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(M \ge 2\)&lt;/span&gt;. Because all nodes are at least half full (except root may have
-only 2 children) and all leaves are at the same level, the minimum number od data items &lt;span class="math"&gt;\(N\)&lt;/span&gt; for a height &lt;span class="math"&gt;\(H\)&lt;/span&gt; tree is &lt;/p&gt;
+only 2 children) and all leaves are at the same level, the minimum number of data items &lt;span class="math"&gt;\(N\)&lt;/span&gt; for a height &lt;span class="math"&gt;\(H\)&lt;/span&gt; tree is &lt;/p&gt;
 &lt;div class="math"&gt;$$
 N \ge \underbrace{2(\lceil{M/2}\rceil)^{H-1}}_\textrm{min number of leaves}\times\underbrace{\lceil{L/2}\rceil}_\textrm{min data per leaf}
 $$&lt;/div&gt;
