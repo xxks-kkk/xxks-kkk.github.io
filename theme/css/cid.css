@@ -205,11 +205,6 @@ h1.post-title {
   border-bottom: 1px solid #000;
   margin-bottom: 0px; }
 
-.container h1 {
-  line-height: 1.2em;
-  border-bottom: 1px solid #000;
-  margin-bottom: 0px; }
-
 .post-info {
   padding: 20px; }
 
@@ -225,10 +220,6 @@ td a {
 
 p {
   line-height: 1.5em; }
-
-.blog-header a {
-  text-decoration: none;
-  border-bottom: none; }
 
 a:hover {
   background-color: #C74350;
@@ -272,7 +263,8 @@ span.label.label-default {
 
 body {
   font-family: "Droid Sans", "Merriweather", "Georgia", serif;
-  font-weight: 300; }
+  font-weight: 300;
+  background-color: #ddd; }
   body a {
     font-weight: 400;
     text-decoration: none;
@@ -329,7 +321,30 @@ body {
 
 .container {
   max-width: 56em;
-  margin: 1em auto; }
+  margin: 1em auto;
+  padding: 50px;
+  background: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+  before-position: absolute;
+  before-content: " ";
+  before-left: 12px;
+  before-bottom: 12px;
+  before-background: transparent;
+  before-transform: skew(-5deg) rotate(-5deg);
+  before-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  before-z-index: -1;
+  after-position: absolute;
+  after-content: " ";
+  after-left: 12px;
+  after-bottom: 12px;
+  after-background: transparent;
+  after-transform: skew(-5deg) rotate(-5deg);
+  after-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  after-z-index: -1; }
+  .container h1 {
+    line-height: 1.2em;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 0px; }
   @media screen and (max-width: 640px) {
     .container {
       margin: 0.8em; } }
@@ -349,7 +364,8 @@ body {
       top: 0;
       right: 0;
       margin: 0 2px;
-      font-family: "Gentium Book Basic", "Georgia", serif; }
+      font-family: "Gentium Book Basic", "Georgia", serif;
+      padding-top: 10px; }
       @media screen and (max-width: 640px) {
         .container .blog-header nav {
           position: relative;
@@ -357,6 +373,9 @@ body {
     @media screen and (max-width: 640px) {
       .container .blog-header {
         text-align: center; } }
+    .container .blog-header a {
+      text-decoration: none;
+      border-bottom: none; }
   .container .nav {
     font-size: 1.2em; }
   .container .blog-footer {
