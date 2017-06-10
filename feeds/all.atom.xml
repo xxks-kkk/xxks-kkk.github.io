@@ -233,7 +233,7 @@ respectively.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(\Theta^{(l)} =\)&lt;/span&gt; matrix of weights controlling function mapping from layer &lt;span class="math"&gt;\(l\)&lt;/span&gt; to layer &lt;span class="math"&gt;\(l+1\)&lt;/span&gt;.
-For example, &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+For example,&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="math"&gt;$$
@@ -244,10 +244,28 @@ For example, &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel
 \theta_{50}^{(1)} &amp;amp;&amp;amp; \theta_{51}^{(1)} &amp;amp;&amp;amp; \theta_{52}^{(1)} &amp;amp;&amp;amp; \theta_{53}^{(1)} \\
 \end{bmatrix}
 $$&lt;/div&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Notation here may look confusing. One example to help understand is
+&lt;span class="math"&gt;\(\theta_{10}^{1}\)&lt;/span&gt; means weight from &lt;span class="math"&gt;\(x_0\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(1\)&lt;/span&gt; to &lt;span class="math"&gt;\(a_1\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(2\)&lt;/span&gt;. In other words,
+&lt;span class="math"&gt;\(\theta_{ji}^{l}\)&lt;/span&gt; means weight from &lt;span class="math"&gt;\(a_i^{l}\)&lt;/span&gt; to &lt;span class="math"&gt;\(a_j^{l+1}\)&lt;/span&gt;. Then the rows in the
+matrix can be thought of as the weights from neurons in layer &lt;span class="math"&gt;\(l\)&lt;/span&gt; to corresponding &lt;span class="math"&gt;\(a_j\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(l+1\)&lt;/span&gt; 
+(i.e., 1st row in the above example means weights from layer &lt;span class="math"&gt;\(1\)&lt;/span&gt; to &lt;span class="math"&gt;\(a_1\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(2\)&lt;/span&gt;). 
+Explicitly, the number of columns in our current theta matrix is equal to the number of 
+nodes in our current layer (including the bias unit). The number of rows is equal to the number
+of nodes in the next layer (excluding the bias unit).&lt;/p&gt;
+&lt;/div&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;span class="math"&gt;\(K =\)&lt;/span&gt; number of neurons in the output layer (i.e. &lt;span class="math"&gt;\(S_L = K\)&lt;/span&gt;). In other words, &lt;span class="math"&gt;\(K\)&lt;/span&gt; represents the number of classes
-in multi-class classification. This indicates that &lt;span class="math"&gt;\(h_\theta(x) = \mathbb{R}^K\)&lt;/span&gt;. &lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+in multi-class classification. This indicates that &lt;span class="math"&gt;\(h_\theta(x) = \mathbb{R}^K\)&lt;/span&gt;. &lt;/li&gt;
 &lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Usually, in our training sets {&lt;span class="math"&gt;\((x^{(1)}, y^{(1)}), \dots, (x^{(m)}, y^{(m)})\)&lt;/span&gt;}, we are given actual label (i.e. 
+&lt;span class="math"&gt;\(y^{(9)} = 10\)&lt;/span&gt; for handwritten digit recognition). However, we need to transform those labels into &lt;span class="math"&gt;\(\mathbb{R}^k\)&lt;/span&gt; by doing,for 
+instance, create &lt;span class="math"&gt;\(\mathbb{R}^{10}\)&lt;/span&gt; vector with last position being &lt;span class="math"&gt;\(1\)&lt;/span&gt; and rest being &lt;span class="math"&gt;\(0\)&lt;/span&gt;
+as the representation for &lt;span class="math"&gt;\(y^{(9)} = 10\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
 &lt;p&gt;With the above notations, we have the following property:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;If NN has &lt;span class="math"&gt;\(S_l\)&lt;/span&gt; units in layer &lt;span class="math"&gt;\(l\)&lt;/span&gt;, &lt;span class="math"&gt;\(S_{l+1}\)&lt;/span&gt; units in layer &lt;span class="math"&gt;\(l+1\)&lt;/span&gt;, then &lt;span class="math"&gt;\(\Theta^{(l)}\)&lt;/span&gt; will be dimension 
@@ -268,7 +286,7 @@ the number of units in the network. A good choice of &lt;span class="math"&gt;\(
 &lt;span class="math"&gt;\(\epsilon_\text{init} = \frac{\sqrt{6}}{\sqrt{L_\text{in} + L_\text{out}}}\)&lt;/span&gt;, where
 &lt;span class="math"&gt;\(L_\text{in} = S_l\)&lt;/span&gt; and &lt;span class="math"&gt;\(L_\text{out} = S_{l+1}\)&lt;/span&gt;, which are the the number of units
 in the layers adjacent to &lt;span class="math"&gt;\(\Theta^{(l)}\)&lt;/span&gt;. Take above NN as an example, our 
-&lt;span class="math"&gt;\(\epsilon_\text{init}\)&lt;/span&gt; will be &lt;span class="math"&gt;\(0.87\)&lt;/span&gt;, which is calculated from &lt;span class="math"&gt;\(\frac{\sqrt{6}}{\sqrt{3+5}}\)&lt;/span&gt;. &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;span class="math"&gt;\(\epsilon_\text{init}\)&lt;/span&gt; will be &lt;span class="math"&gt;\(0.87\)&lt;/span&gt;, which is calculated from &lt;span class="math"&gt;\(\frac{\sqrt{6}}{\sqrt{3+5}}\)&lt;/span&gt;. &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 &lt;h4 id="3-forward-propagation"&gt;3. Forward propagation&lt;/h4&gt;
 &lt;p&gt;The next step we need to do is to use forward propagation to get &lt;span class="math"&gt;\(h_\theta(x^{(i)})\)&lt;/span&gt; for any &lt;span class="math"&gt;\(x^{(i)}\)&lt;/span&gt;.
 Let's use above NN as an example to demonstrate how forward propagation is done. There are
@@ -351,7 +369,7 @@ much that node was "responsible" for any errors in our output. For an output nod
 difference between the network's activation and the true target value, and use that to define &lt;span class="math"&gt;\(\delta_j^{(L)}\)&lt;/span&gt;.
 For the hidden units, we can compute &lt;span class="math"&gt;\(\delta_j^{l}\)&lt;/span&gt; based on a weighted average of the error terms of the nodes in layer
 &lt;span class="math"&gt;\((l+1)\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;Here is the algorithm in details: &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4" rel="footnote"&gt;4&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Here is the algorithm in details:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Given training set {&lt;span class="math"&gt;\((x^{(1)}, y^{(1)}), \dots, (x^{(m)}, y^{(m)})\)&lt;/span&gt;}&lt;/li&gt;
 &lt;li&gt;
@@ -377,7 +395,13 @@ For the hidden units, we can compute &lt;span class="math"&gt;\(\delta_j^{l}\)&l
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Intuitvely, backpropagation algorithm is alot like forward propagation running backward. We can then use gradient
-descent or advanced optimization method to try to minimize &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; as a function of parameters &lt;span class="math"&gt;\(\theta\)&lt;/span&gt; &lt;sup id="fnref:5"&gt;&lt;a class="footnote-ref" href="#fn:5" rel="footnote"&gt;5&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+descent or advanced optimization method to try to minimize &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; as a function of parameters &lt;span class="math"&gt;\(\theta\)&lt;/span&gt; &lt;sup id="fnref:5"&gt;&lt;a class="footnote-ref" href="#fn:5" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Notice that we don't compute &lt;span class="math"&gt;\(\delta_{(1)}\)&lt;/span&gt; because &lt;span class="math"&gt;\(\delta_{(1)}\)&lt;/span&gt; is associated with the input layer, which are
+features we observed from the training examples. So, there are no "error" involved. In addition, &lt;span class="math"&gt;\(.\ast\)&lt;/span&gt; means we 
+do element-wise multiplication in octave.&lt;/p&gt;
+&lt;/div&gt;
 &lt;h2 id="implementation-details"&gt;Implementation details&lt;/h2&gt;
 &lt;p&gt;Week 5's programming assignment on NN learning is the most challenging one I have met so far in this course. Initially, 
 I plan to go through lots of details in terms of implementation in this section. However, after I finish the model
@@ -394,34 +418,14 @@ So, in our NN above, there are three &lt;span class="math"&gt;\(\Delta^{(l)}\)&l
 &lt;div class="footnote"&gt;
 &lt;hr /&gt;
 &lt;ol&gt;
-&lt;li id="fn:1"&gt;
-&lt;p&gt;Notation here may look confusing. One example to help understand is
-&lt;span class="math"&gt;\(\theta_{10}^{1}\)&lt;/span&gt; means weight from &lt;span class="math"&gt;\(x_0\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(1\)&lt;/span&gt; to &lt;span class="math"&gt;\(a_1\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(2\)&lt;/span&gt;. In other words,
-&lt;span class="math"&gt;\(\theta_{ji}^{l}\)&lt;/span&gt; means weight from &lt;span class="math"&gt;\(a_i^{l}\)&lt;/span&gt; to &lt;span class="math"&gt;\(a_j^{l+1}\)&lt;/span&gt;. Then the rows in the
-matrix can be thought of as the weights from neurons in layer &lt;span class="math"&gt;\(l\)&lt;/span&gt; to corresponding &lt;span class="math"&gt;\(a_j\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(l+1\)&lt;/span&gt; 
-(i.e., 1st row in the above example means weights from layer &lt;span class="math"&gt;\(1\)&lt;/span&gt; to &lt;span class="math"&gt;\(a_1\)&lt;/span&gt; in layer &lt;span class="math"&gt;\(2\)&lt;/span&gt;). 
-Explicitly, the number of columns in our current theta matrix is equal to the number of 
-nodes in our current layer (including the bias unit). The number of rows is equal to the number
-of nodes in the next layer (excluding the bias unit).&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li id="fn:2"&gt;
-&lt;p&gt;Usually, in our training sets {&lt;span class="math"&gt;\((x^{(1)}, y^{(1)}), \dots, (x^{(m)}, y^{(m)})\)&lt;/span&gt;}, we are given actual label (i.e. 
-&lt;span class="math"&gt;\(y^{(9)} = 10\)&lt;/span&gt; for handwritten digit recognition). However, we need to transform those labels into &lt;span class="math"&gt;\(\mathbb{R}^k\)&lt;/span&gt; by doing,for instance, create &lt;span class="math"&gt;\(\mathbb{R}^{10}\)&lt;/span&gt; vector with last position being &lt;span class="math"&gt;\(1\)&lt;/span&gt; and rest being &lt;span class="math"&gt;\(0\)&lt;/span&gt;
-as the representation for &lt;span class="math"&gt;\(y^{(9)} = 10\)&lt;/span&gt;.&amp;#160;&lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
 &lt;li id="fn:3"&gt;
 &lt;p&gt;Here, it is unclear for me which two layers we should choose to calculate 
 &lt;span class="math"&gt;\(\epsilon_\text{init}\)&lt;/span&gt;. In the &lt;a href="https://github.com/xxks-kkk/Code-for-blog/tree/master/2017/andrew-ng-ml/machine-learning-ex4/ex4"&gt;programming assignment 4&lt;/a&gt;,
-the value is calculated from the layer 1 (input layer) and layer 2 (1st hidden layer).&amp;#160;&lt;a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li id="fn:4"&gt;
-&lt;p&gt;Notice that we don't compute &lt;span class="math"&gt;\(\delta_{(1)}\)&lt;/span&gt; because &lt;span class="math"&gt;\(\delta_{(1)}\)&lt;/span&gt; is associated with the input layer, which are
-features we observed from the training examples. So, there are no "error" involved. In addition, &lt;span class="math"&gt;\(.\ast\)&lt;/span&gt; means we 
-do element-wise multiplication in octave.&amp;#160;&lt;a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+the value is calculated from the layer 1 (input layer) and layer 2 (1st hidden layer).&amp;#160;&lt;a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn:5"&gt;
 &lt;p&gt;You can use &lt;a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/andrew-ng-ml/machine-learning-ex4/ex4/computeNumericalGradient.m"&gt;gradient checking&lt;/a&gt; 
-to verify if the backpropagation is implemented correctly. &amp;#160;&lt;a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+to verify if the backpropagation is implemented correctly. &amp;#160;&lt;a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
@@ -1883,12 +1887,8 @@ and perform a merge.&lt;/p&gt;
 &lt;span class="math"&gt;\(H'\)&lt;/span&gt; and &lt;span class="math"&gt;\(H''\)&lt;/span&gt; below:&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/binomial-queue-deleteMin-01.PNG" alt="binomial queue deleteMin 01"/&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/binomial-queue-deleteMin-02.PNG" alt="binomial queue deleteMin 02"/&gt;&lt;/p&gt;
-&lt;p&gt;and our final result is:&lt;/p&gt;
+&lt;p&gt;and our final result is &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;:&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/binomial-queue-deleteMin-03.PNG" alt="binomial queue deleteMin 03"/&gt;&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;For actual implementation details, please see MAW p. 208 - 211.&lt;/p&gt;
-&lt;/blockquote&gt;
 &lt;h2 id="runtime-analysis"&gt;Runtime analysis&lt;/h2&gt;
 &lt;h3 id="merge_1"&gt;Merge&lt;/h3&gt;
 &lt;p&gt;Since merging two binomial trees takes constant time with almost any reasonable
@@ -1906,6 +1906,14 @@ two queues takes &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time and th
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 6&lt;/li&gt;
 &lt;/ul&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;For actual implementation details, please see MAW p. 208 - 211.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -1992,19 +2000,20 @@ we &lt;strong&gt;always&lt;/strong&gt; swap the left &amp;amp; right subtrees at
 &lt;p&gt;&lt;img src="/images/skew-heap-02.PNG" alt="skew heap 02" style="width: 700px;"/&gt;&lt;/p&gt;
 &lt;p&gt;and this is the final merge result:&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/skew-heap-03.PNG" alt="skew heap 03" style="width: 700px;"/&gt;&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
 &lt;p&gt;The end result is actually leftist heap but there is no guaranteed that this is
 always the case. If you take a look, &lt;span class="math"&gt;\(H_1\)&lt;/span&gt; is not lefist heap.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;/div&gt;
 &lt;h2 id="runtime-analysis"&gt;Runtime analysis&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;merge&lt;/code&gt;, &lt;code&gt;deleteMin&lt;/code&gt;, and &lt;code&gt;insert&lt;/code&gt; are all running in &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; amortized time.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;h2 id="links-to-resources"&gt;Links to resources&lt;/h2&gt;
+&lt;p&gt;Here are some of the resources I found helpful while preparing this article:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 6&lt;/li&gt;
-&lt;li&gt;http://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/heaps.pdf&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/heaps.pdf"&gt;CMU lecture slides&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
@@ -3604,11 +3613,12 @@ The content closely follows Chapter 7
 "Recurrence Relations and Generating Functions" of 
 &lt;a href="https://www.amazon.com/Introductory-Combinatorics-5th-Richard-Brualdi/dp/0136020402"&gt;"Introductory Combinatorics"&lt;/a&gt;,
 which is the textbook I used.&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;This note is practical-oriented. I will skip the proof of the theorem whenever possible.
-If you are interested in the proof side of the universe, please read the book.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;This note is practical-oriented. I will skip the proof of the theorem 
+whenever possible.If you are interested in the proof side of the universe, 
+please read the book.&lt;/p&gt;
+&lt;/div&gt;
 &lt;h2 id="toc"&gt;TOC&lt;/h2&gt;
 &lt;p&gt;The post will be organized in the following format:&lt;/p&gt;
 &lt;ul&gt;
@@ -3708,12 +3718,13 @@ f_n = \frac{1}{\sqrt 5}\Big(\frac{1+\sqrt 5}{2}\Big)^n - \frac{1}{\sqrt 5}\Big(\
 \end{equation*}
 $$&lt;/div&gt;
 &lt;p&gt;is the solution of the Fabonacci recurrence relation.&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;As you might notice, theorem 7.4.1 explicitly requires that the roots of the characteristic equation have 
-to be distinct. However, that's not always the case and theorem 7.4.1 will not work (see book for an example).
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;As you might notice, theorem 7.4.1 explicitly requires that the roots of the 
+characteristic equation have to be distinct. However, that's not always the case 
+and theorem 7.4.1 will not work (see book for an example). 
 That's why we need theorem 7.4.2.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;/div&gt;
 &lt;p&gt;&lt;em&gt;Theorem 7.4.2:&lt;/em&gt; Let &lt;span class="math"&gt;\(q_1, q_2, \dots, q_n\)&lt;/span&gt; be the distinct roots of the following characteristic equation of the 
 linear homogeneous recurrence relation with constant coefficients:&lt;/p&gt;
 &lt;div class="math"&gt;$$
@@ -3755,8 +3766,7 @@ h_n = H_n^{(1)} + H_n^{(2)} = c_1(-1)^n + c_2n(-1)^n + c_3n^2(-1)^n + c_42^n
 \end{equation*}
 $$&lt;/div&gt;
 &lt;p&gt;Then we can use initial values to determine &lt;span class="math"&gt;\(c1\)&lt;/span&gt;, &lt;span class="math"&gt;\(c2\)&lt;/span&gt;, &lt;span class="math"&gt;\(c3\)&lt;/span&gt;, &lt;span class="math"&gt;\(c4\)&lt;/span&gt; and we have &lt;span class="math"&gt;\(h_n = \frac{7}{9} (-1)^n - \frac{3}{9}n(-1)^n + \frac{2}{9}2^n\)&lt;/span&gt;.&lt;/p&gt;
-&lt;!--\* ---- Note ---- *
-
+&lt;!--
 &gt; You probably already notice from the previous example that "characteristic equation" method really depends on the diffculty in finding all roots
 &gt; of a polynomial equation. Sometimes finding the roots of characteristic equation can be quite diffcult. That's what second method tries to address.
 &gt; If you find out that characteristic equation is really diffcult to solve, you can always use "generating function" method.--&gt;
@@ -3846,12 +3856,10 @@ g(x) &amp;amp;=&amp;amp; 5(1 + 2x + 2^2x^2 + \dots + 2^nx^n + \cdots) -4(1 + 3x 
 \end{eqnarray*}
 $$&lt;/div&gt;
 &lt;p&gt;Thus, &lt;span class="math"&gt;\(h_n = 5\times2^n - 4\times3^n\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Getting the polynomial expansion of &lt;span class="math"&gt;\(g(x)\)&lt;/span&gt; is the hardest part of this method. For instance, factoring the 
-denominator of &lt;span class="math"&gt;\(g(x)\)&lt;/span&gt; can be tricky for high degree polynomials. I need more practice on solving recurrence
-relation to decide which method is superior under what kind of situation.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;!-- Getting the polynomial expansion of $g(x)$ is the hardest part of this method. For instance, factoring the 
+denominator of $g(x)$ can be tricky for high degree polynomials. I need more practice on solving recurrence
+relation to decide which method is superior under what kind of situation.--&gt;
+
 &lt;h2 id="linear-nonhomogeneous-recurrence-relation-with-constant-coefficients"&gt;Linear nonhomogeneous recurrence relation with constant coefficients&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;nonhomogeneous&lt;/strong&gt; means &lt;span class="math"&gt;\(b_n\)&lt;/span&gt; in \ref{eq:1} is no longer zero constant.&lt;/p&gt;
 &lt;h3 id="method-1-characteristic-equation_1"&gt;Method 1: Characteristic equation&lt;/h3&gt;
@@ -3893,21 +3901,26 @@ h_n = c3^n + 2n + 3
 \end{equation*}
 $$&lt;/div&gt;
 &lt;p&gt;Now, let's use inital condition to solve for &lt;span class="math"&gt;\(c\)&lt;/span&gt; and we have &lt;span class="math"&gt;\(c = -1\)&lt;/span&gt;. So, &lt;span class="math"&gt;\(h_n = -3^n + 2n + 3\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;As you can see, solving recurrence relation using characteristic equation has strong connection with solving differential equations (both homogeneous and
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;As you can see, solving recurrence relation using characteristic equation has 
+strong connection with solving differential equations (both homogeneous and 
 nonhomogeneous). &lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;/div&gt;
 &lt;h3 id="method-2-generating-function_1"&gt;Method 2: Generating function&lt;/h3&gt;
 &lt;p&gt;There is nothing difference in using "generating function" method to solve nonhomogeneous than solve homogeneous recurrence relation. That's actually 
 a beauty of this method: nothing needs to tweak in order to work under different situation.&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Certainly, not all recurrence relation appeard in computer science can be easily solved by the method described in this post. For instance,
-inside &lt;a href="http://zhu45.org/posts/2016/Dec/31/josephus-problem/"&gt;Josephus problem&lt;/a&gt;, recurrence relation may depend on whether &lt;span class="math"&gt;\(n\)&lt;/span&gt; is odd or even and 
-methods may not apply nicely. This implies another type of technique to solve recurrence relation is to guess the solution and prove it by induction.
-Also, in the book, solving &lt;span class="math"&gt;\(h_n = h_{n-1} + n^3\)&lt;/span&gt; on p. 250 is not standard as well.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Certainly, not all recurrence relation appeard in computer science can be easily 
+solved by the method described in this post. For instance, inside 
+&lt;a href="http://zhu45.org/posts/2016/Dec/31/josephus-problem/"&gt;Josephus problem&lt;/a&gt;, recurrence 
+relation may depend on whether &lt;span class="math"&gt;\(n\)&lt;/span&gt; is odd or even and 
+methods may not apply nicely. This implies another type of technique to solve 
+recurrence relation is to guess the solution and prove it by induction.
+Also, in the book, solving &lt;span class="math"&gt;\(h_n = h_{n-1} + n^3\)&lt;/span&gt; on p. 250 is not standard as 
+well.&lt;/p&gt;
+&lt;/div&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -3978,10 +3991,10 @@ Also, in the book, solving &lt;span class="math"&gt;\(h_n = h_{n-1} + n^3\)&lt;/
 &lt;li&gt;A &lt;em&gt;full&lt;/em&gt; binary tree (proper binary tree or 2-tree) is a binary tree in which each node
   has exactly zero or two children.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
 &lt;p&gt;A &lt;em&gt;full node&lt;/em&gt; in a binary tree is a node that has exactly two non-null children.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;/div&gt;
 &lt;ul&gt;
 &lt;li&gt;A &lt;em&gt;complete&lt;/em&gt; binary tree is a binary tree, which is completely filled, with the possible
   exception of the bottom level, which is filled from left to right.&lt;/li&gt;
@@ -4214,13 +4227,18 @@ This new tree has the same property has the previous one, and by the statement w
 above, we should have the same sum as the old, which is one. Eventually, we are left
 with two node, one of them is root. Now, we calculate the sum, which gives &lt;span class="math"&gt;\(1/2\)&lt;/span&gt;. This 
 is contradiction to the equality.&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;This problem is called &lt;a href="https://en.wikipedia.org/wiki/Kraft%E2%80%93McMillan_inequality"&gt;Kraft–McMillan inequality&lt;/a&gt;,
-  which is one of fundamental theorem in Information theory. I find &lt;a href="https://www.youtube.com/playlist?list=PLE125425EC837021F"&gt;this youtube playlist about information theory&lt;/a&gt;
-  is really good as an intro to the field because it doesn't make the material look very daunting and super technical,
-  which some &lt;a href="http://circuit.ucsd.edu/~yhk/ece154c-spr16/pdfs/LectureNotes01.pdf"&gt;lecture note&lt;/a&gt; manages to achieve.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;This problem is called 
+&lt;a href="https://en.wikipedia.org/wiki/Kraft%E2%80%93McMillan_inequality"&gt;Kraft–McMillan inequality&lt;/a&gt;,
+which is one of fundamental theorem in Information theory. I find 
+&lt;a href="https://www.youtube.com/playlist?list=PLE125425EC837021F"&gt;this youtube playlist about information theory&lt;/a&gt;
+is really good as an intro to the field because it doesn't make the material look 
+very daunting and super technical,
+which some 
+&lt;a href="http://circuit.ucsd.edu/~yhk/ece154c-spr16/pdfs/LectureNotes01.pdf"&gt;lecture note&lt;/a&gt;
+ manages to achieve.&lt;/p&gt;
+&lt;/div&gt;
 &lt;h3 id="maw-414"&gt;MAW 4.14&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Prove that the depth of a random binary search tree (depth of the deepest node) is &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt;, on average.&lt;/p&gt;
@@ -4334,17 +4352,22 @@ E[Y_n] &amp;amp;\le&amp;amp; \frac{4}{n}\sum_{i=0}^{n-1}E[Y_i] \\
        &amp;amp;=&amp;amp;   \frac{1}{4}\dbinom{n+3}{3}
 \end{eqnarray*}
 $$&lt;/div&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;I &lt;a href="https://www.cs.bgu.ac.il/~fds112/wiki.files/P05.pdf"&gt;reference this lecture note&lt;/a&gt; when I try to develop the proof. 
-Overall, I share the similar proof with this one. However, we have slightly difference in terms of how we 
-define &lt;span class="math"&gt;\(E[Y_n]\)&lt;/span&gt;. The note defines an indicator random variables &lt;span class="math"&gt;\(Z_{n,i} = I\{I=i\}\)&lt;/span&gt;, where &lt;span class="math"&gt;\(I=i\)&lt;/span&gt; means we pick &lt;span class="math"&gt;\(i_{th}\)&lt;/span&gt; element as our 
-first element inserting into the empty tree. Since, we pick the first insertion element equally
-likely, then &lt;span class="math"&gt;\(P(I=i) = \frac{1}{n}\)&lt;/span&gt;, and thus, &lt;span class="math"&gt;\(E[Z_{n,i}] = \frac{1}{n}\)&lt;/span&gt; by &lt;span class="math"&gt;\(E[I_A] = P(A)\)&lt;/span&gt;. Then, he defines &lt;span class="math"&gt;\(Y_n = \sum_{i=1}^nZ_{n,i} \cdot (2 \cdot max(Y_{i-1}, Y_{n-i}))\)&lt;/span&gt;
-because only one &lt;span class="math"&gt;\(Z_{n,i}\)&lt;/span&gt; can be &lt;span class="math"&gt;\(1\)&lt;/span&gt; and all others are &lt;span class="math"&gt;\(0\)&lt;/span&gt;. It seems right but when he calculates the &lt;span class="math"&gt;\(E[Y_n]\)&lt;/span&gt;, he states that
-&lt;span class="math"&gt;\(Z_{n,i}\)&lt;/span&gt; is independent of &lt;span class="math"&gt;\(Y_{i-1}\)&lt;/span&gt; and &lt;span class="math"&gt;\(Y_{n-i}\)&lt;/span&gt;. However, I don't think so as the height of the tree &lt;span class="math"&gt;\(h_n\)&lt;/span&gt;, which &lt;span class="math"&gt;\(Y_n\)&lt;/span&gt; is constructed from 
-depends on which element we pick first. I tend to think about &lt;span class="math"&gt;\(E[Y_n]\)&lt;/span&gt; as expectation of the conditional expectation.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;I 
+&lt;a href="https://www.cs.bgu.ac.il/~fds112/wiki.files/P05.pdf"&gt;reference this lecture note&lt;/a&gt;
+ when I try to develop the proof. 
+Overall, I share the similar proof with this one. However, we have slightly 
+difference in terms of how we 
+define &lt;span class="math"&gt;\(E[Y_n]\)&lt;/span&gt;. The note defines an indicator random variables 
+&lt;span class="math"&gt;\(Z_{n,i} = I\{I=i\}\)&lt;/span&gt;, where &lt;span class="math"&gt;\(I=i\)&lt;/span&gt; means we pick &lt;span class="math"&gt;\(i_{th}\)&lt;/span&gt; element as our 
+first element inserting into the empty tree. Since, we pick the first insertion 
+element equally likely, then &lt;span class="math"&gt;\(P(I=i) = \frac{1}{n}\)&lt;/span&gt;, and thus, &lt;span class="math"&gt;\(E[Z_{n,i}] = \frac{1}{n}\)&lt;/span&gt; by &lt;span class="math"&gt;\(E[I_A] = P(A)\)&lt;/span&gt;. Then, he defines &lt;span class="math"&gt;\(Y_n = \sum_{i=1}^nZ_{n,i} \cdot (2 \cdot max(Y_{i-1}, Y_{n-i}))\)&lt;/span&gt; because only one &lt;span class="math"&gt;\(Z_{n,i}\)&lt;/span&gt; can be &lt;span class="math"&gt;\(1\)&lt;/span&gt; and all others are &lt;span class="math"&gt;\(0\)&lt;/span&gt;. It seems right but when he calculates the &lt;span class="math"&gt;\(E[Y_n]\)&lt;/span&gt;, he states that
+&lt;span class="math"&gt;\(Z_{n,i}\)&lt;/span&gt; is independent of &lt;span class="math"&gt;\(Y_{i-1}\)&lt;/span&gt; and &lt;span class="math"&gt;\(Y_{n-i}\)&lt;/span&gt;. However, I don't think so as 
+the height of the tree &lt;span class="math"&gt;\(h_n\)&lt;/span&gt;, which &lt;span class="math"&gt;\(Y_n\)&lt;/span&gt; is constructed from 
+depends on which element we pick first. I tend to think about &lt;span class="math"&gt;\(E[Y_n]\)&lt;/span&gt; as 
+expectation of the conditional expectation.&lt;/p&gt;
+&lt;/div&gt;
 &lt;h3 id="maw-415"&gt;MAW 4.15&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;a. Give a precise expression for the minimum number of nodes in an AVL tree of height &lt;span class="math"&gt;\(H\)&lt;/span&gt;.
@@ -4371,12 +4394,13 @@ S(H) = \Big(1 + \frac{2}{\sqrt 5}\Big)\Big(\frac{1+\sqrt 5}{2}\Big)^H + \Big(1 -
 \end{equation}
 $$&lt;/div&gt;
 &lt;p&gt;Now, let &lt;span class="math"&gt;\(H = 15\)&lt;/span&gt; and we have &lt;span class="math"&gt;\(S(15) = 2583\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;initial condition is for the general solution for the recurrence relation, not the homogeneous 
-part. Thus, we cannot use the initial condition immediately when we have our homogeneous part done.
-We need to wait until the whole solution (homogeneous part + particular part).&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Initial condition is for the general solution for the recurrence relation, not 
+the homogeneous part. Thus, we cannot use the initial condition immediately when 
+we have our homogeneous part done.We need to wait until the whole solution 
+(homogeneous part + particular part).&lt;/p&gt;
+&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;Remarks:&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;With \ref{eqn:2}, we can actually get the bound of the height of an AVL tree. &lt;/p&gt;
 &lt;p&gt;By \ref{eqn:2}, we see that &lt;span class="math"&gt;\(S(H) \ge \Big(\frac{1+\sqrt 5}{2}\Big)^H\)&lt;/span&gt;. Suppose we have &lt;span class="math"&gt;\(N\)&lt;/span&gt; nodes in an AVL 
@@ -4394,12 +4418,7 @@ we have &lt;span class="math"&gt;\(\log _\phi N \ge H\)&lt;/span&gt;, which is &
 &lt;h3 id="maw-417"&gt;MAW 4.17&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Keys &lt;span class="math"&gt;\(1, 2, \dots, 2^k-1\)&lt;/span&gt; are inserted in order into an initially empty AVL tree. Prove that the resulting tree
-is perfectly balanced.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;The solution and corresponding figures are majorly taken from https://cseweb.ucsd.edu/classes/su05/cse100/cse100hw1.pdf
-with minor wording tweak to allow easy understanding for myself.&lt;/p&gt;
+is perfectly balanced &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Proof:&lt;/strong&gt;
 Let's use induction on &lt;span class="math"&gt;\(k\)&lt;/span&gt; to prove the following statement:&lt;/p&gt;
@@ -4476,6 +4495,16 @@ root of &lt;span class="math"&gt;\(T_1\)&lt;/span&gt;. Then, we do the recursive
 takes &lt;span class="math"&gt;\(O(N\log N)\)&lt;/span&gt; on average because find &lt;span class="math"&gt;\(x\)&lt;/span&gt; takes &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time and AVL rotations also take &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; time. 
 Since we could do &lt;span class="math"&gt;\(N\)&lt;/span&gt; rotations, then the result follows. However, a BST can be degenerated and in that case, we have 
 &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; worst-case. &lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;The solution and corresponding figures are majorly taken from 
+&lt;a href="https://cseweb.ucsd.edu/classes/su05/cse100/cse100hw1.pdf"&gt;this link&lt;/a&gt;
+with minor wording tweak to allow easy understanding for myself.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -5898,14 +5927,14 @@ up the hot potato. The last remaining person wins. Thus, if &lt;span class="math
 are eliminated in order, and player 5 wins. If &lt;span class="math"&gt;\(M = 2\)&lt;/span&gt; and &lt;span class="math"&gt;\(N = 5\)&lt;/span&gt;, the order of elimination
 is &lt;span class="math"&gt;\(2\)&lt;/span&gt;,&lt;span class="math"&gt;\(4\)&lt;/span&gt;,&lt;span class="math"&gt;\(1\)&lt;/span&gt;,&lt;span class="math"&gt;\(5\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;You can play with different &lt;span class="math"&gt;\(M\)&lt;/span&gt;, &lt;span class="math"&gt;\(N\)&lt;/span&gt; on this &lt;a href="http://webspace.ship.edu/deensley/mathdl/Joseph.html"&gt;site&lt;/a&gt; to get a better sense of the problem.&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;MAW uses a problem description that is slight different than the problem description usually find online. In the book, he defines &lt;span class="math"&gt;\(M\)&lt;/span&gt; in term of 
-number of passes. However, in our problem description, we use &lt;span class="math"&gt;\(M\)&lt;/span&gt; to indicate the &lt;span class="math"&gt;\(M\)&lt;/span&gt;th person get eliminated. Here is an example to show the difference.
-In MAW description, &lt;span class="math"&gt;\(M = 0\)&lt;/span&gt; and &lt;span class="math"&gt;\(N = 5\)&lt;/span&gt;, players are eliminated in order. However, in our own intepretation, &lt;span class="math"&gt;\(M\)&lt;/span&gt; should be &lt;span class="math"&gt;\(1\)&lt;/span&gt; in order to achieve the same 
-elimination order. Similarly, in the book, &lt;span class="math"&gt;\(M = 1\)&lt;/span&gt; when we have &lt;span class="math"&gt;\(2\)&lt;/span&gt;, &lt;span class="math"&gt;\(4\)&lt;/span&gt;, &lt;span class="math"&gt;\(1\)&lt;/span&gt;, &lt;span class="math"&gt;\(5\)&lt;/span&gt; elimination order for the second example.  Mathematically, 
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;MAW uses a problem description that is slight different than the problem description usually find online. In the book, he defines &lt;span class="math"&gt;\(M\)&lt;/span&gt; in term of number of passes. However, in our problem description, we use &lt;span class="math"&gt;\(M\)&lt;/span&gt; to indicate the &lt;span class="math"&gt;\(M\)&lt;/span&gt;th person get
+eliminated. Here is an example to show the difference.In MAW description, &lt;span class="math"&gt;\(M = 0\)&lt;/span&gt; and &lt;span class="math"&gt;\(N = 5\)&lt;/span&gt;, players are eliminated in 
+order. However, in our own intepretation, &lt;span class="math"&gt;\(M\)&lt;/span&gt; should be &lt;span class="math"&gt;\(1\)&lt;/span&gt; in order to achieve the same elimination order. Similarly, in 
+the book, &lt;span class="math"&gt;\(M = 1\)&lt;/span&gt; when we have &lt;span class="math"&gt;\(2\)&lt;/span&gt;, &lt;span class="math"&gt;\(4\)&lt;/span&gt;, &lt;span class="math"&gt;\(1\)&lt;/span&gt;, &lt;span class="math"&gt;\(5\)&lt;/span&gt; elimination order for the second example.  Mathematically, 
 &lt;span class="math"&gt;\(M_{new} = M_{MAW} + 1\)&lt;/span&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;/div&gt;
 &lt;h2 id="josephus-problem-with-m-2"&gt;Josephus problem with &lt;span class="math"&gt;\(M = 2\)&lt;/span&gt;&lt;/h2&gt;
 &lt;p&gt;Let's first discuss a special case of the Josephus Problem: &lt;span class="math"&gt;\(M = 2\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;In the following, &lt;span class="math"&gt;\(n\)&lt;/span&gt; denotes the number of 
@@ -6025,17 +6054,17 @@ after the first-round.&lt;/p&gt;
 &lt;p&gt;By looking at the table on the left, we can easily see that &lt;span class="math"&gt;\(F(2k) = 2F(k) - 1\)&lt;/span&gt;. 
 However, there is no nice clean linear relation that we can get between &lt;span class="math"&gt;\(F(2k)\)&lt;/span&gt; and &lt;span class="math"&gt;\(F(k)\)&lt;/span&gt; 
 when &lt;span class="math"&gt;\(n = 10\)&lt;/span&gt;, &lt;span class="math"&gt;\(m = 3\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;* ---- Note ---- *&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Inside &lt;em&gt;Concrete Mathematics: A Foundation for Computer Science&lt;/em&gt;, after talking about the
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;p&gt;Inside &lt;em&gt;Concrete Mathematics: A Foundation for Computer Science&lt;/em&gt;, after talking about the
 solution to the Josephus problem, the author shift their focus to solve a generalized
 recurrence of \ref{eq:1} and \ref{eq:2}, which is (1.11) in the book. This has nothing to do
 with the Josephus problem and I'm guessing the reason why the author want to talk about 
 the solution to the generalized recurrence is to illustrate dynamic programming philosophy.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;/p&gt;
+&lt;/div&gt;
 &lt;h2 id="general-solution"&gt;General solution&lt;/h2&gt;
-&lt;p&gt;/&lt;em&gt;The big picture here is we need to find out the relative position of the final survivor to the
-"first" person during each recursive call and then calculate the actual position for actual &lt;span class="math"&gt;\(n\)&lt;/span&gt;&lt;/em&gt;/&lt;/p&gt;
+&lt;p&gt;The big picture here is we need to find out the relative position of the final survivor to the
+"first" person during each recursive call and then calculate the actual position for actual &lt;span class="math"&gt;\(n\)&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;The general solution utilitizes the dynamic programming paradigm by performing the first step
 and using the solution of the subproblem we create to solve the initial problem. 
 In terms of the solution, there is a difference when we start with the first person as &lt;span class="math"&gt;\(1\)&lt;/span&gt; or &lt;span class="math"&gt;\(0\)&lt;/span&gt;.&lt;/p&gt;
@@ -8081,12 +8110,12 @@ sequence and start again.&lt;/li&gt;
 &lt;h4&gt;File Editing&lt;/h4&gt;
 &lt;div class="admonition note"&gt;
 &lt;p class="first admonition-title"&gt;Note&lt;/p&gt;
-&lt;p class="last"&gt;You need to set mark before you can use region operation. To know more about &lt;a class="reference external" href="https://www.cs.colorado.edu/~main/cs1300-old/cs1300/doc/emacs/emacs_13.html"&gt;The Mark and Region&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="admonition note"&gt;
-&lt;p class="first admonition-title"&gt;Note&lt;/p&gt;
-&lt;p class="last"&gt;To move or copy a region of text in emacs, you must first &amp;quot;mark&amp;quot; it, then kill or copy the marked text, move the cu
-rsor to the desired location, and restore the killed or copied text. A region of text is defined by marking one end         of it, then moving the cursor to the other end.&lt;/p&gt;
+&lt;ul class="last simple"&gt;
+&lt;li&gt;You need to set mark before you can use region operation. To know more about
+&lt;a class="reference external" href="https://www.cs.colorado.edu/~main/cs1300-old/cs1300/doc/emacs/emacs_13.html"&gt;The Mark and Region&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;To move or copy a region of text in emacs, you must first &amp;quot;mark&amp;quot; it, then kill or copy the marked text, move the cu
+rsor to the desired location, and restore the killed or copied text. A region of text is defined by marking one end         of it, then moving the cursor to the other end.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/div&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;strong&gt;C-&amp;#64;&lt;/strong&gt; Set the mark here&lt;/li&gt;

@@ -100,7 +100,7 @@ respectively.</p>
 </li>
 <li>
 <p><span class="math">\(\Theta^{(l)} =\)</span> matrix of weights controlling function mapping from layer <span class="math">\(l\)</span> to layer <span class="math">\(l+1\)</span>.
-For example, <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup></p>
+For example,</p>
 </li>
 </ul>
 <div class="math">$$
@@ -111,10 +111,28 @@ For example, <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnot
 \theta_{50}^{(1)} &amp;&amp; \theta_{51}^{(1)} &amp;&amp; \theta_{52}^{(1)} &amp;&amp; \theta_{53}^{(1)} \\
 \end{bmatrix}
 $$</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Notation here may look confusing. One example to help understand is
+<span class="math">\(\theta_{10}^{1}\)</span> means weight from <span class="math">\(x_0\)</span> in layer <span class="math">\(1\)</span> to <span class="math">\(a_1\)</span> in layer <span class="math">\(2\)</span>. In other words,
+<span class="math">\(\theta_{ji}^{l}\)</span> means weight from <span class="math">\(a_i^{l}\)</span> to <span class="math">\(a_j^{l+1}\)</span>. Then the rows in the
+matrix can be thought of as the weights from neurons in layer <span class="math">\(l\)</span> to corresponding <span class="math">\(a_j\)</span> in layer <span class="math">\(l+1\)</span> 
+(i.e., 1st row in the above example means weights from layer <span class="math">\(1\)</span> to <span class="math">\(a_1\)</span> in layer <span class="math">\(2\)</span>). 
+Explicitly, the number of columns in our current theta matrix is equal to the number of 
+nodes in our current layer (including the bias unit). The number of rows is equal to the number
+of nodes in the next layer (excluding the bias unit).</p>
+</div>
 <ul>
 <li><span class="math">\(K =\)</span> number of neurons in the output layer (i.e. <span class="math">\(S_L = K\)</span>). In other words, <span class="math">\(K\)</span> represents the number of classes
-in multi-class classification. This indicates that <span class="math">\(h_\theta(x) = \mathbb{R}^K\)</span>. <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup></li>
+in multi-class classification. This indicates that <span class="math">\(h_\theta(x) = \mathbb{R}^K\)</span>. </li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Usually, in our training sets {<span class="math">\((x^{(1)}, y^{(1)}), \dots, (x^{(m)}, y^{(m)})\)</span>}, we are given actual label (i.e. 
+<span class="math">\(y^{(9)} = 10\)</span> for handwritten digit recognition). However, we need to transform those labels into <span class="math">\(\mathbb{R}^k\)</span> by doing,for 
+instance, create <span class="math">\(\mathbb{R}^{10}\)</span> vector with last position being <span class="math">\(1\)</span> and rest being <span class="math">\(0\)</span>
+as the representation for <span class="math">\(y^{(9)} = 10\)</span>.</p>
+</div>
 <p>With the above notations, we have the following property:</p>
 <ul>
 <li>If NN has <span class="math">\(S_l\)</span> units in layer <span class="math">\(l\)</span>, <span class="math">\(S_{l+1}\)</span> units in layer <span class="math">\(l+1\)</span>, then <span class="math">\(\Theta^{(l)}\)</span> will be dimension 
@@ -135,7 +153,7 @@ the number of units in the network. A good choice of <span class="math">\(\epsil
 <span class="math">\(\epsilon_\text{init} = \frac{\sqrt{6}}{\sqrt{L_\text{in} + L_\text{out}}}\)</span>, where
 <span class="math">\(L_\text{in} = S_l\)</span> and <span class="math">\(L_\text{out} = S_{l+1}\)</span>, which are the the number of units
 in the layers adjacent to <span class="math">\(\Theta^{(l)}\)</span>. Take above NN as an example, our 
-<span class="math">\(\epsilon_\text{init}\)</span> will be <span class="math">\(0.87\)</span>, which is calculated from <span class="math">\(\frac{\sqrt{6}}{\sqrt{3+5}}\)</span>. <sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup></p>
+<span class="math">\(\epsilon_\text{init}\)</span> will be <span class="math">\(0.87\)</span>, which is calculated from <span class="math">\(\frac{\sqrt{6}}{\sqrt{3+5}}\)</span>. <sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">1</a></sup></p>
 <h4 id="3-forward-propagation">3. Forward propagation</h4>
 <p>The next step we need to do is to use forward propagation to get <span class="math">\(h_\theta(x^{(i)})\)</span> for any <span class="math">\(x^{(i)}\)</span>.
 Let's use above NN as an example to demonstrate how forward propagation is done. There are
@@ -218,7 +236,7 @@ much that node was "responsible" for any errors in our output. For an output nod
 difference between the network's activation and the true target value, and use that to define <span class="math">\(\delta_j^{(L)}\)</span>.
 For the hidden units, we can compute <span class="math">\(\delta_j^{l}\)</span> based on a weighted average of the error terms of the nodes in layer
 <span class="math">\((l+1)\)</span>.</p>
-<p>Here is the algorithm in details: <sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">4</a></sup></p>
+<p>Here is the algorithm in details:</p>
 <ul>
 <li>Given training set {<span class="math">\((x^{(1)}, y^{(1)}), \dots, (x^{(m)}, y^{(m)})\)</span>}</li>
 <li>
@@ -244,7 +262,13 @@ For the hidden units, we can compute <span class="math">\(\delta_j^{l}\)</span> 
 </li>
 </ul>
 <p>Intuitvely, backpropagation algorithm is alot like forward propagation running backward. We can then use gradient
-descent or advanced optimization method to try to minimize <span class="math">\(J(\theta)\)</span> as a function of parameters <span class="math">\(\theta\)</span> <sup id="fnref:5"><a class="footnote-ref" href="#fn:5" rel="footnote">5</a></sup>.</p>
+descent or advanced optimization method to try to minimize <span class="math">\(J(\theta)\)</span> as a function of parameters <span class="math">\(\theta\)</span> <sup id="fnref:5"><a class="footnote-ref" href="#fn:5" rel="footnote">2</a></sup>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Notice that we don't compute <span class="math">\(\delta_{(1)}\)</span> because <span class="math">\(\delta_{(1)}\)</span> is associated with the input layer, which are
+features we observed from the training examples. So, there are no "error" involved. In addition, <span class="math">\(.\ast\)</span> means we 
+do element-wise multiplication in octave.</p>
+</div>
 <h2 id="implementation-details">Implementation details</h2>
 <p>Week 5's programming assignment on NN learning is the most challenging one I have met so far in this course. Initially, 
 I plan to go through lots of details in terms of implementation in this section. However, after I finish the model
@@ -261,34 +285,14 @@ So, in our NN above, there are three <span class="math">\(\Delta^{(l)}\)</span> 
 <div class="footnote">
 <hr />
 <ol>
-<li id="fn:1">
-<p>Notation here may look confusing. One example to help understand is
-<span class="math">\(\theta_{10}^{1}\)</span> means weight from <span class="math">\(x_0\)</span> in layer <span class="math">\(1\)</span> to <span class="math">\(a_1\)</span> in layer <span class="math">\(2\)</span>. In other words,
-<span class="math">\(\theta_{ji}^{l}\)</span> means weight from <span class="math">\(a_i^{l}\)</span> to <span class="math">\(a_j^{l+1}\)</span>. Then the rows in the
-matrix can be thought of as the weights from neurons in layer <span class="math">\(l\)</span> to corresponding <span class="math">\(a_j\)</span> in layer <span class="math">\(l+1\)</span> 
-(i.e., 1st row in the above example means weights from layer <span class="math">\(1\)</span> to <span class="math">\(a_1\)</span> in layer <span class="math">\(2\)</span>). 
-Explicitly, the number of columns in our current theta matrix is equal to the number of 
-nodes in our current layer (including the bias unit). The number of rows is equal to the number
-of nodes in the next layer (excluding the bias unit).&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
-</li>
-<li id="fn:2">
-<p>Usually, in our training sets {<span class="math">\((x^{(1)}, y^{(1)}), \dots, (x^{(m)}, y^{(m)})\)</span>}, we are given actual label (i.e. 
-<span class="math">\(y^{(9)} = 10\)</span> for handwritten digit recognition). However, we need to transform those labels into <span class="math">\(\mathbb{R}^k\)</span> by doing,for instance, create <span class="math">\(\mathbb{R}^{10}\)</span> vector with last position being <span class="math">\(1\)</span> and rest being <span class="math">\(0\)</span>
-as the representation for <span class="math">\(y^{(9)} = 10\)</span>.&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
-</li>
 <li id="fn:3">
 <p>Here, it is unclear for me which two layers we should choose to calculate 
 <span class="math">\(\epsilon_\text{init}\)</span>. In the <a href="https://github.com/xxks-kkk/Code-for-blog/tree/master/2017/andrew-ng-ml/machine-learning-ex4/ex4">programming assignment 4</a>,
-the value is calculated from the layer 1 (input layer) and layer 2 (1st hidden layer).&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
-</li>
-<li id="fn:4">
-<p>Notice that we don't compute <span class="math">\(\delta_{(1)}\)</span> because <span class="math">\(\delta_{(1)}\)</span> is associated with the input layer, which are
-features we observed from the training examples. So, there are no "error" involved. In addition, <span class="math">\(.\ast\)</span> means we 
-do element-wise multiplication in octave.&#160;<a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+the value is calculated from the layer 1 (input layer) and layer 2 (1st hidden layer).&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
 <li id="fn:5">
 <p>You can use <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/andrew-ng-ml/machine-learning-ex4/ex4/computeNumericalGradient.m">gradient checking</a> 
-to verify if the backpropagation is implemented correctly. &#160;<a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+to verify if the backpropagation is implemented correctly. &#160;<a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>

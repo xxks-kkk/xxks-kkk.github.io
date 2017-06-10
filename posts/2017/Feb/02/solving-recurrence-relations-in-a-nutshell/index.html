@@ -70,11 +70,12 @@ The content closely follows Chapter 7
 "Recurrence Relations and Generating Functions" of 
 <a href="https://www.amazon.com/Introductory-Combinatorics-5th-Richard-Brualdi/dp/0136020402">"Introductory Combinatorics"</a>,
 which is the textbook I used.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>This note is practical-oriented. I will skip the proof of the theorem whenever possible.
-If you are interested in the proof side of the universe, please read the book.</p>
-</blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This note is practical-oriented. I will skip the proof of the theorem 
+whenever possible.If you are interested in the proof side of the universe, 
+please read the book.</p>
+</div>
 <h2 id="toc">TOC</h2>
 <p>The post will be organized in the following format:</p>
 <ul>
@@ -174,12 +175,13 @@ f_n = \frac{1}{\sqrt 5}\Big(\frac{1+\sqrt 5}{2}\Big)^n - \frac{1}{\sqrt 5}\Big(\
 \end{equation*}
 $$</div>
 <p>is the solution of the Fabonacci recurrence relation.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>As you might notice, theorem 7.4.1 explicitly requires that the roots of the characteristic equation have 
-to be distinct. However, that's not always the case and theorem 7.4.1 will not work (see book for an example).
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As you might notice, theorem 7.4.1 explicitly requires that the roots of the 
+characteristic equation have to be distinct. However, that's not always the case 
+and theorem 7.4.1 will not work (see book for an example). 
 That's why we need theorem 7.4.2.</p>
-</blockquote>
+</div>
 <p><em>Theorem 7.4.2:</em> Let <span class="math">\(q_1, q_2, \dots, q_n\)</span> be the distinct roots of the following characteristic equation of the 
 linear homogeneous recurrence relation with constant coefficients:</p>
 <div class="math">$$
@@ -221,8 +223,7 @@ h_n = H_n^{(1)} + H_n^{(2)} = c_1(-1)^n + c_2n(-1)^n + c_3n^2(-1)^n + c_42^n
 \end{equation*}
 $$</div>
 <p>Then we can use initial values to determine <span class="math">\(c1\)</span>, <span class="math">\(c2\)</span>, <span class="math">\(c3\)</span>, <span class="math">\(c4\)</span> and we have <span class="math">\(h_n = \frac{7}{9} (-1)^n - \frac{3}{9}n(-1)^n + \frac{2}{9}2^n\)</span>.</p>
-<!--\* ---- Note ---- *
-
+<!--
 > You probably already notice from the previous example that "characteristic equation" method really depends on the diffculty in finding all roots
 > of a polynomial equation. Sometimes finding the roots of characteristic equation can be quite diffcult. That's what second method tries to address.
 > If you find out that characteristic equation is really diffcult to solve, you can always use "generating function" method.-->
@@ -312,12 +313,10 @@ g(x) &amp;=&amp; 5(1 + 2x + 2^2x^2 + \dots + 2^nx^n + \cdots) -4(1 + 3x + 3^2x^2
 \end{eqnarray*}
 $$</div>
 <p>Thus, <span class="math">\(h_n = 5\times2^n - 4\times3^n\)</span>.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>Getting the polynomial expansion of <span class="math">\(g(x)\)</span> is the hardest part of this method. For instance, factoring the 
-denominator of <span class="math">\(g(x)\)</span> can be tricky for high degree polynomials. I need more practice on solving recurrence
-relation to decide which method is superior under what kind of situation.</p>
-</blockquote>
+<!-- Getting the polynomial expansion of $g(x)$ is the hardest part of this method. For instance, factoring the 
+denominator of $g(x)$ can be tricky for high degree polynomials. I need more practice on solving recurrence
+relation to decide which method is superior under what kind of situation.-->
+
 <h2 id="linear-nonhomogeneous-recurrence-relation-with-constant-coefficients">Linear nonhomogeneous recurrence relation with constant coefficients</h2>
 <p><strong>nonhomogeneous</strong> means <span class="math">\(b_n\)</span> in \ref{eq:1} is no longer zero constant.</p>
 <h3 id="method-1-characteristic-equation_1">Method 1: Characteristic equation</h3>
@@ -359,21 +358,26 @@ h_n = c3^n + 2n + 3
 \end{equation*}
 $$</div>
 <p>Now, let's use inital condition to solve for <span class="math">\(c\)</span> and we have <span class="math">\(c = -1\)</span>. So, <span class="math">\(h_n = -3^n + 2n + 3\)</span>.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>As you can see, solving recurrence relation using characteristic equation has strong connection with solving differential equations (both homogeneous and
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As you can see, solving recurrence relation using characteristic equation has 
+strong connection with solving differential equations (both homogeneous and 
 nonhomogeneous). </p>
-</blockquote>
+</div>
 <h3 id="method-2-generating-function_1">Method 2: Generating function</h3>
 <p>There is nothing difference in using "generating function" method to solve nonhomogeneous than solve homogeneous recurrence relation. That's actually 
 a beauty of this method: nothing needs to tweak in order to work under different situation.</p>
-<p>* ---- Note ---- *</p>
-<blockquote>
-<p>Certainly, not all recurrence relation appeard in computer science can be easily solved by the method described in this post. For instance,
-inside <a href="../../../../../posts/2016/Dec/31/josephus-problem/">Josephus problem</a>, recurrence relation may depend on whether <span class="math">\(n\)</span> is odd or even and 
-methods may not apply nicely. This implies another type of technique to solve recurrence relation is to guess the solution and prove it by induction.
-Also, in the book, solving <span class="math">\(h_n = h_{n-1} + n^3\)</span> on p. 250 is not standard as well.</p>
-</blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Certainly, not all recurrence relation appeard in computer science can be easily 
+solved by the method described in this post. For instance, inside 
+<a href="../../../../../posts/2016/Dec/31/josephus-problem/">Josephus problem</a>, recurrence 
+relation may depend on whether <span class="math">\(n\)</span> is odd or even and 
+methods may not apply nicely. This implies another type of technique to solve 
+recurrence relation is to guess the solution and prove it by induction.
+Also, in the book, solving <span class="math">\(h_n = h_{n-1} + n^3\)</span> on p. 250 is not standard as 
+well.</p>
+</div>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
