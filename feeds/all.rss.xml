@@ -1,5 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Thu, 25 May 2017 22:20:00 +0800</lastBuildDate><item><title>Draw a Neural Network through Graphviz</title><link>http://zhu45.org/posts/2017/May/25/draw-a-neural-network-through-graphviz/</link><description>&lt;h2 id="preface"&gt;Preface&lt;/h2&gt;
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Mon, 12 Jun 2017 17:20:00 +0800</lastBuildDate><item><title>Solving recurrence relations (part 2)</title><link>http://zhu45.org/posts/2017/Jun/12/solving-recurrence-relations-part-2/</link><description>&lt;p&gt;&lt;a href="http://zhu45.org/posts/2017/Feb/02/solving-recurrence-relations-in-a-nutshell/"&gt;Several months ago&lt;/a&gt;, 
+I breifly summarize the ways to solve recurrence relations. At the end of that post,
+I indicate that different types of recurrence relation may require different kinds 
+of treatments to solve them. Thus, this post will be the first "Downloadable Content (DLC)"
+with the aim to solve the recurrence relation: &lt;span class="math"&gt;\(T(N) = 2T(N/2) + N\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;This recurrence relation comes from merge sort and the algorithm itself represents
+a classic divide-and-conquer strategy: in order to sort &lt;span class="math"&gt;\(N\)&lt;/span&gt; elements, we can
+sort &lt;span class="math"&gt;\(N/2\)&lt;/span&gt; elements first 
+(i.e., &lt;em&gt;divide&lt;/em&gt; the problem into smaller problems and solve recursively),
+and then we merge two sorted &lt;span class="math"&gt;\(N/2\)&lt;/span&gt; elements back into one &lt;span class="math"&gt;\(N\)&lt;/span&gt; sorted array
+(i.e., we patch toghter the answer in &lt;em&gt;conquer&lt;/em&gt; phase.)&lt;/p&gt;
+&lt;p&gt;The exactly recurrence relation we try to solve is the following with assumption
+that &lt;span class="math"&gt;\(N\)&lt;/span&gt; is a power of 2:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{eqnarray*} 
+T(1) &amp;amp;=&amp;amp; 1 \\
+T(N) &amp;amp;=&amp;amp; 2T(N/2) + N 
+\end{eqnarray*}
+$$&lt;/div&gt;
+&lt;p&gt;There are two ways to solve this recurrence relation:&lt;/p&gt;
+&lt;h2 id="construct-a-telescoping-sum"&gt;Construct a telescoping sum&lt;/h2&gt;
+&lt;p&gt;The goal of this method is to construct a telescoping sum (i.e see
+&lt;a href="https://en.wikipedia.org/wiki/Telescoping_series"&gt;telescope series&lt;/a&gt; to get a sense
+of &lt;em&gt;telescoping&lt;/em&gt;) with the aim
+to find a relation between &lt;span class="math"&gt;\(T(N)\)&lt;/span&gt; and &lt;span class="math"&gt;\(T(1)\)&lt;/span&gt; (or the base cases, in general). &lt;/p&gt;
+&lt;p&gt;Let's work through our example above to demonstrate this method. We divide the
+recurrence relation through by &lt;span class="math"&gt;\(N\)&lt;/span&gt; and repeatively doing so for every possible &lt;span class="math"&gt;\(N\)&lt;/span&gt;
+(i.e. &lt;span class="math"&gt;\(N, N/2, N/4, \dots, 2, 1\)&lt;/span&gt;) and see what we can get:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{eqnarray*} 
+\frac{T(N)}{N} &amp;amp;=&amp;amp; \frac{T(N/2)}{N/2} + 1 \\
+\frac{T(N/2)}{N/2} &amp;amp;=&amp;amp; \frac{T(N/4)}{N/4} + 1 \\
+\frac{T(N/4)}{N/4} &amp;amp;=&amp;amp; \frac{T(N/8)}{N/8} + 1 \\
+\vdots \\
+\frac{T(2)}{2} &amp;amp;=&amp;amp; \frac{T(1)}{1} + 1 \\
+\end{eqnarray*}
+$$&lt;/div&gt;
+&lt;p&gt;We add up all the equations: we add all of the terms on the left-hand side and set
+the result equal to the sum of all of the terms on the right-hand side. This leads
+to a &lt;em&gt;telescoping&lt;/em&gt; sum: all the terms that appear on both sides get cancelled. 
+For example, the term &lt;span class="math"&gt;\(T(N/2)/(N/2)\)&lt;/span&gt; appears on both sides and thus cancels.
+After everything is added, the final result is:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\frac{T(N)}{N} = \frac{T(1)}{1} + \log N \cdot 1
+$$&lt;/div&gt;
+&lt;p&gt;because all of the other terms cancel and there are &lt;span class="math"&gt;\(\log N\)&lt;/span&gt; equations, and so all
+the &lt;span class="math"&gt;\(1\)&lt;/span&gt;s at the end of these equations add up to &lt;span class="math"&gt;\(\log N\)&lt;/span&gt;.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;for this recurrence relation, it is necessary to divide through &lt;span class="math"&gt;\(N\)&lt;/span&gt; in order
+to get telescoping sum. However, how to construct telescoping sum is case by case.
+For instance, for a recurrence relation &lt;span class="math"&gt;\(NT(N) = (N+1)T(N-1) + 2cN\)&lt;/span&gt;, we need to 
+divide &lt;span class="math"&gt;\(N(N+1)\)&lt;/span&gt;. For a recurrence relation &lt;span class="math"&gt;\(T(N) = T(N-1) + cN\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;, we don't need to 
+do any division. We just need to use the recurrence relation repeatively for different
+&lt;span class="math"&gt;\(N\)&lt;/span&gt; to construct the telescoping sum (i.e. &lt;span class="math"&gt;\(T(N-1) = T(N-2) + c(N-1)\)&lt;/span&gt;, 
+&lt;span class="math"&gt;\(T(N-2) = T(N-3) + c(N-2)\)&lt;/span&gt;, and so on.)&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="iteratively-substitute"&gt;Iteratively substitute&lt;/h2&gt;
+&lt;p&gt;For this method, we continuely substitute the recurrence relation on the right-hand
+side with the hope to find a pattern of the general solution to the recurrence relation.&lt;/p&gt;
+&lt;p&gt;We have&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{eqnarray*} 
+T(N) &amp;amp;=&amp;amp; 2T(N/2) + N \\
+T(N/2) &amp;amp;=&amp;amp; 2T(N/4) + N/2 
+\end{eqnarray*}
+$$&lt;/div&gt;
+&lt;p&gt;Then, we substitute the second equation back into the first equation's right-hand side and 
+we get:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{eqnarray}
+T(N) &amp;amp;=&amp;amp; 2(2T(N/4)+N/2) + N \nonumber \\
+     &amp;amp;=&amp;amp; 4T(N/4) + 2N \label{eqn:1}
+\end{eqnarray}
+$$&lt;/div&gt;
+&lt;p&gt;Now, we can substitute &lt;span class="math"&gt;\(N/4\)&lt;/span&gt; into the main equation, we see that&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{eqnarray}
+T(N) &amp;amp;=&amp;amp; 4(2T(N/8)+N/4) + 2N \nonumber \\
+     &amp;amp;=&amp;amp; 8T(N/8) + 3N \label{eqn:2}
+\end{eqnarray}
+$$&lt;/div&gt;
+&lt;p&gt;We can continuing this substitution, and if we observe the \ref{eqn:1} and \ref{eqn:2}
+we can obtain the following pattern:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+T(N) = 2^kT(N/2^k) + k \cdot N
+$$&lt;/div&gt;
+&lt;p&gt;using &lt;span class="math"&gt;\(k = \log N\)&lt;/span&gt;, we obtain&lt;/p&gt;
+&lt;div class="math"&gt;$$
+T(N) = NT(1) + N \log N = N\log N + N
+$$&lt;/div&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;This recurrence relation is acutally a linear nonhomogeneous recurrence 
+relation with constant coefficients. However, it cannot be solved by the method
+I write up in the last post. I have no clue why. This recurrence relation is taken 
+from MAW p243.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Mon, 12 Jun 2017 17:20:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-06-12:posts/2017/Jun/12/solving-recurrence-relations-part-2/</guid><category>recursion</category><category>math</category></item><item><title>Draw a Neural Network through Graphviz</title><link>http://zhu45.org/posts/2017/May/25/draw-a-neural-network-through-graphviz/</link><description>&lt;h2 id="preface"&gt;Preface&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://graphviz.org/"&gt;Graphviz&lt;/a&gt; is a language (called DOT) and
 a set of tools to automatically generate graphs. It is widely used
 by researchers to do visualizations in papers. Essentially, you just
