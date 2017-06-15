@@ -1,5 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-06-12T17:20:00+08:00</updated><entry><title>Solving recurrence relations (part 2)</title><link href="http://zhu45.org/posts/2017/Jun/12/solving-recurrence-relations-part-2/" rel="alternate"></link><published>2017-06-12T17:20:00+08:00</published><updated>2017-06-12T17:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-06-12:posts/2017/Jun/12/solving-recurrence-relations-part-2/</id><summary type="html">&lt;p&gt;&lt;a href="http://zhu45.org/posts/2017/Feb/02/solving-recurrence-relations-in-a-nutshell/"&gt;Several months ago&lt;/a&gt;, 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-06-15T21:22:00+08:00</updated><entry><title>Python case study: leetcode scraper</title><link href="http://zhu45.org/posts/2017/Jun/15/python-case-study-leetcode-scraper/" rel="alternate"></link><published>2017-06-15T21:22:00+08:00</published><updated>2017-06-15T21:22:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-06-15:posts/2017/Jun/15/python-case-study-leetcode-scraper/</id><summary type="html">&lt;p&gt;It has been many years since 
+&lt;a href="http://pages.cs.wisc.edu/~zeyuan/projects/notes/diveintopython/diveintopython.html"&gt;last time&lt;/a&gt; 
+I touched python. Things get very rusty. Recently, I have been practicing
+my algorithm skills on leetcode and I keep all my solutions in a 
+&lt;a href="https://github.com/xxks-kkk/shuati"&gt;github repo&lt;/a&gt;. I want my source file have consistency
+formatting shown below.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt; * [Source]&lt;/span&gt;
+&lt;span class="cm"&gt; * &lt;/span&gt;
+&lt;span class="cm"&gt; * https://leetcode.com/problems/same-tree/&lt;/span&gt;
+&lt;span class="cm"&gt; *&lt;/span&gt;
+&lt;span class="cm"&gt; * [Problem Description]&lt;/span&gt;
+&lt;span class="cm"&gt; *&lt;/span&gt;
+&lt;span class="cm"&gt; * Given two binary trees, write a function to check if they are equal or not.&lt;/span&gt;
+&lt;span class="cm"&gt; * &lt;/span&gt;
+&lt;span class="cm"&gt; * Two binary trees are considered equal if they are structurally identical &lt;/span&gt;
+&lt;span class="cm"&gt; * and the nodes have the same value. &lt;/span&gt;
+&lt;span class="cm"&gt; *&lt;/span&gt;
+&lt;span class="cm"&gt; * [Companies]&lt;/span&gt;
+&lt;span class="cm"&gt; */&lt;/span&gt;
+
+ &lt;span class="c1"&gt;// Source code begins here ...&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;However, there is one thing keeps annoy me: I have to manually add this header comment
+every single time when I finish a problem. So, I ask myself if there is a better way
+to make the whole process as much automatic as possible. Python and its famous
+&lt;a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/"&gt;beautifulsoup&lt;/a&gt; library &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; immediately
+comes into my mind.&lt;/p&gt;
+&lt;p&gt;In this post, I'll highlight some python usage appeared in the script, which costs
+me quite some time on googling. Please leave your comment if you find any non-pythonic 
+usage. The code script is available 
+&lt;a href="https://github.com/xxks-kkk/shuati/blob/master/scraper.py"&gt;here&lt;/a&gt;. I'll use
+&lt;a href="https://leetcode.com/problems/reverse-linked-list-ii/#/description"&gt;92. ReverseLinkedList II&lt;/a&gt;
+as a demonstration example.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python3.6&lt;/span&gt;
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The very first thing is "shebang". This is important for our task because
+the web page is often written in the unicode (i.e. mathematical symbols).
+This shebang will help us avoid unicode &amp;amp; ascii madness. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;bs4&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;BeautifulSoup&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We use a lot of libraries through &lt;code&gt;import&lt;/code&gt;. If I use &lt;em&gt;import module&lt;/em&gt;, I have to use quantifier
+for any module function call (i.e. &lt;code&gt;sys.exit()&lt;/code&gt;). By the contrast, I can directly
+call the module function if I do &lt;em&gt;from module import&lt;/em&gt;. This brings a question on
+when to use which. Here, I want to quote the explanation from 
+&lt;a href="http://www.diveintopython.net/object_oriented_framework/importing_modules.html"&gt;Dive Into Python&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;When should you use &lt;em&gt;from module import&lt;/em&gt;?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If you will be accessing attributes and methods often and don't want to type the module name over and over, use "&lt;em&gt;from module import&lt;/em&gt;".&lt;/li&gt;
+&lt;li&gt;If you want to selectively import some attributes and methods but not others, use "&lt;em&gt;from module import&lt;/em&gt;".&lt;/li&gt;
+&lt;li&gt;If the module contains attributes or functions with the same name as ones in your module, you must use "&lt;em&gt;import module&lt;/em&gt;" to avoid name conflicts.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The author makes extra remark: Use &lt;em&gt;from module import *&lt;/em&gt; sparingly, because it makes it difficult to determine where a particular function or attribute came from, and that makes debugging and refactoring more difficult.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;url is {:s}&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I used to really like Python2.7 and not a big fan of Python3. However, with python2.7 EOS,
+change must be made. the &lt;code&gt;print&lt;/code&gt; statement is how we do format printing in python3.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+&lt;span class="n"&gt;soup&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;BeautifulSoup&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;lxml&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Here, I use &lt;a href="http://docs.python-requests.org/en/master/user/quickstart/#make-a-request"&gt;requests&lt;/a&gt;
+library to fetch the content of the &lt;code&gt;url&lt;/code&gt; and then feed it into our &lt;code&gt;BeautifulSoup&lt;/code&gt;
+with parser &lt;code&gt;lxml&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The next step is to actual scrap the data from leetcode page. The first thing I 
+do is to get the question title. Leetcode page has the following structure 
+for the question title&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;   &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;question-title clearfix&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;row&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+
+        &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;col-lg-4 col-md-5 col-sm-6 col-sm-push-6 col-md-push-7 col-lg-push-8&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;widgets&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+          &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;like-and-dislike&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;question-like&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+          &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+          &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;add-to-list&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;add-to-favorite&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+          &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;col-lg-8 col-md-7 col-sm-6 col-sm-pull-6 col-md-pull-5 col-lg-pull-4&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+          &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;h3&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+            92. Reverse Linked List II
+          &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;h3&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+
+      &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As you can see, the question title ("92. Reverse Linked List II") is wrapped around
+by the &lt;code&gt;&amp;lt;div&amp;gt;&lt;/code&gt; tag with class name &lt;code&gt;question-title&lt;/code&gt;. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;title_corp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;soup&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_all&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;div&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;class_&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;question-title&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;title_raw&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;title_corp&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;h3&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_text&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, we invoke &lt;a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/#calling-a-tag-is-like-calling-find-all"&gt;find_all&lt;/a&gt;
+method from beautiful soup to find all the &lt;code&gt;&amp;lt;div&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt; tags with class name &lt;code&gt;question-title&lt;/code&gt;.
+Fortunately, &lt;code&gt;question-title&lt;/code&gt; class appears only once in the whole html page. 
+That allows us to directly access its using &lt;code&gt;title_corp[0]&lt;/code&gt;. In addition, as you can see
+from html source code above, &lt;code&gt;&amp;lt;h3&amp;gt;&amp;lt;/h3&amp;gt;&lt;/code&gt; appears only once and it wraps our
+problem title. So, we can directly access the content of &lt;code&gt;&amp;lt;h3&amp;gt;&amp;lt;/h3&amp;gt;&lt;/code&gt; tags by 
+&lt;code&gt;title_corp[0].h3.get_text()&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;find_all&lt;/code&gt; returns a "ResultSet" object in beautifulSoup. This object contains
+a set of tags that match with &lt;code&gt;find_all&lt;/code&gt; function argument criteria. In our case,
+our criteria is &lt;code&gt;&amp;lt;div&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt; tag with class name &lt;code&gt;question-title&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Now, once we have the title string, we want to process it into our desired form.
+Our scraper script will go into the 
+&lt;a href="https://github.com/xxks-kkk/shuati/tree/master/leetcode"&gt;leetcode directory of the shuati repo&lt;/a&gt;
+and create the question directory with the format 
+"[question number]-[question title in mixed case with the first letter of each internal word capitalized]"
+For example, "92. Reverse Linked List II" will lead to a directory 
+&lt;code&gt;./leetcode/92-ReverseLinkedListII&lt;/code&gt;. The source file name is similar to the 
+directory name: &lt;code&gt;reverseLinkedListII.c&lt;/code&gt;. That's what following code chunk tries to achieve&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="n"&gt;title_lines&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;title_raw&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;title_lines&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;operator&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;methodcaller&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;strip&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;title_lines&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="n"&gt;title_rdy&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;title_lines&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;lstrip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; &amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; &amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;title_rdy&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;./leetcode/&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;
+    &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mkdir&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;code&gt;title_lines = title_raw.split('\n')&lt;/code&gt; will split the whole text into a list 
+of strings with each string being a line of code. In our case, this will give
+&lt;code&gt;['', '            92. Reverse Linked List II', '          ']&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;As you can see our result contains empty string, string with multiple leading
+whitespaces, and string with only whitespaces. We need to do some cleanup to keep
+only the question title. The first thing we do is to take out the empty string and
+the string with only whitespaces. This is done by 
+&lt;code&gt;title_lines = list(filter(operator.methodcaller('strip'), title_lines))&lt;/code&gt; &lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;.
+&lt;a href="https://docs.python.org/2/library/functions.html#filter"&gt;filter&lt;/a&gt; 
+creates a list of elements for which a function (the 1st argument of &lt;code&gt;filter&lt;/code&gt;) 
+returns true. &lt;code&gt;operator.methodcaller('strip')&lt;/code&gt; uses 
+&lt;a href="https://docs.python.org/3/library/operator.html#operator.methodcaller"&gt;methodcaller&lt;/a&gt;,
+which applies &lt;code&gt;strip&lt;/code&gt; function to each element of &lt;code&gt;title_lines&lt;/code&gt;. The function will
+return true only when our string has some characters in it. This will lead to
+&lt;code&gt;['            92. Reverse Linked List II']&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Here is an example of &lt;code&gt;methodcaller&lt;/code&gt;: After
+&lt;code&gt;f = methodcaller('name', 'foo', bar=1)&lt;/code&gt;, the call &lt;code&gt;f(b)&lt;/code&gt; returns &lt;code&gt;b.name('foo', bar=1)&lt;/code&gt;.
+In our case, &lt;code&gt;filter&lt;/code&gt; will apply &lt;code&gt;operator.methodcaller('strip')&lt;/code&gt; on &lt;code&gt;title_lines&lt;/code&gt;, which
+is basically &lt;code&gt;title_lines.strip()&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Now, we will work on our title string. 
+&lt;code&gt;title_rdy = title_lines[0].lstrip(' ').replace(".", "-").split(' ')&lt;/code&gt; removes
+leading whitespace (&lt;code&gt;lstrip(' ')&lt;/code&gt;) and replace &lt;code&gt;.&lt;/code&gt; with &lt;code&gt;-&lt;/code&gt;, and then &lt;code&gt;split&lt;/code&gt;
+our string into words: &lt;code&gt;['92-', 'Reverse', 'Linked', 'List', 'II']&lt;/code&gt;. We are ready
+to form our directory by &lt;code&gt;join&lt;/code&gt; the words together (&lt;code&gt;title = "".join(title_rdy)&lt;/code&gt;)
+and get &lt;code&gt;92-ReverseLinkedListII&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Our file name should look like &lt;code&gt;reverseLinkedListII.c&lt;/code&gt;. This invloves a use of 
+regular expression to get rid of &lt;code&gt;92-&lt;/code&gt; and convert the first character of the rest 
+of string into lower case. The code is below&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;extension&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.c&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;pat&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;r&amp;quot;^(\d+)-&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pat&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()]&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;end&lt;/span&gt;&lt;span class="p"&gt;():]&lt;/span&gt;
+&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;lower&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:]&lt;/span&gt;
+&lt;span class="n"&gt;target&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;extension&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;w&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The regular expression is best illsutrated from a snippet taken from 
+&lt;a href="https://docs.python.org/3/library/re.html"&gt;re&lt;/a&gt; library&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;tony@tiremove_thisger.net&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;remove_this&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()]&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;end&lt;/span&gt;&lt;span class="p"&gt;():]&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;tony@tiger.net&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;code&gt;^&lt;/code&gt; matches the beginning of the string and &lt;code&gt;\d&lt;/code&gt; means numeric digits and &lt;code&gt;+&lt;/code&gt;
+means at least once appearance (of &lt;code&gt;\d&lt;/code&gt;). Just like official doc snippet above,
+&lt;code&gt;filename=title[:m.start()] + title[m.end():]&lt;/code&gt; removes, for instance, &lt;code&gt;92-&lt;/code&gt; and
+leaves us &lt;code&gt;ReverseLinkedListII&lt;/code&gt; &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;. One thing to notice right now is that our
+&lt;code&gt;filename&lt;/code&gt; has object type &lt;code&gt;str&lt;/code&gt;, which is immutable. This means that we cannot
+edit the variable itself. &lt;code&gt;filename=filename[0].lower() + filename[1:]&lt;/code&gt; is 
+a typical way to handle immutable &lt;code&gt;str&lt;/code&gt; object, which, in our case, lower the 
+first character case and append it back to the rest of string.&lt;/p&gt;
+&lt;p&gt;The last point needs to notice is &lt;code&gt;line = line.replace("\r", "").replace("\n", "")&lt;/code&gt;,
+which removes carriage return character (&lt;code&gt;^M&lt;/code&gt;) and linux newline character.&lt;/p&gt;
+&lt;p&gt;That's it for the leetcode scraper. This is actually the first scraper I have
+ever written. It doesn't look hard as it sounds. I think that's majorly because of
+the powerful python language and its libraries.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;Here is &lt;a href="http://web.stanford.edu/~zlotnick/TextAsData/Web_Scraping_with_Beautiful_Soup.html"&gt;a good tutorial&lt;/a&gt; on beautifulSoup.&amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;This line is found from 
+&lt;a href="https://stackoverflow.com/questions/8449454/remove-strings-containing-only-white-spaces-from-list"&gt;this SO post&lt;/a&gt;. &amp;#160;&lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:3"&gt;
+&lt;p&gt;I do a &lt;a href="http://pages.cs.wisc.edu/~zeyuan/projects/notes/diveintopython/chap7.html"&gt;quick summary&lt;/a&gt; of
+regular expression in python.&amp;#160;&lt;a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</summary><category term="python"></category><category term="scraping"></category><category term="beautifulsoup"></category><category term="regex"></category></entry><entry><title>Solving recurrence relations (part 2)</title><link href="http://zhu45.org/posts/2017/Jun/12/solving-recurrence-relations-part-2/" rel="alternate"></link><published>2017-06-12T17:20:00+08:00</published><updated>2017-06-12T17:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-06-12:posts/2017/Jun/12/solving-recurrence-relations-part-2/</id><summary type="html">&lt;p&gt;&lt;a href="http://zhu45.org/posts/2017/Feb/02/solving-recurrence-relations-in-a-nutshell/"&gt;Several months ago&lt;/a&gt;, 
 I breifly summarize the ways to solve recurrence relations. At the end of that post,
 I indicate that different types of recurrence relation may require different kinds 
 of treatments to solve them. Thus, this post will be the first "Downloadable Content (DLC)"
@@ -3860,7 +4080,7 @@ $$&lt;/div&gt;
 f_n = c_1 \Big(\frac{1+\sqrt 5}{2}\Big)^n + c_2 \Big(\frac{1-\sqrt 5}{2}\Big)^n
 \end{equation*}
 $$&lt;/div&gt;
-&lt;p&gt;is the general solution. We now want constants c_1, and c_2 so that &lt;/p&gt;
+&lt;p&gt;is the general solution. We now want constants &lt;span class="math"&gt;\(c_1\)&lt;/span&gt;, and &lt;span class="math"&gt;\(c_2\)&lt;/span&gt; so that &lt;/p&gt;
 &lt;div class="math"&gt;$$
 \begin{equation*}
 \begin{cases}

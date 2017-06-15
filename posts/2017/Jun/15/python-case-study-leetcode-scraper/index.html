@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Python case study: leetcode scraper
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+    <h1 id="site-title"><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+        <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+        <a href="../../../../../quotes.html" style="padding: 10px">QUOTES</a>
+        <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
+    </nav>
+</header>
+    <div class="post">
+        <header>
+            <h1 class="post-title">Python case study: leetcode scraper</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2017-06-15T21:22:00+08:00"> Jun 15, 2017</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/python.html">python</a>
+        /
+	<a href="../../../../../tag/scraping.html">scraping</a>
+        /
+	<a href="../../../../../tag/beautifulsoup.html">beautifulsoup</a>
+        /
+	<a href="../../../../../tag/regex.html">regex</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <p>It has been many years since 
+<a href="http://pages.cs.wisc.edu/~zeyuan/projects/notes/diveintopython/diveintopython.html">last time</a> 
+I touched python. Things get very rusty. Recently, I have been practicing
+my algorithm skills on leetcode and I keep all my solutions in a 
+<a href="https://github.com/xxks-kkk/shuati">github repo</a>. I want my source file have consistency
+formatting shown below.</p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm"> * [Source]</span>
+<span class="cm"> * </span>
+<span class="cm"> * https://leetcode.com/problems/same-tree/</span>
+<span class="cm"> *</span>
+<span class="cm"> * [Problem Description]</span>
+<span class="cm"> *</span>
+<span class="cm"> * Given two binary trees, write a function to check if they are equal or not.</span>
+<span class="cm"> * </span>
+<span class="cm"> * Two binary trees are considered equal if they are structurally identical </span>
+<span class="cm"> * and the nodes have the same value. </span>
+<span class="cm"> *</span>
+<span class="cm"> * [Companies]</span>
+<span class="cm"> */</span>
+
+ <span class="c1">// Source code begins here ...</span>
+</pre></div>
+
+
+<p>However, there is one thing keeps annoy me: I have to manually add this header comment
+every single time when I finish a problem. So, I ask myself if there is a better way
+to make the whole process as much automatic as possible. Python and its famous
+<a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">beautifulsoup</a> library <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> immediately
+comes into my mind.</p>
+<p>In this post, I'll highlight some python usage appeared in the script, which costs
+me quite some time on googling. Please leave your comment if you find any non-pythonic 
+usage. The code script is available 
+<a href="https://github.com/xxks-kkk/shuati/blob/master/scraper.py">here</a>. I'll use
+<a href="https://leetcode.com/problems/reverse-linked-list-ii/#/description">92. ReverseLinkedList II</a>
+as a demonstration example.</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.6</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+</pre></div>
+
+
+<p>The very first thing is "shebang". This is important for our task because
+the web page is often written in the unicode (i.e. mathematical symbols).
+This shebang will help us avoid unicode &amp; ascii madness. </p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+</pre></div>
+
+
+<p>We use a lot of libraries through <code>import</code>. If I use <em>import module</em>, I have to use quantifier
+for any module function call (i.e. <code>sys.exit()</code>). By the contrast, I can directly
+call the module function if I do <em>from module import</em>. This brings a question on
+when to use which. Here, I want to quote the explanation from 
+<a href="http://www.diveintopython.net/object_oriented_framework/importing_modules.html">Dive Into Python</a></p>
+<blockquote>
+<p>When should you use <em>from module import</em>?</p>
+<ul>
+<li>If you will be accessing attributes and methods often and don't want to type the module name over and over, use "<em>from module import</em>".</li>
+<li>If you want to selectively import some attributes and methods but not others, use "<em>from module import</em>".</li>
+<li>If the module contains attributes or functions with the same name as ones in your module, you must use "<em>import module</em>" to avoid name conflicts.</li>
+</ul>
+<p>The author makes extra remark: Use <em>from module import *</em> sparingly, because it makes it difficult to determine where a particular function or attribute came from, and that makes debugging and refactoring more difficult.</p>
+</blockquote>
+<div class="highlight"><pre><span></span><span class="n">script</span><span class="p">,</span> <span class="n">url</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;url is {:s}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+</pre></div>
+
+
+<p>I used to really like Python2.7 and not a big fan of Python3. However, with python2.7 EOS,
+change must be made. the <code>print</code> statement is how we do format printing in python3.</p>
+<div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
+<span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Here, I use <a href="http://docs.python-requests.org/en/master/user/quickstart/#make-a-request">requests</a>
+library to fetch the content of the <code>url</code> and then feed it into our <code>BeautifulSoup</code>
+with parser <code>lxml</code>.</p>
+<p>The next step is to actual scrap the data from leetcode page. The first thing I 
+do is to get the question title. Leetcode page has the following structure 
+for the question title</p>
+<div class="highlight"><pre><span></span>   <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;question-title clearfix&quot;</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;row&quot;</span><span class="p">&gt;</span>
+
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;col-lg-4 col-md-5 col-sm-6 col-sm-push-6 col-md-push-7 col-lg-push-8&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;widgets&quot;</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;like-and-dislike&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;question-like&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+          <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;add-to-list&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;add-to-favorite&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+          <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;col-lg-8 col-md-7 col-sm-6 col-sm-pull-6 col-md-pull-5 col-lg-pull-4&quot;</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;</span>
+            92. Reverse Linked List II
+          <span class="p">&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+
+
+<p>As you can see, the question title ("92. Reverse Linked List II") is wrapped around
+by the <code>&lt;div&gt;</code> tag with class name <code>question-title</code>. </p>
+<div class="highlight"><pre><span></span><span class="n">title_corp</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;question-title&quot;</span><span class="p">)</span>
+<span class="n">title_raw</span> <span class="o">=</span> <span class="n">title_corp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">h3</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
+</pre></div>
+
+
+<p>So, we invoke <a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/#calling-a-tag-is-like-calling-find-all">find_all</a>
+method from beautiful soup to find all the <code>&lt;div&gt;&lt;/div&gt;</code> tags with class name <code>question-title</code>.
+Fortunately, <code>question-title</code> class appears only once in the whole html page. 
+That allows us to directly access its using <code>title_corp[0]</code>. In addition, as you can see
+from html source code above, <code>&lt;h3&gt;&lt;/h3&gt;</code> appears only once and it wraps our
+problem title. So, we can directly access the content of <code>&lt;h3&gt;&lt;/h3&gt;</code> tags by 
+<code>title_corp[0].h3.get_text()</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>find_all</code> returns a "ResultSet" object in beautifulSoup. This object contains
+a set of tags that match with <code>find_all</code> function argument criteria. In our case,
+our criteria is <code>&lt;div&gt;&lt;/div&gt;</code> tag with class name <code>question-title</code>.</p>
+</div>
+<p>Now, once we have the title string, we want to process it into our desired form.
+Our scraper script will go into the 
+<a href="https://github.com/xxks-kkk/shuati/tree/master/leetcode">leetcode directory of the shuati repo</a>
+and create the question directory with the format 
+"[question number]-[question title in mixed case with the first letter of each internal word capitalized]"
+For example, "92. Reverse Linked List II" will lead to a directory 
+<code>./leetcode/92-ReverseLinkedListII</code>. The source file name is similar to the 
+directory name: <code>reverseLinkedListII.c</code>. That's what following code chunk tries to achieve</p>
+<div class="highlight"><pre><span></span>    <span class="n">title_lines</span> <span class="o">=</span> <span class="n">title_raw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">title_lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">methodcaller</span><span class="p">(</span><span class="s1">&#39;strip&#39;</span><span class="p">),</span> <span class="n">title_lines</span><span class="p">))</span>
+    <span class="n">title_rdy</span> <span class="o">=</span> <span class="n">title_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">title_rdy</span><span class="p">)</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;./leetcode/&quot;</span> <span class="o">+</span> <span class="n">title</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+
+
+<p><code>title_lines = title_raw.split('\n')</code> will split the whole text into a list 
+of strings with each string being a line of code. In our case, this will give
+<code>['', '            92. Reverse Linked List II', '          ']</code>.</p>
+<p>As you can see our result contains empty string, string with multiple leading
+whitespaces, and string with only whitespaces. We need to do some cleanup to keep
+only the question title. The first thing we do is to take out the empty string and
+the string with only whitespaces. This is done by 
+<code>title_lines = list(filter(operator.methodcaller('strip'), title_lines))</code> <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>.
+<a href="https://docs.python.org/2/library/functions.html#filter">filter</a> 
+creates a list of elements for which a function (the 1st argument of <code>filter</code>) 
+returns true. <code>operator.methodcaller('strip')</code> uses 
+<a href="https://docs.python.org/3/library/operator.html#operator.methodcaller">methodcaller</a>,
+which applies <code>strip</code> function to each element of <code>title_lines</code>. The function will
+return true only when our string has some characters in it. This will lead to
+<code>['            92. Reverse Linked List II']</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Here is an example of <code>methodcaller</code>: After
+<code>f = methodcaller('name', 'foo', bar=1)</code>, the call <code>f(b)</code> returns <code>b.name('foo', bar=1)</code>.
+In our case, <code>filter</code> will apply <code>operator.methodcaller('strip')</code> on <code>title_lines</code>, which
+is basically <code>title_lines.strip()</code>.</p>
+</div>
+<p>Now, we will work on our title string. 
+<code>title_rdy = title_lines[0].lstrip(' ').replace(".", "-").split(' ')</code> removes
+leading whitespace (<code>lstrip(' ')</code>) and replace <code>.</code> with <code>-</code>, and then <code>split</code>
+our string into words: <code>['92-', 'Reverse', 'Linked', 'List', 'II']</code>. We are ready
+to form our directory by <code>join</code> the words together (<code>title = "".join(title_rdy)</code>)
+and get <code>92-ReverseLinkedListII</code>.</p>
+<p>Our file name should look like <code>reverseLinkedListII.c</code>. This invloves a use of 
+regular expression to get rid of <code>92-</code> and convert the first character of the rest 
+of string into lower case. The code is below</p>
+<div class="highlight"><pre><span></span><span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;.c&quot;</span>
+<span class="n">pat</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">r&quot;^(\d+)-&quot;</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pat</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+<span class="n">filename</span><span class="o">=</span><span class="n">title</span><span class="p">[:</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span> <span class="o">+</span> <span class="n">title</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">():]</span>
+<span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="n">filename</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+<span class="n">target</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="n">extension</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The regular expression is best illsutrated from a snippet taken from 
+<a href="https://docs.python.org/3/library/re.html">re</a> library</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">email</span> <span class="o">=</span> <span class="s2">&quot;tony@tiremove_thisger.net&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;remove_this&quot;</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">email</span><span class="p">[:</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span> <span class="o">+</span> <span class="n">email</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">():]</span>
+<span class="s1">&#39;tony@tiger.net&#39;</span>
+</pre></div>
+
+
+<p><code>^</code> matches the beginning of the string and <code>\d</code> means numeric digits and <code>+</code>
+means at least once appearance (of <code>\d</code>). Just like official doc snippet above,
+<code>filename=title[:m.start()] + title[m.end():]</code> removes, for instance, <code>92-</code> and
+leaves us <code>ReverseLinkedListII</code> <sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>. One thing to notice right now is that our
+<code>filename</code> has object type <code>str</code>, which is immutable. This means that we cannot
+edit the variable itself. <code>filename=filename[0].lower() + filename[1:]</code> is 
+a typical way to handle immutable <code>str</code> object, which, in our case, lower the 
+first character case and append it back to the rest of string.</p>
+<p>The last point needs to notice is <code>line = line.replace("\r", "").replace("\n", "")</code>,
+which removes carriage return character (<code>^M</code>) and linux newline character.</p>
+<p>That's it for the leetcode scraper. This is actually the first scraper I have
+ever written. It doesn't look hard as it sounds. I think that's majorly because of
+the powerful python language and its libraries.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Here is <a href="http://web.stanford.edu/~zlotnick/TextAsData/Web_Scraping_with_Beautiful_Soup.html">a good tutorial</a> on beautifulSoup.&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>This line is found from 
+<a href="https://stackoverflow.com/questions/8449454/remove-strings-containing-only-white-spaces-from-list">this SO post</a>. &#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>I do a <a href="http://pages.cs.wisc.edu/~zeyuan/projects/notes/diveintopython/chap7.html">quick summary</a> of
+regular expression in python.&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/programming-languages.html">programming languages</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+<!--                            <li><a href="../../../../../about-zack.html">About</a></li>
+                <li><a href="../../../../../blog2">Blog</a></li>
+                <li><a href="../../../../../quotes.html">Quotes</a></li>
+                <li><a href="../../../../../projects.html">Projects</a></li>
+-->
+    </ul>
+
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
