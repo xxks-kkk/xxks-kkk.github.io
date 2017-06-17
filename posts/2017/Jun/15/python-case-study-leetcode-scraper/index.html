@@ -66,8 +66,8 @@
 <a href="http://pages.cs.wisc.edu/~zeyuan/projects/notes/diveintopython/diveintopython.html">last time</a> 
 I touched python. Things get very rusty. Recently, I have been practicing
 my algorithm skills on leetcode and I keep all my solutions in a 
-<a href="https://github.com/xxks-kkk/shuati">github repo</a>. I want my source file have consistency
-formatting shown below.</p>
+<a href="https://github.com/xxks-kkk/shuati">github repo</a>. I want my source files 
+have consistency formatting shown below</p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
 <span class="cm"> * [Source]</span>
 <span class="cm"> * </span>
@@ -87,17 +87,17 @@ formatting shown below.</p>
 </pre></div>
 
 
-<p>However, there is one thing keeps annoy me: I have to manually add this header comment
-every single time when I finish a problem. So, I ask myself if there is a better way
-to make the whole process as much automatic as possible. Python and its famous
-<a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">beautifulsoup</a> library <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> immediately
-comes into my mind.</p>
+<p>The overhead of adding this header comment can be quite large. 
+So, I ask myself if there is a better way
+to make the whole process automated as much as possible. Python and its famous
+<a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">beautifulsoup</a> library <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> 
+immediately come into my mind.</p>
 <p>In this post, I'll highlight some python usage appeared in the script, which costs
 me quite some time on googling. Please leave your comment if you find any non-pythonic 
 usage. The code script is available 
 <a href="https://github.com/xxks-kkk/shuati/blob/master/scraper.py">here</a>. I'll use
 <a href="https://leetcode.com/problems/reverse-linked-list-ii/#/description">92. ReverseLinkedList II</a>
-as a demonstration example.</p>
+leetcode page as a working example to demonstrate the python techniques.</p>
 <div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.6</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 </pre></div>
@@ -265,7 +265,7 @@ first character case and append it back to the rest of string.</p>
 <p>The last point needs to notice is <code>line = line.replace("\r", "").replace("\n", "")</code>,
 which removes carriage return character (<code>^M</code>) and linux newline character.</p>
 <p>That's it for the leetcode scraper. This is actually the first scraper I have
-ever written. It doesn't look hard as it sounds. I think that's majorly because of
+ever written. It is not as hard as I imagined. I think that's majorly because of
 the powerful python language and its libraries.</p>
 <div class="footnote">
 <hr />

@@ -3,8 +3,8 @@
 &lt;a href="http://pages.cs.wisc.edu/~zeyuan/projects/notes/diveintopython/diveintopython.html"&gt;last time&lt;/a&gt; 
 I touched python. Things get very rusty. Recently, I have been practicing
 my algorithm skills on leetcode and I keep all my solutions in a 
-&lt;a href="https://github.com/xxks-kkk/shuati"&gt;github repo&lt;/a&gt;. I want my source file have consistency
-formatting shown below.&lt;/p&gt;
+&lt;a href="https://github.com/xxks-kkk/shuati"&gt;github repo&lt;/a&gt;. I want my source files 
+have consistency formatting shown below&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
 &lt;span class="cm"&gt; * [Source]&lt;/span&gt;
 &lt;span class="cm"&gt; * &lt;/span&gt;
@@ -24,17 +24,17 @@ formatting shown below.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;However, there is one thing keeps annoy me: I have to manually add this header comment
-every single time when I finish a problem. So, I ask myself if there is a better way
-to make the whole process as much automatic as possible. Python and its famous
-&lt;a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/"&gt;beautifulsoup&lt;/a&gt; library &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; immediately
-comes into my mind.&lt;/p&gt;
+&lt;p&gt;The overhead of adding this header comment can be quite large. 
+So, I ask myself if there is a better way
+to make the whole process automated as much as possible. Python and its famous
+&lt;a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/"&gt;beautifulsoup&lt;/a&gt; library &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; 
+immediately come into my mind.&lt;/p&gt;
 &lt;p&gt;In this post, I'll highlight some python usage appeared in the script, which costs
 me quite some time on googling. Please leave your comment if you find any non-pythonic 
 usage. The code script is available 
 &lt;a href="https://github.com/xxks-kkk/shuati/blob/master/scraper.py"&gt;here&lt;/a&gt;. I'll use
 &lt;a href="https://leetcode.com/problems/reverse-linked-list-ii/#/description"&gt;92. ReverseLinkedList II&lt;/a&gt;
-as a demonstration example.&lt;/p&gt;
+leetcode page as a working example to demonstrate the python techniques.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python3.6&lt;/span&gt;
 &lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -202,7 +202,7 @@ first character case and append it back to the rest of string.&lt;/p&gt;
 &lt;p&gt;The last point needs to notice is &lt;code&gt;line = line.replace("\r", "").replace("\n", "")&lt;/code&gt;,
 which removes carriage return character (&lt;code&gt;^M&lt;/code&gt;) and linux newline character.&lt;/p&gt;
 &lt;p&gt;That's it for the leetcode scraper. This is actually the first scraper I have
-ever written. It doesn't look hard as it sounds. I think that's majorly because of
+ever written. It is not as hard as I imagined. I think that's majorly because of
 the powerful python language and its libraries.&lt;/p&gt;
 &lt;div class="footnote"&gt;
 &lt;hr /&gt;
