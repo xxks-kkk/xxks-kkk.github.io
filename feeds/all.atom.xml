@@ -1,5 +1,277 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-06-15T21:22:00+08:00</updated><entry><title>Python case study: leetcode scraper</title><link href="http://zhu45.org/posts/2017/Jun/15/python-case-study-leetcode-scraper/" rel="alternate"></link><published>2017-06-15T21:22:00+08:00</published><updated>2017-06-15T21:22:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-06-15:posts/2017/Jun/15/python-case-study-leetcode-scraper/</id><summary type="html">&lt;p&gt;It has been many years since 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-06-18T20:20:00+08:00</updated><entry><title>The tortoise and the hare</title><link href="http://zhu45.org/posts/2017/Jun/18/the-tortoise-and-the-hare/" rel="alternate"></link><published>2017-06-18T20:20:00+08:00</published><updated>2017-06-18T20:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-06-18:posts/2017/Jun/18/the-tortoise-and-the-hare/</id><summary type="html">&lt;p&gt;Recently, I'm starting to work on &lt;a href="https://github.com/xxks-kkk/shuati"&gt;leetcode's problems&lt;/a&gt;. 
+My goal is to solve two problems per day (mission possible, right?). The problems I'm looking
+at are &lt;a href="https://leetcode.com/problems/linked-list-cycle-ii/"&gt;142. Linked List Cycle II&lt;/a&gt; and 
+&lt;a href="https://leetcode.com/problems/find-the-duplicate-number/"&gt;287. Find the Duplicate Number&lt;/a&gt;, 
+which both can be solved by Folyd's Tortoise and Hare algorithm.&lt;/p&gt;
+&lt;p&gt;This post will try to take a deeper look at the correctness of the algorithm and
+how to apply it to solve problems.&lt;/p&gt;
+&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/Cycle_detection#Floyd.27s_Tortoise_and_Hare"&gt;Floyd's Tortoise and Hare algorithm&lt;/a&gt;
+is used with three purposes under the context of linked list:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Detect whether there is a cycle in the list&lt;/li&gt;
+&lt;li&gt;Find the starting point of the cycle (i.e. list 1-&amp;gt;4-&amp;gt;3-&amp;gt;4, starting point is 4)&lt;/li&gt;
+&lt;li&gt;Decide the length of the cycle (i.e. 2 for above example)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The algorithm idea is following:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;We use two pointers: tortoise and hare. Both start at the beginning of the list.
+Hare runs twice as fas the tortoise.&lt;/li&gt;
+&lt;li&gt;If there is no-cycle, then hare will reach the finish line before the tortoise.&lt;/li&gt;
+&lt;li&gt;If there is a cycle, then hare will always be ahead and eventually he would
+so far ahead that he laps the tortoise. That's the place we know we have a cycle in the list.&lt;/li&gt;
+&lt;li&gt;Once we detect the cycle, we send hare back to the beginning and advance both of 
+them at the same speed until they meet again. The second meeting place, which we'll prove
+immediately, is the entry point of the cycle. &lt;/li&gt;
+&lt;li&gt;Then, one of them will keep moving to finish the victory lap to find the period
+of the cycle.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The key difference when we a cycle in the list is that at some point other 
+than the beginning, the hare will be at the same spot as the tortoise ...&lt;/p&gt;
+&lt;h2 id="proof-of-correctness"&gt;Proof of correctness&lt;/h2&gt;
+&lt;p&gt;Let &lt;span class="math"&gt;\(\mu\)&lt;/span&gt; be the index of the start of the cycle, and let &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; be period of the
+cycle. Let &lt;span class="math"&gt;\(i\)&lt;/span&gt; be the distance (i.e number of nodes) that tortoise travels and
+let &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; denotes the index of the node at which both tortoise and hare meet. &lt;span class="math"&gt;\(x_0\)&lt;/span&gt;
+is the first node in the list.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;The notation here is similar to the concept in physics: distance vs. displacement.
+&lt;span class="math"&gt;\(i\)&lt;/span&gt; is the "distance" or the number of nodes that our character (tortoise or hare)
+has travelled since the beginning of the list and 
+&lt;span class="math"&gt;\(x_i\)&lt;/span&gt; is the "displacement" between the first node and the current node that our
+characters are at.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;The key observation for showing the correctness of the algorithm lies in 
+the following fact:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{equation}
+x_{j+k\lambda} = x_j \text{ for all integers }j \ge \mu \text{ and } k \ge 0 \label{eqn:1}
+\end{equation}
+$$&lt;/div&gt;
+&lt;p&gt;This statement says that going around the loop any number of times takes you 
+back to the same places as long as you start somewhere on the loop. Let's 
+define the following set of notation here for future use:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(y\)&lt;/span&gt; be the displacement between &lt;span class="math"&gt;\(x_{\mu}\)&lt;/span&gt; and &lt;span class="math"&gt;\(x_i\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(m\)&lt;/span&gt; be the number of laps that tortoise have travelled before he meets
+with hare at &lt;span class="math"&gt;\(x_i\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(n\)&lt;/span&gt; be the number of laps that hare have travelled before he meets with 
+tortoise at &lt;span class="math"&gt;\(x_i\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Since the hare runs twice as fast as the tortoise, then the distance hare travelled
+when he meets with tortoise is &lt;span class="math"&gt;\(2i\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;. Then, we have the following set of equations&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{eqnarray}
+i = \mu + y + m \cdot \lambda  \label{eqn:2} \\
+2i = \mu + y + n \cdot \lambda \label{eqn:3}
+\end{eqnarray}
+$$&lt;/div&gt;
+&lt;p&gt;Now we subtract \ref{eqn:2} from \ref{eqn:3} and we have&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{equation}
+i = (n-m) \cdot \lambda \label {eqn:4}
+\end{equation}
+$$&lt;/div&gt;
+&lt;p&gt;Let's revisit our key observation \ref{eqn:1} and set &lt;span class="math"&gt;\(j = \mu\)&lt;/span&gt; and &lt;span class="math"&gt;\(k = (n-m)\)&lt;/span&gt;, we have
+&lt;span class="math"&gt;\(x_{\mu + (n-m)\lambda} = x_{\mu}\)&lt;/span&gt;. Then, by \ref{eqn:4}, we have
+&lt;span class="math"&gt;\(x_{\mu + i} = x_{\mu}\)&lt;/span&gt;, which can be rewritten as &lt;span class="math"&gt;\(x_{i+\mu} = x_{\mu}\)&lt;/span&gt;!!! This equation
+tells us that the node at which the cycle begins (i.e &lt;span class="math"&gt;\(x+{\mu}\)&lt;/span&gt;) is exactly the
+same node as the node &lt;span class="math"&gt;\(\mu\)&lt;/span&gt; nodes away from the index at which tortoise and hare meet
+(i.e. &lt;span class="math"&gt;\(x_i\)&lt;/span&gt;).&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;The proof can be much shorter once we have &lt;span class="math"&gt;\(x_{2i} = x_i\)&lt;/span&gt;. By \ref{eqn:1}, we
+also have &lt;span class="math"&gt;\(x_{i+k\lambda} = x_{2i}\)&lt;/span&gt;, which leads to &lt;span class="math"&gt;\(k\lambda = i\)&lt;/span&gt;. Since
+&lt;span class="math"&gt;\(x_\mu\)&lt;/span&gt; also meets the condition of \ref{eqn:1}, we have &lt;span class="math"&gt;\(x_{\mu + k\lambda} = x_\mu\)&lt;/span&gt;.
+Substitutes &lt;span class="math"&gt;\(i = k\lambda\)&lt;/span&gt; in and get &lt;span class="math"&gt;\(x_{\mu+i} = x_\mu\)&lt;/span&gt;. The conclusion follows.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="two-problems"&gt;Two problems&lt;/h2&gt;
+&lt;h3 id="142-linked-list-cycle-ii"&gt;142. Linked List Cycle II&lt;/h3&gt;
+&lt;p&gt;The first problem is a straightforward application of the algorithm: 
+Given a linked list, return the node where the cycle begins. If there is no cycle, return &lt;code&gt;NULL&lt;/code&gt;.
+The code is following&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/**&lt;/span&gt;
+&lt;span class="cm"&gt; * Definition for singly-linked list.&lt;/span&gt;
+&lt;span class="cm"&gt; * struct ListNode {&lt;/span&gt;
+&lt;span class="cm"&gt; *     int val;&lt;/span&gt;
+&lt;span class="cm"&gt; *     struct ListNode *next;&lt;/span&gt;
+&lt;span class="cm"&gt; * };&lt;/span&gt;
+&lt;span class="cm"&gt; */&lt;/span&gt;
+&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;ListNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nf"&gt;detectCycle&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;ListNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;next&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;ListNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tortoise&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;ListNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;hare&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;ListNode&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;curr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="n"&gt;tortoise&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;hare&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;curr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;hare&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;hare&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;next&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;hare&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;hare&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;next&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;next&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;tortoise&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tortoise&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;next&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;hare&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;tortoise&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;// there is a cycle&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curr&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;tortoise&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;curr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;curr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;next&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+                &lt;span class="n"&gt;tortoise&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tortoise&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;next&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;curr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;  &lt;span class="c1"&gt;// find the entry location&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// there is no cycle&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3 id="287-find-the-duplicate-number"&gt;287. Find the Duplicate Number&lt;/h3&gt;
+&lt;p&gt;This problem is a lot tricker than a previous one: we need identify this problem
+can also be solved by the Floyd's Tortoise and Hare algorithm, which is not obvious
+at first glance&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Given an array nums containing &lt;span class="math"&gt;\(n + 1\)&lt;/span&gt; integers where each integer is 
+between &lt;span class="math"&gt;\(1\)&lt;/span&gt; and &lt;span class="math"&gt;\(n\)&lt;/span&gt; (inclusive), prove that at least one duplicate number 
+must exist. Assume that there is only one duplicate number, find the duplicate one.
+note: There is only one duplicate number in the array, but it could be repeated more than once.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The key point is to identify that the problem description is another way of 
+describing a linked list, which requires somewhat deeper understanding of the
+algorithm itself.&lt;/p&gt;
+&lt;p&gt;The algorithm is, in fact, used to find a cycle in a sequence of 
+&lt;a href="https://en.wikipedia.org/wiki/Iterated_function"&gt;iterated function&lt;/a&gt; values:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+x_0, x1 = f(x_0), x_2 = f(x_1), \dots, x_i = f(x_{i-1}), \dots
+$$&lt;/div&gt;
+&lt;p&gt;For example, the sequence &lt;span class="math"&gt;\(1,3,4,2,1\)&lt;/span&gt; can be considered as a sequence of 
+iterated function values with &lt;span class="math"&gt;\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
+x_3 = f(4) = 2, x_4 = f(2) = 1\)&lt;/span&gt;. Let's try another representation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;| index | 0 | 1 | 2 | 3 | 4 |
+|-------|---|---|---|---|---|
+| value | 1 | 3 | 4 | 2 | 1 |
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Surprisingly, the function &lt;span class="math"&gt;\(f\)&lt;/span&gt; simply map the index to the corresponding values.
+With this table, the above sequence can be converted as a linked list:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;0 -&amp;gt; 1 -&amp;gt; 3 -&amp;gt; 2 -&amp;gt; 4
+     ^              |
+     |--------------|
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This list is constructed by the definition of a sequence of iterated function values.
+The arrow (&lt;code&gt;-&amp;gt;&lt;/code&gt;) is the function &lt;span class="math"&gt;\(f\)&lt;/span&gt;. Then, we can apply our algorithm to solve 
+this problem:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;findDuplicate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;numsSize&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;tortoise&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;hare&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;tortoise&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+  &lt;span class="n"&gt;hare&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]];&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tortoise&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;hare&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;tortoise&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;tortoise&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+    &lt;span class="n"&gt;hare&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;hare&lt;/span&gt;&lt;span class="p"&gt;]];&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="n"&gt;hare&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tortoise&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;hare&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;tortoise&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;tortoise&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+    &lt;span class="n"&gt;hare&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;hare&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;hare&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This implementation slightly deviates from the algorithm description above:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Tortoise and hare don't start from the same place at the beginning. This doesn't
+matter really because eventually they will be in the loop.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We use &lt;code&gt;tortoise = nums[tortoise]&lt;/code&gt; instead of &lt;code&gt;tortoise++&lt;/code&gt; for advancing tortoise,
+for example. This is the place where "a sequence of iterative function values" idea
+appears. In fact, this is also how we constructed our linked list.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;hare = 0&lt;/code&gt; not &lt;code&gt;hare = nums[0]&lt;/code&gt; can be confusing. We can think about this from our linked
+list representation: our list starts from &lt;span class="math"&gt;\(0\)&lt;/span&gt; (required by &lt;span class="math"&gt;\(f\)&lt;/span&gt;, which maps index to value)
+and if we starts from &lt;code&gt;hare = nums[0]&lt;/code&gt;, that violates our algorithm.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="footnote"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(x_{2i} = x_i\)&lt;/span&gt; immediately follows this statement. Then, if we let&lt;br /&gt;
+&lt;span class="math"&gt;\(l\)&lt;/span&gt; be the number of laps by which hare is ahead, then &lt;span class="math"&gt;\(2i = i + l \cdot \lambda\)&lt;/span&gt;
+and we have &lt;span class="math"&gt;\(i = l\lambda\)&lt;/span&gt;. Then we set &lt;span class="math"&gt;\(k=l\)&lt;/span&gt; in \ref{eqn:1} and reach the same
+conclusion. This way we don't need to define &lt;span class="math"&gt;\(y\)&lt;/span&gt;,&lt;span class="math"&gt;\(m\)&lt;/span&gt;,&lt;span class="math"&gt;\(n\)&lt;/span&gt;, which can make proof
+a little simpler notation-wise. &amp;#160;&lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="linked-list"></category><category term="leetcode"></category><category term="algorithm"></category></entry><entry><title>Python case study: leetcode scraper</title><link href="http://zhu45.org/posts/2017/Jun/15/python-case-study-leetcode-scraper/" rel="alternate"></link><published>2017-06-15T21:22:00+08:00</published><updated>2017-06-15T21:22:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-06-15:posts/2017/Jun/15/python-case-study-leetcode-scraper/</id><summary type="html">&lt;p&gt;It has been many years since 
 &lt;a href="http://pages.cs.wisc.edu/~zeyuan/projects/notes/diveintopython/diveintopython.html"&gt;last time&lt;/a&gt; 
 I touched python. Things get very rusty. Recently, I have been practicing
 my algorithm skills on leetcode and I keep all my solutions in a 
@@ -6285,7 +6557,7 @@ Then, it looks something like this&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;If system &lt;tt class="docutils literal"&gt;fls&lt;/tt&gt; is defined as strong, my &lt;tt class="docutils literal"&gt;fls&lt;/tt&gt; implementation will be overridden.&lt;/p&gt;
 &lt;/div&gt;
-</summary><category term="c"></category><category term="double-linked-list"></category></entry><entry><title>Josephus Problem</title><link href="http://zhu45.org/posts/2016/Dec/31/josephus-problem/" rel="alternate"></link><published>2016-12-31T20:24:00+08:00</published><updated>2016-12-31T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-31:posts/2016/Dec/31/josephus-problem/</id><summary type="html">&lt;h2 id="preface"&gt;Preface&lt;/h2&gt;
+</summary><category term="c"></category><category term="linked-list"></category></entry><entry><title>Josephus Problem</title><link href="http://zhu45.org/posts/2016/Dec/31/josephus-problem/" rel="alternate"></link><published>2016-12-31T20:24:00+08:00</published><updated>2016-12-31T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-31:posts/2016/Dec/31/josephus-problem/</id><summary type="html">&lt;h2 id="preface"&gt;Preface&lt;/h2&gt;
 &lt;p&gt;This is actually MAW 3.10. I gradually realize how dense MAW is.
 In the &lt;a href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/"&gt;previous problem&lt;/a&gt;,
 I write almost 500 lines of code. For this one, the problem is not really diffcult to solve if we implement a program 
@@ -6787,7 +7059,7 @@ loop in the original solution.&lt;/p&gt;
   &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-</summary><category term="singly-linked-list"></category><category term="software-engineering"></category></entry><entry><title>Reflection on integer arithmetic package problem</title><link href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/" rel="alternate"></link><published>2016-12-26T23:03:00+08:00</published><updated>2016-12-26T23:03:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-26:posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/</id><summary type="html">&lt;p&gt;This weekend, I'm working on MAW 3.9. The single problem results
+</summary><category term="linked-list"></category><category term="software-engineering"></category></entry><entry><title>Reflection on integer arithmetic package problem</title><link href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/" rel="alternate"></link><published>2016-12-26T23:03:00+08:00</published><updated>2016-12-26T23:03:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-26:posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/</id><summary type="html">&lt;p&gt;This weekend, I'm working on MAW 3.9. The single problem results
 in almost 500 lines of code. This is quite unexpected. The problem
 is stated as the following:&lt;/p&gt;
 &lt;blockquote&gt;
@@ -7167,7 +7439,7 @@ job is done (i.e. &lt;tt class="docutils literal"&gt;1&lt;/tt&gt; in our case).&
 &lt;/ol&gt;
 &lt;p&gt;See, how simple the recursion can be if we can actually get over psychological obstacle to expand the call stack mentally and directly apply
 four rules (especially the third rule) to design our function.&lt;/p&gt;
-</summary><category term="singly-linked-list"></category><category term="recursion"></category></entry><entry><title>Environment variable substitution using Sed</title><link href="http://zhu45.org/posts/2016/Dec/21/environment-variable-substitution-using-sed/" rel="alternate"></link><published>2016-12-21T12:07:00+08:00</published><updated>2016-12-21T12:07:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-21:posts/2016/Dec/21/environment-variable-substitution-using-sed/</id><summary type="html">&lt;p&gt;Suppose we have a text file &lt;tt class="docutils literal"&gt;config.ini&lt;/tt&gt; looks something like this:&lt;/p&gt;
+</summary><category term="linked-list"></category><category term="recursion"></category></entry><entry><title>Environment variable substitution using Sed</title><link href="http://zhu45.org/posts/2016/Dec/21/environment-variable-substitution-using-sed/" rel="alternate"></link><published>2016-12-21T12:07:00+08:00</published><updated>2016-12-21T12:07:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-21:posts/2016/Dec/21/environment-variable-substitution-using-sed/</id><summary type="html">&lt;p&gt;Suppose we have a text file &lt;tt class="docutils literal"&gt;config.ini&lt;/tt&gt; looks something like this:&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 [MSSQLSERVER]
 Driver=INSTHOME/foo/foo.so
@@ -7517,7 +7789,7 @@ However, if &lt;span class="math"&gt;\(M\)&lt;/span&gt; is very small in compari
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</summary><category term="singly-linked-list"></category><category term="maw"></category></entry><entry><title>Pelican Hack Day</title><link href="http://zhu45.org/posts/2016/Dec/17/pelican-hack-day/" rel="alternate"></link><published>2016-12-17T22:44:00+08:00</published><updated>2016-12-17T22:44:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-17:posts/2016/Dec/17/pelican-hack-day/</id><summary type="html">&lt;p&gt;I have been using Sphinx since 2012 and I spend quite a amount of time to customize
+&lt;/script&gt;</summary><category term="linked-list"></category><category term="maw"></category></entry><entry><title>Pelican Hack Day</title><link href="http://zhu45.org/posts/2016/Dec/17/pelican-hack-day/" rel="alternate"></link><published>2016-12-17T22:44:00+08:00</published><updated>2016-12-17T22:44:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-17:posts/2016/Dec/17/pelican-hack-day/</id><summary type="html">&lt;p&gt;I have been using Sphinx since 2012 and I spend quite a amount of time to customize
 my old Sphinx-based websites
 (&lt;a class="reference external" href="https://zeyuanhu.wordpress.com/2016/11/24/under-construction-part-12/"&gt;This article revisits all my past website construction effort&lt;/a&gt;).
 However, most of the time I'm tweaking the CSS and content organization of the site.
@@ -8029,7 +8301,7 @@ reading Line[6] &amp;amp; Line[11] &amp;amp; Line[16].&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</summary><category term="singly-linked-list"></category><category term="recursion"></category><category term="maw"></category></entry><entry><title>PrintLots</title><link href="http://zhu45.org/posts/2016/Nov/28/printlots/" rel="alternate"></link><published>2016-11-28T18:20:00+08:00</published><updated>2016-11-28T18:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-11-28:posts/2016/Nov/28/printlots/</id><summary type="html">&lt;div class="section" id="problem"&gt;
+</summary><category term="linked-list"></category><category term="recursion"></category><category term="maw"></category></entry><entry><title>PrintLots</title><link href="http://zhu45.org/posts/2016/Nov/28/printlots/" rel="alternate"></link><published>2016-11-28T18:20:00+08:00</published><updated>2016-11-28T18:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-11-28:posts/2016/Nov/28/printlots/</id><summary type="html">&lt;div class="section" id="problem"&gt;
 &lt;h2&gt;Problem&lt;/h2&gt;
 &lt;p&gt;Today, I finished the problem 3.2. The question is following:&lt;/p&gt;
 &lt;blockquote&gt;
@@ -8171,7 +8443,7 @@ but that is actually a out of bound access and C won't complain about this. Howe
 is random. That is called &amp;quot;undefined behavior&amp;quot;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</summary><category term="c"></category><category term="singly-linked-list"></category><category term="maw"></category></entry><entry><title>Automatically publish Tinkerer bld output to GitHub with Travis CI</title><link href="http://zhu45.org/posts/2016/Nov/27/automatically-publish-tinkerer-bld-output-to-github-with-travis-ci/" rel="alternate"></link><published>2016-11-27T22:00:00+08:00</published><updated>2016-11-27T22:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-11-27:posts/2016/Nov/27/automatically-publish-tinkerer-bld-output-to-github-with-travis-ci/</id><summary type="html">&lt;div class="section" id="perface"&gt;
+</summary><category term="c"></category><category term="linked-list"></category><category term="maw"></category></entry><entry><title>Automatically publish Tinkerer bld output to GitHub with Travis CI</title><link href="http://zhu45.org/posts/2016/Nov/27/automatically-publish-tinkerer-bld-output-to-github-with-travis-ci/" rel="alternate"></link><published>2016-11-27T22:00:00+08:00</published><updated>2016-11-27T22:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-11-27:posts/2016/Nov/27/automatically-publish-tinkerer-bld-output-to-github-with-travis-ci/</id><summary type="html">&lt;div class="section" id="perface"&gt;
 &lt;h2&gt;Perface&lt;/h2&gt;
 &lt;p&gt;I saw a comment from &lt;a class="reference external" href="https://www.notionsandnotes.org/tech/web-development/pelican-static-blog-setup.html"&gt;a web&lt;/a&gt;
 that talks about auto deployment with Travis CI&lt;/p&gt;
@@ -8412,7 +8684,7 @@ private.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</summary><category term="c"></category><category term="singly-linked-list"></category><category term="maw"></category></entry><entry><title>Hello World</title><link href="http://zhu45.org/posts/2016/Nov/23/hello-world/" rel="alternate"></link><published>2016-11-23T23:00:00+08:00</published><updated>2016-11-23T23:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-11-23:posts/2016/Nov/23/hello-world/</id><summary type="html">&lt;p&gt;This blog will focus entirely on posts that involve either source code or
+</summary><category term="c"></category><category term="linked-list"></category><category term="maw"></category></entry><entry><title>Hello World</title><link href="http://zhu45.org/posts/2016/Nov/23/hello-world/" rel="alternate"></link><published>2016-11-23T23:00:00+08:00</published><updated>2016-11-23T23:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-11-23:posts/2016/Nov/23/hello-world/</id><summary type="html">&lt;p&gt;This blog will focus entirely on posts that involve either source code or
 mathematical expression. If you are looking for my posts about life reflection,
 book review, and many other non-technical posts, please check out &lt;a class="reference external" href="https://zeyuanhu.wordpress.com/"&gt;my blog on wordpress&lt;/a&gt;.&lt;/p&gt;
 </summary><category term="meta"></category></entry><entry><title>Minimal Emacs Tutorial</title><link href="http://zhu45.org/posts/2015/Oct/18/minimal-emacs-tutorial/" rel="alternate"></link><published>2017-01-03T21:45:00+08:00</published><updated>2017-01-03T21:45:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2015-10-18:posts/2015/Oct/18/minimal-emacs-tutorial/</id><summary type="html">&lt;div class="section" id="learn-about-emacs"&gt;
