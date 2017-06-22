@@ -61,7 +61,7 @@
         </header>
         
         <article>
-            <p>This is the summary of <em>B tree</em> part in MAW Chapter 4.</p>
+            <html><head></head><body><p>This is the summary of <em>B tree</em> part in MAW Chapter 4.</p>
 <h2 id="motivation">Motivation</h2>
 <p>So far we have assumed that an entire data structure can be stored in the main memory. 
 However, this is not true in reality because if we have more data than can fit in main 
@@ -82,19 +82,19 @@ is different from the other commonly seen definition.</p>
 <li>All leaves are the same depth and have between <span class="math">\(\lceil{L/2}\rceil\)</span> and <span class="math">\(L\)</span> sorted data items, for some L (at least half full).</li>
 <li>The nonleaf nodes have room for up to <span class="math">\(M-1\)</span> keys to guide the searching; key <span class="math">\(i\)</span> represents the smallest key in subtree <span class="math">\(i+1\)</span>.</li>
 </ul>
-<p><img src="/images/b-tree-order-property.PNG" alt="b-tree-order-property"/></p>
+<p><img alt="b-tree-order-property" class="img-responsive" src="/images/b-tree-order-property.PNG"/></p>
 <p>In MAW, the definition of B-tree is essentially known as <span class="math">\(B^+-\)</span>tree. Technically, the real B-tree has the key property that 
 the actual data to be stored in both leaves and internal nodes, which is not the case in our definition. In some <span class="math">\(B^+-\)</span>tree definition,
 the leaves are connected as a linked list so that we don't have to restart the search from the root once we already traverse down to the 
 leaf if we want a record that is on a leaf really close to the leaf we currently at. </p>
 <h2 id="examples">Examples</h2>
 <p>Some typical examples in B-tree are of order 4 (known as 2-3-4 tree) and 3 (known as 2-3 tree).</p>
-<p><img src="/images/2-3-tree.PNG" alt="2-3-tree" style="width: 700px;"/></p>
+<p><img alt="2-3-tree" class="img-responsive" src="/images/2-3-tree.PNG" style="width: 700px;"/></p>
 <p>B-tree is a structure that is widely used in the database system. The following picture shows a more real B-tree example. 
 Suppose we have a large customer table with gigabytes of data and an index is created on the phone number column of the 
 customer table to speed up search. Phone numbers stored in sorted order with information (page and slot) on where the rest of 
 the customer information can be found in the customer table.</p>
-<p><img src="/images/real-b-tree.PNG" alt="real-b-tree" style="width: 700px;"/></p>
+<p><img alt="real-b-tree" class="img-responsive" src="/images/real-b-tree.PNG" style="width: 700px;"/></p>
 <p>In this example, once we continue down the tree and locate the phone number we are searching for, we use the RID to fetch the rest of the customer record from the table. In this case, we use 4 page accesses to get the full customer
 record from the table.</p>
 <h2 id="operations">Operations</h2>
@@ -218,7 +218,7 @@ from U.Washington</li>
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>
+</script></body></html>
         </article>
 
 <!--        <footer>

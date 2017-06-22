@@ -61,7 +61,7 @@
         </header>
         
         <article>
-            <p>Today, during the lunch break, I take a look at the following problem:</p>
+            <html><head></head><body><p>Today, during the lunch break, I take a look at the following problem:</p>
 <blockquote>
 Print a singly linked list in reverse order.</blockquote>
 <p>This is actually one of the interview questions I got at SAP for ABAP developer position
@@ -76,7 +76,7 @@ and I think the problem may help me to kill some time during the break.</p>
     <span class="k">return</span><span class="p">;</span>
   <span class="p">}</span>
   <span class="n">printListReverseHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d-&gt;&quot;</span><span class="p">,</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"%d-&gt;"</span><span class="p">,</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="kt">void</span> <span class="nf">printListReverse</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
@@ -116,12 +116,12 @@ Suppose you have a list of <tt class="docutils literal"><span class="pre">1-&gt;
 in reverse order. What we left to do is to print out <tt class="docutils literal">1</tt> and then we done. We follow this thought process closely
 when we actually write the recursion function. After we write out the base case, we first write <tt class="docutils literal"><span class="pre">printListReverseHelper(L-&gt;Next);</span></tt>
 This is saying that the rest of list (except the first one) is already printed in reverse order (i.e. <tt class="docutils literal">2</tt> and <tt class="docutils literal">3</tt> in our case).
-Then we write <tt class="docutils literal"><span class="pre">printf(&quot;%d-&gt;&quot;,</span> <span class="pre">L-&gt;Element);</span></tt>. This says, ok, since we are only left with the first node, let's print it out and the
+Then we write <tt class="docutils literal"><span class="pre">printf("%d-&gt;",</span> <span class="pre">L-&gt;Element);</span></tt>. This says, ok, since we are only left with the first node, let's print it out and the
 job is done (i.e. <tt class="docutils literal">1</tt> in our case).</li>
 </ol>
 <p>See, how simple the recursion can be if we can actually get over psychological obstacle to expand the call stack mentally and directly apply
 four rules (especially the third rule) to design our function.</p>
-
+</body></html>
         </article>
 
 <!--        <footer>

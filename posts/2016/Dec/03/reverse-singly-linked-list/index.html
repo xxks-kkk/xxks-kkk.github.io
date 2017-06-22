@@ -63,7 +63,7 @@
         </header>
         
         <article>
-            <div class="section" id="problem">
+            <html><head></head><body><div class="section" id="problem">
 <h2>Problem</h2>
 <p>This problem is MAW 3.12:</p>
 <blockquote>
@@ -86,7 +86,7 @@ interview.</p>
 </div>
 <div class="section" id="solution-1">
 <h3>Solution 1</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<table class=" table-striped table highlighttable table-hover"><tbody><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -118,7 +118,7 @@ interview.</p>
    <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
  <span class="p">}</span>
 </pre></div>
-</td></tr></table><p>Solution 1 is pretty straightforward. We first create a new list. Then, we walk
+</td></tr></tbody></table><p>Solution 1 is pretty straightforward. We first create a new list. Then, we walk
 through the original list and insert node we visit at the very beginning of the
 new list. Once we finish the traversal of the original list, we return the new list.</p>
 <div class="admonition note">
@@ -141,7 +141,7 @@ a list: in my case, <a class="reference external" href="../../../../../posts/201
 </div>
 <p>However, this solution wastes a ton of memory space and too many <tt class="docutils literal">malloc</tt> operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<table class=" table-striped table highlighttable table-hover"><tbody><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -177,7 +177,7 @@ which basically duplicate the data. This is the place where the algorithm can be
    <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
  <span class="p">}</span>
 </pre></div>
-</td></tr></table><div class="admonition note">
+</td></tr></tbody></table><div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>This solution has two interesting points:</p>
 <ul class="last simple">
@@ -191,7 +191,7 @@ same assignments in slightly different order).</li>
 </div>
 <div class="section" id="solution-2">
 <h3>Solution 2</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<table class=" table-striped table highlighttable table-hover"><tbody><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -223,7 +223,7 @@ same assignments in slightly different order).</li>
    <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">dummyPrev</span><span class="p">;</span>
  <span class="p">}</span>
 </pre></div>
-</td></tr></table><p>The 2nd solution is an iterative approach. The logic itself is quite straightforward.
+</td></tr></tbody></table><p>The 2nd solution is an iterative approach. The logic itself is quite straightforward.
 But, please always remember we assume <em>dummy</em> node exists. You can see both from
 Line[4] and Line[15].</p>
 <div class="admonition note">
@@ -235,7 +235,7 @@ works but is not as nice as this one. You can check it out in my
 </div>
 <div class="section" id="solution-3">
 <h3>Solution 3</h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<table class=" table-striped table highlighttable table-hover"><tbody><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -275,7 +275,7 @@ works but is not as nice as this one. You can check it out in my
    <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">P</span><span class="p">;</span>
  <span class="p">}</span>
 </pre></div>
-</td></tr></table><p>This solution is a recursive solution. This causes me much time to think about
+</td></tr></tbody></table><p>This solution is a recursive solution. This causes me much time to think about
 because we have a <em>dummy</em> node to be taken care of. That's why I use a private
 helper function. There is a couple important points to be noticed here:</p>
 <ul>
@@ -294,7 +294,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 <li><p class="first">We use a private function mainly because we have <em>dummy</em> node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<table class=" table-striped table highlighttable table-hover"><tbody><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -334,7 +334,7 @@ also why the first data node in the original list is passed into the helper func
   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">P</span><span class="p">;</span>
  <span class="p">}</span>
 </pre></div>
-</td></tr></table><p>The above code shows a perfect example why <em>dummy</em> node case cannot be handled
+</td></tr></tbody></table><p>The above code shows a perfect example why <em>dummy</em> node case cannot be handled
 in recursive call. This is because, when we do recursion, we always assume
 there is <em>dummy</em> node exists in the sub list we passed in. However, that is not
 what our list acutally is. You can see why our recursion assumes the <em>dummy</em> node exists by
@@ -343,7 +343,7 @@ reading Line[6] &amp; Line[11] &amp; Line[16].</p>
 </ul>
 </div>
 </div>
-
+</body></html>
         </article>
 
 <!--        <footer>

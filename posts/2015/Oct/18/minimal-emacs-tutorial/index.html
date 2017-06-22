@@ -59,7 +59,7 @@
         </header>
         
         <article>
-            <div class="section" id="learn-about-emacs">
+            <html><head></head><body><div class="section" id="learn-about-emacs">
 <h2>Learn about Emacs</h2>
 <p>Here I will cover some basic manipulation with text files using emacs. It should be enough to get started working with
 emacs.</p>
@@ -67,16 +67,16 @@ emacs.</p>
 <h3>Terms in Emacs</h3>
 <ul class="simple">
 <li>Region: the highlighted area</li>
-<li>Kill: same as &quot;cut&quot;</li>
-<li>Yank: same as &quot;paste&quot;</li>
+<li>Kill: same as "cut"</li>
+<li>Yank: same as "paste"</li>
 </ul>
 </div>
 <div class="section" id="emacs-key-notation">
 <h3>Emacs Key Notation</h3>
-<table border="1" class="docutils">
+<table border="1" class=" table-striped docutils table-hover table">
 <colgroup>
-<col width="11%" />
-<col width="89%" />
+<col width="11%"></col>
+<col width="89%"></col>
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">Prefix</th>
@@ -135,12 +135,12 @@ sequence and start again.</li>
 <ul class="last simple">
 <li>You need to set mark before you can use region operation. To know more about
 <a class="reference external" href="https://www.cs.colorado.edu/~main/cs1300-old/cs1300/doc/emacs/emacs_13.html">The Mark and Region</a></li>
-<li>To move or copy a region of text in emacs, you must first &quot;mark&quot; it, then kill or copy the marked text, move the cu
+<li>To move or copy a region of text in emacs, you must first "mark" it, then kill or copy the marked text, move the cu
 rsor to the desired location, and restore the killed or copied text. A region of text is defined by marking one end         of it, then moving the cursor to the other end.</li>
 </ul>
 </div>
 <ul class="simple">
-<li><strong>C-&#64;</strong> Set the mark here</li>
+<li><strong>C-@</strong> Set the mark here</li>
 <li><strong>C-SPC</strong> Set the mark where point is</li>
 <li><strong>C-x-h</strong> Select the whole text</li>
 <li><strong>C-w</strong> kill the region</li>
@@ -198,7 +198,7 @@ selected)</li>
 </li>
 <li><p class="first"><strong>Esc-x replace-string</strong> replace all occurrences of OLD STRING with NEW STRING.</p>
 </li>
-<li><p class="first"><strong>ESC-x list-matching-lines</strong> lists all the lines matching your pattern in a separate buffer, along with their numbers. Use &quot;ESC-x goto-line&quot; to go to the occurrence you're interested in.</p>
+<li><p class="first"><strong>ESC-x list-matching-lines</strong> lists all the lines matching your pattern in a separate buffer, along with their numbers. Use "ESC-x goto-line" to go to the occurrence you're interested in.</p>
 </li>
 </ul>
 </div>
@@ -261,7 +261,7 @@ file that doesn't work quite right after being loaded twice.</p>
 <div class="topic">
 <p class="topic-title first">Switch between windows when one windows open with term</p>
 <p>If you open two windows, and one window open a term (ie. <strong>M-x term</strong>), now you want to switch back to another
-window. You may find out &quot;C-x o&quot; may no longer work. In this case, you may want to use <strong>C-c o</strong> to switch to next
+window. You may find out "C-x o" may no longer work. In this case, you may want to use <strong>C-c o</strong> to switch to next
 window from term</p>
 </div>
 <div class="topic">
@@ -276,18 +276,17 @@ window from term</p>
 <div class="topic">
 <p class="topic-title first">Editing multiple lines at the same time</p>
 <p>suppose I have the following chunk of code that I want to edit:</p>
-<pre class="literal-block">
-printf &quot;%s=%s\n&quot; &quot;Database&quot; &quot;bool_db&quot;
-printf &quot;%s=%s\n&quot; &quot;Username&quot;  &quot;admin&quot;
-printf &quot;%s=%s\n&quot; &quot;Password&quot;  &quot;password&quot;
-printf &quot;%s=%s\n&quot; &quot;ReadOnly&quot;  &quot;false&quot;
-printf &quot;%s=%s\n&quot; &quot;ShowSystemTables&quot; &quot;false&quot;
-printf &quot;%s=%s\n&quot; &quot;LegacySQLTables&quot; &quot;false&quot;
-printf &quot;%s=%s\n&quot; &quot;LoginTimeout&quot; &quot;0&quot;
+<pre class="literal-block">printf "%s=%s\n" "Database" "bool_db"
+printf "%s=%s\n" "Username"  "admin"
+printf "%s=%s\n" "Password"  "password"
+printf "%s=%s\n" "ReadOnly"  "false"
+printf "%s=%s\n" "ShowSystemTables" "false"
+printf "%s=%s\n" "LegacySQLTables" "false"
+printf "%s=%s\n" "LoginTimeout" "0"
 </pre>
-<p>and I want to remove all <tt class="docutils literal">printf <span class="pre">&quot;%s=%s\n&quot;</span></tt> in each line. I can do the following:</p>
+<p>and I want to remove all <tt class="docutils literal">printf <span class="pre">"%s=%s\n"</span></tt> in each line. I can do the following:</p>
 <ol class="arabic simple">
-<li>Mark the beginning of the region and invoke <strong>M-x rectangle-mark-mode</strong> (or <strong>C-x SPC</strong>) and select all the <tt class="docutils literal">printf <span class="pre">&quot;%s=%s\n&quot;</span></tt></li>
+<li>Mark the beginning of the region and invoke <strong>M-x rectangle-mark-mode</strong> (or <strong>C-x SPC</strong>) and select all the <tt class="docutils literal">printf <span class="pre">"%s=%s\n"</span></tt></li>
 <li>Delete them by <strong>M-x kill-region</strong> (or <strong>C-x r k</strong>)</li>
 </ol>
 <div class="admonition note">
@@ -314,7 +313,7 @@ printf &quot;%s=%s\n&quot; &quot;LoginTimeout&quot; &quot;0&quot;
 <h2>Emacs Configuration</h2>
 <p>This is my <a class="reference external" href="https://github.com/xxks-kkk/emacs-config">personal emacs configuration</a>.</p>
 </div>
-
+</body></html>
         </article>
 
 <!--        <footer>

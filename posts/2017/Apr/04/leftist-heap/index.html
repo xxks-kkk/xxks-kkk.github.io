@@ -61,7 +61,7 @@
         </header>
         
         <article>
-            <p>This is the summary of <em>leftist heaps</em> part in MAW Chapter 6.</p>
+            <html><head></head><body><p>This is the summary of <em>leftist heaps</em> part in MAW Chapter 6.</p>
 <h2 id="motivation">Motivation</h2>
 <p>Merge two priority queues into one can be a very hard operation to do. For binary
 heap, this can be done at <span class="math">\(O(N)\)</span>. However, we want to do better. Leftist heap
@@ -89,7 +89,7 @@ a <em>leftist tree</em>. A leftist heap is simply a leftist tree with keys in he
 </blockquote>
 <p>The number in the each node below is the <span class="math">\(Npl\)</span> of that node. By the leftist property,
 only the left tree is leftist.</p>
-<p><img src="/images/leftist-tree-example.PNG" alt="leftist tree example" style="width: 700px;"/></p>
+<p><img alt="leftist tree example" class="img-responsive" src="/images/leftist-tree-example.PNG" style="width: 700px;"/></p>
 <h2 id="properties">Properties</h2>
 <ul>
 <li>If rightmost path of leftist tree has <span class="math">\(r\)</span> nodes, then the whole tree has at least
@@ -123,7 +123,7 @@ root, if needed, to keep leftist property of merged result.</p>
 <p>The following picture shows a good example of <code>merge</code> steps. Note that the <span class="math">\(Npl\)</span> of the node in
 picture is 1 larger than our's definition. The blue curve represents the final
 swap step.</p>
-<p><img src="/images/leftist-heap-merge.PNG" alt="leftist heap merge example" style="width: 700px;"/></p>
+<p><img alt="leftist heap merge example" class="img-responsive" src="/images/leftist-heap-merge.PNG" style="width: 700px;"/></p>
 <p>Another example can be seen from MAW 6.16 in 
 <a href="../../../../../posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/">my chapter 6 writing question post</a>.</p>
 <p>The actual implementation in C is below, which is copied from maw p.198:</p>
@@ -182,7 +182,7 @@ a new leftist heap.</p>
   <span class="n">PriorityQueue</span> <span class="n">LeftHeap</span><span class="p">,</span> <span class="n">RightHeap</span><span class="p">;</span>
   <span class="k">if</span><span class="p">(</span><span class="n">IsEmpty</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
   <span class="p">{</span>
-    <span class="n">Error</span><span class="p">(</span><span class="s">&quot;Priority queue is empty&quot;</span><span class="p">);</span>
+    <span class="n">Error</span><span class="p">(</span><span class="s">"Priority queue is empty"</span><span class="p">);</span>
     <span class="k">return</span> <span class="n">H</span><span class="p">;</span>    
   <span class="p">}</span>    
   <span class="n">LeftHeap</span> <span class="o">=</span> <span class="n">H</span><span class="o">-&gt;</span><span class="n">Left</span><span class="p">;</span>
@@ -266,7 +266,7 @@ the queue, dequeue two heaps, merge them, and enqueue the result.</p>
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>
+</script></body></html>
         </article>
 
 <!--        <footer>

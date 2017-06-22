@@ -63,7 +63,7 @@
         </header>
         
         <article>
-            <div class="section" id="problem">
+            <html><head></head><body><div class="section" id="problem">
 <h2>Problem</h2>
 <p>Today, I finished the problem 3.2. The question is following:</p>
 <blockquote>
@@ -76,7 +76,7 @@ use the basic list operations. What is the running time of your procedure?</bloc
 </div>
 <div class="section" id="solution">
 <h2>Solution</h2>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<table class=" table-striped table highlighttable table-hover"><tbody><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -140,7 +140,7 @@ use the basic list operations. What is the running time of your procedure?</bloc
      <span class="k">if</span> <span class="p">(</span><span class="n">idx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
      <span class="p">{</span>
        <span class="c1">// if the idx is larger or equal to where the dummyL currently is</span>
-       <span class="c1">// we don&#39;t want to reset the dummyL to the very beginning of</span>
+       <span class="c1">// we don't want to reset the dummyL to the very beginning of</span>
        <span class="c1">// the list L again to redo the traverse.</span>
        <span class="k">if</span> <span class="p">(</span><span class="n">idx</span> <span class="o">&lt;</span> <span class="n">i</span><span class="p">)</span>
        <span class="p">{</span>
@@ -161,10 +161,10 @@ use the basic list operations. What is the running time of your procedure?</bloc
        <span class="p">}</span>
        <span class="k">if</span> <span class="p">(</span><span class="n">outofelement</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
        <span class="p">{</span>
-         <span class="n">printf</span><span class="p">(</span><span class="s">&quot;No element in position %d, &quot;</span><span class="p">,</span> <span class="n">idx</span><span class="p">);</span>
+         <span class="n">printf</span><span class="p">(</span><span class="s">"No element in position %d, "</span><span class="p">,</span> <span class="n">idx</span><span class="p">);</span>
        <span class="p">}</span>
        <span class="k">else</span><span class="p">{</span>
-         <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d, &quot;</span><span class="p">,</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
+         <span class="n">printf</span><span class="p">(</span><span class="s">"%d, "</span><span class="p">,</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
        <span class="p">}</span>
      <span class="p">}</span>
      <span class="k">else</span>
@@ -176,11 +176,10 @@ use the basic list operations. What is the running time of your procedure?</bloc
    <span class="p">}</span>
  <span class="p">}</span>
 </pre></div>
-</td></tr></table><p>The problem isn't hard to solve. However, to get things right, I need to develop several test cases.
+</td></tr></tbody></table><p>The problem isn't hard to solve. However, to get things right, I need to develop several test cases.
 Let's develop a solution that can handle more general situation. In other words, linked list, P, doesn't
 necessarily contain integers sorted in ascending order. Here are test cases I developed:</p>
-<pre class="literal-block">
-L: 23, 44, 45, 57, 89, -1
+<pre class="literal-block">L: 23, 44, 45, 57, 89, -1
 
 P:  1, 3, 4, 5          &lt;--- normal case
     1, 3, 4, 6          &lt;--- there is no sixth element in L
@@ -202,10 +201,10 @@ if the number in P is actually ascending, we want to move the traver ptr from it
 supports the array element access using negative index, then we shouldn't use <tt class="docutils literal">exit</tt> to handle.
 Luckily, C doesn't support this feature. In fact, C allows you to access the element using negative index,
 but that is actually a out of bound access and C won't complain about this. However, whate exactly you get
-is random. That is called &quot;undefined behavior&quot;.</li>
+is random. That is called "undefined behavior".</li>
 </ul>
 </div>
-
+</body></html>
         </article>
 
 <!--        <footer>

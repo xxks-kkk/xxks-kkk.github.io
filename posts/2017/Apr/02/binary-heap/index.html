@@ -61,7 +61,7 @@
         </header>
         
         <article>
-            <p>This is the summary of <em>binary heap</em> and its generalization <em>d-heap</em> part in MAW Chapter 6.</p>
+            <html><head></head><body><p>This is the summary of <em>binary heap</em> and its generalization <em>d-heap</em> part in MAW Chapter 6.</p>
 <h2 id="motivation">Motivation</h2>
 <p>The motivation for priority queue majorly comes from the fact that not all things
 are equally weighted. I'll summarize the applications of priority queues in my
@@ -81,7 +81,7 @@ key in <span class="math">\(X\)</span>, with the exception of the root (which ha
 every node is less than or equal to its children.</p>
 <p>This property guarantees that the root node is always the smallest node <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>.</p>
 <p>Here are some examples:</p>
-<p><img src="/images/binary-heap.PNG" alt="binary heap examples" style="width: 700px;"/></p>
+<p><img alt="binary heap examples" class="img-responsive" src="/images/binary-heap.PNG" style="width: 700px;"/></p>
 <h2 id="properties">Properties</h2>
 <ul>
 <li>Since complete binary tree of height <span class="math">\(h\)</span> has between <span class="math">\(2^h\)</span> and <span class="math">\(2^{h+1}-1\)</span> nodes, 
@@ -101,13 +101,13 @@ expensive to do.</p>
 location in the tree. Then, we need to maintain the heap order property by doing 
 a simple insertion sort operation on the path from the new place to the root to find
 the correct place for it in the tree. This is called <em>percolate up</em> <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>. </p>
-<p><img src="/images/binary-heap-percolate-up.PNG" alt="binary heap percolate up" style="width: 700px;"/></p>
+<p><img alt="binary heap percolate up" class="img-responsive" src="/images/binary-heap-percolate-up.PNG" style="width: 700px;"/></p>
 <ul>
 <li>We start at last node and keep comparing with parent <span class="math">\(A[i/2]\)</span></li>
 <li>If parent larger, copy parent down and go up one level</li>
 <li>Done if parent <span class="math">\(\le\)</span> item or reached top node <span class="math">\(A[1]\)</span></li>
 </ul>
-<p><img src="/images/binary-heap-percolate-up-done.PNG" alt="binary heap percolate up done"/></p>
+<p><img alt="binary heap percolate up done" class="img-responsive" src="/images/binary-heap-percolate-up-done.PNG"/></p>
 <h3 id="deletemin">DeleteMin</h3>
 <p>We delete and return the value at root node in this operation. Same as the insert, 
 we need to maintain the binary heap properties. </p>
@@ -116,7 +116,7 @@ node's value in the tree to fill in the hole. By doing this way, we maintain the
 structure property. Now, we need to maintain the heap order property. Similar to 
 insertion, we can do a simple insertion sort-like operation to find the correct
 place for it in the tree. This is called <em>percolate down</em>.</p>
-<p><img src="/images/binary-heap-percolate-down.PNG" alt="binary heap percolate down" style="width: 700px;"/></p>
+<p><img alt="binary heap percolate down" class="img-responsive" src="/images/binary-heap-percolate-down.PNG" style="width: 700px;"/></p>
 <ul>
 <li>Keep comparing with children <span class="math">\(A[2i]\)</span> and <span class="math">\(A[2i+1]\)</span></li>
 <li>Copy smaller child up and go down one level</li>
@@ -180,24 +180,24 @@ at <span class="math">\(\lfloor{\frac{i + (d-2)}{d}}\rfloor\)</span> and the chi
 <a href="https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture11.pdf">11</a> from U.Washington</li>
 </ul>
 <div class="footnote">
-<hr />
+<hr/>
 <ol>
 <li id="fn:1">
 <p>The heap order property is for min heap. If you want to have a max heap, then
 the heap order property should be that every node is greater than or equal to 
-its children.&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+its children. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:2">
 <p>Position 0 is used as a sentinel, which holds the value that is smaller than
 (or equal to) any element in the heap. This is because every iteration of insert
 needs to test: 1. if it has reached the top node A[1] 2. if parent <span class="math">\(\le\)</span> item
 The first test can be avoid by using sentinel b/c it then becomes a special case
-of second test.&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+of second test. <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 <li id="fn:3">
 <p>As shown on MAW p.183, empirical study shows that on average, percolation terminates
 early: average <em>insert</em> moves an element up 1.607 levels. This means that 
-binary heap support insertion in <em>constant average</em> time per operation.&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+binary heap support insertion in <em>constant average</em> time per operation. <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">↩</a></p>
 </li>
 </ol>
 </div>
@@ -257,7 +257,7 @@ binary heap support insertion in <em>constant average</em> time per operation.&#
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>
+</script></body></html>
         </article>
 
 <!--        <footer>

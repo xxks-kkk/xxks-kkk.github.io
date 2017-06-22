@@ -63,7 +63,7 @@
         </header>
         
         <article>
-            <p>This is the summary part of hash table and at the same time, it serves as the Chapter 5
+            <html><head></head><body><p>This is the summary part of hash table and at the same time, it serves as the Chapter 5
 reflection.</p>
 <div class="section" id="reflection">
 <h2>Reflection</h2>
@@ -74,13 +74,13 @@ A typical find or insert operations require <span class="math">\(O(\log N)\)</sp
 not good enough compared with <span class="math">\(O(1)\)</span> time. This is place where hash tables implementation
 can shine. Hash tables is a data structure that is designed for <span class="math">\(O(1)\)</span> find, insert, and delete
 operations. The only downside compared hash tables with tree structure is the ill support for ordering elements.</p>
-<img src="/images/maw-chap5.PNG" alt="chapter5 ADT picture" style="width: 700px;"/></div>
+<img alt="chapter5 ADT picture" class="img-responsive" src="/images/maw-chap5.PNG" style="width: 700px;"/></div>
 <div class="section" id="general-idea">
 <h3>General Idea</h3>
 <p>A hash table is an array of some fixed size. Then we use hash function to map each key
 (i.e. a key is a string with an associated value) into some number in the range <tt class="docutils literal">0</tt> to
 <tt class="docutils literal"><span class="pre">Tablesize-1</span></tt> and place it in the appropriate cell.</p>
-<img alt="" src="/images/hashtable.PNG" />
+<img alt="" class="img-responsive" src="/images/hashtable.PNG"/>
 <p>Ideally, two distinct keys get different cells. However, this is not possible because
 there are a finite number of cells and a virtually infinite supply of keys. Thus the key
 concern for hash table data structure is how to distribute the keys evenly among the cells.
@@ -98,8 +98,8 @@ the pick of hash function has high dependency on the actual content of the key s
 <ul class="simple">
 <li>Choose the table size of the hash table to be the prime.</li>
 </ul>
-<p>The rationale for this is that real-life data tends to have pattern, and &quot;multiples of 61&quot;
-are probably less likely than &quot;multiples of 60&quot;. In addition, quadratic hashing is an efficient
+<p>The rationale for this is that real-life data tends to have pattern, and "multiples of 61"
+are probably less likely than "multiples of 60". In addition, quadratic hashing is an efficient
 collision strategy to use (compared with linear hashing, double hashing) and it requires the table size
 to be the prime.</p>
 <ul class="simple">
@@ -108,7 +108,7 @@ as our function.</li>
 </ul>
 <p>Here we use 256 because <cite>char</cite> data is 1 byte. Other hash function may be adding up the ASCII values ofthe characters
 in the string. However, this doesn't work well because if string keys are short, it will not hash evenly to all of the
-hash table (see MAW p.151) and different character combinations hash to same value (i.e. &quot;abc&quot;, &quot;bca&quot; all add up to the
+hash table (see MAW p.151) and different character combinations hash to same value (i.e. "abc", "bca" all add up to the
 same value).</p>
 <p>The slides listed in the reference section offer some examples on hash function pick if
 we know the keys beforehand (i.e. if keys <span class="math">\(s\)</span> are the real numbers uniformly
@@ -133,7 +133,7 @@ each hash table cell holds pointer to linked list of records with same hash valu
 When collision happens, we insert the hash value of the key to the corresponding linked list of
 the cell that hash value should be stored. When we want to find an item, we compute the
 hash value, then do find on linked list.</p>
-<img alt="" src="/images/separate-chaining.PNG" />
+<img alt="" class="img-responsive" src="/images/separate-chaining.PNG"/>
 <p>Here the worst case time happens for find operation, which can take linear time.
 However, this can happen in the extreme rare case (bad luck or bad hash function).
 Of course, we can build a balance tree instead of a linked list on each cell to shrink
@@ -211,7 +211,7 @@ constraint:</p>
 <li><a class="reference external" href="https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf">https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf</a></li>
 </ul>
 </div>
-<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+</body></html><script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
         linebreak = "false";

@@ -61,9 +61,9 @@
         </header>
         
         <article>
-            <p>This post covers the typecasting in C with the aim to get a clear understanding
+            <html><head></head><body><p>This post covers the typecasting in C with the aim to get a clear understanding
 of the most commonly-seen C manipulation. This writeup is adapted from
-&quot;Hacking - the Art of Exploitation&quot;.</p>
+"Hacking - the Art of Exploitation".</p>
 <div class="section" id="tl-dr">
 <h2>TL;DR</h2>
 <ul class="simple">
@@ -94,7 +94,7 @@ An integer is four bytes in size, while a character only takes up a single byte.
 <span class="p">{</span>
   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 
-  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;a&#39;</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span><span class="p">,</span> <span class="sc">&#39;c&#39;</span><span class="p">,</span> <span class="sc">&#39;d&#39;</span><span class="p">,</span> <span class="sc">&#39;e&#39;</span><span class="p">};</span>
+  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">'a'</span><span class="p">,</span> <span class="sc">'b'</span><span class="p">,</span> <span class="sc">'c'</span><span class="p">,</span> <span class="sc">'d'</span><span class="p">,</span> <span class="sc">'e'</span><span class="p">};</span>
   <span class="kt">int</span> <span class="n">int_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
 
   <span class="kt">char</span> <span class="o">*</span><span class="n">char_pointer</span><span class="p">;</span>
@@ -105,18 +105,17 @@ An integer is four bytes in size, while a character only takes up a single byte.
 
   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[integer pointer] points to %p, which contains the integer %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">int_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">int_pointer</span><span class="o">++</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[integer pointer] points to %p, which contains the integer %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">int_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">int_pointer</span><span class="o">++</span><span class="p">);</span>
   <span class="p">}</span>
 
   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[char pointer] points to %p, which contains the char &#39;%c&#39;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">char_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">char_pointer</span><span class="o">++</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[char pointer] points to %p, which contains the char '%c'</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">char_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">char_pointer</span><span class="o">++</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 <p>The program itself is pretty straightforward. Here is the output:</p>
-<pre class="literal-block">
-[integer pointer] points to 0x7ffd90db45a4, which contains the integer 1
+<pre class="literal-block">[integer pointer] points to 0x7ffd90db45a4, which contains the integer 1
 [integer pointer] points to 0x7ffd90db45a8, which contains the integer 2
 [integer pointer] points to 0x7ffd90db45ac, which contains the integer 3
 [integer pointer] points to 0x7ffd90db45b0, which contains the integer 4
@@ -137,7 +136,7 @@ But since an integer is 4 bytes, a pointer to the next integer has to be 4 bytes
 <span class="p">{</span>
   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 
-  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;a&#39;</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span><span class="p">,</span> <span class="sc">&#39;c&#39;</span><span class="p">,</span> <span class="sc">&#39;d&#39;</span><span class="p">,</span> <span class="sc">&#39;e&#39;</span><span class="p">};</span>
+  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">'a'</span><span class="p">,</span> <span class="sc">'b'</span><span class="p">,</span> <span class="sc">'c'</span><span class="p">,</span> <span class="sc">'d'</span><span class="p">,</span> <span class="sc">'e'</span><span class="p">};</span>
   <span class="kt">int</span> <span class="n">int_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
 
   <span class="kt">char</span> <span class="o">*</span><span class="n">char_pointer</span><span class="p">;</span>
@@ -149,18 +148,17 @@ But since an integer is 4 bytes, a pointer to the next integer has to be 4 bytes
 
   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[integer pointer] points to %p, which contains the integer %c</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">int_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">int_pointer</span><span class="o">++</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[integer pointer] points to %p, which contains the integer %c</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">int_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">int_pointer</span><span class="o">++</span><span class="p">);</span>
   <span class="p">}</span>
 
   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[char pointer] points to %p, which contains the char &#39;%d&#39;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">char_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">char_pointer</span><span class="o">++</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[char pointer] points to %p, which contains the char '%d'</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">char_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">char_pointer</span><span class="o">++</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 <p>The output is:</p>
-<pre class="literal-block">
-$ gcc pointer_types2.c
+<pre class="literal-block">$ gcc pointer_types2.c
 pointer_types2.c: In function ‘main’:
 pointer_types2.c:13: warning: assignment from incompatible pointer type
 pointer_types2.c:14: warning: assignment from incompatible pointer type
@@ -169,8 +167,7 @@ pointer_types2.c:14: warning: assignment from incompatible pointer type
 In the compiled code, a pointer is nothing more than a memory address, so the compiler
 will still compile the code if a pointer points to an incompatible data type - it simply warns us
 to anticipate unexpected results.:</p>
-<pre class="literal-block">
-[integer pointer] points to 0x7ffe2d481324, which contains the integer a
+<pre class="literal-block">[integer pointer] points to 0x7ffe2d481324, which contains the integer a
 [integer pointer] points to 0x7ffe2d481328, which contains the integer e
 [integer pointer] points to 0x7ffe2d48132c, which contains the integer ▒
 [integer pointer] points to 0x7ffe2d481330, which contains the integer
@@ -192,7 +189,7 @@ we need typecasting.</p>
 <span class="p">{</span>
   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 
-  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;a&#39;</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span><span class="p">,</span> <span class="sc">&#39;c&#39;</span><span class="p">,</span> <span class="sc">&#39;d&#39;</span><span class="p">,</span> <span class="sc">&#39;e&#39;</span><span class="p">};</span>
+  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">'a'</span><span class="p">,</span> <span class="sc">'b'</span><span class="p">,</span> <span class="sc">'c'</span><span class="p">,</span> <span class="sc">'d'</span><span class="p">,</span> <span class="sc">'e'</span><span class="p">};</span>
   <span class="kt">int</span> <span class="n">int_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
 
   <span class="kt">char</span> <span class="o">*</span><span class="n">char_pointer</span><span class="p">;</span>
@@ -203,13 +200,13 @@ we need typecasting.</p>
 
   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[integer  pointer] points to %p, which contains the integer %c</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">int_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">int_pointer</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[integer  pointer] points to %p, which contains the integer %c</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">int_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">int_pointer</span><span class="p">);</span>
     <span class="n">int_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">int_pointer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
   <span class="p">}</span>
 
   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[char pointer] points to %p, which contains the char &#39;%d&#39;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">char_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">char_pointer</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[char pointer] points to %p, which contains the char '%d'</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">char_pointer</span><span class="p">,</span> <span class="o">*</span><span class="n">char_pointer</span><span class="p">);</span>
     <span class="n">char_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">char_pointer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -220,8 +217,7 @@ about the conflicting data types; however, any pointer arithmetic will still be 
 for that one operation). To fix that, when 1 is added to the pointers, they must first be typecast into the correct data type
 so the address is incremented by the correct amount. Then this pointer needs to be typecast back into the pointer's data type
 once again. It works but in a not beautiful way.:</p>
-<pre class="literal-block">
-[integer pointer] points to 0x7ffd484ac470, which contains the integer a
+<pre class="literal-block">[integer pointer] points to 0x7ffd484ac470, which contains the integer a
 [integer pointer] points to 0x7ffd484ac471, which contains the integer b
 [integer pointer] points to 0x7ffd484ac472, which contains the integer c
 [integer pointer] points to 0x7ffd484ac473, which contains the integer d
@@ -249,7 +245,7 @@ memory address.</li>
 <span class="p">{</span>
   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 
-  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;a&#39;</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span><span class="p">,</span> <span class="sc">&#39;c&#39;</span><span class="p">,</span> <span class="sc">&#39;d&#39;</span><span class="p">,</span> <span class="sc">&#39;e&#39;</span><span class="p">};</span>
+  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">'a'</span><span class="p">,</span> <span class="sc">'b'</span><span class="p">,</span> <span class="sc">'c'</span><span class="p">,</span> <span class="sc">'d'</span><span class="p">,</span> <span class="sc">'e'</span><span class="p">};</span>
   <span class="kt">int</span> <span class="n">int_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
 
   <span class="kt">void</span> <span class="o">*</span><span class="n">void_pointer</span><span class="p">;</span>
@@ -258,7 +254,7 @@ memory address.</li>
 
   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[char pointer] points to %p, which contains the char %c</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">void_pointer</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">void_pointer</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[char pointer] points to %p, which contains the char %c</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">void_pointer</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">void_pointer</span><span class="p">));</span>
     <span class="n">void_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">void_pointer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
   <span class="p">}</span>
 
@@ -266,14 +262,13 @@ memory address.</li>
 
   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[integer pointer] points to %p, which contains the integer %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">void_pointer</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">void_pointer</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[integer pointer] points to %p, which contains the integer %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">void_pointer</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">void_pointer</span><span class="p">));</span>
     <span class="n">void_pointer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span> <span class="n">void_pointer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 <p>The output is:</p>
-<pre class="literal-block">
-[char pointer] points to 0x7fff06cf8de0, which contains the char a
+<pre class="literal-block">[char pointer] points to 0x7fff06cf8de0, which contains the char a
 [char pointer] points to 0x7fff06cf8de1, which contains the char b
 [char pointer] points to 0x7fff06cf8de2, which contains the char c
 [char pointer] points to 0x7fff06cf8de3, which contains the char d
@@ -295,7 +290,7 @@ work the same way as a void pointer.</p>
 <span class="p">{</span>
   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 
-  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;a&#39;</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span><span class="p">,</span> <span class="sc">&#39;c&#39;</span><span class="p">,</span> <span class="sc">&#39;d&#39;</span><span class="p">,</span> <span class="sc">&#39;e&#39;</span><span class="p">};</span>
+  <span class="kt">char</span> <span class="n">char_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">'a'</span><span class="p">,</span> <span class="sc">'b'</span><span class="p">,</span> <span class="sc">'c'</span><span class="p">,</span> <span class="sc">'d'</span><span class="p">,</span> <span class="sc">'e'</span><span class="p">};</span>
   <span class="kt">int</span> <span class="n">int_array</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
 
   <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">int</span> <span class="n">hacky_nonpointer</span><span class="p">;</span>
@@ -304,7 +299,7 @@ work the same way as a void pointer.</p>
 
   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[hacky_nonpointer] points to %p, which contains the char %c</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">hacky_nonpointer</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">hacky_nonpointer</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[hacky_nonpointer] points to %p, which contains the char %c</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">hacky_nonpointer</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">hacky_nonpointer</span><span class="p">));</span>
     <span class="n">hacky_nonpointer</span> <span class="o">=</span> <span class="n">hacky_nonpointer</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">);</span>
   <span class="p">}</span>
 
@@ -312,14 +307,13 @@ work the same way as a void pointer.</p>
 
   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[hacky_nonpointer] points to %p, which contains the integer %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">hacky_nonpointer</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">hacky_nonpointer</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[hacky_nonpointer] points to %p, which contains the integer %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">hacky_nonpointer</span><span class="p">,</span> <span class="o">*</span><span class="p">((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">hacky_nonpointer</span><span class="p">));</span>
     <span class="n">hacky_nonpointer</span> <span class="o">=</span> <span class="n">hacky_nonpointer</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 <p>Note that I use <tt class="docutils literal">unsigned long int</tt> because I'm on a 64-bit system. <tt class="docutils literal">unsigned int</tt> is enough for 32-bit system.:</p>
-<pre class="literal-block">
-[hacky_nonpointer] points to 0x7fff3e378360, which contains the char a
+<pre class="literal-block">[hacky_nonpointer] points to 0x7fff3e378360, which contains the char a
 [hacky_nonpointer] points to 0x7fff3e378361, which contains the char b
 [hacky_nonpointer] points to 0x7fff3e378362, which contains the char c
 [hacky_nonpointer] points to 0x7fff3e378363, which contains the char d
@@ -335,7 +329,7 @@ only thing that care about a variable's type. In the end, after the program has 
 the variables are nothing more than memory addresses. This means that variables of one type can easily be coerced into
 behaving like another type by telling the compiler to typecast them into the desired type.</p>
 </div>
-
+</body></html>
         </article>
 
 <!--        <footer>

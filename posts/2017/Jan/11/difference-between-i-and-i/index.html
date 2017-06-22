@@ -59,7 +59,7 @@
         </header>
         
         <article>
-            <p>I'm starting to read through <a class="reference external" href="https://www.amazon.com/Hacking-Art-Exploitation-Jon-Erickson/dp/1593271441">Hacking: The Art of Exploitation</a> on
+            <html><head></head><body><p>I'm starting to read through <a class="reference external" href="https://www.amazon.com/Hacking-Art-Exploitation-Jon-Erickson/dp/1593271441">Hacking: The Art of Exploitation</a> on
 my four hours daily commute to work in order to get myself more comfortable working with C. I resolve a puzzle I have about C, as shown in the title.</p>
 <ul class="simple">
 <li><tt class="docutils literal">i++</tt> means increment the value of <tt class="docutils literal">i</tt> by <tt class="docutils literal">1</tt> <em>after</em> evaluating the arithmetic operation.</li>
@@ -85,7 +85,7 @@ equivalent to the following statement:</p>
 <div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="mi">6</span><span class="p">;</span>
 </pre></div>
-<p>In fact, the two principles mentioned above apply more than &quot;evaluating the arithmetic operation&quot;.
+<p>In fact, the two principles mentioned above apply more than "evaluating the arithmetic operation".
 For example, in the stack <tt class="docutils literal">push</tt> operation:</p>
 <div class="highlight"><pre><span></span><span class="cm">/* Push an element on the Stack</span>
 <span class="cm"> */</span>
@@ -124,23 +124,23 @@ if we are not careful enough.</p>
 <p>Let's take a look at the following code snippet, which is adapted from the program on K &amp; R p.117.</p>
 <div class="highlight"><pre><span></span><span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
 <span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="o">--</span><span class="n">argc</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="o">*++</span><span class="n">argv</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;-&#39;</span><span class="p">)</span>
+  <span class="k">while</span> <span class="p">(</span><span class="o">--</span><span class="n">argc</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="o">*++</span><span class="n">argv</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'-'</span><span class="p">)</span>
     <span class="k">while</span> <span class="p">(</span><span class="n">c</span> <span class="o">=</span> <span class="o">*++</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
       <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span>
       <span class="p">{</span>
-        <span class="k">case</span> <span class="sc">&#39;x&#39;</span><span class="o">:</span>
-          <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;user invokes the program with -x option</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+        <span class="k">case</span> <span class="sc">'x'</span><span class="o">:</span>
+          <span class="n">printf</span> <span class="p">(</span><span class="s">"user invokes the program with -x option</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
           <span class="k">break</span><span class="p">;</span>
-        <span class="k">case</span> <span class="sc">&#39;n&#39;</span><span class="o">:</span>
-          <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;user invokes the program with -n option</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+        <span class="k">case</span> <span class="sc">'n'</span><span class="o">:</span>
+          <span class="n">printf</span> <span class="p">(</span><span class="s">"user invokes the program with -n option</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
           <span class="k">break</span><span class="p">;</span>
         <span class="k">default</span><span class="o">:</span>
-          <span class="n">printf</span><span class="p">(</span><span class="s">&quot;illegal option %c</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+          <span class="n">printf</span><span class="p">(</span><span class="s">"illegal option %c</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
           <span class="n">argc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
           <span class="k">break</span><span class="p">;</span>
       <span class="p">}</span>
    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span>
-     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Usage: find -x pattern</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+     <span class="n">printf</span><span class="p">(</span><span class="s">"Usage: find -x pattern</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 <p>This program itself is straightforward. Let's take a look at <tt class="docutils literal"><span class="pre">(*++argv)[0]</span></tt> to see what it means.
@@ -149,7 +149,7 @@ Since <tt class="docutils literal">argv</tt> is a pointer to the beginning of th
 dereference it to get the value of the argument string that we are currently looking at (i.e
 <tt class="docutils literal"><span class="pre">*++argv</span></tt>). Now, we get its first character by adding <tt class="docutils literal">[0]</tt>. So, we have <tt class="docutils literal"><span class="pre">(*++argv)[0]</span></tt>.
 For example, we run our program with <tt class="docutils literal">a.out <span class="pre">-x</span> <span class="pre">-n</span> pattern</tt>. Then our <tt class="docutils literal">argv</tt> looks like
-<tt class="docutils literal"><span class="pre">{&quot;-x&quot;,</span> <span class="pre">&quot;-n&quot;,</span> &quot;pattern&quot;}</tt>. Then <tt class="docutils literal">argv[0]</tt> is <tt class="docutils literal"><span class="pre">&quot;-x&quot;</span></tt>, <tt class="docutils literal">argv[1]</tt> is <tt class="docutils literal"><span class="pre">&quot;-n&quot;</span></tt>, and so on.</p>
+<tt class="docutils literal"><span class="pre">{"-x",</span> <span class="pre">"-n",</span> "pattern"}</tt>. Then <tt class="docutils literal">argv[0]</tt> is <tt class="docutils literal"><span class="pre">"-x"</span></tt>, <tt class="docutils literal">argv[1]</tt> is <tt class="docutils literal"><span class="pre">"-n"</span></tt>, and so on.</p>
 <p>The reason we need parenthesis in <tt class="docutils literal"><span class="pre">(*++argv)[0]</span></tt> can be seen in the next line <tt class="docutils literal">c = <span class="pre">*++argv[0]</span></tt>.
 Since <tt class="docutils literal">[]</tt> binds tighter than <tt class="docutils literal">*</tt> and <tt class="docutils literal">++</tt>, then <tt class="docutils literal"><span class="pre">*++argv[0]</span></tt> is equivalent with
 <tt class="docutils literal">c = <span class="pre">*++(argv[0])</span></tt>. <tt class="docutils literal">argv[0]</tt> points to the first char of the argument string that <tt class="docutils literal">argv</tt> pointing
@@ -158,11 +158,11 @@ For instance, suppose <tt class="docutils literal">argv</tt> pointing at <tt cla
 dereference <tt class="docutils literal">argv[0]</tt> to get <tt class="docutils literal">x</tt> and assign to <tt class="docutils literal">c</tt>.</p>
 <p>We can see that the level of precedence of operators is crtical in this case. This can be seen from table on
 p.53. in K &amp; R:</p>
-<img alt="" src="/images/precedence-operators-c.PNG" />
+<img alt="" class="img-responsive" src="/images/precedence-operators-c.PNG"/>
 <p>Let's see another example from K &amp; R p. 105.</p>
 <div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">strcpy</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="k">while</span> <span class="p">((</span><span class="o">*</span><span class="n">s</span><span class="o">++</span> <span class="o">=</span> <span class="o">*</span><span class="n">t</span><span class="o">++</span><span class="p">)</span> <span class="o">!=</span> <span class="sc">&#39;\0&#39;</span><span class="p">)</span>
+  <span class="k">while</span> <span class="p">((</span><span class="o">*</span><span class="n">s</span><span class="o">++</span> <span class="o">=</span> <span class="o">*</span><span class="n">t</span><span class="o">++</span><span class="p">)</span> <span class="o">!=</span> <span class="sc">'\0'</span><span class="p">)</span>
     <span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
@@ -170,7 +170,7 @@ p.53. in K &amp; R:</p>
 postfix <tt class="docutils literal">++</tt> doesn't change <tt class="docutils literal">t</tt> until after this character has been fetched. This makes sense if we
 consider it from precedence of the operators' view. <tt class="docutils literal">*</tt> and <tt class="docutils literal">++</tt> have the same precedence in our table. Thus,
 we evaluate the expression in ordinary order: from left to right. We first evaluate <tt class="docutils literal">*s</tt> then we increment <tt class="docutils literal">s</tt>.</p>
-
+</body></html>
         </article>
 
 <!--        <footer>

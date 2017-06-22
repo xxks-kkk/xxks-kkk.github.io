@@ -63,7 +63,7 @@
         </header>
         
         <article>
-            <p>Recently, I start to work on <a href="https://github.com/xxks-kkk/shuati">leetcode's problems</a>. 
+            <html><head></head><body><p>Recently, I start to work on <a href="https://github.com/xxks-kkk/shuati">leetcode's problems</a>. 
 My goal is to solve two problems per day (mission possible, right?). The problems I'm looking
 at are <a href="https://leetcode.com/problems/linked-list-cycle-ii/">142. Linked List Cycle II</a> and 
 <a href="https://leetcode.com/problems/find-the-duplicate-number/">287. Find the Duplicate Number</a>, 
@@ -212,12 +212,28 @@ $$</div>
 <p>For example, the sequence <span class="math">\(1,3,4,2,1\)</span> can be considered as a sequence of 
 iterated function values with <span class="math">\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
 x_3 = f(4) = 2, x_4 = f(2) = 1\)</span>. Let's try another representation:</p>
-<div class="highlight"><pre><span></span>| index | 0 | 1 | 2 | 3 | 4 |
-|-------|---|---|---|---|---|
-| value | 1 | 3 | 4 | 2 | 1 |
-</pre></div>
-
-
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>index</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td>1</td>
+<td>3</td>
+<td>4</td>
+<td>2</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
 <p>Surprisingly, the function <span class="math">\(f\)</span> simply map the index to the corresponding values.
 With this table, the above sequence can be converted as a linked list:</p>
 <div class="highlight"><pre><span></span>0 -&gt; 1 -&gt; 3 -&gt; 2 -&gt; 4
@@ -268,14 +284,14 @@ and if we starts from <code>hare = nums[0]</code>, that violates our algorithm.<
 </li>
 </ol>
 <div class="footnote">
-<hr />
+<hr/>
 <ol>
 <li id="fn:1">
-<p><span class="math">\(x_{2i} = x_i\)</span> immediately follows this statement. Then, if we let<br />
+<p><span class="math">\(x_{2i} = x_i\)</span> immediately follows this statement. Then, if we let<br/>
 <span class="math">\(l\)</span> be the number of laps by which hare is ahead, then <span class="math">\(2i = i + l \cdot \lambda\)</span>
 and we have <span class="math">\(i = l\lambda\)</span>. Then we set <span class="math">\(k=l\)</span> in \ref{eqn:1} and reach the same
 conclusion. This way we don't need to define <span class="math">\(y\)</span>,<span class="math">\(m\)</span>,<span class="math">\(n\)</span>, which can make proof
-a little simpler notation-wise. &#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+a little simpler notation-wise.  <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 </ol>
 </div>
@@ -335,7 +351,7 @@ a little simpler notation-wise. &#160;<a class="footnote-backref" href="#fnref:1
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>
+</script></body></html>
         </article>
 
 <!--        <footer>

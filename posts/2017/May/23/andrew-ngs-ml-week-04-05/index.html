@@ -61,7 +61,7 @@
         </header>
         
         <article>
-            <p>Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
+            <html><head></head><body><p>Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
 It is especially heplful when there are many features and hence, many combinations
 for the <a href="../../../../../posts/2017/May/05/andrew-ngs-ml-week-01-03/">linear or logistic regressions</a>. 
 Interestingly, I studied neural networks
@@ -87,7 +87,7 @@ when I was a student at college. It may feel different when we revisit old frien
 <h2 id="model">Model</h2>
 <h3 id="representations">Representations</h3>
 <p>Below picture shows a typical neural network (I'll use NN as a shorthand). </p>
-<p><img alt="" src="../../../../../images/nn2.png" /> </p>
+<p><img alt="" class="img-responsive" src="../../../../../images/nn2.png"/> </p>
 <ul>
 <li>
 <p><span class="math">\(L =\)</span> total number of layers in network (i.e. <span class="math">\(L = 4\)</span> for the above NN)</p>
@@ -189,18 +189,18 @@ $$</div>
 <li>
 <p>Add bias term <span class="math">\(a_0^{(j-1)} = 1\)</span> to <span class="math">\(a^{(j-1)}\)</span> and our new <span class="math">\(a^{(j-1)}\)</span> looks like </p>
 <p>
-<div class="math">$$
+</p><div class="math">$$
 a^{(j-1)} = \begin{bmatrix} a_0^{(j-1)} \\ a_1^{(j-1)} \\ \dots \\ a_n^{(j-1)} \end{bmatrix}
 $$</div>
-</p>
+<p></p>
 </li>
 <li>
 <p>Calculate <span class="math">\(z^{(j)}\)</span> as follows:</p>
 <p>
-<div class="math">$$
+</p><div class="math">$$
 z^{(j)} = \Theta^{(j-1)}a^{(j-1)}
 $$</div>
-</p>
+<p></p>
 <p>Here, <span class="math">\(\Theta^{(j-1)}\)</span> has dimension <span class="math">\(S_j \times (S_{j-1} + 1)\)</span> and <span class="math">\(a^{(j-1)}\)</span> has 
 dimension <span class="math">\((S_{j-1} + 1) \times 1\)</span>. Then, our vector <span class="math">\(z^{(j)}\)</span> has height <span class="math">\(S_j\)</span>.</p>
 </li>
@@ -286,16 +286,16 @@ a look at the last term of the equation. <span class="math">\(\delta^{(l+1)}(a^{
 starts with the second last layer and there is one until input layer (including).
 So, in our NN above, there are three <span class="math">\(\Delta^{(l)}\)</span> we should update. </p>
 <div class="footnote">
-<hr />
+<hr/>
 <ol>
 <li id="fn:3">
 <p>Here, it is unclear for me which two layers we should choose to calculate 
 <span class="math">\(\epsilon_\text{init}\)</span>. In the <a href="https://github.com/xxks-kkk/Code-for-blog/tree/master/2017/andrew-ng-ml/machine-learning-ex4/ex4">programming assignment 4</a>,
-the value is calculated from the layer 1 (input layer) and layer 2 (1st hidden layer).&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+the value is calculated from the layer 1 (input layer) and layer 2 (1st hidden layer). <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:5">
 <p>You can use <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/andrew-ng-ml/machine-learning-ex4/ex4/computeNumericalGradient.m">gradient checking</a> 
-to verify if the backpropagation is implemented correctly. &#160;<a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+to verify if the backpropagation is implemented correctly.  <a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 </ol>
 </div>
@@ -355,7 +355,7 @@ to verify if the backpropagation is implemented correctly. &#160;<a class="footn
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>
+</script></body></html>
         </article>
 
 <!--        <footer>

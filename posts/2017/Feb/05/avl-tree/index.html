@@ -61,7 +61,7 @@
         </header>
         
         <article>
-            <p>This is the summary of <em>AVL tree</em> part in MAW Chapter 4.</p>
+            <html><head></head><body><p>This is the summary of <em>AVL tree</em> part in MAW Chapter 4.</p>
 <h2 id="motivation">Motivation</h2>
 <p>All BST operations are <span class="math">\(O(H)\)</span> time, where <span class="math">\(H\)</span> is the height of the tree. In the worst case
 scenario, when the tree is degenerated, <span class="math">\(H = N\)</span>, where <span class="math">\(N\)</span> is the number of nodes.
@@ -72,10 +72,10 @@ Its approach to balancing tree is that we want a pretty good balance (allow a li
 <p>AVL tree is a <em>guaranteed</em> <span class="math">\(O(log N)\)</span> binary search tree. It is identical to a BST, except 
 that for every node in the tree, the height of the left and right subtrees can differ by at most 1.
 (The height of an empty tree is defined to be -1).</p>
-<p><img src="/images/AVL.PNG" alt="AVL-tree-concept" style="width: 700px;"/></p>
+<p><img alt="AVL-tree-concept" class="img-responsive" src="/images/AVL.PNG" style="width: 700px;"/></p>
 <p>For simplicity, we really omit the actual data part of the node. The following picture demonstrate
 what AVL tree should really look like:</p>
-<p><img src="/images/AVL-real.PNG" alt="AVL-tree-real" style="height: 300px; width: 700px;"/></p>
+<p><img alt="AVL-tree-real" class="img-responsive" src="/images/AVL-real.PNG" style="height: 300px; width: 700px;"/></p>
 <h2 id="insertion">Insertion</h2>
 <p>AVL tree insertion is based upon BST insertion with two addition treatments:</p>
 <ul>
@@ -85,11 +85,11 @@ what AVL tree should really look like:</p>
 <p>There are four cases inside the insertion (see MAW p.111) and we handle "outside" cases (i.e. left-left or right-right)
 and "inside" cases (i.e. left-right or right-left) using single rotation and double rotation respectively.</p>
 <p>To remember single rotation, you can pick a case, say left-left and remember its picture. (right-right is a mirror case)</p>
-<p><img alt="AVL-single-rotation-left" src="../../../../../images/AVL-single-rotation-left.PNG" /></p>
+<p><img alt="AVL-single-rotation-left" class="img-responsive" src="../../../../../images/AVL-single-rotation-left.PNG"/></p>
 <p>In the picture, we need to rebalance the tree at <span class="math">\(k_2\)</span>. This picture shows how we can implement <code>singleRotateWithLeft</code> routine as well.
 (Here, "left" means the inbalance is caused by the insertion into the left subtree of the inbalance node.)</p>
 <p>Similarly, to remember double rotation, we pick a case, say right-left and remember its picture. (left-right is a mirror case)</p>
-<p><img alt="AVL-double-rotation-right" src="../../../../../images/AVL-double-rotation-right.PNG" /></p>
+<p><img alt="AVL-double-rotation-right" class="img-responsive" src="../../../../../images/AVL-double-rotation-right.PNG"/></p>
 <p>In the picture, we need to rebalance the tree at <span class="math">\(k_3\)</span>. The picture shows how we can implement <code>doubleRotateWithRight</code> routine as well.
 As you can see from the picture, "double rotation" is essentially the same as two "single rotation": rotate <span class="math">\(k_2\)</span> and <span class="math">\(k_1\)</span>, then <span class="math">\(k_2\)</span> and <span class="math">\(k_3\)</span>.</p>
 <p>Identifying which rotation to use by strictly based upon these four cases can work but time-consuming. Here is how I think about 
@@ -139,7 +139,7 @@ to decide what rotation we should use (like insertion). Thus, we have the follow
 
 
 <p>Of course, the following simple example may help you understand the code chunk above:</p>
-<p><img alt="AVL-deletion" src="../../../../../images/AVL-deletion.PNG" /></p>
+<p><img alt="AVL-deletion" class="img-responsive" src="../../../../../images/AVL-deletion.PNG"/></p>
 <h2 id="properties">Properties</h2>
 <ul>
 <li>For every node of the AVL tree, <span class="math">\(|Height(left child) - Height(right child)| \le 1\)</span>.</li>
@@ -229,7 +229,7 @@ to decide what rotation we should use (like insertion). Thus, we have the follow
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>
+</script></body></html>
         </article>
 
 <!--        <footer>

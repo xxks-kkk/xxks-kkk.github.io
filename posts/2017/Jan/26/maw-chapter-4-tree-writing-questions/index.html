@@ -65,7 +65,7 @@
         </header>
         
         <article>
-            <p>There are a lot of writing questions in Chapter 4. Some questions offer
+            <html><head></head><body><p>There are a lot of writing questions in Chapter 4. Some questions offer
 great insights on the general techniques in solving algorithmatic proving questions.
 So, I decide to record them in this single post. Of course, this post will be continually
 updated as I work through the chapter.</p>
@@ -165,7 +165,7 @@ is reached. That is, you are traversing from a leaf along the path towards the r
 while removing the nodes along the path before a full node is reached. This full node
 becomes a non-full node because one of its child node is removed. At this point the
 tree will have one less leaf and one less full node.</p>
-<p><img alt="" src="../../../../../images/maw-4-6.PNG" /></p>
+<p><img alt="" class="img-responsive" src="../../../../../images/maw-4-6.PNG"/></p>
 <p>Therefore, the tree has <span class="math">\(k\)</span> full nodes after the nodes are removed. By the inductive
 hypothesis there are <span class="math">\(k+1\)</span> leaves. Add all the nodes that were removed back into the 
 tree the same way to create the original tree. We are adding one full node and 
@@ -378,7 +378,7 @@ we have <span class="math">\(\log _\phi N \ge H\)</span>, which is <span class="
 <p>Show the result of inserting 2,1,4,5,9,3,6,7 into an initially empty AVL tree.</p>
 </blockquote>
 <p><a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/maw-4-16.gv">
-<img src="/images/maw-4-16.png" alt="maw-4-16" style="width: 700px;"/>
+<img alt="maw-4-16" class="img-responsive" src="/images/maw-4-16.png" style="width: 700px;"/>
 </a></p>
 <!--[![maw-4-16](/images/maw-4-16.png)](https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/maw-4-16.gv)-->
 
@@ -399,36 +399,36 @@ for sequence <span class="math">\(1, 2, \dots, 2^{h+1}-1\)</span>.</p>
 (can be observed for <span class="math">\(1 \ge k \le 3\)</span> situation, where the roots are <span class="math">\(1\)</span>, <span class="math">\(2\)</span>, <span class="math">\(4\)</span> respectively). The left subtree is a perfectly balanced
 tree of height <span class="math">\(h-2\)</span>, and the right subtree is a perfectly balanced tree containing the numbers <span class="math">\(2^{h-1}+1\)</span> through <span class="math">\(2^h-1\)</span>, also of height <span class="math">\(h-2\)</span>.
 See the following picture:</p>
-<p><img src="/images/maw-4-17-1.PNG" alt="maw-4-17-1" style="height: 400px;"/></p>
+<p><img alt="maw-4-17-1" class="img-responsive" src="/images/maw-4-17-1.PNG" style="height: 400px;"/></p>
 <p>Each of the next <span class="math">\(2^{h-1}\)</span> insertions (<span class="math">\(2^h\)</span> through <span class="math">\(2^h + 2^{h-1} - 1\)</span>) are inserted into the 
 right subtree, and the entire sequence of numbers in the right subtree (now <span class="math">\(2^{h-1}+1\)</span> through <span class="math">\(2^h + 2^{h-1}-1\)</span>)
 were inserted in order and are a sequence of <span class="math">\(2^h - 1\)</span> nodes (i.e. <span class="math">\(2^h + 2^{h-1}-1 - (2^{h-1}+1) + 1 = 2^h -1\)</span>).
 By induction hypothesis, they form a perfectly balanced tree of height <span class="math">\(h-1\)</span>. See the following picture:</p>
-<p><img src="/images/maw-4-17-2.PNG" alt="maw-4-17-2" style="height: 400px;"/></p>
+<p><img alt="maw-4-17-2" class="img-responsive" src="/images/maw-4-17-2.PNG" style="height: 400px;"/></p>
 <p>The next insertion, of the number <span class="math">\(2^h + 2^{h-1}\)</span>, imbalances the tree at the root because now the height of the right subtree
 is <span class="math">\(h\)</span> and the height of the left subtree is <span class="math">\(h-2\)</span>. Now, we do a single rotation and form a tree with root <span class="math">\(2^h\)</span>, and 
 a perfectly balanced left subtree of height <span class="math">\(h-1\)</span>. The right subtree consists of a perfectly balanced tree 
 (of height <span class="math">\(h-2\)</span>), with the new node: <span class="math">\(2^h + 2^{h-1}\)</span>. See the following picture:</p>
-<p><img src="/images/maw-4-17-3.PNG" alt="maw-4-17-3" style="height: 400px;"/></p>
+<p><img alt="maw-4-17-3" class="img-responsive" src="/images/maw-4-17-3.PNG" style="height: 400px;"/></p>
 <p>Thus, the right subtree is as if the numbers <span class="math">\(2^h+1, \dots, 2^h + 2^{h-1}\)</span> had been 
 inserted in order. We subsequently insert the numbers <span class="math">\(2^h + 2^{h-1} + 1\)</span> through
 <span class="math">\(2^{h+1} - 1\)</span> nodes. In other words, we form the right subtree by inserting the 
 numbers <span class="math">\(2^{h} + 1, \dots, 2^{h+1} - 1\)</span>, which have <span class="math">\(2^{h} - 1\)</span> numbers. Then, by
 the inductive hypothesis, these <span class="math">\(2^{h} - 1\)</span> insertions form a perfectly balanced
 subtree of height <span class="math">\(h-1\)</span>. See the following picture:</p>
-<p><img src="/images/maw-4-17-4.PNG" alt="maw-4-17-4" style="height: 400px;"/></p>
+<p><img alt="maw-4-17-4" class="img-responsive" src="/images/maw-4-17-4.PNG" style="height: 400px;"/></p>
 <p>Since the left and right subtrees are perfectly balanced (height <span class="math">\(h-1\)</span>), the whole
 tree is perfectly balanced.</p>
 <h3 id="maw-423">MAW 4.23</h3>
-<p><img src="/images/maw-4-23.JPG" alt="maw-4-23" style="width: 700px;"/></p>
+<p><img alt="maw-4-23" class="img-responsive" src="/images/maw-4-23.JPG" style="width: 700px;"/></p>
 <h3 id="maw-424">MAW 4.24</h3>
-<p><img src="/images/maw-4-24.PNG" alt="maw-4-24" style="width: 700px;"/></p>
+<p><img alt="maw-4-24" class="img-responsive" src="/images/maw-4-24.PNG" style="width: 700px;"/></p>
 <h3 id="maw-425">MAW 4.25</h3>
 <p>This problem is solved through brute-force calculation. You can reference the example
 from figure 4.46 to figure 4.55. I calculate for internal path length of the 
 tree and <code>find(1)</code>, <code>find(2)</code>. The answer is slightly off than the solution manual.
 May need to double check.</p>
-<p><img src="/images/maw-4-26.JPG" alt="maw-4-26" style="width: 700px; height: 400px;"/></p>
+<p><img alt="maw-4-26" class="img-responsive" src="/images/maw-4-26.JPG" style="width: 700px; height: 400px;"/></p>
 <h3 id="maw-426">MAW 4.26</h3>
 <blockquote>
 <p>a. Show that if all nodes in a splay tree are accessed in sequential order, 
@@ -454,7 +454,7 @@ c. Show that this transformation can be done with <span class="math">\(O(N)\)</s
 </blockquote>
 <p>Let's first work through an example shown in the picture below. We transform the tree in the top-left 
 of the picture to the tree in the top-right of the picture through several steps linked by single arrows.</p>
-<p><img src="/images/maw-4-43.jpg" alt="maw-4-43" style="width: 700px;"/></p>
+<p><img alt="maw-4-43" class="img-responsive" src="/images/maw-4-43.jpg" style="width: 700px;"/></p>
 <p>As you can see, the strategy here is that we do preorder processing. We compare the root <span class="math">\(T_1\)</span> with the root
 <span class="math">\(T_2\)</span>. If they are equal, then we move on to the left and right subtrees of <span class="math">\(T_1\)</span> and do the processing 
 recursively. However, if they are not equal, we find the <span class="math">\(T_2\)</span>'s root value <span class="math">\(x\)</span> in <span class="math">\(T_1\)</span> and rotate it to the
@@ -463,12 +463,12 @@ takes <span class="math">\(O(N\log N)\)</span> on average because find <span cla
 Since we could do <span class="math">\(N\)</span> rotations, then the result follows. However, a BST can be degenerated and in that case, we have 
 <span class="math">\(O(N)\)</span> worst-case. </p>
 <div class="footnote">
-<hr />
+<hr/>
 <ol>
 <li id="fn:1">
 <p>The solution and corresponding figures are majorly taken from 
 <a href="https://cseweb.ucsd.edu/classes/su05/cse100/cse100hw1.pdf">this link</a>
-with minor wording tweak to allow easy understanding for myself.&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+with minor wording tweak to allow easy understanding for myself. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 </ol>
 </div>
@@ -528,7 +528,7 @@ with minor wording tweak to allow easy understanding for myself.&#160;<a class="
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>
+</script></body></html>
         </article>
 
 <!--        <footer>

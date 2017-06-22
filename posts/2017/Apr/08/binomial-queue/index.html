@@ -61,7 +61,7 @@
         </header>
         
         <article>
-            <p>This is the summary of <em>binomial queue</em> part in MAW Chapter 6.</p>
+            <html><head></head><body><p>This is the summary of <em>binomial queue</em> part in MAW Chapter 6.</p>
 <h2 id="motivation">Motivation</h2>
 <p>We want to have a data structure that support merging, insertion, and deleteMin
 in <span class="math">\(O(\log N)\)</span> time per operation, and at the same time, like binary heap, we 
@@ -79,7 +79,7 @@ binomial tree, <span class="math">\(B_{k-1}\)</span>.</li>
 </ul>
 <p>The picture below shows a binomial queue consisting of six elements
 with two binomial trees <span class="math">\(B_1\)</span> and <span class="math">\(B_2\)</span>:</p>
-<p><img src="/images/binomial-queue.PNG" alt="binomial queue example"/></p>
+<p><img alt="binomial queue example" class="img-responsive" src="/images/binomial-queue.PNG"/></p>
 <h2 id="properties">Properties</h2>
 <ul>
 <li>A binomial tree <span class="math">\(B_k\)</span>, consists of a root with children <span class="math">\(B_0, B_1, \dots, B_{k-1}\)</span>.</li>
@@ -95,7 +95,7 @@ are present and <span class="math">\(B_1\)</span> is not.</li>
 <h3 id="merge">Merge</h3>
 <p>The merge is performed by essentially adding the two queues together. Let's illustrate
 through merging two binomial queues <span class="math">\(H_1\)</span> and <span class="math">\(H_2\)</span> shown below:</p>
-<p><img src="/images/binomial-queue-merge-01.PNG" alt="binomial queue merge 01"/></p>
+<p><img alt="binomial queue merge 01" class="img-responsive" src="/images/binomial-queue-merge-01.PNG"/></p>
 <p>If you will, <span class="math">\(H_1\)</span> can be represented as <span class="math">\(0110_{2}\)</span> and <span class="math">\(H_2\)</span> can be represented as
 <span class="math">\(0111_{2}\)</span>. Thus, merge is just adding two binary number together, and we have
 <span class="math">\(1101_2\)</span>. This implies that our final result contains <span class="math">\(B_0, B_2, B_3\)</span>. The actual
@@ -106,9 +106,9 @@ height <span class="math">\(k\)</span> is formed by attaching a binomial tree, <
 binomial tree, <span class="math">\(B_{k-1}\)</span>.</p>
 </blockquote>
 <p>Thus merge of the two <span class="math">\(B_1\)</span> trees in <span class="math">\(H_1\)</span> and <span class="math">\(H_2\)</span> looks like:</p>
-<p><img src="/images/binomial-queue-merge-02.PNG" alt="binomial queue merge 02"/></p>
+<p><img alt="binomial queue merge 02" class="img-responsive" src="/images/binomial-queue-merge-02.PNG"/></p>
 <p>and the final result of merging looks like:</p>
-<p><img src="/images/binomial-queue-merge-03.PNG" alt="binomial queue merge 03"/></p>
+<p><img alt="binomial queue merge 03" class="img-responsive" src="/images/binomial-queue-merge-03.PNG"/></p>
 <h3 id="insertion">Insertion</h3>
 <p>Insertion is just a special case of merging, since we merely create a one-node tree
 and perform a merge.</p>
@@ -121,10 +121,10 @@ and perform a merge.</p>
 </ol>
 <p>Suppose we perform a DeleteMin on <span class="math">\(H_3\)</span> from above. The minimum root is 12, and we have 
 <span class="math">\(H'\)</span> and <span class="math">\(H''\)</span> below:</p>
-<p><img src="/images/binomial-queue-deleteMin-01.PNG" alt="binomial queue deleteMin 01"/></p>
-<p><img src="/images/binomial-queue-deleteMin-02.PNG" alt="binomial queue deleteMin 02"/></p>
+<p><img alt="binomial queue deleteMin 01" class="img-responsive" src="/images/binomial-queue-deleteMin-01.PNG"/></p>
+<p><img alt="binomial queue deleteMin 02" class="img-responsive" src="/images/binomial-queue-deleteMin-02.PNG"/></p>
 <p>and our final result is <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>:</p>
-<p><img src="/images/binomial-queue-deleteMin-03.PNG" alt="binomial queue deleteMin 03"/></p>
+<p><img alt="binomial queue deleteMin 03" class="img-responsive" src="/images/binomial-queue-deleteMin-03.PNG"/></p>
 <h2 id="runtime-analysis">Runtime analysis</h2>
 <h3 id="merge_1">Merge</h3>
 <p>Since merging two binomial trees takes constant time with almost any reasonable
@@ -143,10 +143,10 @@ two queues takes <span class="math">\(O(\log N)\)</span> time and thus, the oper
 <li>MAW Chapter 6</li>
 </ul>
 <div class="footnote">
-<hr />
+<hr/>
 <ol>
 <li id="fn:1">
-<p>For actual implementation details, please see MAW p. 208 - 211.&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<p>For actual implementation details, please see MAW p. 208 - 211. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 </ol>
 </div>
@@ -206,7 +206,7 @@ two queues takes <span class="math">\(O(\log N)\)</span> time and thus, the oper
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script>
+</script></body></html>
         </article>
 
 <!--        <footer>

@@ -61,7 +61,7 @@
         </header>
         
         <article>
-            <h2 id="preface">Preface</h2>
+            <html><head></head><body><h2 id="preface">Preface</h2>
 <p><a href="http://graphviz.org/">Graphviz</a> is a language (called DOT) and
 a set of tools to automatically generate graphs. It is widely used
 by researchers to do visualizations in papers. Essentially, you just
@@ -77,7 +77,7 @@ to show some tricks in Graphviz to tweak the layout <sup id="fnref:1"><a class="
 <h2 id="draw-a-neural-network">Draw a neural network</h2>
 <p>If you do a quick search regarding "graphviz neural network example", you'll highly
 likely see the below picture:</p>
-<p><img alt="" src="../../../../../images/multiclass_neural_network_example.png" /> </p>
+<p><img alt="" class="img-responsive" src="../../../../../images/multiclass_neural_network_example.png"/> </p>
 <p>This is probably the most simplest Graphviz demonstration on Neural Network. The
 code for this picture can be obtained <a href="https://gist.github.com/thigm85/5760134">here</a>.</p>
 <p>However, when I'm preparing my last post, I'm not quite satisified with the example above.
@@ -86,7 +86,7 @@ input, bias term, hidden units, and output units. So, I decide to draw one on my
 <p>Here is the <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/nn3.dot">code</a>
 that generates the picture below <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>. Let me briefly
 highlights some key points in the code:</p>
-<p><img alt="" src="../../../../../images/nn2.png" /></p>
+<p><img alt="" class="img-responsive" src="../../../../../images/nn2.png"/></p>
 <div class="highlight"><pre><span></span><span class="n">rankdir</span> <span class="o">=</span> <span class="n">LR</span><span class="p">;</span>
 <span class="n">splines</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span>
 <span class="n">edge</span><span class="p">[</span><span class="n">style</span><span class="o">=</span><span class="n">invis</span><span class="p">];</span>
@@ -145,7 +145,7 @@ the layers should be positioned except <code>rankdir=LR</code>, which says layer
 ordered from left to right. <code>a02-&gt;a03</code> says layer with <code>a02</code> should be lined up with 
 layer with <code>a03</code>.</li>
 </ol>
-<div class="highlight"><pre><span></span><span class="n">l0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">plaintext</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;layer 1 (input layer)&quot;</span><span class="p">];</span>
+<div class="highlight"><pre><span></span><span class="n">l0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">plaintext</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">"layer 1 (input layer)"</span><span class="p">];</span>
 <span class="n">l0</span><span class="o">-&gt;</span><span class="n">x0</span><span class="p">;</span>
 <span class="p">{</span><span class="n">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">l0</span><span class="p">;</span><span class="n">x0</span><span class="p">};</span>
 </pre></div>
@@ -232,28 +232,28 @@ with <code>c-&gt;d</code> at the top and <code>a-&gt;b</code> at the bottom:</p>
 
 
 <div class="footnote">
-<hr />
+<hr/>
 <ol>
 <li id="fn:1">
 <p>Of course, Graphviz is not the only tool that can produce beautiful pictures. 
 <a href="http://www.texample.net/">TikZ</a> is another popular tool. You can check out 
-<a href="http://www.texample.net/tikz/examples/neural-network/">its NN example</a> for comparison.&#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<a href="http://www.texample.net/tikz/examples/neural-network/">its NN example</a> for comparison. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:2">
 <p>Technically, the code used to generate the blog NN picture is 
 <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/nn2.dot">this one</a>
-but the code I explained above is much more concise.&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+but the code I explained above is much more concise. <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 <li id="fn:3">
 <p>Check out 
 <a href="https://stackoverflow.com/questions/28853898/groups-of-nodes-with-the-same-attributes-in-graphviz-file">this SO post</a>
-for more examples on grouping nodes with the same attributes.&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+for more examples on grouping nodes with the same attributes. <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">↩</a></p>
 </li>
 <li id="fn:4">
-<p>The example is adapted from <a href="https://stackoverflow.com/questions/6149834/rank-attribute-is-confusing-to-me">this SO post</a>.&#160;<a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+<p>The example is adapted from <a href="https://stackoverflow.com/questions/6149834/rank-attribute-is-confusing-to-me">this SO post</a>. <a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text">↩</a></p>
 </li>
 </ol>
-</div>
+</div></body></html>
         </article>
 
 <!--        <footer>
