@@ -1,5 +1,716 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-06-18T20:20:00+08:00</updated><entry><title>The tortoise and the hare</title><link href="http://zhu45.org/posts/2017/Jun/18/the-tortoise-and-the-hare/" rel="alternate"></link><published>2017-06-18T20:20:00+08:00</published><updated>2017-06-18T20:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-06-18:posts/2017/Jun/18/the-tortoise-and-the-hare/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Recently, I start to work on &lt;a href="https://github.com/xxks-kkk/shuati"&gt;leetcode's problems&lt;/a&gt;. 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-06-23T21:23:00+08:00</updated><entry><title>join in SQL</title><link href="http://zhu45.org/posts/2017/Jun/23/join-in-sql/" rel="alternate"></link><published>2017-06-23T21:23:00+08:00</published><updated>2017-06-23T21:23:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-06-23:posts/2017/Jun/23/join-in-sql/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;In this post, I'll provide a summary on the usage of &lt;code&gt;join&lt;/code&gt; statement in SQL
+and use &lt;a href="https://leetcode.com/problems/combine-two-tables/"&gt;Leetcode 175&lt;/a&gt; as 
+a concrete example to show several equivalent &lt;code&gt;join&lt;/code&gt; statement usage.&lt;/p&gt;
+&lt;p&gt;To be honest, this is my third time visiting this material. The very first time
+happened when I took DB course in college, and the second time was when I joined
+the federation team at IBM and learned about DB2. Unfortunately, I didn't keep
+my study notes well in the first two tries and I don't write SQL a lot during my
+day to day work. Things, again, get rusty very quickly. This time I want to do a
+better job by, at least, saving my notes in a good place. &lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Tables appeard in this post 
+are from the 
+&lt;a href="http://db-book.com/"&gt;supplementary resources&lt;/a&gt; of the 
+&lt;a href="https://www.amazon.com/Database-System-Concepts-Computer-Science/dp/0073523321"&gt;Database System Concepts&lt;/a&gt; book.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#tldr"&gt;TL;DR&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#motivation"&gt;Motivation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#join"&gt;join&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#sql-perspective"&gt;SQL perspective&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#inner-join"&gt;inner join&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#natural-join"&gt;natural join&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#join-using"&gt;join ... using&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#join-on"&gt;join ... on&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#outer-join"&gt;outer join&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#motivation_1"&gt;Motivation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#outer-join_1"&gt;outer join&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#relational-algebra-perspective"&gt;Relational algebra perspective&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#a-leetcode-example"&gt;A leetcode example&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#links-to-resources"&gt;Links to resources&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="tldr"&gt;TL;DR&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;natural join&lt;/code&gt; produces a relation from two relations by considering only those pairs of tuples
+with the same value on those attributes that appear in the schemas of both relations.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;join ... using&lt;/code&gt; specifies a subset of common attributes to join.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;join ... on&lt;/code&gt; specifies a predicate to use on join.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;outer join&lt;/code&gt; is used when we want to preserve the tuples that may have null value on
+the common attributes of one of the relations that we want to join on.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;/h2&gt;
+&lt;p&gt;Before we directly jump into the SQL, I want to briefly talks about the motivation
+for the &lt;code&gt;join&lt;/code&gt; statement. Specifically, why do we need it?&lt;/p&gt;
+&lt;p&gt;To retrieve data from multiple relations (i.e. more than one table), we can either
+use a cartesian product or join of columns of the same data type.&lt;/p&gt;
+&lt;p&gt;The cartesian product happens to the relations listed in the &lt;code&gt;from&lt;/code&gt; clause of a SQL.
+The end result of cartesian product is a relation that has all attributes from
+all the relations in the &lt;code&gt;from&lt;/code&gt; clause. The following iterative process shows
+how the cartesian product of the relations in the &lt;code&gt;from&lt;/code&gt; clause get generated&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;for each tuple t1 in relation r1
+  for each tuple t2 in relation r2
+    . . .
+    for each tuple tm in relation rm
+      Concatenate t1, t2, . . . , tm into a single tuple t
+      Add t into the result relation
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Another perspective to understand cartesian product is from relation algebra cross-product
+&lt;span class="math"&gt;\(R \times S\)&lt;/span&gt;, which is defined as: returns a relation instance whose schema
+contains all the fields of &lt;span class="math"&gt;\(R\)&lt;/span&gt; (in the same order as they appear in &lt;span class="math"&gt;\(R\)&lt;/span&gt;) followed 
+by all the fields of &lt;span class="math"&gt;\(S\)&lt;/span&gt; (in the same order as they appear in &lt;span class="math"&gt;\(S\)&lt;/span&gt;). The result of
+&lt;span class="math"&gt;\(R \times S\)&lt;/span&gt; contains all tuples &lt;span class="math"&gt;\((r,s)\)&lt;/span&gt; (the concatenation of tuples &lt;span class="math"&gt;\(r\)&lt;/span&gt; and &lt;span class="math"&gt;\(s\)&lt;/span&gt;)
+for each pair of tuples &lt;span class="math"&gt;\(r \in R\)&lt;/span&gt;, &lt;span class="math"&gt;\(s \in S\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;To see a concrete example, let's consider the following SQL&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;teaches&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;instructor&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;em&gt;teaches&lt;/em&gt; and &lt;em&gt;instructor&lt;/em&gt; table look like below&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sqlite&amp;gt; select * from teaches;
+ID|course_id|sec_id|semester|year
+10101|CS-101|1|Fall|2009
+10101|CS-315|1|Spring|2010
+10101|CS-347|1|Fall|2009
+12121|FIN-201|1|Spring|2010
+15151|MU-199|1|Spring|2010
+22222|PHY-101|1|Fall|2009
+32343|HIS-351|1|Spring|2010
+45565|CS-101|1|Spring|2010
+45565|CS-319|1|Spring|2010
+76766|BIO-101|1|Summer|2009
+76766|BIO-301|1|Summer|2010
+83821|CS-190|1|Spring|2009
+83821|CS-190|2|Spring|2009
+83821|CS-319|2|Spring|2010
+98345|EE-181|1|Spring|2009
+
+sqlite&amp;gt; select * from instructor;
+ID|name|dept_name|salary
+10101|Srinivasan|Comp. Sci.|65000
+12121|Wu|Finance|90000
+15151|Mozart|Music|40000
+22222|Einstein|Physics|95000
+32343|El Said|History|60000
+33456|Gold|Physics|87000
+45565|Katz|Comp. Sci.|75000
+58583|Califieri|History|62000
+76543|Singh|Finance|80000
+76766|Crick|Biology|72000
+83821|Brandt|Comp. Sci.|92000
+98345|Kim|Elec. Eng.|80000
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;teaches&lt;/em&gt; table has 15 rows; &lt;em&gt;instructor&lt;/em&gt; table
+has 12 rows. Then, if we run our SQL above, we get our result looks like&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sqlite&amp;gt; select * from instructor, teaches limit 20;
+ID|name|dept_name|salary|ID|course_id|sec_id|semester|year
+10101|Srinivasan|Comp. Sci.|65000|10101|CS-101|1|Fall|2009
+10101|Srinivasan|Comp. Sci.|65000|10101|CS-315|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|10101|CS-347|1|Fall|2009
+10101|Srinivasan|Comp. Sci.|65000|12121|FIN-201|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|15151|MU-199|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|22222|PHY-101|1|Fall|2009
+10101|Srinivasan|Comp. Sci.|65000|32343|HIS-351|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|45565|CS-101|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|45565|CS-319|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|76766|BIO-101|1|Summer|2009
+10101|Srinivasan|Comp. Sci.|65000|76766|BIO-301|1|Summer|2010
+10101|Srinivasan|Comp. Sci.|65000|83821|CS-190|1|Spring|2009
+10101|Srinivasan|Comp. Sci.|65000|83821|CS-190|2|Spring|2009
+10101|Srinivasan|Comp. Sci.|65000|83821|CS-319|2|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|98345|EE-181|1|Spring|2009
+12121|Wu|Finance|90000|10101|CS-101|1|Fall|2009
+12121|Wu|Finance|90000|10101|CS-315|1|Spring|2010
+12121|Wu|Finance|90000|10101|CS-347|1|Fall|2009
+12121|Wu|Finance|90000|12121|FIN-201|1|Spring|2010
+12121|Wu|Finance|90000|15151|MU-199|1|Spring|2010
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The result relation has 180 rows, which exactly equal to &lt;span class="math"&gt;\(12 \times 15\)&lt;/span&gt;. Notice that
+the order of appearance of relations appeard in the &lt;code&gt;from&lt;/code&gt; clause matters. If you 
+take a look at our SQL result, we get there are &lt;span class="math"&gt;\(15\)&lt;/span&gt; rows with "name" called 
+"Srinivasan" and then we expect another &lt;span class="math"&gt;\(15\)&lt;/span&gt; rows with "name" called "Wu" and so on.
+This matches the description of relational algebra perfectly.&lt;/p&gt;
+&lt;p&gt;Quite often, we use &lt;code&gt;where&lt;/code&gt; clause to restrict the combinations created by the 
+cartesian product to those that are meaningful for the desired answer. One common 
+scenario is like the following SQL&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;course&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt;
+&lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;instructor&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;teaches&lt;/span&gt;
+&lt;span class="k"&gt;where&lt;/span&gt; &lt;span class="n"&gt;instructor&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ID&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;teaches&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ID&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In this query, we combine information from the &lt;em&gt;instructor&lt;/em&gt; and &lt;em&gt;teaches&lt;/em&gt; table
+and the matching condition requires &lt;code&gt;instructor.ID&lt;/code&gt; to be equal to &lt;code&gt;teaches.ID&lt;/code&gt;. 
+In fact, these are the only attributes in the two relations that have the same name. 
+In general, we may often find us writing SQLs that requires all attributes with
+matching names to be equated in the &lt;code&gt;where&lt;/code&gt; clause. This case is so common that
+we use &lt;code&gt;join&lt;/code&gt; to save us some effort.&lt;/p&gt;
+&lt;h2 id="join"&gt;join&lt;/h2&gt;
+&lt;p&gt;In this section, I'll talk about &lt;code&gt;join&lt;/code&gt; from SQL perspective, and then I'll also
+present how &lt;code&gt;join&lt;/code&gt; is actually defined in relational algebra.&lt;/p&gt;
+&lt;h3 id="sql-perspective"&gt;SQL perspective&lt;/h3&gt;
+&lt;p&gt;There are two basic types of join: &lt;strong&gt;inner join&lt;/strong&gt; and &lt;strong&gt;outer join&lt;/strong&gt;. &lt;strong&gt;inner&lt;/strong&gt; keyword
+is optional. In other words, if only &lt;code&gt;join&lt;/code&gt; appears in the SQL statement, we usually
+assume it to be &lt;strong&gt;inner join&lt;/strong&gt;. Under &lt;strong&gt;outer join&lt;/strong&gt;, we can further specify whether
+it is &lt;strong&gt;left outer join&lt;/strong&gt;, &lt;strong&gt;right outer join&lt;/strong&gt;, or &lt;strong&gt;full outer join&lt;/strong&gt;. Here 
+is a graphic summary for the text above&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;- (inner) join
+- outer join
+   |- left outer join
+   |- right outer join
+   |- full outer join
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In addition, there are join conditions that we can use in combination with
+the join form mentioned above. In other words, any form of join (inner, left outer,
+right outer, or full outer) can be combined with any join condition (natural, using, or on).
+The table below provides a summary of join types and join conditions&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Join types&lt;/th&gt;
+&lt;th&gt;Join conditions&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;inner join&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;natural&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;left outer join&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;on &lt;predicate&gt;&lt;/predicate&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;right outer join&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;using (&lt;span class="math"&gt;\(A_1, A_2, \dots, A_n\)&lt;/span&gt;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;full outer join&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id="inner-join"&gt;inner join&lt;/h4&gt;
+&lt;h5 id="natural-join"&gt;natural join&lt;/h5&gt;
+&lt;p&gt;We start this section by considering &lt;strong&gt;natural join&lt;/strong&gt;. The natural join works
+on two relations and produces a relation as the result. Unlike the cartesian
+product of two relations, which concatenates each tuple of the first relation
+with every tuple of the second, natural join considers only those pairs of tuples
+with the same value on those attributes that appear in the schemas of both relations.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;course_id&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;instructor&lt;/span&gt; &lt;span class="k"&gt;natural&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;teaches&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Consider the query above, computing &lt;em&gt;instructor&lt;/em&gt; &lt;code&gt;natural join&lt;/code&gt; &lt;em&gt;teaches&lt;/em&gt; considers
+only those pairs of tuples where both the tuple from &lt;em&gt;instructor&lt;/em&gt; and the tuple
+from &lt;em&gt;teaches&lt;/em&gt; have the same value on the common attribute, "ID".&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sqlite&amp;gt; select name, course_id from instructor natural join teaches;
+name|course_id
+Srinivasan|CS-101
+Srinivasan|CS-315
+Srinivasan|CS-347
+Wu|FIN-201
+Mozart|MU-199
+Einstein|PHY-101
+El Said|HIS-351
+Katz|CS-101
+Katz|CS-319
+Crick|BIO-101
+Crick|BIO-301
+Brandt|CS-190
+Brandt|CS-190
+Brandt|CS-319
+Kim|EE-181
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The query result set is exactly the same as the
+result set given by &lt;code&gt;select name, course id from instructor, teaches where instructor.ID = teaches.ID;&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sqlite&amp;gt; select * from instructor natural join teaches;
+ID|name|dept_name|salary|course_id|sec_id|semester|year
+10101|Srinivasan|Comp. Sci.|65000|CS-101|1|Fall|2009
+10101|Srinivasan|Comp. Sci.|65000|CS-315|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|CS-347|1|Fall|2009
+12121|Wu|Finance|90000|FIN-201|1|Spring|2010
+15151|Mozart|Music|40000|MU-199|1|Spring|2010
+22222|Einstein|Physics|95000|PHY-101|1|Fall|2009
+32343|El Said|History|60000|HIS-351|1|Spring|2010
+45565|Katz|Comp. Sci.|75000|CS-101|1|Spring|2010
+45565|Katz|Comp. Sci.|75000|CS-319|1|Spring|2010
+76766|Crick|Biology|72000|BIO-101|1|Summer|2009
+76766|Crick|Biology|72000|BIO-301|1|Summer|2010
+83821|Brandt|Comp. Sci.|92000|CS-190|1|Spring|2009
+83821|Brandt|Comp. Sci.|92000|CS-190|2|Spring|2009
+83821|Brandt|Comp. Sci.|92000|CS-319|2|Spring|2010
+98345|Kim|Elec. Eng.|80000|EE-181|1|Spring|2009
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;From above query result we can note that&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;we do not repeat those attributes that appear in the schemas of both relations;
+rather they appear only once.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;the order in which the attributes are listed: first the attributes common to the schemas
+of both relations, second those attributes unqiue to the schema of the first relation, and
+finally, those attribute unique to the schema of the second relation.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;In addition, natural join will consider ALL the attributes that appear in the 
+schemas of both relations. Consider the following query&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+&lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;instructor&lt;/span&gt; &lt;span class="k"&gt;natural&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;teaches&lt;/span&gt; &lt;span class="k"&gt;natural&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;course&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;course&lt;/em&gt; table looks like the following&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sqlite&amp;gt; select * from course;
+course_id|title|dept_name|credits
+BIO-101|Intro. to Biology|Biology|4
+BIO-301|Genetics|Biology|4
+BIO-399|Computational Biology|Biology|3
+CS-101|Intro. to Computer Science|Comp. Sci.|4
+CS-190|Game Design|Comp. Sci.|4
+CS-315|Robotics|Comp. Sci.|3
+CS-319|Image Processing|Comp. Sci.|3
+CS-347|Database System Concepts|Comp. Sci.|3
+EE-181|Intro. to Digital Systems|Elec. Eng.|3
+FIN-201|Investment Banking|Finance|3
+HIS-351|World History|History|3
+MU-199|Music Video Production|Music|3
+PHY-101|Physical Principles|Physics|4
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;instructor&lt;/em&gt; has attributes (&lt;code&gt;ID|name|dept_name|salary&lt;/code&gt;); 
+&lt;em&gt;teaches&lt;/em&gt; has attributes (&lt;code&gt;ID|course_id|sec_id|semester|year&lt;/code&gt;);
+&lt;em&gt;course&lt;/em&gt; has attributes (&lt;code&gt;course_id|title|dept_name|credits&lt;/code&gt;). The first &lt;code&gt;natural join&lt;/code&gt;
+will first do cartesian product of &lt;em&gt;instructor&lt;/em&gt; and &lt;em&gt;teaches&lt;/em&gt; and 
+keep the tuples that have the same value on "ID". Then, the resulting relation
+will do the second &lt;code&gt;natural join&lt;/code&gt; with &lt;em&gt;course&lt;/em&gt; and 
+will keep the tuples that have the same value on "course_id" and "dept_name".&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sqlite&amp;gt; select * from instructor natural join teaches natural join course;
+ID|name|dept_name|salary|course_id|sec_id|semester|year|title|credits
+10101|Srinivasan|Comp. Sci.|65000|CS-101|1|Fall|2009|Intro. to Computer Science|4
+10101|Srinivasan|Comp. Sci.|65000|CS-315|1|Spring|2010|Robotics|3
+10101|Srinivasan|Comp. Sci.|65000|CS-347|1|Fall|2009|Database System Concepts|3
+12121|Wu|Finance|90000|FIN-201|1|Spring|2010|Investment Banking|3
+15151|Mozart|Music|40000|MU-199|1|Spring|2010|Music Video Production|3
+22222|Einstein|Physics|95000|PHY-101|1|Fall|2009|Physical Principles|4
+32343|El Said|History|60000|HIS-351|1|Spring|2010|World History|3
+45565|Katz|Comp. Sci.|75000|CS-101|1|Spring|2010|Intro. to Computer Science|4
+45565|Katz|Comp. Sci.|75000|CS-319|1|Spring|2010|Image Processing|3
+76766|Crick|Biology|72000|BIO-101|1|Summer|2009|Intro. to Biology|4
+76766|Crick|Biology|72000|BIO-301|1|Summer|2010|Genetics|4
+83821|Brandt|Comp. Sci.|92000|CS-190|1|Spring|2009|Game Design|4
+83821|Brandt|Comp. Sci.|92000|CS-190|2|Spring|2009|Game Design|4
+83821|Brandt|Comp. Sci.|92000|CS-319|2|Spring|2010|Image Processing|3
+98345|Kim|Elec. Eng.|80000|EE-181|1|Spring|2009|Intro. to Digital Systems|3
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h5 id="join-using"&gt;join ... using&lt;/h5&gt;
+&lt;p&gt;Automatically equate all the attributes with the same name from both schemas of 
+relations may be too strong. Quite often, we may want to do &lt;code&gt;natural join&lt;/code&gt; on 
+specific subsets of the common-shared attributes. This leads to our join condition
+grammar: &lt;code&gt;join ... using (&lt;/code&gt;&lt;span class="math"&gt;\(A_1, A_2, \dots, A_n\)&lt;/span&gt;&lt;code&gt;)&lt;/code&gt;. The operation requires 
+a list of attribute names to be specified. Both inputs must have attributes with the specified
+names. Consider the operation &lt;span class="math"&gt;\(r_1\)&lt;/span&gt; &lt;code&gt;join&lt;/code&gt; &lt;span class="math"&gt;\(r_2\)&lt;/span&gt; &lt;code&gt;using (&lt;/code&gt; &lt;span class="math"&gt;\(A_1, A_2\)&lt;/span&gt; &lt;code&gt;)&lt;/code&gt;. The operation
+is similar to &lt;span class="math"&gt;\(r_1\)&lt;/span&gt; &lt;code&gt;natural join&lt;/code&gt; &lt;span class="math"&gt;\(r_2\)&lt;/span&gt;, execpt that a pair of tuples &lt;span class="math"&gt;\(t_1\)&lt;/span&gt; from
+&lt;span class="math"&gt;\(r_1\)&lt;/span&gt; and &lt;span class="math"&gt;\(t_2\)&lt;/span&gt; from &lt;span class="math"&gt;\(r_2\)&lt;/span&gt; match if &lt;span class="math"&gt;\(t_1.A_1 = t_2.A_1\)&lt;/span&gt; and &lt;span class="math"&gt;\(t_1.A_2 = t_2.A_2\)&lt;/span&gt;;
+even if &lt;span class="math"&gt;\(r_1\)&lt;/span&gt; and &lt;span class="math"&gt;\(r_2\)&lt;/span&gt; both have an attribute named &lt;span class="math"&gt;\(A_3\)&lt;/span&gt;, it is &lt;em&gt;not&lt;/em&gt; required
+that &lt;span class="math"&gt;\(t_1.A_3 = t_2.A_3\)&lt;/span&gt;. &lt;/p&gt;
+&lt;p&gt;An example query look like&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;
+&lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;instructor&lt;/span&gt; &lt;span class="k"&gt;natural&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;teaches&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;course&lt;/span&gt; &lt;span class="k"&gt;using&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;course_id&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h5 id="join-on"&gt;join ... on&lt;/h5&gt;
+&lt;p&gt;Another form of join condition is the &lt;strong&gt;on&lt;/strong&gt; condition, which allows a general 
+predicate over the relations being joined. The predicte is written like a &lt;strong&gt;where&lt;/strong&gt;
+clause predicate except for the use of the keyword &lt;strong&gt;on&lt;/strong&gt; rahter than &lt;strong&gt;where&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;For example, the below two queries are equivalent with each other (i.e. gives the 
+same result)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;student&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;takes&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="n"&gt;student&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ID&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;takes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ID&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;student&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;takes&lt;/span&gt; &lt;span class="k"&gt;where&lt;/span&gt; &lt;span class="n"&gt;student&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ID&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;takes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ID&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;The query is almost the same as using &lt;code&gt;student natural join takes&lt;/code&gt;, except that
+the "ID" columns twices in the result set. &lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;One question we may ask is why do we need this &lt;strong&gt;on&lt;/strong&gt; operation if it may look
+like working exactly the same as &lt;strong&gt;where&lt;/strong&gt; clause? The answer is&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;on&lt;/strong&gt; conditions behaves different from &lt;strong&gt;where&lt;/strong&gt; conditions when we work with
+&lt;strong&gt;outer join&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;SQL query is often more readable by humans if the join condition is specified in the 
+&lt;strong&gt;on&lt;/strong&gt; clause and the rest of the conditions appear in the &lt;strong&gt;where&lt;/strong&gt; clause. &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="outer-join"&gt;outer join&lt;/h4&gt;
+&lt;h5 id="motivation_1"&gt;Motivation&lt;/h5&gt;
+&lt;p&gt;Let's consider &lt;em&gt;student&lt;/em&gt; and &lt;em&gt;takes&lt;/em&gt; tables look like the below&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sqlite&amp;gt; select * from student;
+ID|name|dept_name|tot_cred
+00128|Zhang|Comp. Sci.|102
+12345|Shankar|Comp. Sci.|32
+19991|Brandt|History|80
+23121|Chavez|Finance|110
+44553|Peltier|Physics|56
+45678|Levy|Physics|46
+54321|Williams|Comp. Sci.|54
+55739|Sanchez|Music|38
+70557|Snow|Physics|0
+76543|Brown|Comp. Sci.|58
+76653|Aoi|Elec. Eng.|60
+98765|Bourikas|Elec. Eng.|98
+98988|Tanaka|Biology|120
+
+sqlite&amp;gt; select * from takes;
+ID|course_id|sec_id|semester|year|grade
+00128|CS-101|1|Fall|2009|A
+00128|CS-347|1|Fall|2009|A-
+12345|CS-101|1|Fall|2009|C
+12345|CS-190|2|Spring|2009|A
+12345|CS-315|1|Spring|2010|A
+12345|CS-347|1|Fall|2009|A
+19991|HIS-351|1|Spring|2010|B
+23121|FIN-201|1|Spring|2010|C+
+44553|PHY-101|1|Fall|2009|B-
+45678|CS-101|1|Fall|2009|F
+45678|CS-101|1|Spring|2010|B+
+45678|CS-319|1|Spring|2010|B
+54321|CS-101|1|Fall|2009|A-
+54321|CS-190|2|Spring|2009|B+
+55739|MU-199|1|Spring|2010|A-
+76543|CS-101|1|Fall|2009|A
+76543|CS-319|2|Spring|2010|A
+76653|EE-181|1|Spring|2009|C
+98765|CS-101|1|Fall|2009|C-
+98765|CS-315|1|Spring|2010|B
+98988|BIO-101|1|Summer|2009|A
+98988|BIO-301|1|Summer|2010|
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Suppose we wish to display a list of all students along with the courses they have
+taken. We come up a query that looks like&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+&lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;student&lt;/span&gt; &lt;span class="k"&gt;natural&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;takes&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This query actually is not right for our purpose because it will not show
+the student who takes no course. This is because his "ID" will only appear
+in &lt;em&gt;student&lt;/em&gt; table not in &lt;em&gt;takes&lt;/em&gt; table. If we do &lt;code&gt;natural join&lt;/code&gt;, the value
+of "ID" will not equal (one is a number and the other is null), which will
+not show up in our final result set. Example in our case will be student Snow
+with "ID" 70557, who has not taken any course. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sqlite&amp;gt; select * from student natural join takes;
+ID|name|dept_name|tot_cred|course_id|sec_id|semester|year|grade
+00128|Zhang|Comp. Sci.|102|CS-101|1|Fall|2009|A
+00128|Zhang|Comp. Sci.|102|CS-347|1|Fall|2009|A-
+12345|Shankar|Comp. Sci.|32|CS-101|1|Fall|2009|C
+12345|Shankar|Comp. Sci.|32|CS-190|2|Spring|2009|A
+12345|Shankar|Comp. Sci.|32|CS-315|1|Spring|2010|A
+12345|Shankar|Comp. Sci.|32|CS-347|1|Fall|2009|A
+19991|Brandt|History|80|HIS-351|1|Spring|2010|B
+23121|Chavez|Finance|110|FIN-201|1|Spring|2010|C+
+44553|Peltier|Physics|56|PHY-101|1|Fall|2009|B-
+45678|Levy|Physics|46|CS-101|1|Fall|2009|F
+45678|Levy|Physics|46|CS-101|1|Spring|2010|B+
+45678|Levy|Physics|46|CS-319|1|Spring|2010|B
+54321|Williams|Comp. Sci.|54|CS-101|1|Fall|2009|A-
+54321|Williams|Comp. Sci.|54|CS-190|2|Spring|2009|B+
+55739|Sanchez|Music|38|MU-199|1|Spring|2010|A-
+76543|Brown|Comp. Sci.|58|CS-101|1|Fall|2009|A
+76543|Brown|Comp. Sci.|58|CS-319|2|Spring|2010|A
+76653|Aoi|Elec. Eng.|60|EE-181|1|Spring|2009|C
+98765|Bourikas|Elec. Eng.|98|CS-101|1|Fall|2009|C-
+98765|Bourikas|Elec. Eng.|98|CS-315|1|Spring|2010|B
+98988|Tanaka|Biology|120|BIO-101|1|Summer|2009|A
+98988|Tanaka|Biology|120|BIO-301|1|Summer|2010|
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;More generallyy, some tuples in either or both of the relations being joined 
+may be "lost" in this way. The &lt;strong&gt;outer join&lt;/strong&gt; operation works in a manner similar
+to the join operations we studied above, but preserve those tuples that would be
+lost in a join, by creating tuples in the result containing null values.&lt;/p&gt;
+&lt;h5 id="outer-join_1"&gt;outer join&lt;/h5&gt;
+&lt;p&gt;There are three forms of outer join:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;The &lt;strong&gt;left outer join&lt;/strong&gt; preserves tuples only in the relation named before
+(to the left of) the &lt;code&gt;left outer join&lt;/code&gt; operation.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The &lt;strong&gt;right outer join&lt;/strong&gt; preserves tuples only in the relation named after
+(to the right of) the &lt;code&gt;right outer join&lt;/code&gt; operation.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The &lt;strong&gt;full outer join&lt;/strong&gt; preserves tuples in both relations.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For our example, the actual query should be&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; 
+&lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;student&lt;/span&gt; &lt;span class="k"&gt;natural&lt;/span&gt; &lt;span class="k"&gt;left&lt;/span&gt; &lt;span class="k"&gt;outer&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;takes&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;which returns result that includes student Snow with nulls for the
+attributes that appear only in the schema of the &lt;em&gt;take&lt;/em&gt; relation&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sqlite&amp;gt; select * from student natural left outer join takes;
+ID|name|dept_name|tot_cred|course_id|sec_id|semester|year|grade
+00128|Zhang|Comp. Sci.|102|CS-101|1|Fall|2009|A
+00128|Zhang|Comp. Sci.|102|CS-347|1|Fall|2009|A-
+12345|Shankar|Comp. Sci.|32|CS-101|1|Fall|2009|C
+12345|Shankar|Comp. Sci.|32|CS-190|2|Spring|2009|A
+12345|Shankar|Comp. Sci.|32|CS-315|1|Spring|2010|A
+12345|Shankar|Comp. Sci.|32|CS-347|1|Fall|2009|A
+19991|Brandt|History|80|HIS-351|1|Spring|2010|B
+23121|Chavez|Finance|110|FIN-201|1|Spring|2010|C+
+44553|Peltier|Physics|56|PHY-101|1|Fall|2009|B-
+45678|Levy|Physics|46|CS-101|1|Fall|2009|F
+45678|Levy|Physics|46|CS-101|1|Spring|2010|B+
+45678|Levy|Physics|46|CS-319|1|Spring|2010|B
+54321|Williams|Comp. Sci.|54|CS-101|1|Fall|2009|A-
+54321|Williams|Comp. Sci.|54|CS-190|2|Spring|2009|B+
+55739|Sanchez|Music|38|MU-199|1|Spring|2010|A-
+70557|Snow|Physics|0|||||
+76543|Brown|Comp. Sci.|58|CS-101|1|Fall|2009|A
+76543|Brown|Comp. Sci.|58|CS-319|2|Spring|2010|A
+76653|Aoi|Elec. Eng.|60|EE-181|1|Spring|2009|C
+98765|Bourikas|Elec. Eng.|98|CS-101|1|Fall|2009|C-
+98765|Bourikas|Elec. Eng.|98|CS-315|1|Spring|2010|B
+98988|Tanaka|Biology|120|BIO-101|1|Summer|2009|A
+98988|Tanaka|Biology|120|BIO-301|1|Summer|2010|
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We mention earlier that &lt;strong&gt;on&lt;/strong&gt; and &lt;strong&gt;where&lt;/strong&gt; behave differently
+for outer join. Let's consider the following example&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+&lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;student&lt;/span&gt; &lt;span class="k"&gt;left&lt;/span&gt; &lt;span class="k"&gt;outer&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;takes&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="k"&gt;true&lt;/span&gt;
+&lt;span class="k"&gt;where&lt;/span&gt; &lt;span class="n"&gt;student&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ID&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;takes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ID&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This gives the following result &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sqlite&amp;gt; select * from student left outer join takes where student.ID = takes.ID;
+ID|name|dept_name|tot_cred|ID|course_id|sec_id|semester|year|grade
+00128|Zhang|Comp. Sci.|102|00128|CS-101|1|Fall|2009|A
+00128|Zhang|Comp. Sci.|102|00128|CS-347|1|Fall|2009|A-
+12345|Shankar|Comp. Sci.|32|12345|CS-101|1|Fall|2009|C
+12345|Shankar|Comp. Sci.|32|12345|CS-190|2|Spring|2009|A
+12345|Shankar|Comp. Sci.|32|12345|CS-315|1|Spring|2010|A
+12345|Shankar|Comp. Sci.|32|12345|CS-347|1|Fall|2009|A
+19991|Brandt|History|80|19991|HIS-351|1|Spring|2010|B
+23121|Chavez|Finance|110|23121|FIN-201|1|Spring|2010|C+
+44553|Peltier|Physics|56|44553|PHY-101|1|Fall|2009|B-
+45678|Levy|Physics|46|45678|CS-101|1|Fall|2009|F
+45678|Levy|Physics|46|45678|CS-101|1|Spring|2010|B+
+45678|Levy|Physics|46|45678|CS-319|1|Spring|2010|B
+54321|Williams|Comp. Sci.|54|54321|CS-101|1|Fall|2009|A-
+54321|Williams|Comp. Sci.|54|54321|CS-190|2|Spring|2009|B+
+55739|Sanchez|Music|38|55739|MU-199|1|Spring|2010|A-
+76543|Brown|Comp. Sci.|58|76543|CS-101|1|Fall|2009|A
+76543|Brown|Comp. Sci.|58|76543|CS-319|2|Spring|2010|A
+76653|Aoi|Elec. Eng.|60|76653|EE-181|1|Spring|2009|C
+98765|Bourikas|Elec. Eng.|98|98765|CS-101|1|Fall|2009|C-
+98765|Bourikas|Elec. Eng.|98|98765|CS-315|1|Spring|2010|B
+98988|Tanaka|Biology|120|98988|BIO-101|1|Summer|2009|A
+98988|Tanaka|Biology|120|98988|BIO-301|1|Summer|2010|
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Here, &lt;code&gt;left outer join&lt;/code&gt; esentially returns a cartesian product of two relations.
+Since there is no tuple in &lt;em&gt;take&lt;/em&gt; with ID = 70577, every time a tuple appears in the outer
+join with name = "Snow", the values for student.ID and takes.ID must be different, and
+such tuples would be eliminated by the &lt;code&gt;where&lt;/code&gt; clause predicate. Thus, student
+Snow never appears in the result of the latter query.&lt;/p&gt;
+&lt;h3 id="relational-algebra-perspective"&gt;Relational algebra perspective&lt;/h3&gt;
+&lt;p&gt;In the previous section, we spend quite some time understanding &lt;code&gt;join&lt;/code&gt; from SQL
+perspective. In this section, we try to under the clause from relational algebra
+perspective.&lt;/p&gt;
+&lt;p&gt;In relational algebra, a operator accepts (one or two) relation instances as argument
+and returns a relation instance as the result: &lt;span class="math"&gt;\(f(R_1, R_2) \to R_3\)&lt;/span&gt;. We have 
+the following operators:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(\sigma\)&lt;/span&gt;: select rows from a relation  (i.e. &lt;span class="math"&gt;\(\sigma_{\text{grade} &amp;lt; B}(takes)\)&lt;/span&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(\pi\)&lt;/span&gt;: extract columns from a relation (i.e. &lt;span class="math"&gt;\(\pi_{\text{ID, name}}(student)\)&lt;/span&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Then, for join we have following definitions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;condition joins: &lt;span class="math"&gt;\(R \bowtie_c S = \sigma_c (R \times S)\)&lt;/span&gt; 
+(i.e. &lt;span class="math"&gt;\(\text{student} \bowtie_{\text{student.id &amp;lt; takes.id}} \text{takes}\)&lt;/span&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Does this look familar to you? Yes, this exactly corresponds to &lt;code&gt;join ... on ...&lt;/code&gt; usage.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;equijoin: &lt;span class="math"&gt;\(R \bowtie_c S\)&lt;/span&gt; ( &lt;span class="math"&gt;\(c\)&lt;/span&gt; consists &lt;strong&gt;solely&lt;/strong&gt; of equalities)
+(i.e. &lt;span class="math"&gt;\(\text{student} \bowtie_{\text{student.id = takes.id}} \text{takes}\)&lt;/span&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This is equivalent to &lt;code&gt;join ... using (...)&lt;/code&gt; usage.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;natural join: &lt;span class="math"&gt;\(R \bowtie S\)&lt;/span&gt; (equijoin where equalities are specified on all fields having the same 
+name in &lt;span class="math"&gt;\(R\)&lt;/span&gt; and &lt;span class="math"&gt;\(S\)&lt;/span&gt;) (i.e. &lt;span class="math"&gt;\(\text{student} \bowtie \text{takes}\)&lt;/span&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Well, this is exactly the &lt;code&gt;natural join&lt;/code&gt; usage.&lt;/p&gt;
+&lt;p&gt;In fact, this perspective is acutally how people explain &lt;code&gt;join&lt;/code&gt; to others. There
+are two excellent pages offer graphical explaination to this concept. Their links
+are attached in the "Links to resources" section.&lt;/p&gt;
+&lt;h2 id="a-leetcode-example"&gt;A leetcode example&lt;/h2&gt;
+&lt;p&gt;Now, let's take a look at &lt;a href="https://leetcode.com/problems/combine-two-tables/#/description"&gt;leetcode 175. Combine Two tables&lt;/a&gt;
+for practice. &lt;/p&gt;
+&lt;p&gt;The problem ask us to &lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Write a SQL query for a report that provides the following information
+(FirstName, LastName, City, State) 
+for each person in the Person table, regardless if there is an address for each of those people.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;"regardless if there is an address for each of those people" is a clear indicator
+for us to use &lt;code&gt;outer join&lt;/code&gt; because we still want to keep all the person even 
+they may not appear in the "Address" table. There are several queries we can write&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;#&lt;/span&gt; &lt;span class="n"&gt;Solution&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="n"&gt;FirstName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;LastName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;City&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;State&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;Person&lt;/span&gt; &lt;span class="k"&gt;natural&lt;/span&gt; &lt;span class="k"&gt;left&lt;/span&gt; &lt;span class="k"&gt;outer&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt;
+
+&lt;span class="o"&gt;#&lt;/span&gt; &lt;span class="n"&gt;Solution&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="n"&gt;FirstName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;LastName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;City&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;State&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;Person&lt;/span&gt; &lt;span class="k"&gt;left&lt;/span&gt; &lt;span class="k"&gt;outer&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="n"&gt;Person&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PersonId&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PersonId&lt;/span&gt;
+
+&lt;span class="o"&gt;#&lt;/span&gt; &lt;span class="n"&gt;Solution&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;
+&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="n"&gt;FirstName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;LastName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;City&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;State&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;Person&lt;/span&gt; &lt;span class="k"&gt;left&lt;/span&gt; &lt;span class="k"&gt;outer&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt; &lt;span class="k"&gt;using&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PersonId&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="o"&gt;#&lt;/span&gt; &lt;span class="n"&gt;Solution&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;
+&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="n"&gt;FirstName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;LastName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;City&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;State&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt; &lt;span class="k"&gt;right&lt;/span&gt; &lt;span class="k"&gt;outer&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;Person&lt;/span&gt; &lt;span class="k"&gt;using&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PersonId&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="o"&gt;#&lt;/span&gt; &lt;span class="n"&gt;Solution&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;
+&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="n"&gt;FirstName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;LastName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;City&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;State&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt; &lt;span class="k"&gt;right&lt;/span&gt; &lt;span class="k"&gt;outer&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;Person&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PersonId&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Person&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PersonId&lt;/span&gt;
+
+&lt;span class="o"&gt;#&lt;/span&gt; &lt;span class="n"&gt;Solution&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;
+&lt;span class="k"&gt;select&lt;/span&gt; &lt;span class="n"&gt;FirstName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;LastName&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;City&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;State&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt; &lt;span class="k"&gt;natural&lt;/span&gt; &lt;span class="k"&gt;right&lt;/span&gt; &lt;span class="k"&gt;outer&lt;/span&gt; &lt;span class="k"&gt;join&lt;/span&gt; &lt;span class="n"&gt;Person&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We should have no trouble to understand these queries now. &lt;/p&gt;
+&lt;h2 id="links-to-resources"&gt;Links to resources&lt;/h2&gt;
+&lt;p&gt;Here are some of the resources I found helpful while preparing this article:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.amazon.com/Database-System-Concepts-Computer-Science/dp/0073523321"&gt;Database System Concepts&lt;/a&gt;
+Chapter 3, 4&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.ibm.com/developerworks/data/tutorials/db2-cert6104/index.html"&gt;DB2 10.1 fundamentals certification exam 610 prep, Part 4&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://pages.cs.wisc.edu/~dbbook/"&gt;Database Management Systems&lt;/a&gt; Chapter 4&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins"&gt;Code project page&lt;/a&gt; and
+&lt;a href="https://stackoverflow.com/questions/38549/what-is-the-difference-between-inner-join-and-outer-join"&gt;SO post&lt;/a&gt; have
+nice graphic explanation to this concept.&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.w3resource.com/sqlite/sqlite-natural-join.php"&gt;What is natural join in SQLite?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;&lt;code&gt;on true&lt;/code&gt; is equivalent to &lt;code&gt;student left outer join takes&lt;/code&gt;.  &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="db"></category><category term="sql"></category><category term="relational-algebra"></category><category term="leetcode"></category></entry><entry><title>The tortoise and the hare</title><link href="http://zhu45.org/posts/2017/Jun/18/the-tortoise-and-the-hare/" rel="alternate"></link><published>2017-06-18T20:20:00+08:00</published><updated>2017-06-18T20:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-06-18:posts/2017/Jun/18/the-tortoise-and-the-hare/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Recently, I start to work on &lt;a href="https://github.com/xxks-kkk/shuati"&gt;leetcode's problems&lt;/a&gt;. 
 My goal is to solve two problems per day (mission possible, right?). The problems I'm looking
 at are &lt;a href="https://leetcode.com/problems/linked-list-cycle-ii/"&gt;142. Linked List Cycle II&lt;/a&gt; and 
 &lt;a href="https://leetcode.com/problems/find-the-duplicate-number/"&gt;287. Find the Duplicate Number&lt;/a&gt;, 
