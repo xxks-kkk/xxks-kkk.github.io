@@ -2007,10 +2007,17 @@ $$&lt;/div&gt;
 $$&lt;/div&gt;
 &lt;p&gt;and our cost function is &lt;/p&gt;
 &lt;div class="math"&gt;$$
-\begin{equation}
-J(\theta) = \frac{1}{2m} \sum_{i=1}^m(\theta^T x^{(i)}-y(i))^2 \label{eq:2}
-\end{equation}
+\begin{eqnarray}
+J(\theta) &amp;amp;=&amp;amp; \frac{1}{2m} \sum_{i=1}^m(\theta^T x^{(i)}-y(i))^2 \label{eq:2} \\
+          &amp;amp;=&amp;amp; \frac{1}{m}  \sum_{i=1}^m \underbrace{\frac{1}{2}(\theta^T x^{(i)}-y(i))^2}_{\text{cost}(h_\theta(x),y)} \label{eq:7}
+\end{eqnarray}
 $$&lt;/div&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(2\)&lt;/span&gt; in the above equation is a convenience for the computation of the gradient
+descent as the derivative term of the square function will cancel out the 
+&lt;span class="math"&gt;\(\frac{1}{2}\)&lt;/span&gt; term.&lt;/p&gt;
+&lt;/div&gt;
 &lt;p&gt;In order to find &lt;span class="math"&gt;\(\theta\)&lt;/span&gt; that minimizes our cost function &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt;. Two methods are available for us:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Gradient Descent&lt;/li&gt;
@@ -2025,6 +2032,14 @@ $$&lt;/div&gt;
 $$&lt;/div&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; is called learning rate, which determines "the step we take downhill" and the part afterwards decides
 which direction we want to go (derived by taking partial derivatives against &lt;span class="math"&gt;\(\theta_j\)&lt;/span&gt;)&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; should decrease after every iteration of batch gradient descent. If it is not, we
+want to try smaller &lt;span class="math"&gt;\(\alpha\)&lt;/span&gt;. However, if &lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; is too small, gradient descent can be slow to converge
+(i.e. &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; decreases by less than &lt;span class="math"&gt;\(\epsilon\)&lt;/span&gt; (i.e. &lt;span class="math"&gt;\(10^{-3}\)&lt;/span&gt;) in one iteration). If &lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; is too large,
+&lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; may not decrease on every iteration; may not converge. Thuse, to choose &lt;span class="math"&gt;\(\alpha\)&lt;/span&gt;, we can 
+try a range of values, say &lt;span class="math"&gt;\(\dots, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, \dots\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
 &lt;ul&gt;
 &lt;li&gt;Normal Equation&lt;/li&gt;
 &lt;/ul&gt;
@@ -2181,7 +2196,7 @@ demonstrates a way to calculate the cost function &lt;span class="math"&gt;\(J(\
 
 
 &lt;h2 id="logistic-regression"&gt;Logistic regression&lt;/h2&gt;
-&lt;p&gt;Logistic regression is used as a classification algorithm. It is better than the linear
+&lt;p&gt;Logistic regression is a classification algorithm. It is better than the linear
 regression because 1) linear regression classification result is higly impacted by the
 outliers 2) linear regression result &lt;span class="math"&gt;\(h_\theta (x)\)&lt;/span&gt; can output value &lt;span class="math"&gt;\(&amp;gt;1\)&lt;/span&gt; or &lt;span class="math"&gt;\(&amp;lt;0\)&lt;/span&gt;, which
 doesn't fit with the nature of classification task.&lt;/p&gt;
@@ -2194,7 +2209,20 @@ h_\theta(x) = g(\theta^Tx) \text{ where $g(z) = \frac{1}{1+e^{-z}}$}
 $$&lt;/div&gt;
 &lt;p&gt;This hypothesis can be intrepreted as the probability that &lt;span class="math"&gt;\(y = 1\)&lt;/span&gt; given &lt;span class="math"&gt;\(x\)&lt;/span&gt; and &lt;span class="math"&gt;\(\theta\)&lt;/span&gt;
 (i.e. &lt;span class="math"&gt;\(h_\theta(x) = P(y = 0 | x;\theta)\)&lt;/span&gt;)&lt;/p&gt;
-&lt;p&gt;Then the cost function &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; is&lt;/p&gt;
+&lt;p&gt;In the linear regression, we have cost function \ref{eq:2}. However, 
+&lt;span class="math"&gt;\(\text{cost}(h_\theta(x),y)\)&lt;/span&gt; cannot work for logistic regression because
+&lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; is not convex. In order to make &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; convex, we have the following
+&lt;span class="math"&gt;\(\text{cost}(h_\theta(x),y)\)&lt;/span&gt; for logistic regression&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\text{cost}(h_\theta(x),y)=\left\{
+                \begin{array}{ll}
+                  -\log (h_\theta(x)) \text{ if } y = 1 \\
+                  -\log (1 - h_\theta(x)) \text{ if } y = 0
+                \end{array}
+              \right.
+$$&lt;/div&gt;
+&lt;p&gt;We can rewrite the above equation as &lt;span class="math"&gt;\(\text{cost}(h_\theta(x),y) = -y \log(h_\theta(x)) - (1-y) \log (1-h_\theta(x))\)&lt;/span&gt;
+and then the cost function &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt; is&lt;/p&gt;
 &lt;div class="math"&gt;$$
 J(\theta) = -\frac{1}{m}\sum_{i=1}^m \lbrack 
 (y^{(i)}\log h_\theta(x^{(i)}) + (1-y^{(i)})\log(1-h_\theta(x^{(i)})))\rbrack
@@ -2252,7 +2280,7 @@ logistic regression:&lt;/p&gt;
 &lt;hr/&gt;
 &lt;ol&gt;
 &lt;li id="fn:1"&gt;
-&lt;p&gt;We may need to do feature scaling &amp;amp; pick up learning rate &lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; wisely when we work with gradient descent. &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;We may need to do feature scaling when we work with gradient descent. &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn:2"&gt;
 &lt;p&gt;We don't penalize &lt;span class="math"&gt;\(\theta_0\)&lt;/span&gt;. &lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;

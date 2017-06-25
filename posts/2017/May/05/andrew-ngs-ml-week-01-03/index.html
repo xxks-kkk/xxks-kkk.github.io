@@ -206,10 +206,17 @@ $$</div>
 $$</div>
 <p>and our cost function is </p>
 <div class="math">$$
-\begin{equation}
-J(\theta) = \frac{1}{2m} \sum_{i=1}^m(\theta^T x^{(i)}-y(i))^2 \label{eq:2}
-\end{equation}
+\begin{eqnarray}
+J(\theta) &amp;=&amp; \frac{1}{2m} \sum_{i=1}^m(\theta^T x^{(i)}-y(i))^2 \label{eq:2} \\
+          &amp;=&amp; \frac{1}{m}  \sum_{i=1}^m \underbrace{\frac{1}{2}(\theta^T x^{(i)}-y(i))^2}_{\text{cost}(h_\theta(x),y)} \label{eq:7}
+\end{eqnarray}
 $$</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><span class="math">\(2\)</span> in the above equation is a convenience for the computation of the gradient
+descent as the derivative term of the square function will cancel out the 
+<span class="math">\(\frac{1}{2}\)</span> term.</p>
+</div>
 <p>In order to find <span class="math">\(\theta\)</span> that minimizes our cost function <span class="math">\(J(\theta)\)</span>. Two methods are available for us:</p>
 <ul>
 <li>Gradient Descent</li>
@@ -224,6 +231,14 @@ $$</div>
 $$</div>
 <p><span class="math">\(\alpha\)</span> is called learning rate, which determines "the step we take downhill" and the part afterwards decides
 which direction we want to go (derived by taking partial derivatives against <span class="math">\(\theta_j\)</span>)<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><span class="math">\(J(\theta)\)</span> should decrease after every iteration of batch gradient descent. If it is not, we
+want to try smaller <span class="math">\(\alpha\)</span>. However, if <span class="math">\(\alpha\)</span> is too small, gradient descent can be slow to converge
+(i.e. <span class="math">\(J(\theta)\)</span> decreases by less than <span class="math">\(\epsilon\)</span> (i.e. <span class="math">\(10^{-3}\)</span>) in one iteration). If <span class="math">\(\alpha\)</span> is too large,
+<span class="math">\(J(\theta)\)</span> may not decrease on every iteration; may not converge. Thuse, to choose <span class="math">\(\alpha\)</span>, we can 
+try a range of values, say <span class="math">\(\dots, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, \dots\)</span>.</p>
+</div>
 <ul>
 <li>Normal Equation</li>
 </ul>
@@ -380,7 +395,7 @@ demonstrates a way to calculate the cost function <span class="math">\(J(\theta)
 
 
 <h2 id="logistic-regression">Logistic regression</h2>
-<p>Logistic regression is used as a classification algorithm. It is better than the linear
+<p>Logistic regression is a classification algorithm. It is better than the linear
 regression because 1) linear regression classification result is higly impacted by the
 outliers 2) linear regression result <span class="math">\(h_\theta (x)\)</span> can output value <span class="math">\(&gt;1\)</span> or <span class="math">\(&lt;0\)</span>, which
 doesn't fit with the nature of classification task.</p>
@@ -393,7 +408,20 @@ h_\theta(x) = g(\theta^Tx) \text{ where $g(z) = \frac{1}{1+e^{-z}}$}
 $$</div>
 <p>This hypothesis can be intrepreted as the probability that <span class="math">\(y = 1\)</span> given <span class="math">\(x\)</span> and <span class="math">\(\theta\)</span>
 (i.e. <span class="math">\(h_\theta(x) = P(y = 0 | x;\theta)\)</span>)</p>
-<p>Then the cost function <span class="math">\(J(\theta)\)</span> is</p>
+<p>In the linear regression, we have cost function \ref{eq:2}. However, 
+<span class="math">\(\text{cost}(h_\theta(x),y)\)</span> cannot work for logistic regression because
+<span class="math">\(J(\theta)\)</span> is not convex. In order to make <span class="math">\(J(\theta)\)</span> convex, we have the following
+<span class="math">\(\text{cost}(h_\theta(x),y)\)</span> for logistic regression</p>
+<div class="math">$$
+\text{cost}(h_\theta(x),y)=\left\{
+                \begin{array}{ll}
+                  -\log (h_\theta(x)) \text{ if } y = 1 \\
+                  -\log (1 - h_\theta(x)) \text{ if } y = 0
+                \end{array}
+              \right.
+$$</div>
+<p>We can rewrite the above equation as <span class="math">\(\text{cost}(h_\theta(x),y) = -y \log(h_\theta(x)) - (1-y) \log (1-h_\theta(x))\)</span>
+and then the cost function <span class="math">\(J(\theta)\)</span> is</p>
 <div class="math">$$
 J(\theta) = -\frac{1}{m}\sum_{i=1}^m \lbrack 
 (y^{(i)}\log h_\theta(x^{(i)}) + (1-y^{(i)})\log(1-h_\theta(x^{(i)})))\rbrack
@@ -451,7 +479,7 @@ logistic regression:</p>
 <hr/>
 <ol>
 <li id="fn:1">
-<p>We may need to do feature scaling &amp; pick up learning rate <span class="math">\(\alpha\)</span> wisely when we work with gradient descent. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+<p>We may need to do feature scaling when we work with gradient descent. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:2">
 <p>We don't penalize <span class="math">\(\theta_0\)</span>. <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
