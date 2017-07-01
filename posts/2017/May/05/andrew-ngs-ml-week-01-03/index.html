@@ -432,6 +432,13 @@ for linear regression \ref{eq:3}. </p>
 <p>However, in the course, we directly use the <code>fminunc</code> from Octave to do the optimization.
 Internally, the function use advanced optimization technique that can avoid manually picking
 <span class="math">\(\alpha\)</span> in gradient descent and find the optimal <span class="math">\(\theta\)</span> faster than gradient descent.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For multiclass classification problem, we have <span class="math">\(h_\theta^{(i)}(x) = p(y=1 | x; \theta)\)</span> where
+<span class="math">\(i = 1,2,3,...\)</span>. Then, we can train a logistic regression classifier <span class="math">\(h_\theta^{(i)}(x)\)</span> for
+each class <span class="math">\(i\)</span> to predict the probability that <span class="math">\(y=i\)</span>. On a new input <span class="math">\(x\)</span>, to make predication, pick
+the class <span class="math">\(i\)</span> that gives highest <span class="math">\(h_\theta^{(i)}(x)\)</span>. We are going to predict <span class="math">\(y\)</span> with that value <span class="math">\(i\)</span>.</p>
+</div>
 <h3 id="in-practice_2">In practice</h3>
 <p>The implementation for cost function and gradient descent for logistic regression
 should be no hard for us now:</p>

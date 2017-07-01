@@ -1,5 +1,227 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Fri, 23 Jun 2017 21:23:00 +0800</lastBuildDate><item><title>join in SQL</title><link>http://zhu45.org/posts/2017/Jun/23/join-in-sql/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;In this post, I'll provide a summary on the usage of &lt;code&gt;join&lt;/code&gt; statement in SQL
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Sat, 01 Jul 2017 23:33:00 +0800</lastBuildDate><item><title>Merge sort</title><link>http://zhu45.org/posts/2017/Jul/01/merge-sort/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;We continue our journey in sorting. Specifically, we'll study
+the mergesort in this post.&lt;/p&gt;
+&lt;h2 id="concept"&gt;Concept&lt;/h2&gt;
+&lt;p&gt;The fundamental idea in the mergesort is merging two sorted lists into one. 
+Because the lists are sorted, this can be done in one pass through the input, if 
+the output is put in a third list. The basic merging algorithm takes two input
+arrays &lt;span class="math"&gt;\(A\)&lt;/span&gt; and &lt;span class="math"&gt;\(B\)&lt;/span&gt;, an output array &lt;span class="math"&gt;\(C\)&lt;/span&gt;, and three counters, &lt;code&gt;Aptr&lt;/code&gt;, &lt;code&gt;Bptr&lt;/code&gt;, and
+&lt;code&gt;Cptr&lt;/code&gt;, which are initally set to the beginning of their respective arrays.
+The smaller of &lt;code&gt;A[Aptr]&lt;/code&gt; and &lt;code&gt;B[Bptr]&lt;/code&gt; is copied to the next entry in &lt;span class="math"&gt;\(C\)&lt;/span&gt;, and
+the appropriate counters are advanced. When either input list is exhausted, the 
+remainder of the other list is copied to &lt;span class="math"&gt;\(C\)&lt;/span&gt;. &lt;/p&gt;
+&lt;p&gt;The running time for merging is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;, because at most &lt;span class="math"&gt;\(N-1\)&lt;/span&gt; comparisons are made,
+where &lt;span class="math"&gt;\(N\)&lt;/span&gt; is the total number of elements. To see this, note that every comparison
+adds an element to &lt;span class="math"&gt;\(C\)&lt;/span&gt;, except the last comparison, which adds at least two. &lt;/p&gt;
+&lt;p&gt;Once we have this idea in mind, we can now describe our mergesort algorithm:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;If &lt;span class="math"&gt;\(N=1\)&lt;/span&gt;, there is only one element to sort, and we are done.&lt;/li&gt;
+&lt;li&gt;Otherwise, we recursively mergesort the first half and the second half. This gives
+two sorted halves, which can then be merged together using the merging algorithm.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;As you can see, our mergesort is a classic example of  divide-and-conquer strategy.
+The problem is &lt;em&gt;divided&lt;/em&gt; into smaller problems and solved recursively. The &lt;em&gt;conquering&lt;/em&gt;
+phase consists of patching together the answers.&lt;/p&gt;
+&lt;p&gt;The mergesort algorithm can be implemented as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;
+&lt;span class="nf"&gt;merge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt;
+      &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt;
+      &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;lpos&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;// start of left half&lt;/span&gt;
+      &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;rpos&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;// start of right half&lt;/span&gt;
+      &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;rightEnd&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;leftEnd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;numElements&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tmpPos&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="n"&gt;leftEnd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;rpos&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;tmpPos&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;lpos&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;numElements&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;rightEnd&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;lpos&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// main loop&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lpos&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;leftEnd&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;rpos&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;rightEnd&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;lpos&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;rpos&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+      &lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;tmpPos&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;lpos&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;
+      &lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;tmpPos&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;rpos&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+
+  &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lpos&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;leftEnd&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;// Copy rest of first half&lt;/span&gt;
+    &lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;tmpPos&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;lpos&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rpos&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;rightEnd&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;// Copy rest of second half&lt;/span&gt;
+    &lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;tmpPos&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;rpos&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;numElements&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;rightEnd&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;// copy tmpArray back&lt;/span&gt;
+    &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;rightEnd&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;rightEnd&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt;
+&lt;span class="nf"&gt;msort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt;
+      &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt;
+      &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;center&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;center&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;msort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;center&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;msort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;center&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;merge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;center&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt;
+&lt;span class="nf"&gt;mergeSort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;tmpArray&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;malloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;assert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;msort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;free&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that we use &lt;code&gt;tmpArray&lt;/code&gt; working as array &lt;span class="math"&gt;\(C\)&lt;/span&gt; in our merging algorithm
+to hold the merge result from our two input sorted arrays. One naive implementation
+is that we declare a temporary array locally each time we call &lt;code&gt;Merge&lt;/code&gt;. This can
+be problematic because there could be &lt;span class="math"&gt;\(\log N\)&lt;/span&gt; temporary arrays active at any point.
+This could be fatal on a machine with small memory and at the same time, we will
+spend quite a lot time calling &lt;code&gt;malloc&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;The trick for our implementation is that we declare a global temporary array
+&lt;code&gt;tmpArray&lt;/code&gt; of size &lt;span class="math"&gt;\(N\)&lt;/span&gt; at the very beginning. Then, we use &lt;code&gt;lpos&lt;/code&gt;, &lt;code&gt;rpos&lt;/code&gt;, &lt;code&gt;rightEnd&lt;/code&gt;
+to control the fraction of &lt;code&gt;tmpArray&lt;/code&gt; will be used for merge step. This is a common
+implementation trick, which will visit again immediately.&lt;/p&gt;
+&lt;p&gt;Like many other recursive algorithm, mergesort can also be implemented as
+non-recursive algorithm as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;
+&lt;span class="nf"&gt;mergeSortNonRecursive&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[],&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;subListSize&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;part1Start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;part2Start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;part2End&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="n"&gt;tmpArray&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;malloc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;subListSize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;subListSize&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;subListSize&lt;/span&gt; &lt;span class="o"&gt;*=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;part1Start&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;part1Start&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;subListSize&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;part2Start&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;part1Start&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;subListSize&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="n"&gt;part2End&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;min&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;part2Start&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;subListSize&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;merge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tmpArray&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;part1Start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;part2Start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;part2End&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;part1Start&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;part2End&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's take a look at an example for better understanding of the implementation
+above. Suppose we want to sort the following list using mergesort: 
+&lt;span class="math"&gt;\(31, 41, 59, 26, 53, 58, 97\)&lt;/span&gt;. We start from very basic case: merge two sorted
+list of one element, into a sorted list of two elements. For example,
+&lt;code&gt;part1Start = 0&lt;/code&gt;, &lt;code&gt;part2Start = 1&lt;/code&gt;, &lt;code&gt;part2End = 1&lt;/code&gt; for the first iteration
+of while loop when &lt;code&gt;subListSize = 1&lt;/code&gt;. Then, we call &lt;code&gt;merge&lt;/code&gt; function and
+use the fraction of &lt;code&gt;tmpArray&lt;/code&gt; from &lt;code&gt;0&lt;/code&gt; to &lt;code&gt;1&lt;/code&gt; to hold the merge result.
+We can print out the value &lt;code&gt;part1Start&lt;/code&gt;, &lt;code&gt;part2Start&lt;/code&gt;, and &lt;code&gt;part2End&lt;/code&gt; to help
+us better understand the flow of the program:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Before mergeSort: 31, 41, 59, 26, 53, 58, 97,
+part1Start: 0
+part2Start: 1
+part2End: 1
+part1Start: 2
+part2Start: 3
+part2End: 3
+part1Start: 4
+part2Start: 5
+part2End: 5
+part1Start: 0
+part2Start: 2
+part2End: 3
+part1Start: 0
+part2Start: 4
+part2End: 6
+After mergeSort: 26, 31, 41, 53, 58, 59, 97,
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id="analysis"&gt;Analysis&lt;/h2&gt;
+&lt;p&gt;The running time of mergesort is &lt;span class="math"&gt;\(O(N \log N)\)&lt;/span&gt;, which can be obtained
+by &lt;a href="http://zhu45.org/posts/2017/Jun/12/solving-recurrence-relations-part-2/"&gt;solving the recurrence relation&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{eqnarray*} 
+T(1) &amp;amp;=&amp;amp; 1 \\
+T(N) &amp;amp;=&amp;amp; 2T(N/2) + N 
+\end{eqnarray*}
+$$&lt;/div&gt;
+&lt;p&gt;One thing to notice that we assume &lt;span class="math"&gt;\(N = 2^k\)&lt;/span&gt; when solve the above recurrence relation.
+The answer is almost identical even if &lt;span class="math"&gt;\(N\)&lt;/span&gt; is not a power of &lt;span class="math"&gt;\(2\)&lt;/span&gt;.&lt;/p&gt;
+&lt;h2 id="final-remarks"&gt;Final remarks&lt;/h2&gt;
+&lt;p&gt;We hardly use mergesort for main memory sorts. The main problem is that merging two
+sorted lists requires linear extra memory, and the additional work spent coping to the temporary
+array and back, throughout the algorithm, has the effect of slowing down the sort considerably.
+Thus, for serious internal sorting applications, we use quicksort instead.
+Nevertheless, the merging routine is the cornerstone of most external sorting algorithms.&lt;/p&gt;
+&lt;h2 id="links-to-resources"&gt;Links to resources&lt;/h2&gt;
+&lt;p&gt;Here are some of the resources I found helpful while preparing this article:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;MAW Chapter 7&lt;/li&gt;
+&lt;/ol&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Sat, 01 Jul 2017 23:33:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-07-01:posts/2017/Jul/01/merge-sort/</guid><category>sorting</category><category>maw</category></item><item><title>join in SQL</title><link>http://zhu45.org/posts/2017/Jun/23/join-in-sql/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;In this post, I'll provide a summary on the usage of &lt;code&gt;join&lt;/code&gt; statement in SQL
 and use &lt;a href="https://leetcode.com/problems/combine-two-tables/"&gt;Leetcode 175&lt;/a&gt; as 
 a concrete example to show several equivalent &lt;code&gt;join&lt;/code&gt; statement usage.&lt;/p&gt;
 &lt;p&gt;To be honest, this is my third time visiting this material. The very first time
@@ -2233,6 +2455,13 @@ for linear regression \ref{eq:3}. &lt;/p&gt;
 &lt;p&gt;However, in the course, we directly use the &lt;code&gt;fminunc&lt;/code&gt; from Octave to do the optimization.
 Internally, the function use advanced optimization technique that can avoid manually picking
 &lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; in gradient descent and find the optimal &lt;span class="math"&gt;\(\theta\)&lt;/span&gt; faster than gradient descent.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;For multiclass classification problem, we have &lt;span class="math"&gt;\(h_\theta^{(i)}(x) = p(y=1 | x; \theta)\)&lt;/span&gt; where
+&lt;span class="math"&gt;\(i = 1,2,3,...\)&lt;/span&gt;. Then, we can train a logistic regression classifier &lt;span class="math"&gt;\(h_\theta^{(i)}(x)\)&lt;/span&gt; for
+each class &lt;span class="math"&gt;\(i\)&lt;/span&gt; to predict the probability that &lt;span class="math"&gt;\(y=i\)&lt;/span&gt;. On a new input &lt;span class="math"&gt;\(x\)&lt;/span&gt;, to make predication, pick
+the class &lt;span class="math"&gt;\(i\)&lt;/span&gt; that gives highest &lt;span class="math"&gt;\(h_\theta^{(i)}(x)\)&lt;/span&gt;. We are going to predict &lt;span class="math"&gt;\(y\)&lt;/span&gt; with that value &lt;span class="math"&gt;\(i\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
 &lt;h3 id="in-practice_2"&gt;In practice&lt;/h3&gt;
 &lt;p&gt;The implementation for cost function and gradient descent for logistic regression
 should be no hard for us now:&lt;/p&gt;
@@ -2920,7 +3149,7 @@ from three perspectives: &lt;em&gt;running time&lt;/em&gt;, &lt;em&gt;memory req
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Tue, 18 Apr 2017 10:03:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-04-18:posts/2017/Apr/18/sorting-prelim/</guid><category>sorting</category><category>maw</category></item><item><title>MAW Chapter 7: Sorting writing questions</title><link>http://zhu45.org/posts/2017/Apr/15/maw-chapter-7-sorting-writing-questions/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
-&lt;p&gt;including: MAW 7.1, 7.2, 7.3, 7.4, 7.5.a, 7.9, 7.10, 7.11, 7.12, &lt;/p&gt;
+&lt;p&gt;including: MAW 7.1, 7.2, 7.3, 7.4, 7.5.a, 7.9, 7.10, 7.11, 7.12, 7.13&lt;/p&gt;
 &lt;h3 id="maw-71"&gt;MAW 7.1&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Sort the sequence 3,1,4,1,5,9,2,6,5 using insertion sort.&lt;/p&gt;
@@ -3072,6 +3301,24 @@ that are sorted and not part of the heap. &lt;span class="math"&gt;\(102\)&lt;/s
 &lt;p&gt;Still &lt;span class="math"&gt;\(O(N\log N)\)&lt;/span&gt;. Heapsort uses at least (roughly) 
 &lt;span class="math"&gt;\(N\log N\)&lt;/span&gt; comparisons on any input, so there are no particularly
 good inputs.&lt;/p&gt;
+&lt;h3 id="maw-713"&gt;MAW 7.13&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Sort 3,1,4,1,5,9,2,6 using mergesort&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;First the sequence {3,1,4,1} is sorted. To do this, the sequence {3,1}
+is sorted. This involves sorting {3} and {1}, which are base cases, and
+merging the result to obtain {1,3}. The sequence {4,1} is likewise sorted into
+{1,4}. Then these two sequences are merged to obtain {1,1,3,4}. The second
+half is sorted similarly, eventually obtaining {2,5,6,9}. The merge 
+result is then easily computed as {1,1,2,3,4,5,6,9}.&lt;/p&gt;
+&lt;h3 id="maw-715"&gt;MAW 7.15&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Determine the running time of mergesort for
+a. sorted input
+b. reverse-ordered input
+c. random input&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The running time for mergesort is &lt;span class="math"&gt;\(O(N \log N)\)&lt;/span&gt; regardless of the input pattern.&lt;/p&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -5419,6 +5666,7 @@ well.&lt;/p&gt;
 &lt;h2 id="properties"&gt;Properties&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;The average depth of binary tree is &lt;span class="math"&gt;\(O(\sqrt{n})\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;The height of &lt;em&gt;balance&lt;/em&gt; binary tree is &lt;span class="math"&gt;\(O(\log n)\)&lt;/span&gt;&lt;/li&gt;
 &lt;li&gt;A binary tree of &lt;span class="math"&gt;\(N\)&lt;/span&gt; nodes, there are &lt;span class="math"&gt;\(N+1\)&lt;/span&gt; &lt;code&gt;NULL&lt;/code&gt; pointers representing children (MAW 4.4)&lt;/li&gt;
 &lt;li&gt;The maximum number of nodes in a binary tree of height &lt;span class="math"&gt;\(H\)&lt;/span&gt; is &lt;span class="math"&gt;\(2^{H+1}-1\)&lt;/span&gt; (MAW 4.5)&lt;/li&gt;
 &lt;li&gt;The number of full nodes plus one is equal to the number of leaves in a nonempty binary tree&lt;/li&gt;
