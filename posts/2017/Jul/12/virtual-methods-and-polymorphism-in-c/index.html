@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Virtual methods and polymorphism in C++
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <link rel="stylesheet" href="../../../../../theme/fa/css/font-awesome.min.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+    <h1 id="site-title"><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
+            <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+            <a href="../../../../../quotes.html" style="padding: 10px">QUOTES</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+            <h1 class="post-title">Virtual methods and polymorphism in C++</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2017-07-12T23:11:00+08:00"> Jul 12, 2017</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/cpp.html">cpp</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <html><head></head><body><p>Surprisingly, even I work with the product that is written majorly in C++, I don't have to deal
+with the stuff that differentiate C++ from C. However, I'm now working on a defect that
+forces me to simplify C++ objects in order to get the root cause of the problem. That's the place
+where I have to really need to know how exactly C++ class is structured. </p>
+<p>One question I asked myself several years ago: "What is virtual method in C++?" I believed, at that time,
+I got the answer but I was too lazy to record it somewhere. Now, I have to pay the price by wasting my effort
+again to dig out the answer. So, I'd better save it at someplace this time and the following is just
+a simple example to partially show the answer to the question. I know C++ is a monster and I'll definitely
+need to rewrite the post some day in the future when I know more about the language. However, this answer
+is good enough for me now.</p>
+<h2 id="virtual-methods">Virtual methods</h2>
+<p>Let's consider the following code snippet: we have a base class called <code>Animal</code> and its subclass called <code>Dog</code></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Animal</span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="kt">void</span> <span class="n">getFamily</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"We are animals"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
+  <span class="kt">void</span> <span class="n">getClass</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"I'm an Animal"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Dog</span><span class="o">:</span> <span class="k">public</span> <span class="n">Animal</span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="kt">void</span> <span class="n">getClass</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"I'm a Dog"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">Animal</span> <span class="o">*</span><span class="n">animal</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Animal</span><span class="p">;</span>
+  <span class="n">Dog</span> <span class="o">*</span><span class="n">dog</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Dog</span><span class="p">;</span>
+
+  <span class="n">animal</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
+  <span class="n">dog</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Now, inside the <code>main</code>, we call <code>animal-&gt;getClass()</code> and <code>dog-&gt;getClass()</code>. We compile our code 
+using <code>g++ -std=c++11 a.cpp</code> and run the program and get</p>
+<div class="highlight"><pre><span></span>I'm an Animal
+I'm a Dog
+</pre></div>
+
+
+<p>As you can see, each object calls their <code>getClass</code> method respectively.
+Now, let's add a function called <code>whatClassAreYou()</code> to our code above </p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">whatClassAreYou</span><span class="p">(</span><span class="n">Animal</span> <span class="o">*</span><span class="n">animal</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">animal</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>and in our <code>main</code> function, we call our newly-added function with</p>
+<div class="highlight"><pre><span></span><span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">animal</span><span class="p">);</span>
+<span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">dog</span><span class="p">);</span>
+</pre></div>
+
+
+<p>and the output looks like below</p>
+<div class="highlight"><pre><span></span>I'm an Animal
+I'm a Dog
+I'm an Animal
+I'm an Animal
+</pre></div>
+
+
+<p>As you can see <code>whatClassAreYou()</code> only calls the <code>getClass()</code> method of our base class <code>Animal</code> even when we pass in 
+<code>Dog</code> class object. Ideally, we want our <code>whatClassAreYou()</code> method call the right <code>getClass()</code> method depending on
+what class object we pass into. In other words, if our <code>Dog</code> class implements its own <code>getClass()</code> method, we want
+our <code>whatClassAreYou()</code> method be aware of this fact and call it instead of calling <code>getClass()</code> of our base class <code>Animal</code>.
+That's why we want to add <code>virtual</code> keyword to the <code>getClass()</code> of our base class. We are essentially telling the compiler
+that our base class <code>getClass()</code> method might be overridden by its subclass and be aware of this fact when some other method
+wants to call it.</p>
+<p>Now our code looks like below</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="c1">// Virtual Methods and Polymorphism</span>
+<span class="c1">// Polymorphism allows you to treat subclasses as their superclass and yet</span>
+<span class="c1">// call the correct overwritten methods in the subclass automatically</span>
+
+<span class="k">class</span> <span class="nc">Animal</span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="kt">void</span> <span class="n">getFamily</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"We are animals"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="c1">// When we define a method as virtual we know that Animal</span>
+  <span class="c1">// will be a base class that may have this method overwritten</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">getClass</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"I'm an Animal"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Dog</span><span class="o">:</span> <span class="k">public</span> <span class="n">Animal</span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="kt">void</span> <span class="n">getClass</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"I'm a Dog"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">whatClassAreYou</span><span class="p">(</span><span class="n">Animal</span> <span class="o">*</span><span class="n">animal</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">animal</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span> <span class="c1">// use "virtual", proper getClass() method will be called depending on</span>
+                      <span class="c1">// the exact type of Animal* animal get passed in (i.e. base class Animal</span>
+                      <span class="c1">// or subclass Dog)</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">Animal</span> <span class="o">*</span><span class="n">animal</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Animal</span><span class="p">;</span>
+  <span class="n">Dog</span> <span class="o">*</span><span class="n">dog</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Dog</span><span class="p">;</span>
+
+  <span class="c1">// If a method is marked virtual or not doesn't matter if we call the</span>
+  <span class="c1">// method directly from the object</span>
+  <span class="n">animal</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
+  <span class="n">dog</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
+
+  <span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">animal</span><span class="p">);</span>
+  <span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">dog</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>and the output is</p>
+<div class="highlight"><pre><span></span>I'm an Animal
+I'm a Dog
+I'm an Animal
+I'm a Dog
+</pre></div>
+
+
+<p>The reason behind this scenario is what we called <strong>polymorphism</strong>, which means "many form" in Greek. Here is how this
+concept get explained in <a href="https://www.amazon.com/Primer-5th-Stanley-B-Lippman/dp/0321714113">C++ Primer</a>:</p>
+<blockquote>
+<p>We speak of types related by inheritance as polymorphic types, 
+because we can use the “many forms” of these types while ignoring the differences among them. 
+The fact that the static and dynamic types of references and pointers can differ is the cornerstone of how C++ supports polymorphism.</p>
+<p>When we call a function defined in a base class through a reference or pointer to the base class, 
+we do not know the type of the object on which that member is executed. 
+The object can be a base-class object or an object of a derived class. 
+If the function is virtual, then the decision as to which function to run is 
+delayed until run time. The version of the virtual function that is run is the 
+one defined by the type of the object to which the reference is bound or to 
+which the pointer points.On the other hand, calls to nonvirtual functions are 
+bound at compile time. Similarly, calls to any function (virtual or not) 
+on an object are also bound at compile time. 
+The type of an object is fixed and unvarying—there is nothing we can do to 
+make the dynamic type of an object differ from its static type. 
+Therefore, calls made on an object are bound at compile time to the version defined by the type of the object.</p>
+<p>Note: Virtuals are resolved at run time only if the call is made 
+through a reference or pointer. Only in these cases is it possible for 
+an object’s dynamic type to differ from its static type.</p>
+</blockquote>
+<p>To see the final note of the above quote, let's take a look an example</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Animal</span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="kt">void</span> <span class="n">getFamily</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"We are animals"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">getClass</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"I'm an Animal"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Dog</span><span class="o">:</span> <span class="k">public</span> <span class="n">Animal</span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="kt">void</span> <span class="n">getClass</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"I'm a Dog"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">whatClassAreYou</span><span class="p">(</span><span class="n">Animal</span> <span class="o">*</span><span class="n">animal</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">animal</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span> 
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">whatClassAreYou2</span><span class="p">(</span><span class="n">Animal</span> <span class="n">animal</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">animal</span><span class="p">.</span><span class="n">getClass</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">Animal</span> <span class="o">*</span><span class="n">animal</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Animal</span><span class="p">;</span>
+  <span class="n">Dog</span> <span class="o">*</span><span class="n">dog</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Dog</span><span class="p">;</span>
+
+  <span class="n">animal</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
+  <span class="n">dog</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
+
+  <span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">animal</span><span class="p">);</span>
+  <span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">dog</span><span class="p">);</span>
+
+  <span class="n">Animal</span> <span class="n">animal2</span><span class="p">;</span>
+  <span class="n">Dog</span> <span class="n">dog2</span><span class="p">;</span>
+
+  <span class="n">whatClassAreYou2</span><span class="p">(</span><span class="n">animal2</span><span class="p">);</span>
+  <span class="n">whatClassAreYou2</span><span class="p">(</span><span class="n">dog2</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>In this example, we define another method <code>whatClassAreYou2</code> calls on object instead of pointers. Now, we apply this method
+to our newly created objects <code>animal2</code> and <code>dog2</code> and we get</p>
+<div class="highlight"><pre><span></span>I'm an Animal
+I'm a Dog
+I'm an Animal
+I'm a Dog
+I'm an Animal
+I'm an Animal
+</pre></div>
+
+
+<p>As you can see, even we have virtual function in our base class, <code>whatClassAreYou2()</code> invokes only the base class's <code>getClass()</code>
+method and ignores the subclass overrides. </p>
+<p>Aside note, you may notice that we use two ways to initialize our objects. The first way is through <code>Animal *animal = new Animal;</code>
+and the second way is through <code>Animal animal2;</code>. Initialization is quite complex in C++. These two ways are essentially the same:
+we use <strong>default constructor</strong> <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> to initialize the objects. The only difference is that the first way gives us a pointer to 
+the object and the second way gives object directly. To obtain the pointer to the object, we can do <code>Animal *ptrAnimal = &amp;animal2</code>.
+Another way to initialize object is through value initilialization <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>. For example:</p>
+<div class="highlight"><pre><span></span><span class="n">string</span> <span class="o">*</span><span class="n">ps1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">string</span><span class="p">;</span>   <span class="c1">// default initalized to the empty string</span>
+<span class="n">string</span> <span class="o">*</span><span class="n">ps</span> <span class="o">=</span> <span class="k">new</span> <span class="n">string</span><span class="p">();</span>  <span class="c1">// value initialized to the empty string</span>
+<span class="kt">int</span> <span class="o">*</span><span class="n">pi1</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">;</span>         <span class="c1">// default initialized; *pi1 is undefined</span>
+<span class="kt">int</span> <span class="o">*</span><span class="n">pi2</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">();</span>       <span class="c1">// value initialized to 0; *pi2 is 0</span>
+</pre></div>
+
+
+<h2 id="pure-virtual-function-abstract-base-class">Pure virtual function &amp; abstract base class</h2>
+<p>Another important concept related with <strong>virtual</strong> is called <strong>pure virtual</strong>. The difference between this concept
+is that, as stated in wikipedia:</p>
+<blockquote>
+<p>A virtual function or virtual method is a function or method whose behavior can be overriden within an inheriting class
+by a function with the same signature. A pure virtual function or pure virtual method is a virtual function that
+is required to be implemented by a derived class that is not abstract.</p>
+</blockquote>
+<p>In short, virtual function can be overriden; pure virtual function must be implemented. Let's take a look a example</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="c1">// An abstract data type is a class that acts as the base to other classes</span>
+<span class="c1">// They stand out because its methods are initialized with zero</span>
+<span class="c1">// A pure virtual method must be overwritten by subclasses</span>
+
+<span class="k">class</span> <span class="nc">Car</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="k">virtual</span> <span class="kt">int</span> <span class="n">getNumWheels</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">virtual</span> <span class="kt">int</span> <span class="nf">getNumDoors</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">StationWagon</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Car</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="kt">int</span> <span class="n">getNumWheels</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Station wagon has 4 wheels"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
+  <span class="kt">int</span> <span class="n">getNumDoors</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Station wagon has 4 doors"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+  <span class="n">StationWagon</span><span class="p">()</span> <span class="p">{}</span>
+  <span class="o">~</span><span class="n">StationWagon</span><span class="p">();</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="c1">// Create a StationWagon using the abstract data type Car</span>
+  <span class="n">Car</span> <span class="o">*</span><span class="n">stationWagon</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StationWagon</span><span class="p">();</span>
+
+  <span class="n">stationWagon</span> <span class="o">-&gt;</span> <span class="n">getNumWheels</span><span class="p">();</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Here, we have a base class called <code>Car</code> and a class that derives from the <code>Car</code> class called <code>StationWagon</code>.  <code>Car</code>
+is a lot similar to our <code>Animal</code> class in the sense that both classes have methods that have keyword <code>virtual</code>. However,
+<code>Car</code> class's methods have <code>=0</code>. This is exactly how we identify <strong>pure virtual</strong>: we specify that a virtual function 
+is a pure virtual by writing <code>=0</code> in place of a function body (i.e., just before the semicolon that ends the declaration).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ol>
+<li>Unlike ordinary virtuals, a pure virtual function does not have to be defined.</li>
+<li><code>=0</code> may appear only on the declaration of a virtual function in the class body.</li>
+</ol>
+</div>
+<p>A class like <code>Car</code> that contains (or inherit without overriding) a pure virtual function is an <strong>abstract base class</strong>. An
+abstract base class defines an interface for subsequent classes to override. We cannot (directly) create objects of a
+type that is an abstract base class.</p>
+<h2 id="key-terms-summary">Key terms summary</h2>
+<p>Here, I summarize terms appeard in this post as a quick index for future reference:</p>
+<ul>
+<li>
+<p><strong>virtual</strong>: Member function that defines type-specific behavior. Calls to virtual made through 
+a reference or pointer are resolved at run time, based on the type of the object to which the reference 
+or pointer is bound.</p>
+</li>
+<li>
+<p><strong>pure virtual</strong>: Virtual function declared in the class header using <code>=0</code> just before the semicolon. A pure
+virtual function need not be (but maybe) defined. Classes with pure virtuals are abstract classes. If a 
+derived class does not define its own version of an inherited pure virtual, then the derived class is abstract as well.</p>
+</li>
+<li>
+<p><strong>polymorphism</strong>: As used in object-oriented programming, refers to the ability to obtain type-specific behavior
+based on the dynamic type of a reference or pointer.</p>
+</li>
+<li>
+<p><strong>static type</strong>: Type with which a variable is defined or that an expression yields. Static type is known at compile time.</p>
+</li>
+<li>
+<p><strong>dynamic type</strong>: Type of an object at runtime. The dynamic type of an object to which a reference refers or to which
+a pointer points may differ from the static type of the reference or pointer. A pointer or reference to a base-class type
+can refer to an object of derived type. In such cases the static type is reference (or pointer) to base, but 
+the dynamic type is reference (or pointer) to derived.</p>
+</li>
+<li>
+<p><strong>abstract base class</strong>: Class that has one or more pure virtual functions. We cannot create objects of an 
+abstract base-class type.</p>
+</li>
+</ul>
+<div class="footnote">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>See Section 7.1.4 Constructors (p.262) of C++ Primier (5th edition) for details. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+</li>
+<li id="fn:2">
+<p>See Section 12.1.2 Managing Memory Directly (p.459) of C++ Primier (5th edition) for details. <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
+</li>
+</ol>
+</div></body></html>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/programming-languages.html">programming languages</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+
+    <ul class="nav">
+<!--                            <li><a href="../../../../../blog2">Blog</a></li>
+                <li><a href="../../../../../quotes.html">Quotes</a></li>
+                <li><a href="../../../../../software.html">Projects</a></li>
+-->
+    </ul>
+
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
