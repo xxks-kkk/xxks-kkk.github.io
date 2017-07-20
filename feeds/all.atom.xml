@@ -360,18 +360,38 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$&lt;/div&gt;
 &lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
-&lt;p&gt;component |  Accuracy of overall system
-----------+-----------------------------
-Overall system | 72%
-Text detection | 89%
-character segmentation | 90%
-character recognition | 100%&lt;/p&gt;
-&lt;p&gt;Before we improve some component of the system, we have a overall system accuracy of &lt;span class="math"&gt;\(72%\)&lt;/span&gt;. Now, let's
-take text detection as an example. Let's manually label where the text is and this will give &lt;span class="math"&gt;\(100%\)&lt;/span&gt; accuracy
-of text detection. Then, we run the rest modules, and get an overall system accuracy, which in our case is &lt;span class="math"&gt;\(89%\)&lt;/span&gt;.
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;component&lt;/th&gt;
+&lt;th&gt;Accuracy of overall system&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Overall system&lt;/td&gt;
+&lt;td&gt;72%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Text detection&lt;/td&gt;
+&lt;td&gt;89%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Character segmentation&lt;/td&gt;
+&lt;td&gt;90%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Character recognition&lt;/td&gt;
+&lt;td&gt;100%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Before we improve some component of the system, we have a overall system accuracy of &lt;span class="math"&gt;\(72\%\)&lt;/span&gt;. Now, let's
+take text detection as an example. Let's manually label where the text is and this will give &lt;span class="math"&gt;\(100\%\)&lt;/span&gt; accuracy
+of text detection. Then, we run the rest modules, and get an overall system accuracy, which in our case is &lt;span class="math"&gt;\(89\%\)&lt;/span&gt;.
 We perform the similar steps for each component. Then, we calculate the gain of system accuracy. For example,
-we will get &lt;span class="math"&gt;\(17%\)&lt;/span&gt; gain by working on text detection (i.e. &lt;span class="math"&gt;\(89% - 72%\)&lt;/span&gt;) and &lt;span class="math"&gt;\(1%\)&lt;/span&gt; by working on character segmentation,
-and &lt;span class="math"&gt;\(10%\)&lt;/span&gt; by working on character recognition. As you can see, text detection will give us the largest gain, and thus
+we will get &lt;span class="math"&gt;\(17\%\)&lt;/span&gt; gain by working on text detection (i.e. &lt;span class="math"&gt;\(89\% - 72\%\)&lt;/span&gt;) and &lt;span class="math"&gt;\(1\%\)&lt;/span&gt; by working on character segmentation,
+and &lt;span class="math"&gt;\(10\%\)&lt;/span&gt; by working on character recognition. As you can see, text detection will give us the largest gain, and thus
 we should work on this componet next.  &lt;/p&gt;
 &lt;h2 id="other-issues"&gt;Other issues&lt;/h2&gt;
 &lt;p&gt;Machine learning is interesting because there probably doesn't exist a unified way to handle different kind of data.
@@ -380,10 +400,10 @@ This means for some special data, we may need to have some special approach to h
 &lt;h4 id="skew-classes"&gt;Skew classes&lt;/h4&gt;
 &lt;p&gt;Consider the following example: we want to do a cancer classification using logistic regression with 
 &lt;span class="math"&gt;\(y=1\)&lt;/span&gt; indicating cancer and &lt;span class="math"&gt;\(y=0\)&lt;/span&gt; otherwise. After training on the training data, we find that
-we got &lt;span class="math"&gt;\(1%\)&lt;/span&gt; error on test set (i.e. &lt;span class="math"&gt;\(99%\)&lt;/span&gt; correct diagnoses). Can we say that our learning algorithm 
+we got &lt;span class="math"&gt;\(1\%\)&lt;/span&gt; error on test set (i.e. &lt;span class="math"&gt;\(99\%\)&lt;/span&gt; correct diagnoses). Can we say that our learning algorithm 
 is performing well? The answer is depends. We further examine the training data and find out that
-only &lt;span class="math"&gt;\(0.5%\)&lt;/span&gt; of patients have cancer. This causes problem to our training task because we can directly
-set &lt;span class="math"&gt;\(y=0\)&lt;/span&gt; for every training data and we will get only &lt;span class="math"&gt;\(0.5%\)&lt;/span&gt; error, which is less than &lt;span class="math"&gt;\(1%\)&lt;/span&gt; in our previous 
+only &lt;span class="math"&gt;\(0.5\%\)&lt;/span&gt; of patients have cancer. This causes problem to our training task because we can directly
+set &lt;span class="math"&gt;\(y=0\)&lt;/span&gt; for every training data and we will get only &lt;span class="math"&gt;\(0.5\%\)&lt;/span&gt; error, which is less than &lt;span class="math"&gt;\(1%\)&lt;/span&gt; in our previous 
 case. However, this error is useless. This is a typical scenario of &lt;strong&gt;skew classes&lt;/strong&gt;, where the number of
 possitive examples &lt;span class="math"&gt;\(\ll\)&lt;/span&gt; the number of negative examples. &lt;/p&gt;
 &lt;h4 id="precision-recall"&gt;Precision &amp;amp; Recall&lt;/h4&gt;
@@ -424,7 +444,7 @@ $$&lt;/div&gt;
 &lt;h3 id="data-for-machine-learning"&gt;Data for machine learning&lt;/h3&gt;
 &lt;p&gt;When we should use a very large training set? Two things need to consider before we do that:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Assume feature &lt;span class="math"&gt;\(x \in \R^{n+1}\)&lt;/span&gt; has sufficient information to predict &lt;span class="math"&gt;\(y\)&lt;/span&gt; accurately. This can be tested by answering the question: given the input
+&lt;li&gt;Assume feature &lt;span class="math"&gt;\(x \in R^{n+1}\)&lt;/span&gt; has sufficient information to predict &lt;span class="math"&gt;\(y\)&lt;/span&gt; accurately. This can be tested by answering the question: given the input
 &lt;span class="math"&gt;\(x\)&lt;/span&gt;, can a human expert confidently predict &lt;span class="math"&gt;\(y\)&lt;/span&gt;?&lt;/li&gt;
 &lt;li&gt;Use a learning algorithm with many parameters (i.e. logistic regression or linear regression with many features; neural network with many hidden units),
 which can give us a low bias algorithm.&lt;/li&gt;

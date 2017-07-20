@@ -424,18 +424,38 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$</div>
 <p>Then, we try to decide which part of the pipeline we should spend the most time trying to improve. </p>
-<p>component |  Accuracy of overall system
-----------+-----------------------------
-Overall system | 72%
-Text detection | 89%
-character segmentation | 90%
-character recognition | 100%</p>
-<p>Before we improve some component of the system, we have a overall system accuracy of <span class="math">\(72%\)</span>. Now, let's
-take text detection as an example. Let's manually label where the text is and this will give <span class="math">\(100%\)</span> accuracy
-of text detection. Then, we run the rest modules, and get an overall system accuracy, which in our case is <span class="math">\(89%\)</span>.
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>component</th>
+<th>Accuracy of overall system</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Overall system</td>
+<td>72%</td>
+</tr>
+<tr>
+<td>Text detection</td>
+<td>89%</td>
+</tr>
+<tr>
+<td>Character segmentation</td>
+<td>90%</td>
+</tr>
+<tr>
+<td>Character recognition</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table>
+<p>Before we improve some component of the system, we have a overall system accuracy of <span class="math">\(72\%\)</span>. Now, let's
+take text detection as an example. Let's manually label where the text is and this will give <span class="math">\(100\%\)</span> accuracy
+of text detection. Then, we run the rest modules, and get an overall system accuracy, which in our case is <span class="math">\(89\%\)</span>.
 We perform the similar steps for each component. Then, we calculate the gain of system accuracy. For example,
-we will get <span class="math">\(17%\)</span> gain by working on text detection (i.e. <span class="math">\(89% - 72%\)</span>) and <span class="math">\(1%\)</span> by working on character segmentation,
-and <span class="math">\(10%\)</span> by working on character recognition. As you can see, text detection will give us the largest gain, and thus
+we will get <span class="math">\(17\%\)</span> gain by working on text detection (i.e. <span class="math">\(89\% - 72\%\)</span>) and <span class="math">\(1\%\)</span> by working on character segmentation,
+and <span class="math">\(10\%\)</span> by working on character recognition. As you can see, text detection will give us the largest gain, and thus
 we should work on this componet next.  </p>
 <h2 id="other-issues">Other issues</h2>
 <p>Machine learning is interesting because there probably doesn't exist a unified way to handle different kind of data.
@@ -444,10 +464,10 @@ This means for some special data, we may need to have some special approach to h
 <h4 id="skew-classes">Skew classes</h4>
 <p>Consider the following example: we want to do a cancer classification using logistic regression with 
 <span class="math">\(y=1\)</span> indicating cancer and <span class="math">\(y=0\)</span> otherwise. After training on the training data, we find that
-we got <span class="math">\(1%\)</span> error on test set (i.e. <span class="math">\(99%\)</span> correct diagnoses). Can we say that our learning algorithm 
+we got <span class="math">\(1\%\)</span> error on test set (i.e. <span class="math">\(99\%\)</span> correct diagnoses). Can we say that our learning algorithm 
 is performing well? The answer is depends. We further examine the training data and find out that
-only <span class="math">\(0.5%\)</span> of patients have cancer. This causes problem to our training task because we can directly
-set <span class="math">\(y=0\)</span> for every training data and we will get only <span class="math">\(0.5%\)</span> error, which is less than <span class="math">\(1%\)</span> in our previous 
+only <span class="math">\(0.5\%\)</span> of patients have cancer. This causes problem to our training task because we can directly
+set <span class="math">\(y=0\)</span> for every training data and we will get only <span class="math">\(0.5\%\)</span> error, which is less than <span class="math">\(1%\)</span> in our previous 
 case. However, this error is useless. This is a typical scenario of <strong>skew classes</strong>, where the number of
 possitive examples <span class="math">\(\ll\)</span> the number of negative examples. </p>
 <h4 id="precision-recall">Precision &amp; Recall</h4>
@@ -488,7 +508,7 @@ $$</div>
 <h3 id="data-for-machine-learning">Data for machine learning</h3>
 <p>When we should use a very large training set? Two things need to consider before we do that:</p>
 <ul>
-<li>Assume feature <span class="math">\(x \in \R^{n+1}\)</span> has sufficient information to predict <span class="math">\(y\)</span> accurately. This can be tested by answering the question: given the input
+<li>Assume feature <span class="math">\(x \in R^{n+1}\)</span> has sufficient information to predict <span class="math">\(y\)</span> accurately. This can be tested by answering the question: given the input
 <span class="math">\(x\)</span>, can a human expert confidently predict <span class="math">\(y\)</span>?</li>
 <li>Use a learning algorithm with many parameters (i.e. logistic regression or linear regression with many features; neural network with many hidden units),
 which can give us a low bias algorithm.</li>
