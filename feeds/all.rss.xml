@@ -1,5 +1,496 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Wed, 12 Jul 2017 23:11:00 +0800</lastBuildDate><item><title>Virtual methods and polymorphism in C++</title><link>http://zhu45.org/posts/2017/Jul/12/virtual-methods-and-polymorphism-in-c/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Surprisingly, even I work with the product that is written majorly in C++, I don't have to deal
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Fri, 21 Jul 2017 12:51:00 +0800</lastBuildDate><item><title>Andrew Ng's ML Week 06, 11</title><link>http://zhu45.org/posts/2017/Jul/21/andrew-ngs-ml-week-06-11/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;I actually &lt;a href="https://www.coursera.org/account/accomplishments/verify/58VFP5LF4UXV"&gt;finished the course&lt;/a&gt; 
+on June 25th. In this page, I'll
+summarize various advices and tips given by Prof. Andrew Ng on how to build
+a effective machine learning system.&lt;/p&gt;
+&lt;p&gt;To be honest, I used to think this part of material may be not worth a post 
+but as I dig deeper into the course I find out that this part is invaluable 
+because it answers some commonly-seen questions when implementing a machine learning
+system, which can be a huge time-saver. So, I think I need a post to record
+those advices systematically. &lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#preface"&gt;Preface&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#diagnostics"&gt;Diagnostics&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#overfitting-vs-underfitting"&gt;Overfitting vs. Underfitting&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#model-selection-algorithm"&gt;Model selection algorithm&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#diagnosing-bias-vs-variance-which-is-which"&gt;Diagnosing bias vs. variance: which is which?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#regularization-how-to-choose-lambda"&gt;Regularization: how to choose \(\lambda\)?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#learning-curves"&gt;Learning curves&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#experience-underfitting"&gt;Experience underfitting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#experience-overfitting"&gt;Experience overfitting&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#what-to-try-next"&gt;What to try next?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#neural-network-and-overfitting"&gt;Neural Network and overfitting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#error-analysis"&gt;Error analysis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#ceiling-analysis"&gt;Ceiling analysis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#other-issues"&gt;Other issues&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#error-metrics-for-skewed-classes-precision-recall"&gt;Error metrics for skewed classes: Precision &amp;amp; Recall&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#skew-classes"&gt;Skew classes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#precision-recall"&gt;Precision &amp;amp; Recall&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#f_1-score"&gt;\(F_1\) score&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#data-for-machine-learning"&gt;Data for machine learning&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#links-to-resources"&gt;Links to resources&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="preface"&gt;Preface&lt;/h2&gt;
+&lt;p&gt;One important question we may ask after implementing our machine learning algorithm
+is that: how good is our learning algorithm? In addition, for instance, after
+we have implemented regularized linear regression to predict housing prices 
+and when we test our hypothesis on a new set of houses, we find that it makes
+unacceptably large errors in the predictions, what we should try next? This post
+aims to answer those questions.&lt;/p&gt;
+&lt;p&gt;In this post, I will first take a look at the diagnostic to evaluate learning algorithm.
+Then, I will define overfitting (high bias) and underfitting (high variance)
+concepts and the concrete techniques to identify which is which. Afterwards, I will
+talk about several ways to handle the problem and highlight some key points. Lastly,
+we will take a look at some special cases when data is skewed or large.&lt;/p&gt;
+&lt;h2 id="diagnostics"&gt;Diagnostics&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Diagnostics&lt;/strong&gt; is a test that you can run to gain insight what is or isn't working
+with a learning algorithm, and gain guidance as to how best to improve its performance.
+We use &lt;strong&gt;test set error&lt;/strong&gt; as our basic metrics to evaulate our learning algorithm (hypothesis).&lt;/p&gt;
+&lt;p&gt;We first shuffle our whole data set to eliminate the potential impact of data record
+ordering. Then, we randomly choose &lt;span class="math"&gt;\(70%\)&lt;/span&gt; of data set as our training set and the rest
+&lt;span class="math"&gt;\(30%\)&lt;/span&gt; as our test set. Mathematically, we denote training set: 
+&lt;span class="math"&gt;\((x^{(1)}, y^{(1)}), (x^{(2)}, y^{(2)}), \dots, (x^{(m)}, y^{(m)})\)&lt;/span&gt; and we denote
+test set as &lt;span class="math"&gt;\((x_{\text{test}}^{(1)}, y_{\text{test}}^{(1)}), (x_{\text{test}}^{(1)}, y_{\text{test}}^{(1)}) \dots (x_{\text{test}}^{(m_\text{test})}, y_{\text{test}}^{(m_\text{test})})\)&lt;/span&gt; with
+&lt;span class="math"&gt;\(m_\text{test} = \text{no. of test examples}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;For linear regression, our test set error is calculated by the following steps:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Learn parameters &lt;span class="math"&gt;\(\theta\)&lt;/span&gt; from training data (i.e. minimizing training error &lt;span class="math"&gt;\(J(\theta)\)&lt;/span&gt;)&lt;/li&gt;
+&lt;li&gt;compute the test set error as follows:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;
+&lt;/p&gt;&lt;div class="math"&gt;$$
+J_\text{test}(\theta) = \frac{1}{2m_\text{test}}\sum_{i=1}^{m_{test}}(h_\theta(x_{\text{test}}^{(i)})-y_\text{test}^{(i)})^2
+$$&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;For logistic regression, we can use similar way like linear regression to calculate
+test set error but there is a way due to the nature of classification task. In this
+case, we also call test set error as &lt;strong&gt;misclassification error&lt;/strong&gt; or &lt;strong&gt;(0/1 misclassification error)&lt;/strong&gt;:&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="math"&gt;$$
+\text{err}(h_\theta(x),y)=\left\{
+                \begin{array}{ll}
+                  1 \text{ if } h_\theta(x) \ge 0.5, y = 0 \text{ or if } h_\theta(x) &amp;lt; 0.5, y = 1 \\
+                  0 \text{ otherwise }
+                \end{array}
+              \right.
+$$&lt;/div&gt;
+&lt;p&gt;This definition gives us a binary &lt;span class="math"&gt;\(0\)&lt;/span&gt; or &lt;span class="math"&gt;\(1\)&lt;/span&gt; error result based on a misclassification.
+Then, we calculate test set error as &lt;/p&gt;
+&lt;div class="math"&gt;$$
+\text{Test error} = \frac{1}{m_\text{error}}\sum_{i=1}^{m_\text{test}}
+\text{err}(h_\theta(x_\text{test}^{(i)}),y_\text{test}^{(i)})
+$$&lt;/div&gt;
+&lt;p&gt;This gives us the proportion of the test data that was misclassified.&lt;/p&gt;
+&lt;p&gt;In addition to the test set error, we will define &lt;strong&gt;cross validation set error&lt;/strong&gt;
+as well. Instead of dividing the whole data set as training set and test set, 
+we can divide it into three parts: training set, corss validation (cv) set, and
+test set, with proportion of data set as &lt;span class="math"&gt;\(60%\)&lt;/span&gt;, &lt;span class="math"&gt;\(20%\)&lt;/span&gt;, and &lt;span class="math"&gt;\(20%\)&lt;/span&gt;. Mathematically,
+similar to the notation of test set, we have &lt;span class="math"&gt;\((x_{\text{cv}}^{(1)}, y_{\text{cv}}^{(1)}), (x_{\text{cv}}^{(1)}, y_{\text{cv}}^{(1)}) \dots (x_{\text{cv}}^{(m_\text{cv})}, y_{\text{cv}}^{(m_\text{cv})})\)&lt;/span&gt; with
+&lt;span class="math"&gt;\(m_\text{cv} = \text{no. of cv examples}\)&lt;/span&gt;. The purpose
+of dividing data set in this way will be clear in the next section. &lt;/p&gt;
+&lt;p&gt;Now, we summarize our metrics (training error, cross validation error, and test set error)
+as follows:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{eqnarray*}
+J_\text{train}(\theta) &amp;amp;=&amp;amp; \frac{1}{2m}\sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 \\
+J_\text{cv}(\theta)    &amp;amp;=&amp;amp; \frac{1}{2m_\text{cv}}\sum_{i=1}^{m_{cv}}(h_\theta(x_{\text{cv}}^{(i)})-y_\text{cv}^{(i)})^2 \\
+J_\text{test}(\theta)  &amp;amp;=&amp;amp; \frac{1}{2m_\text{test}}\sum_{i=1}^{m_{test}}(h_\theta(x_{\text{test}}^{(i)})-y_\text{test}^{(i)})^2
+\end{eqnarray*}
+$$&lt;/div&gt;
+&lt;h2 id="overfitting-vs-underfitting"&gt;Overfitting vs. Underfitting&lt;/h2&gt;
+&lt;p&gt;In &lt;a href="http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/"&gt;week 01-03 post&lt;/a&gt;, we mention
+the term &lt;em&gt;overfitting&lt;/em&gt; when we talk about regularization. Now, we explain it
+in details. &lt;strong&gt;Overfitting&lt;/strong&gt; happens when we have too many features, the learning
+hypothesis may fit the training set very well (i.e.
+&lt;span class="math"&gt;\(J(\theta)=\frac{1}{2m} \sum_{i=1}^m(\theta^T x^{(i)}-y(i))^2 \approx 0\)&lt;/span&gt;) but
+fail to generalize to new examples (i.e. predict prices on a new set of house). 
+Take a look at the following three graphs&lt;/p&gt;
+&lt;p&gt;&lt;img alt="overfitting example: linear regression" class="img-responsive" src="http://zhu45.org/images/overfitting.PNG"/&gt;&lt;/p&gt;
+&lt;p&gt;The first graph (leftmost) shows the result of fitting our training set
+with a hypothesis: &lt;span class="math"&gt;\(h_\theta(x) = \theta_0 + \theta_1 x\)&lt;/span&gt;. You can see that
+the data doesn't really lie on straight line, and so the fit is not very good.
+In this case, we call the scenario &lt;strong&gt;underfitting&lt;/strong&gt;, which means the model doesn't
+capture the data structure well. Another term for this is &lt;strong&gt;high bias&lt;/strong&gt;. One way
+to think of &lt;strong&gt;high bias&lt;/strong&gt; is that the algorithm has strong preconception on
+what the data should be, in our case, linear. In summary, underfitting, or high bias,
+is when the form of our hypothesis function &lt;span class="math"&gt;\(h\)&lt;/span&gt; maps poortly to the trend of the data. 
+It is usually caused by a function that is too simple or uses too few features.&lt;/p&gt;
+&lt;p&gt;At the other extreme, shown by the rightmost graph, is &lt;strong&gt;overfitting&lt;/strong&gt;, or &lt;strong&gt;high variance&lt;/strong&gt;.
+&lt;strong&gt;High variance&lt;/strong&gt; means that the function can almost fit any function: hypothesis
+&lt;span class="math"&gt;\(h\)&lt;/span&gt; is too general and we don't have enough data to constrain it. The overfitting or 
+high variance is usually caused by a complicated function that creates a lot of unnecessary
+curves and angles unrelated to the data. &lt;/p&gt;
+&lt;p&gt;There are a couple of ways to tackle the overfitting problem:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Reduce number of features&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Manually select which feature to keep&lt;/li&gt;
+&lt;li&gt;Model selection algorithm&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Regularization, which can keep all the features, but reduce magnitude/values of parameters &lt;span class="math"&gt;\(\theta_j\)&lt;/span&gt;.
+This way works well when we have a lot of features, each of which contributes a bit to predicting &lt;span class="math"&gt;\(y\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="model-selection-algorithm"&gt;Model selection algorithm&lt;/h3&gt;
+&lt;p&gt;Once parameters &lt;span class="math"&gt;\(\theta_0, \theta_1, \dots\)&lt;/span&gt; were fit to some set of data (training set),
+the error of the parameters as measured on that data (i.e. &lt;span class="math"&gt;\(J_\text{train}\theta\)&lt;/span&gt;) 
+is likely to be lower than the actual generalization error. In other words, 
+&lt;span class="math"&gt;\(J_\text{train}\theta\)&lt;/span&gt; will be a bad metric on predicting how well our hypothesis
+will be generalized to new examples. So, how do we measure how well our hypothesis
+will perform on new examples? In addition, how to select which model to use? Ideally,
+we should pick the model that has the best performance on new examples. As you can tell,
+these two questions are equivalent and are all centered around the metrics we 
+use for reporting our model generalization error.&lt;/p&gt;
+&lt;p&gt;We can start with the following schemes to pick our model. We use
+&lt;span class="math"&gt;\(d\)&lt;/span&gt; to denote the degree of polynomial of our model. For example,
+&lt;span class="math"&gt;\(d = 1\)&lt;/span&gt; means &lt;span class="math"&gt;\(h_\theta(x) = \theta_0 + \theta_1 x\)&lt;/span&gt;; &lt;span class="math"&gt;\(d=2\)&lt;/span&gt; means
+&lt;span class="math"&gt;\(h_\theta(x) = \theta_0 + \theta_1 x + \theta_2 x^2\)&lt;/span&gt;. Then, we can do:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Optimize the parameters in &lt;span class="math"&gt;\(\Theta\)&lt;/span&gt; using the training set for each polynomial
+degree &lt;span class="math"&gt;\(d\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Find the polynomial degree &lt;span class="math"&gt;\(d\)&lt;/span&gt; with the least error &lt;span class="math"&gt;\(J_\text{test}(\theta)\)&lt;/span&gt;
+using the test set. We pick the model with this &lt;span class="math"&gt;\(d\)&lt;/span&gt; and report our
+test set error &lt;span class="math"&gt;\(J_\text{test}(\theta)\)&lt;/span&gt; as the metric for estimate of generalization error.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;However, there is a problem with this scheme: we use our extra parameter &lt;span class="math"&gt;\(d\)&lt;/span&gt; to fit
+the test set. In other words, we choose &lt;span class="math"&gt;\(d\)&lt;/span&gt;, then we fit with &lt;span class="math"&gt;\(J_\text{test}(\theta)\)&lt;/span&gt;.
+Our estimate is likely optimistic and our model is likely do better on test set 
+than on new examples hasn't seen before. This is similar to overfitting in training set.&lt;/p&gt;
+&lt;p&gt;In order to fix this problem, we introduce &lt;strong&gt;cross validation set&lt;/strong&gt;. We modify
+above scheme as follows:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Optimize the parameters in &lt;span class="math"&gt;\(\Theta\)&lt;/span&gt; using the training set for each polynomial degree&lt;/li&gt;
+&lt;li&gt;Find the polynomial degree &lt;span class="math"&gt;\(d\)&lt;/span&gt; with the least error using the cross validation set&lt;/li&gt;
+&lt;li&gt;Estimate the generalization error using the test set with &lt;span class="math"&gt;\(J_\text{test}(\theta^{(d)})\)&lt;/span&gt;
+(&lt;span class="math"&gt;\(\theta^{(d)}\)&lt;/span&gt; is the parameter &lt;span class="math"&gt;\(\Theta\)&lt;/span&gt; from polynomial with the lowest error)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This way, our &lt;span class="math"&gt;\(d\)&lt;/span&gt; has not been trained using the test set. &lt;/p&gt;
+&lt;h3 id="diagnosing-bias-vs-variance-which-is-which"&gt;Diagnosing bias vs. variance: which is which?&lt;/h3&gt;
+&lt;p&gt;Once we have the metrics and the understanding of cross validation set, we can
+now find out whether bias or variance is the problem contributing to bad predictions. 
+We have the following picture to help us understand the relationship bewtween &lt;span class="math"&gt;\(d\)&lt;/span&gt;
+and the underfitting (high bias) or overfitting (high variance) of our hypothesis&lt;/p&gt;
+&lt;p&gt;&lt;img alt="bias vs. variance" class="img-responsive" src="http://zhu45.org/images/bias-variance.PNG"/&gt;&lt;/p&gt;
+&lt;p&gt;The training error will tend to decrease as we increase the degree &lt;span class="math"&gt;\(d\)&lt;/span&gt; of polynomial
+because our hypothesis fitness to our training data becomes better and better. 
+On the other hand, the cross validation error will tend to decrease
+as we increase &lt;span class="math"&gt;\(d\)&lt;/span&gt; up to a point (because our model can generalize well), and
+then it will increase as &lt;span class="math"&gt;\(d\)&lt;/span&gt; increased (because we now overfit the training data and
+cannot be generalize well in cross validation set), forming a convex curve.
+So now, based on the picture, we can answer the question: suppose the learning algorithm is
+performing less well than you were hoping (&lt;span class="math"&gt;\(J_\text{cv}(\theta)\)&lt;/span&gt; or &lt;span class="math"&gt;\(J_\text{test}(\theta)\)&lt;/span&gt; is high).
+is it a bias problem or a variance problem?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;High bias (underfitting): &lt;span class="math"&gt;\(J_\text{train}(\theta)\)&lt;/span&gt; will be high; 
+&lt;span class="math"&gt;\(J_\text{cv}(\theta) \approx J_\text{train}(\theta)\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;High variance (overfitting): &lt;span class="math"&gt;\(J_\text{train}(\theta)\)&lt;/span&gt; will be low;
+&lt;span class="math"&gt;\(J_\text{cv}(\theta) \gg J_\text{train}(\theta)\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="regularization-how-to-choose-lambda"&gt;Regularization: how to choose &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt;?&lt;/h3&gt;
+&lt;p&gt;In the overfitting section above, we know that regularization is another way
+to handle the overfitting. There is a problem with regularization method: how
+do we set &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; appeard in the &lt;span class="math"&gt;\(J_\theta(x)\)&lt;/span&gt;? In general, when &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt;
+is large, we tend to underfit (i.e. high bias) the data and when &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; is small,
+we tend to overfit (i.e. high variance). In the course, the following method
+is proposed:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create a list of &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; (i.e. &lt;span class="math"&gt;\(\lambda = 0, 0.01, 0.02, 0.04, \dots, 10.24\)&lt;/span&gt; (multiple of 2))&lt;/li&gt;
+&lt;li&gt;Create a set of models with different degrees or any other variants&lt;/li&gt;
+&lt;li&gt;Iterate through &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt;s and for each &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt;, go through all the models
+to learn some &lt;span class="math"&gt;\(\theta\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Compute the cross validation error &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; without regularization term (i.e. &lt;span class="math"&gt;\(\lambda = 0\)&lt;/span&gt;)
+using the learned &lt;span class="math"&gt;\(\theta\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Select the best combo that produces the lowest error on the cross validation set&lt;/li&gt;
+&lt;li&gt;Using the best combo &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; and &lt;span class="math"&gt;\(\theta\)&lt;/span&gt;, apply it on &lt;span class="math"&gt;\(J_{test}(\theta)\)&lt;/span&gt;
+to see if it has a good generalization.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We can also plot the Bias/Variance as a function of the regulariation parameter like below:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="regualarization parameter" class="img-responsive" src="http://zhu45.org/images/regularization-bias-vairance.png"/&gt;&lt;/p&gt;
+&lt;h3 id="learning-curves"&gt;Learning curves&lt;/h3&gt;
+&lt;p&gt;Learning curve is a tool to help us identfy whether we are facing underfitting (i.e. high bias) 
+or overfitting (i.e. high variance) problem and at the same time, gives us a way to answer the question:
+Will getting more training data help us improve our learning algorithm performance? &lt;/p&gt;
+&lt;p&gt;The following picture shows what learning curves look like for a linear regression (i.e. &lt;span class="math"&gt;\(h_\theta(x) = \theta_0 + \theta_1 x + \theta_2 x^2\)&lt;/span&gt;):&lt;/p&gt;
+&lt;p&gt;&lt;img alt="learning curves general" class="img-responsive" src="http://zhu45.org/images/learning-curves-general.png"/&gt;&lt;/p&gt;
+&lt;p&gt;The x-axis of the learning curves is the training set size &lt;span class="math"&gt;\(m\)&lt;/span&gt; and the y-axis is the error. When &lt;span class="math"&gt;\(m\)&lt;/span&gt; is small, any hypothesis
+can fit the training data perfectly, and thus our &lt;span class="math"&gt;\(J_{train}(\theta)\)&lt;/span&gt; is small. However, as &lt;span class="math"&gt;\(m\)&lt;/span&gt; increases, our hypothesis cannot
+fit all the data, and thus &lt;span class="math"&gt;\(J_{train}(\theta)\)&lt;/span&gt; increases. On the other hand, when &lt;span class="math"&gt;\(m\)&lt;/span&gt; is small, our hypothesis cannot generalize
+much and thus &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; tends to be high. However, as &lt;span class="math"&gt;\(m\)&lt;/span&gt; increases, the more data we have, the better hypothesis we can
+get and thus our hypothesis can generalize well to new examples and &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; decreases. &lt;/p&gt;
+&lt;h4 id="experience-underfitting"&gt;Experience underfitting&lt;/h4&gt;
+&lt;p&gt;Now, let's see what learning curves look like when we face underfitting (i.e. high bias) problem. For example, we try to fit our
+data with hypothesis &lt;span class="math"&gt;\(h_\theta(x) = \theta_0 + \theta_1x\)&lt;/span&gt;. Now, when &lt;span class="math"&gt;\(m\)&lt;/span&gt; is small, our &lt;span class="math"&gt;\(J_{train}(\theta)\)&lt;/span&gt; will be small, and it
+will increase as &lt;span class="math"&gt;\(m\)&lt;/span&gt; increases. After certain point, our &lt;span class="math"&gt;\(J_{train}(\theta)\)&lt;/span&gt; will flat out because our hypothesis is a straight line
+and more data won't help much. On the other hand, &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; will be high when &lt;span class="math"&gt;\(m\)&lt;/span&gt; small and will decrease as &lt;span class="math"&gt;\(m\)&lt;/span&gt; increases. 
+Similar to &lt;span class="math"&gt;\(J_{train}(\theta)\)&lt;/span&gt;, &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; will quickly flat out because number of hypothesis parameter is so small and it 
+won't generalize well as data increases. In other words, when we have high bias, the performance of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; and &lt;span class="math"&gt;\(J_{train}(\theta)\)&lt;/span&gt;
+will look a lot similar. Thus, our learning curve looks something like this:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="high bias learning curves" class="img-responsive" src="http://zhu45.org/images/high-bias-learning-curves.png"/&gt;&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(m\)&lt;/span&gt; is small: causes &lt;span class="math"&gt;\(J_{train}(\theta)\)&lt;/span&gt; to be low and &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; to be high.&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(m\)&lt;/span&gt; is large: causes both &lt;span class="math"&gt;\(J_{train}(\theta)\)&lt;/span&gt; and &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; to be high with &lt;span class="math"&gt;\(J_{train}(\theta) \approx J_{cv}(\theta)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;p&gt;From above graph we can get, if a learning algorithm is suffering from high bias, getting more training data will &lt;strong&gt;not&lt;/strong&gt;
+(by itself) help much.&lt;/p&gt;
+&lt;h4 id="experience-overfitting"&gt;Experience overfitting&lt;/h4&gt;
+&lt;p&gt;For overfitting (i.e. high variance) problem, let's consider a hypothesis: &lt;span class="math"&gt;\(h_\theta(x) = \theta_0 + \theta_1x + \dots + \theta_{100}x^{100}\)&lt;/span&gt; 
+(and small &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt;). When &lt;span class="math"&gt;\(m\)&lt;/span&gt; is small, &lt;span class="math"&gt;\(J_{train}(\theta)\)&lt;/span&gt; is small because we fit very small data size with very high degree polynomial.
+As &lt;span class="math"&gt;\(m\)&lt;/span&gt; increases, &lt;span class="math"&gt;\(J_{train}(\theta)\)&lt;/span&gt; increases but not so much because with high polynomial degree, even we cannot fit the data perfectly,
+our hypothesis is still pretty good with large data size. For &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt;, we have overfitting problem no matter the size of &lt;span class="math"&gt;\(m\)&lt;/span&gt;. 
+Even &lt;span class="math"&gt;\(m\)&lt;/span&gt; increases may help our hypothesis generalize better, our hypothesis can still do poorly for new examples. So, the learning curves
+for high variance problem looks like below:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="high variance learning curves" class="img-responsive" src="http://zhu45.org/images/high-variance-learning-curves.png"/&gt;&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(m\)&lt;/span&gt; is small: &lt;span class="math"&gt;\(J_{train}(\theta)\)&lt;/span&gt; will be low and &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; will be high.&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(m\)&lt;/span&gt; is large: &lt;span class="math"&gt;\(J_{train}(\theta)\)&lt;/span&gt; increases with training set size and &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; continues to decrease without
+levelling off. Also &lt;span class="math"&gt;\(J_{train}(\theta) &amp;lt; J_{cv}(\theta)\)&lt;/span&gt; but the difference between them remains significant.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;p&gt;From above graph, if we keep getting more data, &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; will keep getting down and this indicates that if a learning algorithm
+is suffering from high variance, getting more training data is likely to help.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;In the learning curves, &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; can be substituted with &lt;span class="math"&gt;\(J_{test}(\theta)\)&lt;/span&gt; and the shape still holds. All in all, we really
+care about the size of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; (or &lt;span class="math"&gt;\(J_{test}(\theta)\)&lt;/span&gt;).&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="what-to-try-next"&gt;What to try next?&lt;/h2&gt;
+&lt;p&gt;Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
+housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
+its prediction. What we should try next?&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Method&lt;/th&gt;
+&lt;th&gt;When it works?&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Get more training examples&lt;/td&gt;
+&lt;td&gt;high variance&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Try smaller sets of features&lt;/td&gt;
+&lt;td&gt;high variance&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Try getting additional features&lt;/td&gt;
+&lt;td&gt;high variance&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Try adding polynomial features (i.e. &lt;span class="math"&gt;\(x_1^{2}\)&lt;/span&gt;, &lt;span class="math"&gt;\(x_2^{2}\)&lt;/span&gt;, &lt;span class="math"&gt;\(x_1x_2\)&lt;/span&gt;)&lt;/td&gt;
+&lt;td&gt;high bias&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Try decreasing &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;high bias&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Try increasing &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;high variance&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;This leads to model complexity effects:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Lower-order polynomial (low model complexity) have high bias and low variance. The model fits poorly consistently.&lt;/li&gt;
+&lt;li&gt;Higher-order polynomial (high model complexity) fits training data extremely well but test data poorly. Low bias but high variance on
+training data. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Ideally, we should choose a model somewhere in between.&lt;/p&gt;
+&lt;h2 id="neural-network-and-overfitting"&gt;Neural Network and overfitting&lt;/h2&gt;
+&lt;p&gt;Underfitting and overfitting also exist in the &lt;a href="http://zhu45.org/posts/2017/May/23/andrew-ngs-ml-week-04-05/"&gt;neural network&lt;/a&gt;. When
+we use "small" neural network (i.e. less hidden layers, less hidden units), we have fewer parameters and more prone
+to underfitting. In the contrast, when we use "large" neural network, it's computationally more expensive and 
+more parameters means more prone to overfitting. In this case, we use &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; to address the issue.&lt;/p&gt;
+&lt;p&gt;We also face the similar model selection problem like we have when working with linear regression. In the neural network
+setting, that means deciding number of hidden layers we need to use in the network. Prof. Ng talks about the following
+method to solve the problem:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;We create a list of number of hidden layers&lt;/li&gt;
+&lt;li&gt;For each number of hidden layers, we optimize the parameters in &lt;span class="math"&gt;\(\Theta\)&lt;/span&gt; using the training set&lt;/li&gt;
+&lt;li&gt;Find the number of hidden layers with the least error using the cross validation set&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Usually, using a single hidden layer is a good starting default. We can then train our neural network
+on a number of hidden layers using our cross validation set. We can then choose the one that performs the
+best.&lt;/p&gt;
+&lt;h2 id="error-analysis"&gt;Error analysis&lt;/h2&gt;
+&lt;p&gt;Error analysis means manually examine the examples (i.e. cross validation set) that your algorithm 
+made errors on and see if you spot any systematic trend in what type of examples it is making errors on.
+Then, we need to try some method to see if it helps. The key point during the whole analysis is that
+we need to come up some numeric evaluation, which gives a single raw number, to determine how system works.&lt;/p&gt;
+&lt;p&gt;This leads to a recommended approach for handling machine learning problem:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Start with a simple algorithm that you can implement quickly. Implement it and test it on your cross-validation set.&lt;/li&gt;
+&lt;li&gt;Plot learning curves to decide if more data, more features, etc, are likely to help&lt;/li&gt;
+&lt;li&gt;Perform error analysis&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="ceiling-analysis"&gt;Ceiling analysis&lt;/h2&gt;
+&lt;p&gt;Ceiling analysis is helpful when we work on a machine learning system, which contains many components. Then ceiling 
+analysis tries to address the question: what part of the pipeline we need to focus on to improve next? This is done
+by estimating the errors due to each component. Suppose we have a image recognition system with four components:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
+$$&lt;/div&gt;
+&lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
+&lt;p&gt;component |  Accuracy of overall system
+----------+-----------------------------
+Overall system | 72%
+Text detection | 89%
+character segmentation | 90%
+character recognition | 100%&lt;/p&gt;
+&lt;p&gt;Before we improve some component of the system, we have a overall system accuracy of &lt;span class="math"&gt;\(72%\)&lt;/span&gt;. Now, let's
+take text detection as an example. Let's manually label where the text is and this will give &lt;span class="math"&gt;\(100%\)&lt;/span&gt; accuracy
+of text detection. Then, we run the rest modules, and get an overall system accuracy, which in our case is &lt;span class="math"&gt;\(89%\)&lt;/span&gt;.
+We perform the similar steps for each component. Then, we calculate the gain of system accuracy. For example,
+we will get &lt;span class="math"&gt;\(17%\)&lt;/span&gt; gain by working on text detection (i.e. &lt;span class="math"&gt;\(89% - 72%\)&lt;/span&gt;) and &lt;span class="math"&gt;\(1%\)&lt;/span&gt; by working on character segmentation,
+and &lt;span class="math"&gt;\(10%\)&lt;/span&gt; by working on character recognition. As you can see, text detection will give us the largest gain, and thus
+we should work on this componet next.  &lt;/p&gt;
+&lt;h2 id="other-issues"&gt;Other issues&lt;/h2&gt;
+&lt;p&gt;Machine learning is interesting because there probably doesn't exist a unified way to handle different kind of data.
+This means for some special data, we may need to have some special approach to handle them.&lt;/p&gt;
+&lt;h3 id="error-metrics-for-skewed-classes-precision-recall"&gt;Error metrics for skewed classes: Precision &amp;amp; Recall&lt;/h3&gt;
+&lt;h4 id="skew-classes"&gt;Skew classes&lt;/h4&gt;
+&lt;p&gt;Consider the following example: we want to do a cancer classification using logistic regression with 
+&lt;span class="math"&gt;\(y=1\)&lt;/span&gt; indicating cancer and &lt;span class="math"&gt;\(y=0\)&lt;/span&gt; otherwise. After training on the training data, we find that
+we got &lt;span class="math"&gt;\(1%\)&lt;/span&gt; error on test set (i.e. &lt;span class="math"&gt;\(99%\)&lt;/span&gt; correct diagnoses). Can we say that our learning algorithm 
+is performing well? The answer is depends. We further examine the training data and find out that
+only &lt;span class="math"&gt;\(0.5%\)&lt;/span&gt; of patients have cancer. This causes problem to our training task because we can directly
+set &lt;span class="math"&gt;\(y=0\)&lt;/span&gt; for every training data and we will get only &lt;span class="math"&gt;\(0.5%\)&lt;/span&gt; error, which is less than &lt;span class="math"&gt;\(1%\)&lt;/span&gt; in our previous 
+case. However, this error is useless. This is a typical scenario of &lt;strong&gt;skew classes&lt;/strong&gt;, where the number of
+possitive examples &lt;span class="math"&gt;\(\ll\)&lt;/span&gt; the number of negative examples. &lt;/p&gt;
+&lt;h4 id="precision-recall"&gt;Precision &amp;amp; Recall&lt;/h4&gt;
+&lt;p&gt;Rather than using classification error as a measurement to our learning algorithm performance, we 
+use precision and recall instead when we deal with skewed class. &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Let &lt;span class="math"&gt;\(y = 1\)&lt;/span&gt; in presence of &lt;em&gt;rare class&lt;/em&gt; that we want to detect&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(\text{Precision} = \frac{\text{True positives}}{\text{# predicted positives}} = \frac{\text{True positive}}{\text{True positive}+\text{False positive}}\)&lt;/span&gt;
+(i.e. of all patients where we predicted &lt;span class="math"&gt;\(y = 1\)&lt;/span&gt;, what fraction actually have cancer?)&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(\text{Recall} = \frac{\text{True positives}}{\text{# actual positives}} = \frac{\text{True positives}}{\text{True positives}+\text{False negatives}}\)&lt;/span&gt;
+(i.e. of all patients that actually have cancer, what fraction did we correctly detect as having cancer?)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="precision and recall" class="img-responsive" src="http://zhu45.org/images/precision-recall.png"/&gt;&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;If we apply this concept to the previous scenario when we set &lt;span class="math"&gt;\(y=0\)&lt;/span&gt; for each training data, then the recall will be &lt;span class="math"&gt;\(0\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;There is a tradeoff between precision and recall. Suppose we have a logistic regression: &lt;span class="math"&gt;\(0 \ge h_\theta(x) \le 1\)&lt;/span&gt; and we want to predict
+&lt;span class="math"&gt;\(1\)&lt;/span&gt; if &lt;span class="math"&gt;\(h_\theta(x) \ge \text{threshold}\)&lt;/span&gt; and &lt;span class="math"&gt;\(0\)&lt;/span&gt; if &lt;span class="math"&gt;\(h_\theta(x) \le \text{threshold}\)&lt;/span&gt;. Then, how do we determine that threhold value?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Suppose we want to predict &lt;span class="math"&gt;\(y=1\)&lt;/span&gt; (i.e. cancer) only if very confident: Higher precision, lower recall (i.e. threhold = &lt;span class="math"&gt;\(0.7\)&lt;/span&gt;)&lt;/li&gt;
+&lt;li&gt;Suppose we want to avoid missing too many cases of cancer (i.e. avoid false negatives): Higher recall, lower precision (i.e. threshold = &lt;span class="math"&gt;\(0.3\)&lt;/span&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As you can see, we cannot maintain high precision and high recall at the same time. This kind of tradeoff is dicpted in the picture below: &lt;/p&gt;
+&lt;p&gt;&lt;img alt="precision and recall tradeoff" class="img-responsive" src="http://zhu45.org/images/precision-recall-tradeoff.png"/&gt;&lt;/p&gt;
+&lt;h4 id="f_1-score"&gt;&lt;span class="math"&gt;\(F_1\)&lt;/span&gt; score&lt;/h4&gt;
+&lt;p&gt;Now, we may ask if there is a way to choose our threshold value automatically. That's where &lt;span class="math"&gt;\(F_1\)&lt;/span&gt; score comes from. If we use &lt;span class="math"&gt;\(P\)&lt;/span&gt; to denote
+the precision and &lt;span class="math"&gt;\(R\)&lt;/span&gt; to denote recall, then our &lt;span class="math"&gt;\(F_1\)&lt;/span&gt; score is defined as follows&lt;/p&gt;
+&lt;div class="math"&gt;$$
+F_1 \text{ score} = 2 \frac{PR}{P+R}
+$$&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;If &lt;span class="math"&gt;\(P = 0\)&lt;/span&gt; or &lt;span class="math"&gt;\(R = 0\)&lt;/span&gt;, then &lt;span class="math"&gt;\(F_1 \text{ score} = 0\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;If &lt;span class="math"&gt;\(P = 1\)&lt;/span&gt; and &lt;span class="math"&gt;\(R = 1\)&lt;/span&gt;, then &lt;span class="math"&gt;\(F_1 \text{ score} = 1\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Then, we can pick the threshold value by measuring &lt;span class="math"&gt;\(P\)&lt;/span&gt; and &lt;span class="math"&gt;\(R\)&lt;/span&gt; on the cross validation set and choose the value of threshold which maximizes our 
+&lt;span class="math"&gt;\(F_1 \text{ score}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;h3 id="data-for-machine-learning"&gt;Data for machine learning&lt;/h3&gt;
+&lt;p&gt;When we should use a very large training set? Two things need to consider before we do that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Assume feature &lt;span class="math"&gt;\(x \in \R^{n+1}\)&lt;/span&gt; has sufficient information to predict &lt;span class="math"&gt;\(y\)&lt;/span&gt; accurately. This can be tested by answering the question: given the input
+&lt;span class="math"&gt;\(x\)&lt;/span&gt;, can a human expert confidently predict &lt;span class="math"&gt;\(y\)&lt;/span&gt;?&lt;/li&gt;
+&lt;li&gt;Use a learning algorithm with many parameters (i.e. logistic regression or linear regression with many features; neural network with many hidden units),
+which can give us a low bias algorithm.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="links-to-resources"&gt;Links to resources&lt;/h2&gt;
+&lt;p&gt;Here are some of the resources I found helpful while preparing this article:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://nanshu.wang/post/2015-05-17/"&gt;机器学习笔记7 高偏差/低偏差，学习曲线，模型选择&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Fri, 21 Jul 2017 12:51:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-07-21:posts/2017/Jul/21/andrew-ngs-ml-week-06-11/</guid><category>ml</category><category>coursera</category><category>nn</category></item><item><title>Virtual methods and polymorphism in C++</title><link>http://zhu45.org/posts/2017/Jul/12/virtual-methods-and-polymorphism-in-c/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Surprisingly, even I work with the product that is written majorly in C++, I don't have to deal
 with the stuff that differentiate C++ from C. However, I'm now working on a defect that
 forces me to simplify C++ objects in order to get the root cause of the problem. That's the place
 where I have to really need to know how exactly C++ class is structured. &lt;/p&gt;
@@ -1327,8 +1818,8 @@ $$&lt;/div&gt;
 &lt;p&gt;Let's revisit our key observation \ref{eqn:1} and set &lt;span class="math"&gt;\(j = \mu\)&lt;/span&gt; and &lt;span class="math"&gt;\(k = (n-m)\)&lt;/span&gt;, we have
 &lt;span class="math"&gt;\(x_{\mu + (n-m)\lambda} = x_{\mu}\)&lt;/span&gt;. Then, by \ref{eqn:4}, we have
 &lt;span class="math"&gt;\(x_{\mu + i} = x_{\mu}\)&lt;/span&gt;, which can be rewritten as &lt;span class="math"&gt;\(x_{i+\mu} = x_{\mu}\)&lt;/span&gt;!!! This equation
-tells us that the node at which the cycle begins (i.e &lt;span class="math"&gt;\(x+{\mu}\)&lt;/span&gt;) is exactly the
-same node as the node &lt;span class="math"&gt;\(\mu\)&lt;/span&gt; nodes away from the index at which tortoise and hare meet
+tells us that the node at which the cycle begins (i.e &lt;span class="math"&gt;\(x_{\mu}\)&lt;/span&gt;) is exactly the
+same node as the node that is &lt;span class="math"&gt;\(\mu\)&lt;/span&gt; nodes away from the index at which tortoise and hare meet
 (i.e. &lt;span class="math"&gt;\(x_i\)&lt;/span&gt;).&lt;/p&gt;
 &lt;div class="admonition note"&gt;
 &lt;p class="admonition-title"&gt;Note&lt;/p&gt;
@@ -2108,7 +2599,7 @@ for more examples on grouping nodes with the same attributes. &lt;a class="foot
 &lt;p&gt;The example is adapted from &lt;a href="https://stackoverflow.com/questions/6149834/rank-attribute-is-confusing-to-me"&gt;this SO post&lt;/a&gt;. &lt;a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Thu, 25 May 2017 22:20:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-05-25:posts/2017/May/25/draw-a-neural-network-through-graphviz/</guid><category>ml</category><category>graphviz</category></item><item><title>Andrew Ng's ML Week 04 - 05</title><link>http://zhu45.org/posts/2017/May/23/andrew-ngs-ml-week-04-05/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
+&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Thu, 25 May 2017 22:20:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-05-25:posts/2017/May/25/draw-a-neural-network-through-graphviz/</guid><category>ml</category><category>graphviz</category><category>nn</category></item><item><title>Andrew Ng's ML Week 04 - 05</title><link>http://zhu45.org/posts/2017/May/23/andrew-ngs-ml-week-04-05/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
 It is especially heplful when there are many features and hence, many combinations
 for the &lt;a href="http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/"&gt;linear or logistic regressions&lt;/a&gt;. 
 Interestingly, I studied neural networks
@@ -2402,7 +2893,7 @@ to verify if the backpropagation is implemented correctly.  &lt;a class="footno
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Tue, 23 May 2017 22:20:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-05-23:posts/2017/May/23/andrew-ngs-ml-week-04-05/</guid><category>ml</category><category>coursera</category></item><item><title>Andrew Ng's ML Week 01 - 03</title><link>http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Tue, 23 May 2017 22:20:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-05-23:posts/2017/May/23/andrew-ngs-ml-week-04-05/</guid><category>ml</category><category>coursera</category><category>nn</category></item><item><title>Andrew Ng's ML Week 01 - 03</title><link>http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#ml-overview"&gt;ML overview&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href="#what-is-ml"&gt;What is ML?&lt;/a&gt;&lt;/li&gt;
