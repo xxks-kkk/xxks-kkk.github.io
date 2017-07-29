@@ -1,5 +1,539 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-07-21T12:51:00+08:00</updated><entry><title>Andrew Ng's ML Week 06, 11</title><link href="http://zhu45.org/posts/2017/Jul/21/andrew-ngs-ml-week-06-11/" rel="alternate"></link><published>2017-07-21T12:51:00+08:00</published><updated>2017-07-21T12:51:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-07-21:posts/2017/Jul/21/andrew-ngs-ml-week-06-11/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;I actually &lt;a href="https://www.coursera.org/account/accomplishments/verify/58VFP5LF4UXV"&gt;finished the course&lt;/a&gt; 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-07-30T00:21:00+08:00</updated><entry><title>Understanding how function call works</title><link href="http://zhu45.org/posts/2017/Jul/30/understanding-how-function-call-works/" rel="alternate"></link><published>2017-07-30T00:21:00+08:00</published><updated>2017-07-30T00:21:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-07-30:posts/2017/Jul/30/understanding-how-function-call-works/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Understanding assembly language is crucial for system programming. Some nasty defects of the system
+can only be solved by digging into the assembly level of the program. In this post, I'll revisit 
+call stack concept as a way to understand how function call works under the cover of high-level language.
+In addition, this post belongs to part of future work mentioned in &lt;a href="http://zhu45.org/posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/"&gt;my post back in January&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#addressing-mode"&gt;Addressing mode&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#main-course"&gt;Main course&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#some-terms"&gt;Some terms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#stack"&gt;Stack&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#calling-a-function"&gt;Calling a function&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#writing-a-function"&gt;Writing a function&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#setup"&gt;Setup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#using-the-stack-frame"&gt;Using the stack frame&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#cleanup"&gt;Cleanup&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#two-examples"&gt;Two examples&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#future-works"&gt;Future works&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#links-to-resources"&gt;Links to resources&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="addressing-mode"&gt;Addressing mode&lt;/h2&gt;
+&lt;p&gt;Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
+accessing the data in memory (i.e., addressing mode). 
+The following table is adapted from CSAPP (2nd edition):&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Type&lt;/th&gt;
+&lt;th&gt;Form&lt;/th&gt;
+&lt;th&gt;Operand Value&lt;/th&gt;
+&lt;th&gt;Name&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Immediate&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\($Imm\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(Imm\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;Immediate&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Register&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(E_a\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(R[E_a]\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;Register addressing&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Memory&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(Imm\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(M[Imm]\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;Direct addressing&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Memory&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\((E_a)\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(M[R[E_b]]\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;Indirect addressing&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Memory&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(Imm(E_b, E_i, s)\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(M[Imm+R[E_b]+(R[E_i]\cdot s)]\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;Scaled indexed addressing &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;In the above table, &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(Imm\)&lt;/span&gt; refers to a constant value, e.g. &lt;span class="math"&gt;\(\mathtt{0x8048d8e}\)&lt;/span&gt; or &lt;span class="math"&gt;\(\mathtt{48}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(E_x\)&lt;/span&gt; refers to a register, e.g. &lt;span class="math"&gt;\(\mathtt{\%eax}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(R[E_x]\)&lt;/span&gt; refers to the value stored in register &lt;span class="math"&gt;\(E_x\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(M[x]\)&lt;/span&gt; refers to the value stored at memory address &lt;span class="math"&gt;\(x\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="main-course"&gt;Main course&lt;/h2&gt;
+&lt;p&gt;Now, let's bring our main course onto the table: understanding how function works. I'll
+first clear up some terms we will use during the explanation. Then, we'll take a look
+at the stack and understand how it supports function calls. Lastly, we'll examine
+two assembly programs and understand the whole picture of function calls.&lt;/p&gt;
+&lt;h3 id="some-terms"&gt;Some terms&lt;/h3&gt;
+&lt;p&gt;Let's first consider what the key elements we need in order to form a function:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;function name&lt;/p&gt;
+&lt;p&gt;A function's name is a symbol that represents the address where the function's code starts. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;function arguments&lt;/p&gt;
+&lt;p&gt;A function's arguments (aka. parameters) are the data items that are explicitly given to
+the function for processing. For example, in mathematics, there is a &lt;span class="math"&gt;\(\sin\)&lt;/span&gt; function. If
+you were to ask a computer to find the &lt;span class="math"&gt;\(\sin (2)\)&lt;/span&gt;, &lt;span class="math"&gt;\(\sin\)&lt;/span&gt; would be the function's name, 
+and &lt;span class="math"&gt;\(2\)&lt;/span&gt; would be the argument (or parameter).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;local variables&lt;/p&gt;
+&lt;p&gt;Local variables are data storage that a function uses while processing that
+is thrown away when it returns. It's knid of like a scratch pad of paper.
+Functions get a new piece of paper every time they are activated, and they have to throw
+it away when they are finished processing. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;return address&lt;/p&gt;
+&lt;p&gt;The return address is an "invisible" parameter in that it isn't directly used
+during the function. The return address is a parameter which tells the function
+where to resume executing after the function is completed. This is needed because
+functions can be called to do processing from many different parts of our program,
+and the function needs to be able to get back to wherever it was called from. 
+In most programming languages, this parameter is passed automatically when the function
+is called. In assembly language, the &lt;code&gt;call&lt;/code&gt; instruction handles passing the return 
+address for you, and &lt;code&gt;ret&lt;/code&gt; handles using that address to return back to where
+you called the function from.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;return value&lt;/p&gt;
+&lt;p&gt;The return value is the main method of transferring data back to the main program. 
+Most programming languages only allow a sinlge return value for function.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;The way that the variables are stored and the parameters and return values
+are transferred by the computer varies from language to language. This variance
+is known as a language's &lt;em&gt;calling convention&lt;/em&gt;, because it describes how functions
+expect to get and receive data when they are called. In this post, I'll 
+follow C programming language calling convention.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h3 id="stack"&gt;Stack&lt;/h3&gt;
+&lt;p&gt;Each computer program that runs uses a region of memory called the &lt;strong&gt;stack&lt;/strong&gt; to enable functions to work
+properly. Machine uses the stack to pass function arguments, to store return information, to save
+registers for later restoration, and for local variables.
+The portion of the stack allocated for a single function call is called a &lt;strong&gt;stack frame&lt;/strong&gt;. In other words,
+for each function call, new space (i.e., stack frame) is created on the stack. &lt;/p&gt;
+&lt;p&gt;The computer's stack lives at the very top addresses of memory. As the name suggests, stack is a stack
+data structure with the "top" of the stack growing from the &lt;a href="http://zhu45.org/images/heap.png"&gt;high value addresses towards low values addresses&lt;/a&gt;. 
+We use &lt;span class="math"&gt;\(\mathtt{push \text{ } S}\)&lt;/span&gt; to push the source onto stack, and we use
+&lt;span class="math"&gt;\(\mathtt{pop \text{ } D}\)&lt;/span&gt; to remove the top value from the stack and place it into a destination
+(i.e. a register or memory location). We use the stack register, &lt;span class="math"&gt;\(\mathtt{\%esp}\)&lt;/span&gt; as a pointer
+to the top of the stack, which at the same time, is the top of topmost stack frame.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Pointer here means that the stack register contains an address in memory instead of a regular value.
+Specifically, the stack register now contains the address, which has the top value of the stack 
+in it. With this description, we can see that to access the value on the top of the stack without
+removing it, we can do &lt;code&gt;(%esp)&lt;/code&gt;, which is indirect addressing mode.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;When we talk about function calls, what we really care about is the topmost stack frame because 
+that's the memory region that is associated with our current function calls. CSAPP (2nd edition)
+has a nice picture about what the whole stack looks like:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="stack frame structure" class="img-responsive" src="http://zhu45.org/images/stack-frame-structure.png"/&gt;&lt;/p&gt;
+&lt;p&gt;If some texts (i.e. "Saved %ebp") or layout (i.e. the order of arguments) don't make sense to you,
+don't worry. I'll talk about them immediately.&lt;/p&gt;
+&lt;h4 id="calling-a-function"&gt;Calling a function&lt;/h4&gt;
+&lt;p&gt;Before executing a function, a program pushes all of the parameters for the function
+onto the stack in the reverse order that they are documented. Then the program
+issues a &lt;code&gt;call&lt;/code&gt; instruction indicating which function it wishes to start. 
+The &lt;code&gt;call&lt;/code&gt; instruction does two things:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;First it pushes the address of the next instruction, which is the return address, onto
+the stack.&lt;/li&gt;
+&lt;li&gt;Then, it modifies the instruction pointer &lt;span class="math"&gt;\(\mathtt{\%eip}\)&lt;/span&gt; to point to the start of the function.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;When you call a function, you should assume that everything currently
+in your registers will be wiped out. The only register that is guaranteed
+to be left with the value it started with is &lt;span class="math"&gt;\(\mathtt{\%ebp}\)&lt;/span&gt; (why? see
+"Writing a function" section below). Thus, if there are registers
+you want to save before calling a function, you need to save them
+by pushing them on the stack before pushing the function's parameters.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;So, at the time the function starts, the stack looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Argument N
+...
+Argument 2
+Argument 1
+Return address &amp;lt;--- (%esp)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As noted previously, the stack pointer holds the address, which contains return address as its value.&lt;/p&gt;
+&lt;h4 id="writing-a-function"&gt;Writing a function&lt;/h4&gt;
+&lt;p&gt;Writing a function in x86 assembly essentially contains of three parts: setup, using the stack frame to perform
+task, cleanup. The setup and cleanup steps are the same acrossed all the function calls. All three steps
+will be explained in details.&lt;/p&gt;
+&lt;h5 id="setup"&gt;Setup&lt;/h5&gt;
+&lt;p&gt;During the setup, the following two instructions are carried out immediately:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nf"&gt;pushl&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;
+&lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="nv"&gt;%esp&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first instruction is to save the current base pointer register (aka frame pointer), &lt;span class="math"&gt;\(\mathtt{\%ebp}\)&lt;/span&gt;. 
+The base pointer is a special register used for accessing function parameters and local 
+variables.The stack frame is delimited by two pointers: &lt;span class="math"&gt;\(\mathtt{\%ebp}\)&lt;/span&gt; serves as the pointer pointing
+to the bottom of the stack frame and &lt;span class="math"&gt;\(\mathtt{\%esp}\)&lt;/span&gt; serves as the pointer pointing to the 
+top of the stack frame. As pointed out earlier, each function call has its own stack frame.
+Once the current function (i.e. callee) is done, we need to resume the execution of the caller function. 
+This means that we need to restore the caller's base pointer register &lt;span class="math"&gt;\(\mathtt{\%ebp}\)&lt;/span&gt; when
+we are done with callee function. Thus, we need to save the current base pointer register, 
+which is the caller's for the future caller stack frame restoration.&lt;/p&gt;
+&lt;p&gt;Once we are done with saving the caller's &lt;span class="math"&gt;\(\mathtt{\%ebp}\)&lt;/span&gt;, we can now setup current stack frame's
+&lt;span class="math"&gt;\(\mathtt{\%ebp}\)&lt;/span&gt; by doing &lt;code&gt;movl %esp %ebp&lt;/code&gt;. The reason for this is that we can now be 
+able to access the function parameters that are pushed earlier onto the stack by caller function
+as fixed indexes from the base pointer. We cannot use stack pointer directly for accessing
+parameters because the stack pointer can move while the function is executing. &lt;/p&gt;
+&lt;p&gt;At this point, the stack looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Argument N     &amp;lt;--- N*4+4(%ebp)
+... 
+Argument 2     &amp;lt;--- 16 (%ebp)
+Argument 1     &amp;lt;--- 12(%ebp)
+Return address &amp;lt;--- 4(%ebp)
+Old %ebp       &amp;lt;--- (%esp) and (%ebp)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h5 id="using-the-stack-frame"&gt;Using the stack frame&lt;/h5&gt;
+&lt;p&gt;Once we have performed the fix setup, we can now use the stack frame to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;save registers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We need to push all the callee-save registers by convention onto the stack. By convention,
+registers &lt;span class="math"&gt;\(\mathtt{\%eax}\)&lt;/span&gt;, &lt;span class="math"&gt;\(\mathtt{\%edx}\)&lt;/span&gt;, &lt;span class="math"&gt;\(\mathtt{\%ecx}\)&lt;/span&gt; are classified as caller-save 
+registers, and &lt;span class="math"&gt;\(\mathtt{\%ebx}\)&lt;/span&gt;, &lt;span class="math"&gt;\(\mathtt{\%esi}\)&lt;/span&gt;, and &lt;span class="math"&gt;\(\mathtt{\%edi}\)&lt;/span&gt; are classified as callee-save
+registers. The caller-save registers mean that the caller function is responsible saving these
+register values because the callee is free to override these register values. On the other hand,
+the callee-save registers mean that the callee function must save those registers values by pushing
+them onto the stack before overwritting them, and restore them before the returning because the
+caller may need these values for its future computations. &lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Save registers step is not mandatory. If your caller function (or higher-level functions)
+don't use all these callee-save registers, you are free to skip this step.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;local variables&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The function reserves space on the stack for any local variables it needs. Space for data with
+no specified initial value can be allocated on the stack by simply decrementing the stack pointer
+by an appropriate amount. Similarly, space can be deallocated by incrementing pointer. Suppose
+we are going to need two words of memory to run a function. We can simply move the stack pointer
+down two words to serve the space:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nf"&gt;subl&lt;/span&gt; &lt;span class="no"&gt;$8&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%esp&lt;/span&gt;  &lt;span class="c"&gt;# Allocate 8 bytes of space on the stack&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;While it is possible to make space on the stack as needed in a function body, it is generally
+more efficient to allocate this space all at once at the beginning of the function. This way,
+we are free of worring about clobbering them with pushes that we may make for next function calls
+(i.e. push arguments and return address for the function calls contained inside the current
+function, which all happens in "Argument build area" in the above picture).&lt;/p&gt;
+&lt;p&gt;Suppose we save &lt;span class="math"&gt;\(\mathtt{\%ebx}\)&lt;/span&gt; (i.e. callee-save register),
+and with our two words for local storage, our stack now looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Argument&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;      &lt;span class="o"&gt;&amp;lt;---&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;...&lt;/span&gt; 
+&lt;span class="n"&gt;Argument&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;      &lt;span class="o"&gt;&amp;lt;---&lt;/span&gt; &lt;span class="mi"&gt;12&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Argument&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;      &lt;span class="o"&gt;&amp;lt;---&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Return&lt;/span&gt; &lt;span class="n"&gt;address&lt;/span&gt;  &lt;span class="o"&gt;&amp;lt;---&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Old&lt;/span&gt; &lt;span class="nf"&gt;%ebp&lt;/span&gt;        &lt;span class="o"&gt;&amp;lt;---&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;%esp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nf"&gt;%ebx&lt;/span&gt;            &lt;span class="o"&gt;&amp;lt;---&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Local&lt;/span&gt; &lt;span class="n"&gt;variable1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;---&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Local&lt;/span&gt; &lt;span class="n"&gt;variable2&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;---&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;%esp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As you can see, we can now access all of the data we need for this function by
+using base pointer addressing using different offsets from &lt;span class="math"&gt;\(\mathtt{\%ebp}\)&lt;/span&gt;.
+&lt;span class="math"&gt;\(\mathtt{\%ebp}\)&lt;/span&gt; was made specifically for this purpose, which is why it is
+called the base pointer. &lt;/p&gt;
+&lt;h5 id="cleanup"&gt;Cleanup&lt;/h5&gt;
+&lt;p&gt;When a function is done executing, it does the following three things:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;It stores its return value in &lt;span class="math"&gt;\(\mathtt{\%eax}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;It frees the stack space it allocated by adding the same amount to the stack pointer &lt;code&gt;addl $8 %esp&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;It pops off the registers it saved earlier &lt;code&gt;popl %ebx&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;It resets the stack to what it was when it was called (it gets rid of the current stack frame
+and puts the stack frame of the caller back into effect)&lt;/li&gt;
+&lt;li&gt;It returns control back to wherever it was called from. This is done using the &lt;code&gt;ret&lt;/code&gt; instruction,
+which pops whatever value is at the top of the stack, and sets the instruction pointer %\mathtt{\%eip}$
+to that value.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The reason we have to restore the caller's base pointer register before calling &lt;code&gt;ret&lt;/code&gt; is due to the
+structure of our current stack frame: in our current stack frame, the return address is not
+at the top of the stack. Therefore, before we return, we have to rest the stack pointer &lt;span class="math"&gt;\(\mathtt{\%esp}\)&lt;/span&gt;
+and frame pointer &lt;span class="math"&gt;\(\mathtt{\%ebp}\)&lt;/span&gt; to what they were when the function began. &lt;/p&gt;
+&lt;p&gt;Thus, to return from the function you have to do the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%esp&lt;/span&gt; &lt;span class="c"&gt;# Set stack pointer back to the beginning of the frame&lt;/span&gt;
+&lt;span class="nf"&gt;popl&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;       &lt;span class="c"&gt;# Restore the caller's base pointer and now stack pointer pointing to Return address&lt;/span&gt;
+&lt;span class="nf"&gt;ret&lt;/span&gt;             &lt;span class="c"&gt;# Since stack pointer pointing to return address, we can now call ret&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;The step 2 and 3 are unecessary if we don't save any registers at all. The reason we do step 2
+is that we need to move the stack pointer pointing to the saved registers. If there are
+no saved registers, the step 4 can achieve the same effect as step 3 because
+after you move the stack pointer back, future stack pushes will likely overwrite everything you
+put there. &lt;/p&gt;
+&lt;/div&gt;
+&lt;h3 id="two-examples"&gt;Two examples&lt;/h3&gt;
+&lt;p&gt;Now, we can take a look at two examples: the first one is to calculate the power given two numbers: one
+as the base and the other one as the power. The second example calculate the factorial of
+a given number, which demonstrates how the recursive function.
+is done.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;        &lt;span class="c"&gt;# PURPOSE: Program to illustrate how functions work&lt;/span&gt;
+        &lt;span class="c"&gt;#          This program will compute the value of  2^3 + 5^2&lt;/span&gt;
+        &lt;span class="c"&gt;#&lt;/span&gt;
+
+        &lt;span class="c"&gt;# Everything in the main program is stored in registers,&lt;/span&gt;
+        &lt;span class="c"&gt;# so the data section doesn't have anything.&lt;/span&gt;
+        &lt;span class="na"&gt;.section&lt;/span&gt; &lt;span class="no"&gt;.data&lt;/span&gt;
+
+        &lt;span class="na"&gt;.section&lt;/span&gt; &lt;span class="no"&gt;.text&lt;/span&gt;
+
+        &lt;span class="na"&gt;.globl&lt;/span&gt; &lt;span class="no"&gt;_start&lt;/span&gt;
+
+&lt;span class="nl"&gt;_start:&lt;/span&gt;
+        &lt;span class="nf"&gt;pushl&lt;/span&gt; &lt;span class="no"&gt;$3&lt;/span&gt;                  &lt;span class="c"&gt;# push second argument&lt;/span&gt;
+        &lt;span class="nf"&gt;pushl&lt;/span&gt; &lt;span class="no"&gt;$2&lt;/span&gt;                  &lt;span class="c"&gt;# push first argument&lt;/span&gt;
+        &lt;span class="nf"&gt;call&lt;/span&gt; &lt;span class="no"&gt;power&lt;/span&gt;                &lt;span class="c"&gt;# call the function&lt;/span&gt;
+        &lt;span class="nf"&gt;addl&lt;/span&gt; &lt;span class="no"&gt;$8&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%esp&lt;/span&gt;             &lt;span class="c"&gt;# move the stack pointer back&lt;/span&gt;
+        &lt;span class="nf"&gt;pushl&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;                &lt;span class="c"&gt;# save the first answer before calling the next function&lt;/span&gt;
+
+        &lt;span class="nf"&gt;pushl&lt;/span&gt; &lt;span class="no"&gt;$2&lt;/span&gt;                  &lt;span class="c"&gt;# push second argument&lt;/span&gt;
+        &lt;span class="nf"&gt;pushl&lt;/span&gt; &lt;span class="no"&gt;$5&lt;/span&gt;                  &lt;span class="c"&gt;# push first argument&lt;/span&gt;
+        &lt;span class="nf"&gt;call&lt;/span&gt; &lt;span class="no"&gt;power&lt;/span&gt;                &lt;span class="c"&gt;# call the function&lt;/span&gt;
+        &lt;span class="nf"&gt;addl&lt;/span&gt; &lt;span class="no"&gt;$8&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%esp&lt;/span&gt;             &lt;span class="c"&gt;# move the stack pointer back&lt;/span&gt;
+
+        &lt;span class="nf"&gt;popl&lt;/span&gt; &lt;span class="nv"&gt;%ebx&lt;/span&gt;                 &lt;span class="c"&gt;# The second answer is already in %eax. We saved the&lt;/span&gt;
+                                  &lt;span class="c"&gt;# first answer onto the stack, so now we can just pop&lt;/span&gt;
+                                  &lt;span class="c"&gt;# it out into %ebx&lt;/span&gt;
+        &lt;span class="nf"&gt;addl&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%ebx&lt;/span&gt;           &lt;span class="c"&gt;# add them together, the result is in %ebx&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="no"&gt;$1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;             &lt;span class="c"&gt;# exit (%ebx is returned)&lt;/span&gt;
+        &lt;span class="nf"&gt;int&lt;/span&gt; &lt;span class="no"&gt;$0x80&lt;/span&gt;
+
+        &lt;span class="c"&gt;# PURPOSE: This function is used to compute the value of a number raised to a power&lt;/span&gt;
+        &lt;span class="c"&gt;#&lt;/span&gt;
+        &lt;span class="c"&gt;# INPUT: First argument - the base number&lt;/span&gt;
+        &lt;span class="c"&gt;#        Second argumnet - the power to raise it to&lt;/span&gt;
+        &lt;span class="c"&gt;#&lt;/span&gt;
+        &lt;span class="c"&gt;# OUTPUT: Will give the result as a return value&lt;/span&gt;
+        &lt;span class="c"&gt;#&lt;/span&gt;
+        &lt;span class="c"&gt;# NOTES: The power must be 1 or greater&lt;/span&gt;
+        &lt;span class="c"&gt;#&lt;/span&gt;
+        &lt;span class="c"&gt;# VARIABLES:&lt;/span&gt;
+        &lt;span class="c"&gt;#        %ebx - holds the base number&lt;/span&gt;
+        &lt;span class="c"&gt;#        %ecx - holds the power&lt;/span&gt;
+        &lt;span class="c"&gt;#        -4(%ebp) - holds the current result&lt;/span&gt;
+        &lt;span class="c"&gt;#&lt;/span&gt;
+        &lt;span class="c"&gt;#        %eax is used for temporary storage&lt;/span&gt;
+        &lt;span class="na"&gt;.type&lt;/span&gt; &lt;span class="no"&gt;power&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;@function&lt;/span&gt;
+&lt;span class="nl"&gt;power:&lt;/span&gt;
+        &lt;span class="nf"&gt;pushl&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;                &lt;span class="c"&gt;# save old base pointer&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="nv"&gt;%esp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;           &lt;span class="c"&gt;# make stack pointer the base pointer&lt;/span&gt;
+        &lt;span class="nf"&gt;subl&lt;/span&gt; &lt;span class="no"&gt;$4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%esp&lt;/span&gt;             &lt;span class="c"&gt;# get room for our local storage&lt;/span&gt;
+
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nv"&gt;%ebx&lt;/span&gt;        &lt;span class="c"&gt;# put first argument in %eax&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nv"&gt;%ecx&lt;/span&gt;       &lt;span class="c"&gt;# put second argument in %ecx&lt;/span&gt;
+
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="nv"&gt;%ebx&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;       &lt;span class="c"&gt;# store current result&lt;/span&gt;
+
+&lt;span class="nl"&gt;power_loop_start:&lt;/span&gt;
+        &lt;span class="nf"&gt;cmpl&lt;/span&gt; &lt;span class="no"&gt;$1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%ecx&lt;/span&gt;             &lt;span class="c"&gt;# if the power is 1, we are done&lt;/span&gt;
+        &lt;span class="nf"&gt;je&lt;/span&gt; &lt;span class="no"&gt;end_power&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;       &lt;span class="c"&gt;# move the current result into %eax&lt;/span&gt;
+        &lt;span class="nf"&gt;imull&lt;/span&gt; &lt;span class="nv"&gt;%ebx&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;          &lt;span class="c"&gt;# multiply the current result by the base number&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;       &lt;span class="c"&gt;# store the current result&lt;/span&gt;
+
+        &lt;span class="nf"&gt;decl&lt;/span&gt; &lt;span class="nv"&gt;%ecx&lt;/span&gt;                 &lt;span class="c"&gt;# decrease the power&lt;/span&gt;
+        &lt;span class="nf"&gt;jmp&lt;/span&gt; &lt;span class="no"&gt;power_loop_start&lt;/span&gt;      &lt;span class="c"&gt;# run for the next power&lt;/span&gt;
+
+&lt;span class="nl"&gt;end_power:&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;       &lt;span class="c"&gt;# return value goes in %eax&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%esp&lt;/span&gt;           &lt;span class="c"&gt;# restore the stack pointer&lt;/span&gt;
+        &lt;span class="nf"&gt;pop&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;                  &lt;span class="c"&gt;# restore the base pointer&lt;/span&gt;
+        &lt;span class="nf"&gt;ret&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The key to understand the function call is to trace through the status of stack frame. One thing to 
+highlight as a side note is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="na"&gt;.type&lt;/span&gt; &lt;span class="no"&gt;power&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="na"&gt;@function&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This tells the linker that the symbol power should be treated as a function. 
+Since this program is only in one file, it would work just the same with this left out. However, it is good practice.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;To run the program on 64-bit platform, we need to simulate 32-bit environment by assembling and linking our program
+like this:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;as --32 power.s -o power.o; 
+ld -m elf_i386 -s power.o -o power&lt;/code&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;        &lt;span class="c"&gt;# PURPOSE: - Given a number, this program computes the factorial. For example,&lt;/span&gt;
+        &lt;span class="c"&gt;#            the factorial of 3 is 3 * 2 * 1, or 6. The factorial of&lt;/span&gt;
+        &lt;span class="c"&gt;#            4 is 4 * 3 * 2 * 1, or 24, and so on.&lt;/span&gt;
+        &lt;span class="c"&gt;#&lt;/span&gt;
+        &lt;span class="c"&gt;# This program shows how to call a function recursively.&lt;/span&gt;
+
+        &lt;span class="na"&gt;.section&lt;/span&gt; &lt;span class="no"&gt;.data&lt;/span&gt;
+
+        &lt;span class="c"&gt;# This program has no global data&lt;/span&gt;
+
+        &lt;span class="na"&gt;.section&lt;/span&gt; &lt;span class="no"&gt;.text&lt;/span&gt;
+
+        &lt;span class="na"&gt;.global&lt;/span&gt; &lt;span class="no"&gt;_start&lt;/span&gt;
+        &lt;span class="na"&gt;.global&lt;/span&gt; &lt;span class="no"&gt;factorial&lt;/span&gt; &lt;span class="c"&gt;# this is unneeded unless we want to share&lt;/span&gt;
+                          &lt;span class="c"&gt;# this function among other programs&lt;/span&gt;
+
+&lt;span class="nl"&gt;_start:&lt;/span&gt;
+        &lt;span class="nf"&gt;pushl&lt;/span&gt; &lt;span class="no"&gt;$4&lt;/span&gt;          &lt;span class="c"&gt;# The factorial takes one argument - the number we want&lt;/span&gt;
+                          &lt;span class="c"&gt;# a factorial of. So, it gets pushed.&lt;/span&gt;
+        &lt;span class="nf"&gt;call&lt;/span&gt; &lt;span class="no"&gt;factorial&lt;/span&gt;    &lt;span class="c"&gt;# run the factorial function&lt;/span&gt;
+        &lt;span class="nf"&gt;addl&lt;/span&gt; &lt;span class="no"&gt;$4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%esp&lt;/span&gt;     &lt;span class="c"&gt;# scrubs the parameter that was pushed on the stack&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%ebx&lt;/span&gt;   &lt;span class="c"&gt;# factorial returns the answer in %eax, but we want it&lt;/span&gt;
+                          &lt;span class="c"&gt;# in %ebx to send it as our exit status&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="no"&gt;$1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;     &lt;span class="c"&gt;# call the kernel's exit function&lt;/span&gt;
+        &lt;span class="nf"&gt;int&lt;/span&gt; &lt;span class="no"&gt;$0x80&lt;/span&gt;
+
+        &lt;span class="c"&gt;# This is the actual function definition&lt;/span&gt;
+        &lt;span class="na"&gt;.type&lt;/span&gt; &lt;span class="no"&gt;factorial&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;@function&lt;/span&gt;
+&lt;span class="nl"&gt;factorial:&lt;/span&gt;
+        &lt;span class="nf"&gt;pushl&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;         &lt;span class="c"&gt;# standard function stuff - we have to restore %ebp&lt;/span&gt;
+                           &lt;span class="c"&gt;# to its prior state before returning, so we have to push it&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt;  &lt;span class="nv"&gt;%esp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;   &lt;span class="c"&gt;# This is because we don't want to modify the stack pointer&lt;/span&gt;
+                           &lt;span class="c"&gt;# so we use %ebp&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt; &lt;span class="c"&gt;# This moves the first argument to %eax&lt;/span&gt;
+                           &lt;span class="c"&gt;# 4(%ebp) holds the return address, and 8(%ebp) holds the first parameter&lt;/span&gt;
+        &lt;span class="nf"&gt;cmpl&lt;/span&gt; &lt;span class="no"&gt;$1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;      &lt;span class="c"&gt;# if the number is 1, this is our base case, and we simply&lt;/span&gt;
+                           &lt;span class="c"&gt;# return (1 is already in %eax as the return value)&lt;/span&gt;
+        &lt;span class="nf"&gt;je&lt;/span&gt; &lt;span class="no"&gt;end_factorial&lt;/span&gt;
+        &lt;span class="nf"&gt;decl&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;          &lt;span class="c"&gt;# otherwise, decrease the value&lt;/span&gt;
+        &lt;span class="nf"&gt;pushl&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;         &lt;span class="c"&gt;# push it for our call to factorial&lt;/span&gt;
+        &lt;span class="nf"&gt;call&lt;/span&gt; &lt;span class="no"&gt;factorial&lt;/span&gt;     &lt;span class="c"&gt;# call factorial&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nv"&gt;%ebx&lt;/span&gt; &lt;span class="c"&gt;# %eax has the return value, so we reload our parameter&lt;/span&gt;
+                           &lt;span class="c"&gt;# into %ebx&lt;/span&gt;
+        &lt;span class="nf"&gt;imull&lt;/span&gt; &lt;span class="nv"&gt;%ebx&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%eax&lt;/span&gt;   &lt;span class="c"&gt;# multiply that by the result of the last call to factorial&lt;/span&gt;
+                           &lt;span class="c"&gt;# (in %eax) the answer is stored in %eax, which is good since&lt;/span&gt;
+                           &lt;span class="c"&gt;# that's where return values go.&lt;/span&gt;
+&lt;span class="nl"&gt;end_factorial:&lt;/span&gt;
+        &lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%esp&lt;/span&gt;    &lt;span class="c"&gt;# standard function return stuff - we have to restore&lt;/span&gt;
+        &lt;span class="nf"&gt;popl&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;          &lt;span class="c"&gt;# %ebp and %esp to where they were before the function started&lt;/span&gt;
+        &lt;span class="nf"&gt;ret&lt;/span&gt;                &lt;span class="c"&gt;# return to the function (this pops the return value, too)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;One good practice we should note is that we should always clean up our stack parameter after a function 
+call returns. In this program, we do &lt;code&gt;addl $4, %esp&lt;/code&gt; immediately after we &lt;code&gt;call factorial&lt;/code&gt; in our &lt;code&gt;_start&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="future-works"&gt;Future works&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;For this post, I assume we work with x86 32-bit processor. It's interesting to further
+investigate how the things changed for the 64-bit world.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="links-to-resources"&gt;Links to resources&lt;/h2&gt;
+&lt;p&gt;Here are some of the resources I found helpful while preparing this article:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://dbp-consulting.com/tutorials/debugging/basicAsmDebuggingGDB.html"&gt;Basic Assembler Debugging with GDB by Patrick Horgan&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.csee.umbc.edu/~cpatel2/links/310/nasm/gdb_help.shtml"&gt;Using gdb for Assembly Language Debugging&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://cs.brown.edu/courses/cs033/docs/guides/x64_cheatsheet.pdf"&gt;x64 Cheat Sheet - Brown CS 33&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://savannah.spinellicreations.com/pgubook/ProgrammingGroundUp-1-0-booksize.pdf"&gt;Programming from the Ground Up&lt;/a&gt; Chapter 3,4&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.amazon.com/Computer-Systems-Programmers-Perspective-2nd/dp/0136108040"&gt;Computer Systems: A Programmer's Perspective (CSAPP) (2nd Edition)&lt;/a&gt; Section 3.7&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;For scaled indexed addressing, it actually includes both base pointer addressing mode 
+(i.e. &lt;code&gt;movl 4(%eax), %ebx&lt;/code&gt;) and indexed addressing mode 
+(i.e., &lt;code&gt;movl string_start(, %ecx, 1), %eax&lt;/code&gt;). &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="assembly language"></category><category term="call stack"></category></entry><entry><title>Andrew Ng's ML Week 06, 11</title><link href="http://zhu45.org/posts/2017/Jul/21/andrew-ngs-ml-week-06-11/" rel="alternate"></link><published>2017-07-21T12:51:00+08:00</published><updated>2017-07-21T12:51:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-07-21:posts/2017/Jul/21/andrew-ngs-ml-week-06-11/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;I actually &lt;a href="https://www.coursera.org/account/accomplishments/verify/58VFP5LF4UXV"&gt;finished the course&lt;/a&gt; 
 on June 25th. In this page, I'll
 summarize various advices and tips given by Prof. Andrew Ng on how to build
 a effective machine learning system.&lt;/p&gt;
@@ -510,7 +1044,7 @@ which can give us a low bias algorithm.&lt;/li&gt;
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="ml"></category><category term="coursera"></category><category term="nn"></category></entry><entry><title>Virtual methods and polymorphism in C++</title><link href="http://zhu45.org/posts/2017/Jul/12/virtual-methods-and-polymorphism-in-c/" rel="alternate"></link><published>2017-07-12T23:11:00+08:00</published><updated>2017-07-12T23:11:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-07-12:posts/2017/Jul/12/virtual-methods-and-polymorphism-in-c/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Surprisingly, even I work with the product that is written majorly in C++, I don't have to deal
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="machine learning"></category><category term="coursera"></category><category term="neural network"></category></entry><entry><title>Virtual methods and polymorphism in C++</title><link href="http://zhu45.org/posts/2017/Jul/12/virtual-methods-and-polymorphism-in-c/" rel="alternate"></link><published>2017-07-12T23:11:00+08:00</published><updated>2017-07-12T23:11:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-07-12:posts/2017/Jul/12/virtual-methods-and-polymorphism-in-c/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Surprisingly, even I work with the product that is written majorly in C++, I don't have to deal
 with the stuff that differentiate C++ from C. However, I'm now working on a defect that
 forces me to simplify C++ objects in order to get the root cause of the problem. That's the place
 where I have to really need to know how exactly C++ class is structured. &lt;/p&gt;
@@ -2619,7 +3153,7 @@ for more examples on grouping nodes with the same attributes. &lt;a class="foot
 &lt;p&gt;The example is adapted from &lt;a href="https://stackoverflow.com/questions/6149834/rank-attribute-is-confusing-to-me"&gt;this SO post&lt;/a&gt;. &lt;a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="ml"></category><category term="graphviz"></category><category term="nn"></category></entry><entry><title>Andrew Ng's ML Week 04 - 05</title><link href="http://zhu45.org/posts/2017/May/23/andrew-ngs-ml-week-04-05/" rel="alternate"></link><published>2017-05-23T22:20:00+08:00</published><updated>2017-05-23T22:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-23:posts/2017/May/23/andrew-ngs-ml-week-04-05/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
+&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="machine learning"></category><category term="graphviz"></category><category term="neural network"></category></entry><entry><title>Andrew Ng's ML Week 04 - 05</title><link href="http://zhu45.org/posts/2017/May/23/andrew-ngs-ml-week-04-05/" rel="alternate"></link><published>2017-05-23T22:20:00+08:00</published><updated>2017-05-23T22:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-23:posts/2017/May/23/andrew-ngs-ml-week-04-05/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
 It is especially heplful when there are many features and hence, many combinations
 for the &lt;a href="http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/"&gt;linear or logistic regressions&lt;/a&gt;. 
 Interestingly, I studied neural networks
@@ -2913,7 +3447,7 @@ to verify if the backpropagation is implemented correctly.  &lt;a class="footno
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="ml"></category><category term="coursera"></category><category term="nn"></category></entry><entry><title>Andrew Ng's ML Week 01 - 03</title><link href="http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/" rel="alternate"></link><published>2017-05-05T16:18:00+08:00</published><updated>2017-05-05T16:18:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-05:posts/2017/May/05/andrew-ngs-ml-week-01-03/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="machine learning"></category><category term="coursera"></category><category term="neural network"></category></entry><entry><title>Andrew Ng's ML Week 01 - 03</title><link href="http://zhu45.org/posts/2017/May/05/andrew-ngs-ml-week-01-03/" rel="alternate"></link><published>2017-05-05T16:18:00+08:00</published><updated>2017-05-05T16:18:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-05:posts/2017/May/05/andrew-ngs-ml-week-01-03/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#ml-overview"&gt;ML overview&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href="#what-is-ml"&gt;What is ML?&lt;/a&gt;&lt;/li&gt;
@@ -3401,7 +3935,7 @@ logistic regression:&lt;/p&gt;
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="ml"></category><category term="coursera"></category></entry><entry><title>Shell sort</title><link href="http://zhu45.org/posts/2017/May/01/shell-sort/" rel="alternate"></link><published>2017-05-01T21:33:00+08:00</published><updated>2017-05-01T21:33:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-01:posts/2017/May/01/shell-sort/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Per the final paragraph of the &lt;a href="http://zhu45.org/posts/2017/Apr/24/simple-sorting-algorithms/"&gt;last post&lt;/a&gt;,
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="machine learning"></category><category term="coursera"></category></entry><entry><title>Shell sort</title><link href="http://zhu45.org/posts/2017/May/01/shell-sort/" rel="alternate"></link><published>2017-05-01T21:33:00+08:00</published><updated>2017-05-01T21:33:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-05-01:posts/2017/May/01/shell-sort/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Per the final paragraph of the &lt;a href="http://zhu45.org/posts/2017/Apr/24/simple-sorting-algorithms/"&gt;last post&lt;/a&gt;,
 the algorithm needs to avoid doing adjacent swap (in other words, comparing elements that are distant) 
 so that we can have the opportunity to remove more than one inversion for each swap, which
 can break &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt; barrier. This is exactly what shellsort tries to achieve. &lt;/p&gt;
@@ -3850,7 +4384,7 @@ in the ML-related courses. Taking ML course on coursera and having a nice badge 
 my LinkedIn may greatly help me to market my ML expertise in the future?&lt;/p&gt;
 &lt;p&gt;My current plan is to finish the coursera version first, and then move on to 
 &lt;a href="http://cs229.stanford.edu/materials.html"&gt;CS229&lt;/a&gt; version if time permits. 
-I want to take an agile approach to this material by doing iteratively build-up.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="ml"></category><category term="coursera"></category></entry><entry><title>Sorting prelim</title><link href="http://zhu45.org/posts/2017/Apr/18/sorting-prelim/" rel="alternate"></link><published>2017-04-18T10:03:00+08:00</published><updated>2017-04-18T10:03:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-18:posts/2017/Apr/18/sorting-prelim/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Chapter 7: Sorting will have some rigorous analysis of the sorting algorithms
+I want to take an agile approach to this material by doing iteratively build-up.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="machine learning"></category><category term="coursera"></category></entry><entry><title>Sorting prelim</title><link href="http://zhu45.org/posts/2017/Apr/18/sorting-prelim/" rel="alternate"></link><published>2017-04-18T10:03:00+08:00</published><updated>2017-04-18T10:03:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-04-18:posts/2017/Apr/18/sorting-prelim/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Chapter 7: Sorting will have some rigorous analysis of the sorting algorithms
 (no wonder as suggested by the title of the book). Some meta-concepts related with
 sorting appeard at the very beginning of the chapter. I usually push them to the
 end-chapter summary post but this time I decide to do a writeup beforehand because 
