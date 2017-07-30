@@ -338,8 +338,8 @@ called the base pointer. </p>
 <p>When a function is done executing, it does the following three things:</p>
 <ol>
 <li>It stores its return value in <span class="math">\(\mathtt{\%eax}\)</span></li>
-<li>It frees the stack space it allocated by adding the same amount to the stack pointer <code>addl $8 %esp</code></li>
-<li>It pops off the registers it saved earlier <code>popl %ebx</code></li>
+<li>It frees the stack space it allocated by adding the same amount to the stack pointer （i.e., <code>addl $8 %esp</code>)</li>
+<li>It pops off the registers it saved earlier (i.e., <code>popl %ebx</code>)</li>
 <li>It resets the stack to what it was when it was called (it gets rid of the current stack frame
 and puts the stack frame of the caller back into effect)</li>
 <li>It returns control back to wherever it was called from. This is done using the <code>ret</code> instruction,

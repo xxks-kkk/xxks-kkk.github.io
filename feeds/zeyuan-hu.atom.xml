@@ -276,8 +276,8 @@ called the base pointer. &lt;/p&gt;
 &lt;p&gt;When a function is done executing, it does the following three things:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;It stores its return value in &lt;span class="math"&gt;\(\mathtt{\%eax}\)&lt;/span&gt;&lt;/li&gt;
-&lt;li&gt;It frees the stack space it allocated by adding the same amount to the stack pointer &lt;code&gt;addl $8 %esp&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;It pops off the registers it saved earlier &lt;code&gt;popl %ebx&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;It frees the stack space it allocated by adding the same amount to the stack pointer （i.e., &lt;code&gt;addl $8 %esp&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;It pops off the registers it saved earlier (i.e., &lt;code&gt;popl %ebx&lt;/code&gt;)&lt;/li&gt;
 &lt;li&gt;It resets the stack to what it was when it was called (it gets rid of the current stack frame
 and puts the stack frame of the caller back into effect)&lt;/li&gt;
 &lt;li&gt;It returns control back to wherever it was called from. This is done using the &lt;code&gt;ret&lt;/code&gt; instruction,
