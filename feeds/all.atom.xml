@@ -286,8 +286,10 @@ to that value.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;The reason we have to restore the caller's base pointer register before calling &lt;code&gt;ret&lt;/code&gt; is due to the
 structure of our current stack frame: in our current stack frame, the return address is not
-at the top of the stack. Therefore, before we return, we have to rest the stack pointer &lt;span class="math"&gt;\(\mathtt{\%esp}\)&lt;/span&gt;
-and frame pointer &lt;span class="math"&gt;\(\mathtt{\%ebp}\)&lt;/span&gt; to what they were when the function began. &lt;/p&gt;
+at the top of the stack. Therefore, in order to make the return address to be the top of the stack frame,
+we need to move the stack pointer &lt;span class="math"&gt;\(\mathtt{\%esp}\)&lt;/span&gt; to the current stack frame base pointer &lt;span class="math"&gt;\(\mathtt{\%ebp}\)&lt;/span&gt;
+and restore the caller's frame pointer first. Then, the return address will be the top of the stack.
+Since we need to perform caller's frame pointer restoration anyway, everything just works out.&lt;/p&gt;
 &lt;p&gt;Thus, to return from the function you have to do the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nf"&gt;movl&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;%esp&lt;/span&gt; &lt;span class="c"&gt;# Set stack pointer back to the beginning of the frame&lt;/span&gt;
 &lt;span class="nf"&gt;popl&lt;/span&gt; &lt;span class="nv"&gt;%ebp&lt;/span&gt;       &lt;span class="c"&gt;# Restore the caller's base pointer and now stack pointer pointing to Return address&lt;/span&gt;
