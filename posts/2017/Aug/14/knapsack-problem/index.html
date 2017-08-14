@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Knapsack problem
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <link rel="stylesheet" href="../../../../../theme/fa/css/font-awesome.min.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+    <h1 id="site-title"><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
+            <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+            <a href="../../../../../quotes.html" style="padding: 10px">QUOTES</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+            <h1 class="post-title">Knapsack problem</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2017-08-14T16:45:00+08:00"> Aug 14, 2017</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/dynamic-programming.html">dynamic programming</a>
+        /
+	<a href="../../../../../tag/greedy-algorithm.html">greedy algorithm</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <html><head></head><body><p>I'm studying this problem on my way from Beijing to Austin to kill some time.
+This problem works pretty well for this purpose. There are three kinds of 
+forms of the problem, which I'll summarize below. Also, this is a good example
+of dynamic programming paradigm.</p>
+<div class="toc">
+<ul>
+<li><a href="#knapsack-problem">Knapsack problem</a></li>
+<li><a href="#a-breif-revisit-to-dynamic-programming">A breif revisit to dynamic programming</a></li>
+<li><a href="#0-1-knapsack-problem">0-1 knapsack problem</a></li>
+<li><a href="#0-x-knapsack-problem">0-x knapsack problem</a></li>
+<li><a href="#fractional-knapsack-problem">Fractional knapsack problem</a></li>
+<li><a href="#links-to-resources">Links to resources</a></li>
+</ul>
+</div>
+<h2 id="knapsack-problem">Knapsack problem</h2>
+<p>Suppose we are planning a hiking trip; and we are, therefore, interested in 
+filling a knapsack with items that are considered necessary for the trip. 
+There are <span class="math">\(N\)</span> different item types that are deemed desirable; 
+these could include bottle of water, apple, orange, sandwich, and so
+forth. Each item type has a given set of two attributes, namely a weight <span class="math">\(W\)</span> and a
+value that quantifies the level of importance associated with each unit of that 
+type of item. Since the knapsack has a limited weight capacity, 
+the problem of interest is to figure out how to load the knapsack with a 
+combination of units of the specified types of items that yields the greatest total value. </p>
+<p>A large variety of resource allocation problems can be cast in the framework of a knapsack
+problem. The general idea is to think of the capacity of the knapsack as the available amount
+of a resource and the item types as activities to which this resource can be allocated. Two
+quick examples are the allocation of an advertising budget to the promotions of individual
+products and the allocation of your effort to the preparation of final exams in different
+subjects.</p>
+<h2 id="a-breif-revisit-to-dynamic-programming">A breif revisit to dynamic programming</h2>
+<p>Dynamic programming is a algorithm design strategy when a problem can be broken
+down into recurring small problems. Specifically, it is used when the solution can be
+recursively described in terms of solutions to subproblems and algorithms find solutions
+to subproblems and store them for later use. This is better than "brute-force methods",
+which solves the same subproblem over and over again. It is different from divide-and-conquer
+paradigm in the sense that divide-and-conquer divides the problem into independent subproblems
+and solve them individually, and then combine them to form the final solution. There is
+no re-use of a solution to one subproblem in order to solve another subproblem, like dynamic programming.
+From this perspective, dynamic programm is more like recursion + re-use <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>.</p>
+<p>The general steps to use dynamic programming paradigm is that:</p>
+<ol>
+<li>Define the subproblems</li>
+<li>Define the solution to subproblems, which can be reused by other subproblems (if you think of recursion, the solution to
+subproblem can be re-used by the subproblem one function call earlier).</li>
+<li>Solve the problem bottom-up from "basic cases", building a table of solved subproblems that are used to solve larger ones</li>
+</ol>
+<h2 id="0-1-knapsack-problem">0-1 knapsack problem</h2>
+<p>The first type of knapsack program has the following restriction on how the item should
+be picked: <em>items are not divisible</em>. In other words, you either take an item or not.</p>
+<p>Let's first formulate this problem mathematically. Given a knapsack with 
+maximum capacity <span class="math">\(W\)</span>, and a set <span class="math">\(S\)</span> consisting of <span class="math">\(n\)</span> items. 
+Each item <span class="math">\(i\)</span> has some weight <span class="math">\(w_i\)</span> and benefit value <span class="math">\(b_i\)</span>
+(all <span class="math">\(w_i\)</span>, <span class="math">\(b_i\)</span> and <span class="math">\(W\)</span> are integer values). The problem we try to solve is 
+how to pack the knapsack to achieve maximum total value of packed items? In other words,
+we try to find <span class="math">\(\text{max}\sum_{i \in S} b_i \text{ subject to } \sum_{i \in S} w_i \le W\)</span>.</p>
+<p>The first step in dynamic programming is to define the subproblems. In this problem, we 
+can try to label the items from <span class="math">\(1 \dots n\)</span>, and then a subproblem is to find an optimal
+solution for <span class="math">\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)</span>. Once
+we have a definition for the subproblem, we need to ask: can we describe the final solution
+(i.e., <span class="math">\(S_n\)</span>) in terms of subproblems (i.e., <span class="math">\(S_i\)</span>)? Let's take a look at an example:</p>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>Item</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weight <span class="math">\(w_i\)</span></td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>9</td>
+</tr>
+<tr>
+<td>Benefit <span class="math">\(b_i\)</span></td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>8</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<p>Suppose <span class="math">\(W = 20\)</span>. Then for <span class="math">\(S_4\)</span>, the optimal solution is to put 
+item <span class="math">\(1,2,3,4\)</span> into knapsack because the total weight is <span class="math">\(2 + 3 + 4 + 5 = 14\)</span>, which
+is less than <span class="math">\(20\)</span> and we have the maximum benefit: <span class="math">\(20\)</span>. For <span class="math">\(S_5\)</span>, the optimal solution
+is to put item <span class="math">\(1,3,4,5\)</span> into knapsack with the total weight <span class="math">\(2 + 4 + 5 + 9 = 20\)</span> and maximum
+benefit <span class="math">\(26\)</span>. However, as you can see, the solution for <span class="math">\(S_4\)</span> (i.e., <span class="math">\(1,2,3,4\)</span>) is not part
+of the solution for <span class="math">\(S_5\)</span> (i.e., <span class="math">\(1,3,4,5\)</span>). Thus, our definition of subproblem is not right.
+Let's refine our subproblem definition by adding another parameter <span class="math">\(w\)</span> that represents the
+exact weight for each subset of items. Then, our subproblem is to find the best subset of 
+<span class="math">\(S_k\)</span> that has total weight <span class="math">\(w\)</span>. The benefits corresponding with the best subset is denoted
+as <span class="math">\(B[k, w]\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The problem with the first subproblem definition is that we kind of play greedy algorithm in
+the sense that we always choose the optimal solution for <span class="math">\(S_i\)</span> given <span class="math">\(W\)</span>. However, the
+problem with greedy approach is that the optimal solution for <span class="math">\(S_i\)</span> may not be the part
+of solution for <span class="math">\(S_n\)</span>. The refinement to that is that we allow to tweak <span class="math">\(W\)</span> to reflect
+the number of items we are considering. This idea will become clear once we walk through
+the solution to the problem. All in all, coming up a good subproblem definition is the 
+key in using dynammic programming, which requires many practice.</p>
+</div>
+<p>Once we have the subproblem definition, we can define our solution to the subproblem. In this 
+case, our recursive formula for subproblems look like below:</p>
+<div class="math">$$
+B[i,w]=\left\{
+                \begin{array}{ll}
+                  B[i-1,w] \text{ if } w_i &gt; w \\
+                  \text{max}\{B[i-1, w], B[i-1, w-w_i] + b_i\} \text{ otherwise }
+                \end{array}
+              \right.
+$$</div>
+<p>The idea for above recursion formula is that the best subset of <span class="math">\(S_i\)</span> that
+has total weight <span class="math">\(w\)</span> either contains item <span class="math">\(i\)</span> or not. First case: <span class="math">\(w_i &gt; w\)</span>. 
+Item <span class="math">\(i\)</span> can't be part of the solution because including item <span class="math">\(i\)</span> will have
+the total weight greater than <span class="math">\(w\)</span>, which is unacceptable. The second case:
+<span class="math">\(w_i \le w\)</span>. Item <span class="math">\(i\)</span> <strong>can</strong> be in the solution, and we choose the case 
+with greater value: not contain <span class="math">\(i\)</span> (i.e., <span class="math">\(B[i-1, w]\)</span>) or contain 
+<span class="math">\(i\)</span> (i.e., <span class="math">\(B[i-1, w-w_i] + b_i\)</span>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As you can see from recursive formula, the solution <span class="math">\(B[k,w]\)</span> reuses
+the solution to <span class="math">\(B[i-1, w]\)</span> and <span class="math">\(B[i-1, w-w_i]\)</span>, which is the signature of
+dynamic programming.</p>
+</div>
+<p>The algorithm is below:</p>
+<div class="highlight"><pre><span></span>for w = 0 to W 
+    B[0,w] = 0
+for i = 1 to n 
+    B[i,0] = 0 
+for i = 1 to n
+    for w = 1 to W
+        if w_i &lt;=w  //item i can be part of the solution 
+            if b_i + B[i-1,w-w_i ] &gt; B[i-1,w]
+                B[i,w] = b_i + B[i-1, w-w_i]
+            else
+                B[i,w] = B[i-1,w]
+        else 
+            B[i,w] = B[i-1,w] // w_i &gt; w
+</pre></div>
+
+
+<p>The running time for this algorithm is <span class="math">\(O(n*W)\)</span> because of the double for loop. To understand this algorithm,
+let's take a look at an example:</p>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>Item</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weight <span class="math">\(w_i\)</span></td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Benefit <span class="math">\(b_i\)</span></td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<p>Suppose <span class="math">\(W = 5\)</span> and with algorithm above, we essentially fill out a table like following:</p>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>i \ w</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Each cell in the above table represents <span class="math">\(B[i,w]\)</span> and the table looks like above after we executing 
+the first two for loops</p>
+<div class="highlight"><pre><span></span>for w = 0 to W 
+    B[0,w] = 0
+for i = 1 to n 
+    B[i,0] = 0 
+</pre></div>
+
+
+<p>Now, let's take a look at <span class="math">\(B[1,1]\)</span>. We have <span class="math">\(i = 1, b_i = 3, w_i = 2, w = 1\)</span>, and since <span class="math">\(w_i &gt; w\)</span>, and by our
+algorithm, we have <span class="math">\(B[i,w] = B[i-1,w]\)</span>, which is <span class="math">\(B[0,1]\)</span>. Thus, <span class="math">\(B[1,1] = 0\)</span> and the table becomes</p>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>i \ w</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>We can fill out the table like this and have</p>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>i \ w</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>4</td>
+<td>4</td>
+<td>7</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>7</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+<p>Now, we have the maximum benefit value given the capacity of the knapsack, which is <span class="math">\(B[4,5] = 7\)</span>. 
+The next question is to find out what items we should put inside the knapsack in order to have
+this maximum benefit (i.e., <span class="math">\(7\)</span>). The algorithm is below:</p>
+<div class="highlight"><pre><span></span>Let i = n and k = W
+while i &gt; 0 and k &gt; 0
+    if B[i,k] != B[i-1,k], then
+        mark the ith item as in the knapsack
+        i = i - 1
+        k = k - w_i
+    else
+        i = i - 1
+</pre></div>
+
+
+<p>Let's first take a look a few examples on how this algorithm runs and then we will
+see the intuition behind this algorithm. In our example, we start with
+<span class="math">\(i = 4, k = 5, w_i = 5, B[i,k] = 7, B[i-1,k] = 7\)</span>. Then, by our algorithm, we
+decrements <span class="math">\(i\)</span> and move on. Same situtation happens when <span class="math">\(i=3\)</span> because <span class="math">\(B[i,k] = B[i-1,k]\)</span>.
+Now, when <span class="math">\(i = 2\)</span>, we have <span class="math">\(B[i,k] = 7\)</span> and <span class="math">\(B[i-1,k] = 3\)</span>. Thus, we mark <span class="math">\(i=2\)</span>th item
+as in the knapsack and this item has weight <span class="math">\(w_2 = 3\)</span> and <span class="math">\(b_2 = 4\)</span>. Now, we decrement <span class="math">\(i\)</span> 
+and update <span class="math">\(k\)</span> by <span class="math">\(k = k - w_i = 5 - 4 = 3\)</span>. Now, we are at <span class="math">\(B[1,2]\)</span> cell. We do the same
+for <span class="math">\(i = 1\)</span> and it turns out <span class="math">\(i = 1\)</span> should also be inside the knapsack.</p>
+<p>You may now probably tell that the idea for the algorithm to find the exactly items inside
+the knapsack is that <em>we always want to put the item inside the knapsack that has value 
+gain</em>. This is just like "marginal thinking" in Economics. For example, we don't 
+want to put <span class="math">\(i = 4\)</span>th item inside knapsack because from <span class="math">\(i = 3\)</span> to <span class="math">\(i = 4\)</span>, there is no value
+gain (i.e. <span class="math">\(B[i,k] = B[i-1,k] = 5\)</span>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The detailed implementation of the algorithm in C can be found from 
+<a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/knapsack/knapsack.c">my code-for-blog repo</a>.</p>
+</div>
+<h2 id="0-x-knapsack-problem">0-x knapsack problem</h2>
+<p>0-x knapsack problem is a generalization of 0-1 knapsack problem in the sense that
+for item <span class="math">\(i\)</span> we can load multiple of it into our knapsack. Let <span class="math">\(x_i\)</span> to denote
+the number of <span class="math">\(i\)</span>th item are loaded into the knapsack. One requirement to <span class="math">\(x_i\)</span>
+is that it has to be integer-valued.</p>
+<p>The problem formulation and subproblem definition is just like the 0-1 knapsack problem.
+The only thing we need to do is to adjust is the recursive solution to subproblems:</p>
+<div class="math">$$
+B[i,w]=\left\{
+                \begin{array}{ll}
+                  B[i-1,w] \text{ if } w_i &gt; w \\
+                  \max_{0 \le x_i \le \lfloor\frac{w}{w_i}\rfloor}\{B[i-1, w], B[i-1, w-w_ix_i] + b_ix_i\} \text{ otherwise }
+                \end{array}
+              \right.
+$$</div>
+<p>When <span class="math">\(w_i &gt; w\)</span>, we cannot include item <span class="math">\(i\)</span> at all. However, when <span class="math">\(w_i &lt; w\)</span>, we have more options 
+because we can include multiple of item <span class="math">\(i\)</span>. But, we cannot assign a value greater than <span class="math">\(w/w_i\)</span>
+to <span class="math">\(x_i\)</span>. In addition, <span class="math">\(w/w_i\)</span> may not be an integer. So, we <span class="math">\(x_i\)</span> should be in the range 
+<span class="math">\(0 \le x_i \le \lfloor w/w_i \rfloor\)</span>, where the notation <span class="math">\(\lfloor x \rfloor\)</span> is, for any given <span class="math">\(x\)</span>, 
+defined as the greatest integer less than or equal to <span class="math">\(x\)</span>. The algorithm is shown below:</p>
+<div class="highlight"><pre><span></span>for w = 0 to W
+    B[0,w] = 0
+for i = 1 to n
+    B[i,0] = 0
+for i = 1 to n
+    for w = 1 to W
+        if w_i &lt;= w
+            cands_B = a list of (w/x_i+1) items // hold the possible B[i,w] value for each x_i
+            for x_i = 0 to w/x_i
+                cands_B[x_i] = B[i-1, w - w_i * x_i] + b_i * x_i
+                B[i,w] = max(cands_B)
+                x[i,w] = x_i that is associated with B[i,w]
+        else
+            B[i,w] = B[i-1,w]
+            x[i,w] = x_i that is associated with B[i-1,w]
+</pre></div>
+
+
+<p>Let's walk through an example to better understand the algorithm idea:</p>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>Item</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weight <span class="math">\(w_i\)</span></td>
+<td>3</td>
+<td>8</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Benefit <span class="math">\(b_i\)</span></td>
+<td>4</td>
+<td>6</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math">\(W = 8\)</span> in our example. The algorithm essentially
+tries to build fill out two tables <span class="math">\(B[i,w]\)</span> table like
+the 0-1 knapsack problem:</p>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>i \ w</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>4</td>
+<td>4</td>
+<td>8</td>
+<td>8</td>
+<td>8</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>4</td>
+<td>4</td>
+<td>8</td>
+<td>8</td>
+<td>8</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>4</td>
+<td>5</td>
+<td>8</td>
+<td>8</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+<p>and <span class="math">\(x[i,w]\)</span> table to keep track of the optimal
+value of <span class="math">\(x_i\)</span> for each <span class="math">\(i\)</span> and <span class="math">\(w\)</span></p>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>i \ w</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>For <span class="math">\(i = 1\)</span>, we have <span class="math">\(w_i = 3, b_i = 4\)</span>. Thus, when
+<span class="math">\(w = 0,1,2\)</span>, we have <span class="math">\(B[i,w] = 0\)</span> and <span class="math">\(x[i,w] = 0\)</span> as well.
+When <span class="math">\(w = 3\)</span>, we can include <span class="math">\(w_i\)</span> inside the knapsack and
+we calculate the following:</p>
+<div class="math">$$
+B[1,3] = \max \{B[0,3], B[0,3-3*1]+4*1\} = \max \{0, 0+4\} = 4
+$$</div>
+<p>So, we fill in <span class="math">\(B[1,3] = 4\)</span> and <span class="math">\(x[1,3] = 1\)</span>. We can repeatedly
+doing this for other <span class="math">\(i\)</span>s. We can take a look at the values
+from another perspective like the tables below:</p>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>B[1,w]</th>
+<th>w</th>
+<th>x_1*</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>3</td>
+<td>1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td>1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>5</td>
+<td>1</td>
+</tr>
+<tr>
+<td>8</td>
+<td>6</td>
+<td>2</td>
+</tr>
+<tr>
+<td>8</td>
+<td>7</td>
+<td>2</td>
+</tr>
+<tr>
+<td>8</td>
+<td>8</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>B[2,w]</th>
+<th>w</th>
+<th>x_2*</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>3</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>5</td>
+<td>0</td>
+</tr>
+<tr>
+<td>8</td>
+<td>6</td>
+<td>0</td>
+</tr>
+<tr>
+<td>8</td>
+<td>7</td>
+<td>0</td>
+</tr>
+<tr>
+<td>8</td>
+<td>8</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>B[3,w]</th>
+<th>w</th>
+<th>x_3*</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>3</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>5</td>
+<td>1</td>
+</tr>
+<tr>
+<td>8</td>
+<td>6</td>
+<td>0</td>
+</tr>
+<tr>
+<td>8</td>
+<td>7</td>
+<td>0</td>
+</tr>
+<tr>
+<td>9</td>
+<td>8</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>The values are all the same but the data are organized differently. Clearly, two tables
+are better than three tables in terms of space. As you can see from either two sets of 
+tables, the maximum benefit we can achieve is <span class="math">\(9\)</span>, which is entry of <span class="math">\(B[3,8]\)</span>. In order to find out the exact
+composition of the knapsack, we can work backwards from <span class="math">\(i = 3\)</span>. With <span class="math">\(i = 3\)</span> and <span class="math">\(w = 8\)</span>, <span class="math">\(x_1 = 1\)</span>. Since
+<span class="math">\(w_1 = 5\)</span> and <span class="math">\(W = 8\)</span>, then we have <span class="math">\(3\)</span> left in knapsack in terms of weight. For <span class="math">\(i = 2\)</span> and <span class="math">\(w = 3\)</span> (because
+we have only <span class="math">\(3\)</span> left in our knapsack weight capacity), <span class="math">\(x_2 = 0\)</span>. Then, for <span class="math">\(i = 1, w = 3\)</span> (we still have <span class="math">\(3\)</span>
+budge left), <span class="math">\(x_1 = 1\)</span>. Thus, our optimal choice for each item is <span class="math">\(x_1 = 1, x_2 = 0, x_3 = 1\)</span>.</p>
+<h2 id="fractional-knapsack-problem">Fractional knapsack problem</h2>
+<p>Another type of knapsack problem is the fractional knapsack problem. In this setting, <em>the item is divisible</em>. In
+other words, we can take fraction of item. This problem 
+can also be considered as a generalization of 0-x knapsack problem by not requiring <span class="math">\(x_i\)</span> has to be integer value.
+In this case, we actually use the <em>greedy algorithm</em> paradigm instead of <em>dynamic programming</em> paradigm to solve the
+problem. </p>
+<p>Let's use the same example as 0-x knapsack problem. In this case, we actually calculate the benefit per unit of weight
+first:</p>
+<div class="math">$$
+\frac{b_1}{w_1} = \frac{4}{3}, \frac{b_2}{w_2} = \frac{6}{8}, \frac{b_3}{w_3} = \frac{5}{5}
+$$</div>
+<p>as you can see, the first item gives the maximum benefit per unit of weight and we want to load this item as much as possible,
+which is <span class="math">\(W/w_1 = 8/3\)</span>. The reason we can use greedy algorithm to do this is because we can have fraction of item. If we don't
+allow the fraction of item like we do in the 0-x knapsack problem, this appraoch will get suboptimal solution: we can only
+have <span class="math">\(2\)</span> item <span class="math">\(1\)</span> (because <span class="math">\(\lfloor\frac{8}{3}\rfloor = 2\)</span>) and the last <span class="math">\(2\)</span> knapsack weight capacity is not big enough to 
+fit any item any more. Thus, the benefit we get in this case is <span class="math">\(2*4 = 8\)</span>, which is smaller than <span class="math">\(9\)</span> our maximum benefit obtained
+from <em>dynamic programming</em> approach.</p>
+<h2 id="links-to-resources">Links to resources</h2>
+<p>Here are some of the resources I found helpful while preparing this article:</p>
+<ul>
+<li><a href="https://www.utdallas.edu/~scniu/OPRE-6201/documents/DP3-Knapsack.pdf">UT-Dallas Introduction to Operations Research course material</a></li>
+<li><a href="http://cse.unl.edu/~goddard/Courses/CSCE310J/Lectures/Lecture8-DynamicProgramming.pdf">University of Nebraska CSCE 310J Data Structures and Algorithms lecture note</a></li>
+</ul>
+<div class="footnote">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>See <a href="https://stackoverflow.com/questions/13538459/difference-between-divide-and-conquer-algo-and-dynamic-programming">Difference between Divide and Conquer Algo and Dynamic Programming SO post</a> <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script></body></html>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/data-struct-algo.html">Data Struct & Algo</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

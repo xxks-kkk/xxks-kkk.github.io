@@ -1,5 +1,870 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-07-30T00:21:00+08:00</updated><entry><title>Understanding how function call works</title><link href="http://zhu45.org/posts/2017/Jul/30/understanding-how-function-call-works/" rel="alternate"></link><published>2017-07-30T00:21:00+08:00</published><updated>2017-07-30T00:21:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-07-30:posts/2017/Jul/30/understanding-how-function-call-works/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Understanding assembly language is crucial for system programming. Some nasty defects of the system
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="http://zhu45.org/" rel="alternate"></link><link href="http://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>http://zhu45.org/</id><updated>2017-08-14T16:45:00+08:00</updated><entry><title>Knapsack problem</title><link href="http://zhu45.org/posts/2017/Aug/14/knapsack-problem/" rel="alternate"></link><published>2017-08-14T16:45:00+08:00</published><updated>2017-08-14T16:45:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-08-14:posts/2017/Aug/14/knapsack-problem/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;I'm studying this problem on my way from Beijing to Austin to kill some time.
+This problem works pretty well for this purpose. There are three kinds of 
+forms of the problem, which I'll summarize below. Also, this is a good example
+of dynamic programming paradigm.&lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#knapsack-problem"&gt;Knapsack problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#a-breif-revisit-to-dynamic-programming"&gt;A breif revisit to dynamic programming&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#0-1-knapsack-problem"&gt;0-1 knapsack problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#0-x-knapsack-problem"&gt;0-x knapsack problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#fractional-knapsack-problem"&gt;Fractional knapsack problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#links-to-resources"&gt;Links to resources&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="knapsack-problem"&gt;Knapsack problem&lt;/h2&gt;
+&lt;p&gt;Suppose we are planning a hiking trip; and we are, therefore, interested in 
+filling a knapsack with items that are considered necessary for the trip. 
+There are &lt;span class="math"&gt;\(N\)&lt;/span&gt; different item types that are deemed desirable; 
+these could include bottle of water, apple, orange, sandwich, and so
+forth. Each item type has a given set of two attributes, namely a weight &lt;span class="math"&gt;\(W\)&lt;/span&gt; and a
+value that quantifies the level of importance associated with each unit of that 
+type of item. Since the knapsack has a limited weight capacity, 
+the problem of interest is to figure out how to load the knapsack with a 
+combination of units of the specified types of items that yields the greatest total value. &lt;/p&gt;
+&lt;p&gt;A large variety of resource allocation problems can be cast in the framework of a knapsack
+problem. The general idea is to think of the capacity of the knapsack as the available amount
+of a resource and the item types as activities to which this resource can be allocated. Two
+quick examples are the allocation of an advertising budget to the promotions of individual
+products and the allocation of your effort to the preparation of final exams in different
+subjects.&lt;/p&gt;
+&lt;h2 id="a-breif-revisit-to-dynamic-programming"&gt;A breif revisit to dynamic programming&lt;/h2&gt;
+&lt;p&gt;Dynamic programming is a algorithm design strategy when a problem can be broken
+down into recurring small problems. Specifically, it is used when the solution can be
+recursively described in terms of solutions to subproblems and algorithms find solutions
+to subproblems and store them for later use. This is better than "brute-force methods",
+which solves the same subproblem over and over again. It is different from divide-and-conquer
+paradigm in the sense that divide-and-conquer divides the problem into independent subproblems
+and solve them individually, and then combine them to form the final solution. There is
+no re-use of a solution to one subproblem in order to solve another subproblem, like dynamic programming.
+From this perspective, dynamic programm is more like recursion + re-use &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;The general steps to use dynamic programming paradigm is that:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Define the subproblems&lt;/li&gt;
+&lt;li&gt;Define the solution to subproblems, which can be reused by other subproblems (if you think of recursion, the solution to
+subproblem can be re-used by the subproblem one function call earlier).&lt;/li&gt;
+&lt;li&gt;Solve the problem bottom-up from "basic cases", building a table of solved subproblems that are used to solve larger ones&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="0-1-knapsack-problem"&gt;0-1 knapsack problem&lt;/h2&gt;
+&lt;p&gt;The first type of knapsack program has the following restriction on how the item should
+be picked: &lt;em&gt;items are not divisible&lt;/em&gt;. In other words, you either take an item or not.&lt;/p&gt;
+&lt;p&gt;Let's first formulate this problem mathematically. Given a knapsack with 
+maximum capacity &lt;span class="math"&gt;\(W\)&lt;/span&gt;, and a set &lt;span class="math"&gt;\(S\)&lt;/span&gt; consisting of &lt;span class="math"&gt;\(n\)&lt;/span&gt; items. 
+Each item &lt;span class="math"&gt;\(i\)&lt;/span&gt; has some weight &lt;span class="math"&gt;\(w_i\)&lt;/span&gt; and benefit value &lt;span class="math"&gt;\(b_i\)&lt;/span&gt;
+(all &lt;span class="math"&gt;\(w_i\)&lt;/span&gt;, &lt;span class="math"&gt;\(b_i\)&lt;/span&gt; and &lt;span class="math"&gt;\(W\)&lt;/span&gt; are integer values). The problem we try to solve is 
+how to pack the knapsack to achieve maximum total value of packed items? In other words,
+we try to find &lt;span class="math"&gt;\(\text{max}\sum_{i \in S} b_i \text{ subject to } \sum_{i \in S} w_i \le W\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The first step in dynamic programming is to define the subproblems. In this problem, we 
+can try to label the items from &lt;span class="math"&gt;\(1 \dots n\)&lt;/span&gt;, and then a subproblem is to find an optimal
+solution for &lt;span class="math"&gt;\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)&lt;/span&gt;. Once
+we have a definition for the subproblem, we need to ask: can we describe the final solution
+(i.e., &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;) in terms of subproblems (i.e., &lt;span class="math"&gt;\(S_i\)&lt;/span&gt;)? Let's take a look at an example:&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Item&lt;/th&gt;
+&lt;th&gt;1&lt;/th&gt;
+&lt;th&gt;2&lt;/th&gt;
+&lt;th&gt;3&lt;/th&gt;
+&lt;th&gt;4&lt;/th&gt;
+&lt;th&gt;5&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Weight &lt;span class="math"&gt;\(w_i\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Benefit &lt;span class="math"&gt;\(b_i\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 20\)&lt;/span&gt;. Then for &lt;span class="math"&gt;\(S_4\)&lt;/span&gt;, the optimal solution is to put 
+item &lt;span class="math"&gt;\(1,2,3,4\)&lt;/span&gt; into knapsack because the total weight is &lt;span class="math"&gt;\(2 + 3 + 4 + 5 = 14\)&lt;/span&gt;, which
+is less than &lt;span class="math"&gt;\(20\)&lt;/span&gt; and we have the maximum benefit: &lt;span class="math"&gt;\(20\)&lt;/span&gt;. For &lt;span class="math"&gt;\(S_5\)&lt;/span&gt;, the optimal solution
+is to put item &lt;span class="math"&gt;\(1,3,4,5\)&lt;/span&gt; into knapsack with the total weight &lt;span class="math"&gt;\(2 + 4 + 5 + 9 = 20\)&lt;/span&gt; and maximum
+benefit &lt;span class="math"&gt;\(26\)&lt;/span&gt;. However, as you can see, the solution for &lt;span class="math"&gt;\(S_4\)&lt;/span&gt; (i.e., &lt;span class="math"&gt;\(1,2,3,4\)&lt;/span&gt;) is not part
+of the solution for &lt;span class="math"&gt;\(S_5\)&lt;/span&gt; (i.e., &lt;span class="math"&gt;\(1,3,4,5\)&lt;/span&gt;). Thus, our definition of subproblem is not right.
+Let's refine our subproblem definition by adding another parameter &lt;span class="math"&gt;\(w\)&lt;/span&gt; that represents the
+exact weight for each subset of items. Then, our subproblem is to find the best subset of 
+&lt;span class="math"&gt;\(S_k\)&lt;/span&gt; that has total weight &lt;span class="math"&gt;\(w\)&lt;/span&gt;. The benefits corresponding with the best subset is denoted
+as &lt;span class="math"&gt;\(B[k, w]\)&lt;/span&gt;.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;The problem with the first subproblem definition is that we kind of play greedy algorithm in
+the sense that we always choose the optimal solution for &lt;span class="math"&gt;\(S_i\)&lt;/span&gt; given &lt;span class="math"&gt;\(W\)&lt;/span&gt;. However, the
+problem with greedy approach is that the optimal solution for &lt;span class="math"&gt;\(S_i\)&lt;/span&gt; may not be the part
+of solution for &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;. The refinement to that is that we allow to tweak &lt;span class="math"&gt;\(W\)&lt;/span&gt; to reflect
+the number of items we are considering. This idea will become clear once we walk through
+the solution to the problem. All in all, coming up a good subproblem definition is the 
+key in using dynammic programming, which requires many practice.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Once we have the subproblem definition, we can define our solution to the subproblem. In this 
+case, our recursive formula for subproblems look like below:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+B[i,w]=\left\{
+                \begin{array}{ll}
+                  B[i-1,w] \text{ if } w_i &amp;gt; w \\
+                  \text{max}\{B[i-1, w], B[i-1, w-w_i] + b_i\} \text{ otherwise }
+                \end{array}
+              \right.
+$$&lt;/div&gt;
+&lt;p&gt;The idea for above recursion formula is that the best subset of &lt;span class="math"&gt;\(S_i\)&lt;/span&gt; that
+has total weight &lt;span class="math"&gt;\(w\)&lt;/span&gt; either contains item &lt;span class="math"&gt;\(i\)&lt;/span&gt; or not. First case: &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;. 
+Item &lt;span class="math"&gt;\(i\)&lt;/span&gt; can't be part of the solution because including item &lt;span class="math"&gt;\(i\)&lt;/span&gt; will have
+the total weight greater than &lt;span class="math"&gt;\(w\)&lt;/span&gt;, which is unacceptable. The second case:
+&lt;span class="math"&gt;\(w_i \le w\)&lt;/span&gt;. Item &lt;span class="math"&gt;\(i\)&lt;/span&gt; &lt;strong&gt;can&lt;/strong&gt; be in the solution, and we choose the case 
+with greater value: not contain &lt;span class="math"&gt;\(i\)&lt;/span&gt; (i.e., &lt;span class="math"&gt;\(B[i-1, w]\)&lt;/span&gt;) or contain 
+&lt;span class="math"&gt;\(i\)&lt;/span&gt; (i.e., &lt;span class="math"&gt;\(B[i-1, w-w_i] + b_i\)&lt;/span&gt;).&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;As you can see from recursive formula, the solution &lt;span class="math"&gt;\(B[k,w]\)&lt;/span&gt; reuses
+the solution to &lt;span class="math"&gt;\(B[i-1, w]\)&lt;/span&gt; and &lt;span class="math"&gt;\(B[i-1, w-w_i]\)&lt;/span&gt;, which is the signature of
+dynamic programming.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;The algorithm is below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;for w = 0 to W 
+    B[0,w] = 0
+for i = 1 to n 
+    B[i,0] = 0 
+for i = 1 to n
+    for w = 1 to W
+        if w_i &amp;lt;=w  //item i can be part of the solution 
+            if b_i + B[i-1,w-w_i ] &amp;gt; B[i-1,w]
+                B[i,w] = b_i + B[i-1, w-w_i]
+            else
+                B[i,w] = B[i-1,w]
+        else 
+            B[i,w] = B[i-1,w] // w_i &amp;gt; w
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The running time for this algorithm is &lt;span class="math"&gt;\(O(n*W)\)&lt;/span&gt; because of the double for loop. To understand this algorithm,
+let's take a look at an example:&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Item&lt;/th&gt;
+&lt;th&gt;1&lt;/th&gt;
+&lt;th&gt;2&lt;/th&gt;
+&lt;th&gt;3&lt;/th&gt;
+&lt;th&gt;4&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Weight &lt;span class="math"&gt;\(w_i\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Benefit &lt;span class="math"&gt;\(b_i\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 5\)&lt;/span&gt; and with algorithm above, we essentially fill out a table like following:&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;i \ w&lt;/th&gt;
+&lt;th&gt;0&lt;/th&gt;
+&lt;th&gt;1&lt;/th&gt;
+&lt;th&gt;2&lt;/th&gt;
+&lt;th&gt;3&lt;/th&gt;
+&lt;th&gt;4&lt;/th&gt;
+&lt;th&gt;5&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Each cell in the above table represents &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; and the table looks like above after we executing 
+the first two for loops&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;for w = 0 to W 
+    B[0,w] = 0
+for i = 1 to n 
+    B[i,0] = 0 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, let's take a look at &lt;span class="math"&gt;\(B[1,1]\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(i = 1, b_i = 3, w_i = 2, w = 1\)&lt;/span&gt;, and since &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, and by our
+algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(B[0,1]\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(B[1,1] = 0\)&lt;/span&gt; and the table becomes&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;i \ w&lt;/th&gt;
+&lt;th&gt;0&lt;/th&gt;
+&lt;th&gt;1&lt;/th&gt;
+&lt;th&gt;2&lt;/th&gt;
+&lt;th&gt;3&lt;/th&gt;
+&lt;th&gt;4&lt;/th&gt;
+&lt;th&gt;5&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;We can fill out the table like this and have&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;i \ w&lt;/th&gt;
+&lt;th&gt;0&lt;/th&gt;
+&lt;th&gt;1&lt;/th&gt;
+&lt;th&gt;2&lt;/th&gt;
+&lt;th&gt;3&lt;/th&gt;
+&lt;th&gt;4&lt;/th&gt;
+&lt;th&gt;5&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Now, we have the maximum benefit value given the capacity of the knapsack, which is &lt;span class="math"&gt;\(B[4,5] = 7\)&lt;/span&gt;. 
+The next question is to find out what items we should put inside the knapsack in order to have
+this maximum benefit (i.e., &lt;span class="math"&gt;\(7\)&lt;/span&gt;). The algorithm is below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Let i = n and k = W
+while i &amp;gt; 0 and k &amp;gt; 0
+    if B[i,k] != B[i-1,k], then
+        mark the ith item as in the knapsack
+        i = i - 1
+        k = k - w_i
+    else
+        i = i - 1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's first take a look a few examples on how this algorithm runs and then we will
+see the intuition behind this algorithm. In our example, we start with
+&lt;span class="math"&gt;\(i = 4, k = 5, w_i = 5, B[i,k] = 7, B[i-1,k] = 7\)&lt;/span&gt;. Then, by our algorithm, we
+decrements &lt;span class="math"&gt;\(i\)&lt;/span&gt; and move on. Same situtation happens when &lt;span class="math"&gt;\(i=3\)&lt;/span&gt; because &lt;span class="math"&gt;\(B[i,k] = B[i-1,k]\)&lt;/span&gt;.
+Now, when &lt;span class="math"&gt;\(i = 2\)&lt;/span&gt;, we have &lt;span class="math"&gt;\(B[i,k] = 7\)&lt;/span&gt; and &lt;span class="math"&gt;\(B[i-1,k] = 3\)&lt;/span&gt;. Thus, we mark &lt;span class="math"&gt;\(i=2\)&lt;/span&gt;th item
+as in the knapsack and this item has weight &lt;span class="math"&gt;\(w_2 = 3\)&lt;/span&gt; and &lt;span class="math"&gt;\(b_2 = 4\)&lt;/span&gt;. Now, we decrement &lt;span class="math"&gt;\(i\)&lt;/span&gt; 
+and update &lt;span class="math"&gt;\(k\)&lt;/span&gt; by &lt;span class="math"&gt;\(k = k - w_i = 5 - 4 = 3\)&lt;/span&gt;. Now, we are at &lt;span class="math"&gt;\(B[1,2]\)&lt;/span&gt; cell. We do the same
+for &lt;span class="math"&gt;\(i = 1\)&lt;/span&gt; and it turns out &lt;span class="math"&gt;\(i = 1\)&lt;/span&gt; should also be inside the knapsack.&lt;/p&gt;
+&lt;p&gt;You may now probably tell that the idea for the algorithm to find the exactly items inside
+the knapsack is that &lt;em&gt;we always want to put the item inside the knapsack that has value 
+gain&lt;/em&gt;. This is just like "marginal thinking" in Economics. For example, we don't 
+want to put &lt;span class="math"&gt;\(i = 4\)&lt;/span&gt;th item inside knapsack because from &lt;span class="math"&gt;\(i = 3\)&lt;/span&gt; to &lt;span class="math"&gt;\(i = 4\)&lt;/span&gt;, there is no value
+gain (i.e. &lt;span class="math"&gt;\(B[i,k] = B[i-1,k] = 5\)&lt;/span&gt;).&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;The detailed implementation of the algorithm in C can be found from 
+&lt;a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/knapsack/knapsack.c"&gt;my code-for-blog repo&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="0-x-knapsack-problem"&gt;0-x knapsack problem&lt;/h2&gt;
+&lt;p&gt;0-x knapsack problem is a generalization of 0-1 knapsack problem in the sense that
+for item &lt;span class="math"&gt;\(i\)&lt;/span&gt; we can load multiple of it into our knapsack. Let &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; to denote
+the number of &lt;span class="math"&gt;\(i\)&lt;/span&gt;th item are loaded into the knapsack. One requirement to &lt;span class="math"&gt;\(x_i\)&lt;/span&gt;
+is that it has to be integer-valued.&lt;/p&gt;
+&lt;p&gt;The problem formulation and subproblem definition is just like the 0-1 knapsack problem.
+The only thing we need to do is to adjust is the recursive solution to subproblems:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+B[i,w]=\left\{
+                \begin{array}{ll}
+                  B[i-1,w] \text{ if } w_i &amp;gt; w \\
+                  \max_{0 \le x_i \le \lfloor\frac{w}{w_i}\rfloor}\{B[i-1, w], B[i-1, w-w_ix_i] + b_ix_i\} \text{ otherwise }
+                \end{array}
+              \right.
+$$&lt;/div&gt;
+&lt;p&gt;When &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, we cannot include item &lt;span class="math"&gt;\(i\)&lt;/span&gt; at all. However, when &lt;span class="math"&gt;\(w_i &amp;lt; w\)&lt;/span&gt;, we have more options 
+because we can include multiple of item &lt;span class="math"&gt;\(i\)&lt;/span&gt;. But, we cannot assign a value greater than &lt;span class="math"&gt;\(w/w_i\)&lt;/span&gt;
+to &lt;span class="math"&gt;\(x_i\)&lt;/span&gt;. In addition, &lt;span class="math"&gt;\(w/w_i\)&lt;/span&gt; may not be an integer. So, we &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; should be in the range 
+&lt;span class="math"&gt;\(0 \le x_i \le \lfloor w/w_i \rfloor\)&lt;/span&gt;, where the notation &lt;span class="math"&gt;\(\lfloor x \rfloor\)&lt;/span&gt; is, for any given &lt;span class="math"&gt;\(x\)&lt;/span&gt;, 
+defined as the greatest integer less than or equal to &lt;span class="math"&gt;\(x\)&lt;/span&gt;. The algorithm is shown below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;for w = 0 to W
+    B[0,w] = 0
+for i = 1 to n
+    B[i,0] = 0
+for i = 1 to n
+    for w = 1 to W
+        if w_i &amp;lt;= w
+            cands_B = a list of (w/x_i+1) items // hold the possible B[i,w] value for each x_i
+            for x_i = 0 to w/x_i
+                cands_B[x_i] = B[i-1, w - w_i * x_i] + b_i * x_i
+                B[i,w] = max(cands_B)
+                x[i,w] = x_i that is associated with B[i,w]
+        else
+            B[i,w] = B[i-1,w]
+            x[i,w] = x_i that is associated with B[i-1,w]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's walk through an example to better understand the algorithm idea:&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Item&lt;/th&gt;
+&lt;th&gt;1&lt;/th&gt;
+&lt;th&gt;2&lt;/th&gt;
+&lt;th&gt;3&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Weight &lt;span class="math"&gt;\(w_i\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Benefit &lt;span class="math"&gt;\(b_i\)&lt;/span&gt;&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;6&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(W = 8\)&lt;/span&gt; in our example. The algorithm essentially
+tries to build fill out two tables &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; table like
+the 0-1 knapsack problem:&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;i \ w&lt;/th&gt;
+&lt;th&gt;0&lt;/th&gt;
+&lt;th&gt;1&lt;/th&gt;
+&lt;th&gt;2&lt;/th&gt;
+&lt;th&gt;3&lt;/th&gt;
+&lt;th&gt;4&lt;/th&gt;
+&lt;th&gt;5&lt;/th&gt;
+&lt;th&gt;6&lt;/th&gt;
+&lt;th&gt;7&lt;/th&gt;
+&lt;th&gt;8&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;and &lt;span class="math"&gt;\(x[i,w]\)&lt;/span&gt; table to keep track of the optimal
+value of &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; for each &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt;&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;i \ w&lt;/th&gt;
+&lt;th&gt;0&lt;/th&gt;
+&lt;th&gt;1&lt;/th&gt;
+&lt;th&gt;2&lt;/th&gt;
+&lt;th&gt;3&lt;/th&gt;
+&lt;th&gt;4&lt;/th&gt;
+&lt;th&gt;5&lt;/th&gt;
+&lt;th&gt;6&lt;/th&gt;
+&lt;th&gt;7&lt;/th&gt;
+&lt;th&gt;8&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;For &lt;span class="math"&gt;\(i = 1\)&lt;/span&gt;, we have &lt;span class="math"&gt;\(w_i = 3, b_i = 4\)&lt;/span&gt;. Thus, when
+&lt;span class="math"&gt;\(w = 0,1,2\)&lt;/span&gt;, we have &lt;span class="math"&gt;\(B[i,w] = 0\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[i,w] = 0\)&lt;/span&gt; as well.
+When &lt;span class="math"&gt;\(w = 3\)&lt;/span&gt;, we can include &lt;span class="math"&gt;\(w_i\)&lt;/span&gt; inside the knapsack and
+we calculate the following:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+B[1,3] = \max \{B[0,3], B[0,3-3*1]+4*1\} = \max \{0, 0+4\} = 4
+$$&lt;/div&gt;
+&lt;p&gt;So, we fill in &lt;span class="math"&gt;\(B[1,3] = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[1,3] = 1\)&lt;/span&gt;. We can repeatedly
+doing this for other &lt;span class="math"&gt;\(i\)&lt;/span&gt;s. We can take a look at the values
+from another perspective like the tables below:&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;B[1,w]&lt;/th&gt;
+&lt;th&gt;w&lt;/th&gt;
+&lt;th&gt;x_1*&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;6&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;B[2,w]&lt;/th&gt;
+&lt;th&gt;w&lt;/th&gt;
+&lt;th&gt;x_2*&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;6&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;B[3,w]&lt;/th&gt;
+&lt;th&gt;w&lt;/th&gt;
+&lt;th&gt;x_3*&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;6&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;9&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The values are all the same but the data are organized differently. Clearly, two tables
+are better than three tables in terms of space. As you can see from either two sets of 
+tables, the maximum benefit we can achieve is &lt;span class="math"&gt;\(9\)&lt;/span&gt;, which is entry of &lt;span class="math"&gt;\(B[3,8]\)&lt;/span&gt;. In order to find out the exact
+composition of the knapsack, we can work backwards from &lt;span class="math"&gt;\(i = 3\)&lt;/span&gt;. With &lt;span class="math"&gt;\(i = 3\)&lt;/span&gt; and &lt;span class="math"&gt;\(w = 8\)&lt;/span&gt;, &lt;span class="math"&gt;\(x_1 = 1\)&lt;/span&gt;. Since
+&lt;span class="math"&gt;\(w_1 = 5\)&lt;/span&gt; and &lt;span class="math"&gt;\(W = 8\)&lt;/span&gt;, then we have &lt;span class="math"&gt;\(3\)&lt;/span&gt; left in knapsack in terms of weight. For &lt;span class="math"&gt;\(i = 2\)&lt;/span&gt; and &lt;span class="math"&gt;\(w = 3\)&lt;/span&gt; (because
+we have only &lt;span class="math"&gt;\(3\)&lt;/span&gt; left in our knapsack weight capacity), &lt;span class="math"&gt;\(x_2 = 0\)&lt;/span&gt;. Then, for &lt;span class="math"&gt;\(i = 1, w = 3\)&lt;/span&gt; (we still have &lt;span class="math"&gt;\(3\)&lt;/span&gt;
+budge left), &lt;span class="math"&gt;\(x_1 = 1\)&lt;/span&gt;. Thus, our optimal choice for each item is &lt;span class="math"&gt;\(x_1 = 1, x_2 = 0, x_3 = 1\)&lt;/span&gt;.&lt;/p&gt;
+&lt;h2 id="fractional-knapsack-problem"&gt;Fractional knapsack problem&lt;/h2&gt;
+&lt;p&gt;Another type of knapsack problem is the fractional knapsack problem. In this setting, &lt;em&gt;the item is divisible&lt;/em&gt;. In
+other words, we can take fraction of item. This problem 
+can also be considered as a generalization of 0-x knapsack problem by not requiring &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; has to be integer value.
+In this case, we actually use the &lt;em&gt;greedy algorithm&lt;/em&gt; paradigm instead of &lt;em&gt;dynamic programming&lt;/em&gt; paradigm to solve the
+problem. &lt;/p&gt;
+&lt;p&gt;Let's use the same example as 0-x knapsack problem. In this case, we actually calculate the benefit per unit of weight
+first:&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\frac{b_1}{w_1} = \frac{4}{3}, \frac{b_2}{w_2} = \frac{6}{8}, \frac{b_3}{w_3} = \frac{5}{5}
+$$&lt;/div&gt;
+&lt;p&gt;as you can see, the first item gives the maximum benefit per unit of weight and we want to load this item as much as possible,
+which is &lt;span class="math"&gt;\(W/w_1 = 8/3\)&lt;/span&gt;. The reason we can use greedy algorithm to do this is because we can have fraction of item. If we don't
+allow the fraction of item like we do in the 0-x knapsack problem, this appraoch will get suboptimal solution: we can only
+have &lt;span class="math"&gt;\(2\)&lt;/span&gt; item &lt;span class="math"&gt;\(1\)&lt;/span&gt; (because &lt;span class="math"&gt;\(\lfloor\frac{8}{3}\rfloor = 2\)&lt;/span&gt;) and the last &lt;span class="math"&gt;\(2\)&lt;/span&gt; knapsack weight capacity is not big enough to 
+fit any item any more. Thus, the benefit we get in this case is &lt;span class="math"&gt;\(2*4 = 8\)&lt;/span&gt;, which is smaller than &lt;span class="math"&gt;\(9\)&lt;/span&gt; our maximum benefit obtained
+from &lt;em&gt;dynamic programming&lt;/em&gt; approach.&lt;/p&gt;
+&lt;h2 id="links-to-resources"&gt;Links to resources&lt;/h2&gt;
+&lt;p&gt;Here are some of the resources I found helpful while preparing this article:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.utdallas.edu/~scniu/OPRE-6201/documents/DP3-Knapsack.pdf"&gt;UT-Dallas Introduction to Operations Research course material&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://cse.unl.edu/~goddard/Courses/CSCE310J/Lectures/Lecture8-DynamicProgramming.pdf"&gt;University of Nebraska CSCE 310J Data Structures and Algorithms lecture note&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;See &lt;a href="https://stackoverflow.com/questions/13538459/difference-between-divide-and-conquer-algo-and-dynamic-programming"&gt;Difference between Divide and Conquer Algo and Dynamic Programming SO post&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="dynamic programming"></category><category term="greedy algorithm"></category></entry><entry><title>Understanding how function call works</title><link href="http://zhu45.org/posts/2017/Jul/30/understanding-how-function-call-works/" rel="alternate"></link><published>2017-07-30T00:21:00+08:00</published><updated>2017-07-30T00:21:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-07-30:posts/2017/Jul/30/understanding-how-function-call-works/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Understanding assembly language is crucial for system programming. Some nasty defects of the system
 can only be solved by digging into the assembly level of the program. In this post, I'll revisit 
 call stack concept as a way to understand how function call works under the cover of high-level language.
 In addition, this post belongs to part of future work mentioned in &lt;a href="http://zhu45.org/posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/"&gt;my post back in January&lt;/a&gt;.&lt;/p&gt;
@@ -308,8 +1173,7 @@ put there. &lt;/p&gt;
 &lt;h3 id="two-examples"&gt;Two examples&lt;/h3&gt;
 &lt;p&gt;Now, we can take a look at two examples: the first one is to calculate the power given two numbers: one
 as the base and the other one as the power. The second example calculate the factorial of
-a given number, which demonstrates how the recursive function.
-is done.&lt;/p&gt;
+a given number, which demonstrates how the recursive function is done.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;        &lt;span class="c"&gt;# PURPOSE: Program to illustrate how functions work&lt;/span&gt;
         &lt;span class="c"&gt;#          This program will compute the value of  2^3 + 5^2&lt;/span&gt;
         &lt;span class="c"&gt;#&lt;/span&gt;
@@ -8904,7 +9768,7 @@ Then, it looks something like this&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;If system &lt;tt class="docutils literal"&gt;fls&lt;/tt&gt; is defined as strong, my &lt;tt class="docutils literal"&gt;fls&lt;/tt&gt; implementation will be overridden.&lt;/p&gt;
 &lt;/div&gt;
-&lt;/body&gt;&lt;/html&gt;</summary><category term="c"></category><category term="linked-list"></category></entry><entry><title>Josephus Problem</title><link href="http://zhu45.org/posts/2016/Dec/31/josephus-problem/" rel="alternate"></link><published>2016-12-31T20:24:00+08:00</published><updated>2016-12-31T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-31:posts/2016/Dec/31/josephus-problem/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;h2 id="preface"&gt;Preface&lt;/h2&gt;
+&lt;/body&gt;&lt;/html&gt;</summary><category term="c"></category><category term="linked-list"></category></entry><entry><title>Josephus problem</title><link href="http://zhu45.org/posts/2016/Dec/31/josephus-problem/" rel="alternate"></link><published>2016-12-31T20:24:00+08:00</published><updated>2016-12-31T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-31:posts/2016/Dec/31/josephus-problem/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;h2 id="preface"&gt;Preface&lt;/h2&gt;
 &lt;p&gt;This is actually MAW 3.10. I gradually realize how dense MAW is.
 In the &lt;a href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/"&gt;previous problem&lt;/a&gt;,
 I write almost 500 lines of code. For this one, the problem is not really diffcult to solve if we implement a program 
@@ -8938,7 +9802,7 @@ the book, &lt;span class="math"&gt;\(M = 1\)&lt;/span&gt; when we have &lt;span 
 people in the initial circle, and &lt;span class="math"&gt;\(m\)&lt;/span&gt; denotes the count for each step. In other words, &lt;span class="math"&gt;\(m-1\)&lt;/span&gt; people
 are skipped and the &lt;span class="math"&gt;\(m\)&lt;/span&gt;-th is eliminated. The people in the circle are numbered from &lt;span class="math"&gt;\(1\)&lt;/span&gt; to &lt;span class="math"&gt;\(n\)&lt;/span&gt;. Our goal
 is to find &lt;span class="math"&gt;\(J(n,m)\)&lt;/span&gt;, which denotes the survivor's number (i.e. &lt;span class="math"&gt;\(J(5,1) = 3\)&lt;/span&gt;). For simplicity, let &lt;span class="math"&gt;\(F(n) = J(n,2)\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" class="img-responsive" src="http://zhu45.org/images/josephus-1.png"/&gt; &lt;/p&gt;
+&lt;p&gt;&lt;img alt="joseph problem" class="img-responsive" src="http://zhu45.org/images/josephus-1.png"/&gt; &lt;/p&gt;
 &lt;p&gt;One quick observation is that after the first go-round, we are left with the same problem but for a different
 number of people. For instance, when &lt;span class="math"&gt;\(n = 10\)&lt;/span&gt;, after the first go-round, we eliminate &lt;span class="math"&gt;\(2\)&lt;/span&gt;, &lt;span class="math"&gt;\(4\)&lt;/span&gt;, &lt;span class="math"&gt;\(6\)&lt;/span&gt;, &lt;span class="math"&gt;\(8\)&lt;/span&gt;, &lt;span class="math"&gt;\(10\)&lt;/span&gt;
 and then we go to the second-round beginning with &lt;span class="math"&gt;\(3\)&lt;/span&gt;, which is the same problem as the original one. 
@@ -9285,7 +10149,7 @@ zero-indexing.&lt;/p&gt;
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="recursion"></category><category term="dynamic-programming"></category><category term="math"></category><category term="maw"></category></entry><entry><title>A peek in code optimization</title><link href="http://zhu45.org/posts/2016/Dec/28/a-peek-in-code-optimization/" rel="alternate"></link><published>2016-12-28T13:21:00+08:00</published><updated>2016-12-28T13:21:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-28:posts/2016/Dec/28/a-peek-in-code-optimization/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Quite often, when I take a look at a programming
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="recursion"></category><category term="dynamic programming"></category><category term="math"></category><category term="maw"></category></entry><entry><title>A peek in code optimization</title><link href="http://zhu45.org/posts/2016/Dec/28/a-peek-in-code-optimization/" rel="alternate"></link><published>2016-12-28T13:21:00+08:00</published><updated>2016-12-28T13:21:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2016-12-28:posts/2016/Dec/28/a-peek-in-code-optimization/</id><summary type="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Quite often, when I take a look at a programming
 question solution, I'm amazed by how succint the provided
 solution is. However, it is also known that getting an "optimized"
 solution is often taking iterative approach. This is something
