@@ -98,8 +98,8 @@ benefit &lt;span class="math"&gt;\(26\)&lt;/span&gt;. However, as you can see, t
 of the solution for &lt;span class="math"&gt;\(S_5\)&lt;/span&gt; (i.e., &lt;span class="math"&gt;\(1,3,4,5\)&lt;/span&gt;). Thus, our definition of subproblem is not right.
 Let's refine our subproblem definition by adding another parameter &lt;span class="math"&gt;\(w\)&lt;/span&gt; that represents the
 exact weight for each subset of items. Then, our subproblem is to find the best subset of 
-&lt;span class="math"&gt;\(S_k\)&lt;/span&gt; that has total weight &lt;span class="math"&gt;\(w\)&lt;/span&gt;. The benefits corresponding with the best subset is denoted
-as &lt;span class="math"&gt;\(B[k, w]\)&lt;/span&gt;.&lt;/p&gt;
+&lt;span class="math"&gt;\(S_i\)&lt;/span&gt; that has total weight &lt;span class="math"&gt;\(w\)&lt;/span&gt;. The benefits corresponding with the best subset is denoted
+as &lt;span class="math"&gt;\(B[i, w]\)&lt;/span&gt;.&lt;/p&gt;
 &lt;div class="admonition note"&gt;
 &lt;p class="admonition-title"&gt;Note&lt;/p&gt;
 &lt;p&gt;The problem with the first subproblem definition is that we kind of play greedy algorithm in
@@ -129,7 +129,7 @@ with greater value: not contain &lt;span class="math"&gt;\(i\)&lt;/span&gt; (i.e
 &lt;span class="math"&gt;\(i\)&lt;/span&gt; (i.e., &lt;span class="math"&gt;\(B[i-1, w-w_i] + b_i\)&lt;/span&gt;).&lt;/p&gt;
 &lt;div class="admonition note"&gt;
 &lt;p class="admonition-title"&gt;Note&lt;/p&gt;
-&lt;p&gt;As you can see from recursive formula, the solution &lt;span class="math"&gt;\(B[k,w]\)&lt;/span&gt; reuses
+&lt;p&gt;As you can see from recursive formula, the solution &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; reuses
 the solution to &lt;span class="math"&gt;\(B[i-1, w]\)&lt;/span&gt; and &lt;span class="math"&gt;\(B[i-1, w-w_i]\)&lt;/span&gt;, which is the signature of
 dynamic programming.&lt;/p&gt;
 &lt;/div&gt;
