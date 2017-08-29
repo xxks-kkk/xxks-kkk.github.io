@@ -1,5 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Mon, 14 Aug 2017 16:45:00 +0800</lastBuildDate><item><title>Knapsack problem</title><link>http://zhu45.org/posts/2017/Aug/14/knapsack-problem/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;I'm studying this problem on my way from Beijing to Austin to kill some time.
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Tue, 29 Aug 2017 01:12:00 +0800</lastBuildDate><item><title>MAW Chapter 8: Disjoint set</title><link>http://zhu45.org/posts/2017/Aug/29/maw-chapter-8-disjoint-set/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;&lt;em&gt;Disjoint Set&lt;/em&gt; ADT is an efficient data structure to solve the equivalence problems. It has wide applications:
+Kruskal's minimum spanning tree algorithm, Least common ancestor, compiling equivalence statements in Fortran,
+Matlab's &lt;code&gt;bwlabel()&lt;/code&gt; function in image processing, and so on. In this post, I'll walk through this data structure
+in order to have the better preparation for the graph algorithms in the following chapter of MAW.&lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#equivalence-relations"&gt;Equivalence relations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#the-dynamic-equivalence-problem"&gt;The dynamic equivalence problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#quick-find"&gt;Quick-find&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#quick-union"&gt;Quick-union&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#improvements"&gt;Improvements&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#smart-union-weighted-quick-union"&gt;Smart union (weighted quick-union)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#path-compressionn"&gt;Path compressionn&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#links-to-resources"&gt;Links to resources&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;The implementation of the quick-find, quick-union, smart-union with path compression in C can be seen &lt;a href="https://github.com/xxks-kkk/algo/tree/master/union-find"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="equivalence-relations"&gt;Equivalence relations&lt;/h2&gt;
+&lt;p&gt;In order to better describe the dynamic equivalence problem, we need to first talk about the concept &lt;em&gt;equivalence relation&lt;/em&gt;.
+A &lt;strong&gt;relation&lt;/strong&gt; &lt;span class="math"&gt;\(R\)&lt;/span&gt; is defined on a set &lt;span class="math"&gt;\(S\)&lt;/span&gt; if for every pair of elements &lt;span class="math"&gt;\((a,b)\)&lt;/span&gt;, &lt;span class="math"&gt;\(a,b \in S\)&lt;/span&gt;, &lt;span class="math"&gt;\(a\)&lt;/span&gt; &lt;span class="math"&gt;\(R\)&lt;/span&gt; &lt;span class="math"&gt;\(b\)&lt;/span&gt; is either true or false.
+If &lt;span class="math"&gt;\(a\)&lt;/span&gt; &lt;span class="math"&gt;\(R\)&lt;/span&gt; &lt;span class="math"&gt;\(b\)&lt;/span&gt; is true, then we say that &lt;span class="math"&gt;\(a\)&lt;/span&gt; is related to &lt;span class="math"&gt;\(b\)&lt;/span&gt;. An &lt;strong&gt;equivalence relation&lt;/strong&gt; is a relation &lt;span class="math"&gt;\(R\)&lt;/span&gt; that satisfies three properties:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;(&lt;em&gt;Reflective&lt;/em&gt;) &lt;span class="math"&gt;\(a\)&lt;/span&gt; &lt;span class="math"&gt;\(R\)&lt;/span&gt; &lt;span class="math"&gt;\(a\)&lt;/span&gt;, for all &lt;span class="math"&gt;\(a \in S\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;(&lt;em&gt;Symmetric&lt;/em&gt;) &lt;span class="math"&gt;\(a\)&lt;/span&gt; &lt;span class="math"&gt;\(R\)&lt;/span&gt; &lt;span class="math"&gt;\(b\)&lt;/span&gt; iff &lt;span class="math"&gt;\(b\)&lt;/span&gt; &lt;span class="math"&gt;\(R\)&lt;/span&gt; &lt;span class="math"&gt;\(a\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;(&lt;em&gt;Transitive&lt;/em&gt;) &lt;span class="math"&gt;\(a\)&lt;/span&gt; &lt;span class="math"&gt;\(R\)&lt;/span&gt; &lt;span class="math"&gt;\(b\)&lt;/span&gt; and &lt;span class="math"&gt;\(b\)&lt;/span&gt; &lt;span class="math"&gt;\(R\)&lt;/span&gt; &lt;span class="math"&gt;\(c\)&lt;/span&gt; implies that &lt;span class="math"&gt;\(a\)&lt;/span&gt; &lt;span class="math"&gt;\(R\)&lt;/span&gt; &lt;span class="math"&gt;\(c\)&lt;/span&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Usually, we use &lt;span class="math"&gt;\(\sim\)&lt;/span&gt; to denote equivalence relation. Let's consider several examples:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;The &lt;span class="math"&gt;\(\le\)&lt;/span&gt; relationship is NOT an equivalence relationship. Although it is reflexive (i.e., &lt;span class="math"&gt;\(a \le a\)&lt;/span&gt;) and transitive (i.e., &lt;span class="math"&gt;\(a \le b\)&lt;/span&gt; and &lt;span class="math"&gt;\(b \le c\)&lt;/span&gt; implies &lt;span class="math"&gt;\(a \le c\)&lt;/span&gt;),
+it is not symmetric, since &lt;span class="math"&gt;\(a \le  b\)&lt;/span&gt; does not imply &lt;span class="math"&gt;\(b \le a\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Electrical connectivity, where all connections are by metal wires, is an equivalence relation. The relation is clearly reflexive, as any component is connected to itself.
+If &lt;span class="math"&gt;\(a\)&lt;/span&gt; is electrically connected to &lt;span class="math"&gt;\(b\)&lt;/span&gt;, then &lt;span class="math"&gt;\(b\)&lt;/span&gt; must be electrically connected to &lt;span class="math"&gt;\(a\)&lt;/span&gt;, so the relation is symmetric. Finally, if &lt;span class="math"&gt;\(a\)&lt;/span&gt; is connected to &lt;span class="math"&gt;\(b\)&lt;/span&gt; and &lt;span class="math"&gt;\(b\)&lt;/span&gt; is connected
+to &lt;span class="math"&gt;\(c\)&lt;/span&gt;, then &lt;span class="math"&gt;\(a\)&lt;/span&gt; is connected to &lt;span class="math"&gt;\(c\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Two cities are related if they are in the same country. This is an equivalence relation.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Suppose town &lt;span class="math"&gt;\(a\)&lt;/span&gt; is related to &lt;span class="math"&gt;\(b\)&lt;/span&gt; if it is possible to travel from &lt;span class="math"&gt;\(a\)&lt;/span&gt; to &lt;span class="math"&gt;\(b\)&lt;/span&gt; by taking roads. This relation is an equivalence relation if all the roads are two-way.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We need to define another term &lt;em&gt;equivalence class&lt;/em&gt; in order to talk about dynamic equivalence problem. Suppose we are given a set of elements that have the equivalence
+relation defined over (i.e. for a set &lt;span class="math"&gt;\(\{a_1,a_2,a_3\}\)&lt;/span&gt;, we have &lt;span class="math"&gt;\(a_1 \sim a_2\)&lt;/span&gt;), the &lt;strong&gt;equivalence class&lt;/strong&gt; of an element &lt;span class="math"&gt;\(a \in S\)&lt;/span&gt; is the subset of &lt;span class="math"&gt;\(S\)&lt;/span&gt; that contains all the 
+elements that are related to &lt;span class="math"&gt;\(a\)&lt;/span&gt;. Notice that the equivalence classes form a partition of &lt;span class="math"&gt;\(S\)&lt;/span&gt;: every member of &lt;span class="math"&gt;\(S\)&lt;/span&gt; appears in exactly one equivalence class. &lt;/p&gt;
+&lt;h2 id="the-dynamic-equivalence-problem"&gt;The dynamic equivalence problem&lt;/h2&gt;
+&lt;p&gt;The dynamic equivalence problem essentially is about supporting two operations on a set of elements where the equivalence relation is defined over:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;find&lt;/strong&gt;, which returns the name of the set (i.e., the equivalence class) containing a given element.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;union&lt;/strong&gt;, which merges the two equivalence classes containing &lt;span class="math"&gt;\(a\)&lt;/span&gt; and &lt;span class="math"&gt;\(b\)&lt;/span&gt; into a new equivalence class. From a set point of view, the result of union
+is to create a new set &lt;span class="math"&gt;\(S_k = S_i \cup S_j\)&lt;/span&gt;, destroying the originals and preserving the disjointness of all the sets.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We can model the problem like the following: the input is initally a collection of &lt;span class="math"&gt;\(N\)&lt;/span&gt; sets, each with one element. This initial representation is that all
+relations(except reflexive relations) are false. Each set has a different element, so that &lt;span class="math"&gt;\(S_i \cap S_j = \emptyset\)&lt;/span&gt;; this makes the sets disjoint. In addition, 
+since we only care about the knowledge of the elements' locations not values, we can assume that all the elements have been numbered sequentially from &lt;span class="math"&gt;\(1\)&lt;/span&gt; to &lt;span class="math"&gt;\(N\)&lt;/span&gt;.
+Thus, we have &lt;span class="math"&gt;\(S_i = \{i\}\)&lt;/span&gt; for &lt;span class="math"&gt;\(i = 1\)&lt;/span&gt; through &lt;span class="math"&gt;\(N\)&lt;/span&gt;. At last, we don't care what value returned by &lt;em&gt;find&lt;/em&gt; operation as long as &lt;code&gt;find(a) = find(b)&lt;/code&gt; iff &lt;span class="math"&gt;\(a\)&lt;/span&gt; and &lt;span class="math"&gt;\(b\)&lt;/span&gt;
+are in the same set.&lt;/p&gt;
+&lt;p&gt;Now, let's take a look at an example. Suppose we have a set of &lt;span class="math"&gt;\(10\)&lt;/span&gt; elements: &lt;span class="math"&gt;\(\{0,1,2,3,4,5,6,7,8,9\}\)&lt;/span&gt; and we perform the following union operations: 
+&lt;span class="math"&gt;\(1 - 2, 3-4, 5-6, 7-8, 7-9, 2-8, 0-5, 1-9\)&lt;/span&gt;. Then, we have three connected components (i.e. maximal set of objects that are mutually connected): 
+&lt;span class="math"&gt;\(\{0,5,6\}, \{3,4\}, \{1,2,7,8,9\}\)&lt;/span&gt;. &lt;code&gt;find(5)&lt;/code&gt; should return the same value as &lt;code&gt;find(6)&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="quick-find"&gt;Quick-find&lt;/h2&gt;
+&lt;p&gt;The first approach to solve the problem is called quick-find, which ensures that the &lt;code&gt;find&lt;/code&gt; instruction can be executed in constant worst-case time.
+For the &lt;code&gt;find&lt;/code&gt; operation to be fast, we could maintain, in an array, the name of the equivalence class for each element. Then &lt;code&gt;find&lt;/code&gt; is just a 
+simple &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt; lookup:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="find operation example in quick-find" class="img-responsive" src="http://zhu45.org/images/quick-find-find.png"/&gt;&lt;/p&gt;
+&lt;p&gt;In the above example, &lt;code&gt;find(0)&lt;/code&gt; gives &lt;span class="math"&gt;\(0\)&lt;/span&gt;; &lt;code&gt;find(1)&lt;/code&gt; gives &lt;span class="math"&gt;\(1\)&lt;/span&gt;; &lt;code&gt;find(5)&lt;/code&gt; gives &lt;span class="math"&gt;\(0\)&lt;/span&gt;. Thus, we know that &lt;span class="math"&gt;\(0 \sim 5\)&lt;/span&gt;, &lt;span class="math"&gt;\(0 \nsim 1\)&lt;/span&gt;, and &lt;span class="math"&gt;\(1 \nsim 5\)&lt;/span&gt;. 
+For the &lt;code&gt;union(a,b)&lt;/code&gt; operation, suppose that &lt;span class="math"&gt;\(a\)&lt;/span&gt; is in equivalence class &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(b\)&lt;/span&gt; is in equivalence class &lt;span class="math"&gt;\(j\)&lt;/span&gt;. Then we scan down the array, 
+changing all &lt;span class="math"&gt;\(i\)&lt;/span&gt;'s to &lt;span class="math"&gt;\(j\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="union operation example in quick-find" class="img-responsive" src="http://zhu45.org/images/quick-find-union.png"/&gt;&lt;/p&gt;
+&lt;p&gt;In the above example, when do &lt;code&gt;union(6,1)&lt;/code&gt;, we need to change all entries in the equivalence class of &lt;span class="math"&gt;\(6\)&lt;/span&gt; (i.e., &lt;span class="math"&gt;\(0,5,6\)&lt;/span&gt;) into &lt;span class="math"&gt;\(1\)&lt;/span&gt;'s. As you can
+see, the number of array acesses for union operation is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;. Thus, a sequence of &lt;span class="math"&gt;\(N-1\)&lt;/span&gt; &lt;code&gt;union&lt;/code&gt; (the maximum, then everything is in one set) would
+take &lt;span class="math"&gt;\(O(N^2)\)&lt;/span&gt; time.&lt;/p&gt;
+&lt;h2 id="quick-union"&gt;Quick-union&lt;/h2&gt;
+&lt;p&gt;The second approach to solve the problem is to ensure that the &lt;code&gt;union&lt;/code&gt; instruction can be executed in constant worst-case time, which is called "quick-union".
+One thing to note is that both &lt;code&gt;find&lt;/code&gt; and &lt;code&gt;union&lt;/code&gt; cannot be done simultaneously in constant worst-case time. Recall that the problem doesn't 
+require that a &lt;code&gt;find&lt;/code&gt; operation return any specific name as long as &lt;code&gt;find&lt;/code&gt; on the elements in the same connected component returns the same value. Thus,
+we can use a tree to represent each component becase each element in a tree has the same root. Thus, the root can be used to name the set. The structure 
+looks like below:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="quick-union structure" class="img-responsive" src="http://zhu45.org/images/quick-union.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Since only the name of the parent is required, we can assume that this tree is stored implicitly in an array: each entry &lt;span class="math"&gt;\(\text{id}[i]\)&lt;/span&gt; in the array represents the 
+parent of element &lt;span class="math"&gt;\(i\)&lt;/span&gt;. If &lt;span class="math"&gt;\(i\)&lt;/span&gt; is the root, then &lt;span class="math"&gt;\(\text{id}[i] = i\)&lt;/span&gt;. A &lt;code&gt;find(X)&lt;/code&gt; on element &lt;span class="math"&gt;\(X\)&lt;/span&gt; is performed by returning the root of the tree containing &lt;span class="math"&gt;\(X\)&lt;/span&gt;. The time 
+to perform this operation depending on the depth of the tree that represents the set containing &lt;span class="math"&gt;\(X\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; in the worst case because of the possiblity of creating
+a tree of depth &lt;span class="math"&gt;\(N-1\)&lt;/span&gt;. &lt;code&gt;union(p,q)&lt;/code&gt; can be done by change the root of tree containing &lt;span class="math"&gt;\(p\)&lt;/span&gt; into the value of root containing &lt;span class="math"&gt;\(q\)&lt;/span&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="quick-union union operation" class="img-responsive" src="http://zhu45.org/images/quick-union-union.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Changing the root value step in &lt;code&gt;union(p,q)&lt;/code&gt; is &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt;. However, since we need to find the root of &lt;span class="math"&gt;\(p\)&lt;/span&gt; and &lt;span class="math"&gt;\(q\)&lt;/span&gt; respectively, which takes &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; in the worst case.
+Thus, the &lt;code&gt;union&lt;/code&gt; operation takes &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;h2 id="improvements"&gt;Improvements&lt;/h2&gt;
+&lt;p&gt;There are two major improvements we can do with our quick-union: smart-union works on &lt;code&gt;union&lt;/code&gt; operation and path compression works on &lt;code&gt;find&lt;/code&gt; operation. Their goal is
+to make the tree of each set shallow, which can reduce the time we spend on &lt;code&gt;find&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id="smart-union-weighted-quick-union"&gt;Smart union (weighted quick-union)&lt;/h3&gt;
+&lt;p&gt;Smart union is a modification to quick-union that avoid tall trees. We keep track of the size (i.e., number of objects) of each tree and always to link the root of smaller
+tree to root of larger tree, breaking ties by any method. This approach is called &lt;strong&gt;union-by-size&lt;/strong&gt;. In quick-union, we may make the larger tree a subtree of the smaller tree, which
+increase the depth of the new tree, which increase the &lt;code&gt;find&lt;/code&gt; cost. The following picture demonstrates this point:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="union-by-size motivation" class="img-responsive" src="http://zhu45.org/images/union-by-size.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Another approach is called &lt;strong&gt;union-by-height&lt;/strong&gt;, which tracks the height, instead of the size, of each tree and perform &lt;code&gt;union&lt;/code&gt; by making the shallow tree a subtree of the deeper tree.
+Since the height of a tree increases only when two equally deep trees are joined (and then the height goes up by one). Thus, union-by-height is a trivial modification of union-by-size.&lt;/p&gt;
+&lt;p&gt;To find the running time of &lt;code&gt;find&lt;/code&gt; and &lt;code&gt;union&lt;/code&gt;, we need to find out the depth of any node &lt;span class="math"&gt;\(X\)&lt;/span&gt;, which in this case is at most &lt;span class="math"&gt;\(\log N\)&lt;/span&gt;. The proof is simple: when the depth of &lt;span class="math"&gt;\(X\)&lt;/span&gt; increases, the
+size of tree is at least doubled (i.e., join two equal-size trees). Since there are at maximum &lt;span class="math"&gt;\(N\)&lt;/span&gt; nodes for a tree, the size of trees doubled at least &lt;span class="math"&gt;\(\log N\)&lt;/span&gt; times. Thus, the depth of
+any node is at most &lt;span class="math"&gt;\(\log N\)&lt;/span&gt;. With this claim, we have running time for &lt;code&gt;find&lt;/code&gt; is &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; and running time for &lt;code&gt;union&lt;/code&gt; is &lt;span class="math"&gt;\(O(\log N)\)&lt;/span&gt; as well. &lt;/p&gt;
+&lt;h3 id="path-compressionn"&gt;Path compressionn&lt;/h3&gt;
+&lt;p&gt;Path compression is performed during a &lt;code&gt;find&lt;/code&gt; operation and is independent of the strategy used to perform &lt;code&gt;union&lt;/code&gt;. The effect of path compression is that every node on the path from &lt;span class="math"&gt;\(X\)&lt;/span&gt;
+to the root has its parent changed to the root. For example, suppose we call &lt;code&gt;find(9)&lt;/code&gt; for the following tree representation of our disjoint set:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="path compression example start state" class="img-responsive" src="http://zhu45.org/images/path-compression-1.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Then the following picture shows the end state of our tree after calling &lt;code&gt;find(9)&lt;/code&gt;. As you can see, on the path from &lt;span class="math"&gt;\(9\)&lt;/span&gt; to &lt;span class="math"&gt;\(0\)&lt;/span&gt; (root), we have &lt;span class="math"&gt;\(9, 6, 3, 1\)&lt;/span&gt;. All of them have been directly 
+connected to the root after the call is done:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="path compression example end state" class="img-responsive" src="http://zhu45.org/images/path-compression-2.png"/&gt;&lt;/p&gt;
+&lt;p&gt;This strategy may look familiar to you: we do the path compression in the hope of the fast future accesses on these nodes (i.e., &lt;span class="math"&gt;\(9,6,3,1\)&lt;/span&gt;) will pay off for the work we do now. This idea
+is exactly the same as the &lt;a href="http://zhu45.org/posts/2017/Feb/13/splay-tree/"&gt;splaying&lt;/a&gt; in splay tree. &lt;/p&gt;
+&lt;p&gt;When &lt;code&gt;union&lt;/code&gt; are done arbitrarily, path compression is a good idea, because there is an abundance of deep nodes and these are brought near the root by path compression. Path compression
+is perfectly compatible with union-by-size, and thus both routines can be implemented at the same time. In fact, the combination of path compression and a smart union rule guarantees 
+a very efficient algorithm in all cases. Path compression is not entirely compatible with union-by-height, because path compression can change the heights of the trees. We don't want
+to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., &lt;strong&gt;ranks&lt;/strong&gt;), but in theory union-by-rank is as efficient as union-by-size.&lt;/p&gt;
+&lt;p&gt;If we do analysis on smart union with path compression, the running time for any sequence of &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects makes &lt;span class="math"&gt;\(O(N + M\log^*N)\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; accesses.&lt;/p&gt;
+&lt;p&gt;The following table summarizes the running time for &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on a set of &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects (don't forget we need to spend &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; to initialize disjoint sets):&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;algorithm&lt;/th&gt;
+&lt;th&gt;worst-case time&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;quick-find&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(MN\)&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;quick-union&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(MN\)&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;smart union&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(N + M\log N\)&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;quick union + path compression&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(N + M\log N\)&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;smart union + path compression&lt;/td&gt;
+&lt;td&gt;&lt;span class="math"&gt;\(N + M\log^*N\)&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="links-to-resources"&gt;Links to resources&lt;/h2&gt;
+&lt;p&gt;Here are some of the resources I found helpful while preparing this article:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;M. A. Weiss, Data Structures and Algorithm Analysis in C. (2nd ed.) Menlo Park, Calif: Addison-Wesley, 1997, ch. 8.&lt;/li&gt;
+&lt;li&gt;R. Sedgewick 1946 and K. Wayne 1971, algorithms. (4th ed.) Upper Saddle River, NJ: Addison-Wesley, 2011, ch. 1, sec. 5.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\log^* N\)&lt;/span&gt; counts the number of times you have to take the &lt;span class="math"&gt;\(\log\)&lt;/span&gt; of &lt;span class="math"&gt;\(N\)&lt;/span&gt; to get one. This is also called iterated log function. For example, &lt;span class="math"&gt;\(\log^* 65536 = 4\)&lt;/span&gt; because &lt;span class="math"&gt;\(\log\log\log\log65536 = 1\)&lt;/span&gt;. &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Tue, 29 Aug 2017 01:12:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-08-29:posts/2017/Aug/29/maw-chapter-8-disjoint-set/</guid><category>maw</category><category>union-find</category></item><item><title>Knapsack problem</title><link>http://zhu45.org/posts/2017/Aug/14/knapsack-problem/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;I'm studying this problem on my way from Beijing to Austin to kill some time.
 This problem works pretty well for this purpose. There are three kinds of 
 forms for the problem, which I'll illustrate below. This problem is a good example
 of dynamic programming paradigm.&lt;/p&gt;
@@ -3161,7 +3382,7 @@ nice graphic explanation to this concept.&lt;/li&gt;
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Fri, 23 Jun 2017 21:23:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-06-23:posts/2017/Jun/23/join-in-sql/</guid><category>db</category><category>sql</category><category>relational-algebra</category><category>leetcode</category></item><item><title>The tortoise and the hare</title><link>http://zhu45.org/posts/2017/Jun/18/the-tortoise-and-the-hare/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Recently, I start to work on &lt;a href="https://github.com/xxks-kkk/shuati"&gt;leetcode's problems&lt;/a&gt;. 
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Fri, 23 Jun 2017 21:23:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-06-23:posts/2017/Jun/23/join-in-sql/</guid><category>database</category><category>sql</category><category>relational-algebra</category><category>leetcode</category></item><item><title>The tortoise and the hare</title><link>http://zhu45.org/posts/2017/Jun/18/the-tortoise-and-the-hare/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Recently, I start to work on &lt;a href="https://github.com/xxks-kkk/shuati"&gt;leetcode's problems&lt;/a&gt;. 
 My goal is to solve two problems per day (mission possible, right?). The problems I'm looking
 at are &lt;a href="https://leetcode.com/problems/linked-list-cycle-ii/"&gt;142. Linked List Cycle II&lt;/a&gt; and 
 &lt;a href="https://leetcode.com/problems/find-the-duplicate-number/"&gt;287. Find the Duplicate Number&lt;/a&gt;, 
