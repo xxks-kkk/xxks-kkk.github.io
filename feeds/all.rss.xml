@@ -1,5 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Thu, 07 Sep 2017 12:30:00 +0800</lastBuildDate><item><title>[Paper Reading] Crowdsourcing / Human Computation [01]</title><link>http://zhu45.org/posts/2017/Sep/07/paper-reading-crowdsourcing-human-computation-01/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>http://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Fri, 08 Sep 2017 12:30:00 +0800</lastBuildDate><item><title>Watching log of CMU Database Systems course</title><link>http://zhu45.org/posts/2017/Sep/08/watching-log-of-cmu-database-systems-course/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;h2 id="motivation"&gt;Motivation&lt;/h2&gt;
+&lt;p&gt;There is a hobby I always want to develop but never gets into practice: watch lecture videos while I eat. The
+reason because lecture videos are mostly not fun especially when the content of the video is entirely new to you.
+However, this semester I want to actually start developing this habbit partly because I miss system so much.
+Here, I'm not saying working on AI stuff is not fun for me. The truth is I miss my old friend so much, in particular, 
+the databse field. I miss the database knowledge I have picked up in the past three years and I don't want to lose the touch
+in this field. So, I think why not start to watch database lecture videoes for fun when I eat? That leads to this post.&lt;/p&gt;
+&lt;p&gt;This post is a watching log of some cool points I like when I watch &lt;a href="https://www.youtube.com/channel/UCHnBsf2rH-K7pn09rb3qvkA"&gt;CMU Database Group Database Systems lecture video&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="log"&gt;Log&lt;/h2&gt;
+&lt;p&gt;--- 09/07/2017 UPDATE ---&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;There are bunch of data models besides relational model: relational,
+key/value, graph, document, column-family, array/matrix, hierarchical, network&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Thanks to Prof.Andy Pavlo, I finally understand the difference between
+relational algebra and relational calculus in terms of their purpose:&lt;/p&gt;
+&lt;p&gt;When we talk about using data manipulation language (DML) to store
+and retrieve information from a database, there are two categories:
+procedural and non-procedural, which corresponds to relational algebra
+and relational calculus respectively. For procedural language, the query specifies
+the (high-level) strategy the DBMS should use to find the desired result. For
+non-procedural lanaguages, the query specifies only what data is wanted and not how to
+find it. In fact, SQL is derived from relational calculus. In other words, 
+relational calculus is used when we try to come up with a different 
+query language to replace SQL.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The fundamental operators in relational algebra we actually need to implement
+in the database system in order to manipulate tuples: &lt;span class="math"&gt;\(\sigma \text{(select)}, \pi \text{(projection)}, \cup \text{(union)},
+\cap \text{(intersection)}, - \text{(difference)}, \times \text{(product)}, \bowtie \text{(join)}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Fri, 08 Sep 2017 12:30:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2017-09-08:posts/2017/Sep/08/watching-log-of-cmu-database-systems-course/</guid><category>database</category></item><item><title>[Paper Reading] Crowdsourcing / Human Computation [01]</title><link>http://zhu45.org/posts/2017/Sep/07/paper-reading-crowdsourcing-human-computation-01/</link><description>&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#intro"&gt;Intro&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#the-human-processing-unit-hpu"&gt;"The Human Processing Unit (HPU)"&lt;/a&gt;&lt;/li&gt;
