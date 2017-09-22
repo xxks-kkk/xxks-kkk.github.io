@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Introduction to Conditional Random Fields
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <link rel="stylesheet" href="../../../../../theme/fa/css/font-awesome.min.css">
+        <link href="http://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="http://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+    <h1 id="site-title"><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
+            <a href="../../../../../teaching.html" style="padding: 10px">TEACHING</a>
+            <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+            <a href="../../../../../quotes.html" style="padding: 10px">QUOTES</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+            <h1 class="post-title">Introduction to Conditional Random Fields</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2017-09-22T10:20:00+08:00"> Sep 22, 2017</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/natural-language-processing.html">natural language processing</a>
+        /
+	<a href="../../../../../tag/machine-learning.html">machine learning</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <html><head></head><body><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a repost of the <a href="http://blog.echen.me/">Edwin Chen</a>'s blog: <a href="http://blog.echen.me/2012/01/03/introduction-to-conditional-random-fields/">Introduction to Conditional Random Fields</a> in year 2012.
+I do this based on three purposes: 1. Bookmark for my course project reference 2. Fix the math rendering issue happened to the original post 3. Small tweaks to the layout of math and notations to easy my understanding.</p>
+</div>
+<p>Imagine you have a sequence of snapshots from a day in Justin Bieber’s life, and you want to label each image with the activity it represents (eating, sleeping, driving, etc.). How can you do this?</p>
+<p>One way is to ignore the sequential nature of the snapshots, and build a per-image classifier. For example, given a month’s worth of labeled snapshots, you might learn that dark images taken at 6am tend to be about sleeping, images with lots of bright colors tend to be about dancing, images of cars are about driving, and so on.</p>
+<p>By ignoring this sequential aspect, however, you lose a lot of information. For example, what happens if you see a close-up picture of a mouth – is it about singing or eating? If you know that the previous image is a picture of Justin Bieber eating or cooking, then it’s more likely this picture is about eating; if, however, the previous image contains Justin Bieber singing or dancing, then this one probably shows him singing as well.</p>
+<p>Thus, to increase the accuracy of our labeler, we should incorporate the labels of nearby photos, and this is precisely what a conditional random field does.</p>
+<h2 id="part-of-speech-tagging">Part-of-Speech Tagging</h2>
+<p>Let’s go into some more detail, using the more common example of part-of-speech tagging.</p>
+<p>In POS tagging, the goal is to label a sentence (a sequence of words or tokens) with tags like ADJECTIVE, NOUN, PREPOSITION, VERB, ADVERB, ARTICLE.</p>
+<p>For example, given the sentence “Bob drank coffee at Starbucks”, the labeling might be “Bob (NOUN) drank (VERB) coffee (NOUN) at (PREPOSITION) Starbucks (NOUN)”.</p>
+<p>So let’s build a conditional random field to label sentences with their parts of speech. Just like any classifier, we’ll first need to decide on a set of feature functions <span class="math">\(f_i\)</span>.</p>
+<h2 id="feature-functions-in-a-crf">Feature Functions in a CRF</h2>
+<p>In a CRF, each feature function is a function that takes in :</p>
+<ul>
+<li>a sentence s</li>
+<li>the position i of a word in the sentence</li>
+<li>the label <span class="math">\(l_i\)</span> of the current word</li>
+<li>the label <span class="math">\(l_{i-1}\)</span> of the previous word</li>
+</ul>
+<p>as input and outputs a real-valued number (though the numbers are often just either 0 or 1).</p>
+<p>(Note: by restricting our features to depend on only the current and previous labels, rather than arbitrary labels throughout the sentence, I’m actually building the special case of a linear-chain CRF. For simplicity, I’m going to ignore general CRFs in this post.)</p>
+<p>For example, one possible feature function could measure how much we suspect that the current word should be labeled as an adjective given that the previous word is “very”.</p>
+<h2 id="features-to-probabilities">Features to Probabilities</h2>
+<p>Next, assign each feature function <span class="math">\(f_j\)</span> a weight <span class="math">\(\lambda_j\)</span> (I’ll talk below about how to learn these weights from the data). Given a sentence s, we can now score a labeling l of s by adding up the weighted features over all words in the sentence:</p>
+<div class="math">$$
+\text{score}(l | s) = \sum_{j = 1}^m \sum_{i = 1}^n \lambda_j f_j(s, i, l_i, l_{i-1})
+$$</div>
+<p>(The first sum runs over each feature function <span class="math">\(j\)</span>, and the inner sum runs over each position <span class="math">\(i\)</span> of the sentence.)</p>
+<p>Finally, we can transform these scores into probabilities <span class="math">\(p(l | s)\)</span> between 0 and 1 by exponentiating and normalizing:</p>
+<div class="math">$$
+p(l | s) = \frac{exp[\text{score}(l|s)]}{\sum_{l’} exp[\text{score}(l’|s)]} = \frac{exp[\sum_{j = 1}^m \sum_{i = 1}^n \lambda_j f_j(s, i, l_i, l_{i-1})]}{\sum_{l’} exp[\sum_{j = 1}^m \sum_{i = 1}^n \lambda_j f_j(s, i, l’_i, l’_{i-1})]}
+$$</div>
+<h2 id="example-feature-functions">Example Feature Functions</h2>
+<p>So what do these feature functions look like? Examples of POS tagging features could include:</p>
+<ul>
+<li>
+<p><span class="math">\(f_1(s, i, l_i, l_{i-1}) = 1\)</span> if <span class="math">\(l_i =\)</span> ADVERB and the <span class="math">\(i\)</span>th word ends in “-ly”; 0 otherwise.</p>
+<ul>
+<li>If the weight <span class="math">\(\lambda_1\)</span> associated with this feature is large and positive, then this feature is essentially saying that we prefer labelings where words ending in -ly get labeled as ADVERB.</li>
+</ul>
+</li>
+<li>
+<p><span class="math">\(f_2(s, i, l_i, l_{i-1}) = 1\)</span> if <span class="math">\(i = 1\)</span>, <span class="math">\(l_i =\)</span> VERB, and the sentence ends in a question mark; 0 otherwise.</p>
+<ul>
+<li>Again, if the weight <span class="math">\(\lambda_2\)</span> associated with this feature is large and positive, then labelings that assign VERB to the first word in a question (e.g., “Is this a sentence beginning with a verb?”) are preferred.</li>
+</ul>
+</li>
+<li>
+<p><span class="math">\(f_3(s, i, l_i, l_{i-1}) = 1\)</span> if <span class="math">\(l_{i-1} =\)</span> ADJECTIVE and <span class="math">\(l_i =\)</span> NOUN; 0 otherwise.</p>
+<ul>
+<li>Again, a positive weight for this feature means that adjectives tend to be followed by nouns.</li>
+</ul>
+</li>
+<li>
+<p><span class="math">\(f_4(s, i, l_i, l_{i-1}) = 1\)</span> if <span class="math">\(l_{i-1} =\)</span> PREPOSITION and <span class="math">\(l_i =\)</span> PREPOSITION.</p>
+<ul>
+<li>A negative weight <span class="math">\(\lambda_4\)</span> for this function would mean that prepositions don’t tend to follow prepositions, so we should avoid labelings where this happens.</li>
+</ul>
+</li>
+</ul>
+<p>And that’s it! To sum up: to build a conditional random field, you just define a bunch of feature functions (which can depend on the entire sentence, a current position, and nearby labels), assign them weights, and add them all together, transforming at the end to a probability if necessary.</p>
+<p>Now let’s step back and compare CRFs to some other common machine learning techniques.</p>
+<h2 id="smells-like-logistic-regression">Smells like Logistic Regression…</h2>
+<p>The form of the CRF probabilities <span class="math">\(p(l | s) = \frac{exp[\sum_{j = 1}^m \sum_{i = 1}^n f_j(s, i, l_i, l_{i-1})]}{\sum_{l’} exp[\sum_{j = 1}^m \sum_{i = 1}^n f_j(s, i, l’_i, l’_{i-1})]}\)</span> might look familiar.</p>
+<p>That’s because CRFs are indeed basically the sequential version of logistic regression: whereas logistic regression is a log-linear model for classification, CRFs are a log-linear model for sequential labels.</p>
+<h2 id="looks-like-hmms">Looks like HMMs…</h2>
+<p>Recall that Hidden Markov Models are another model for part-of-speech tagging (and sequential labeling in general). Whereas CRFs throw any bunch of functions together to get a label score, HMMs take a generative approach to labeling, defining</p>
+<div class="math">$$
+p(l,s) = p(l_1) \prod_i p(l_i | l_{i-1}) p(w_i | l_i)
+$$</div>
+<p>where</p>
+<ul>
+<li>
+<p><span class="math">\(p(l_i | l_{i-1})\)</span> are transition probabilities (e.g., the probability that a preposition is followed by a noun);</p>
+</li>
+<li>
+<p><span class="math">\(p(w_i | l_i)\)</span> are emission probabilities (e.g., the probability that a noun emits the word “dad”). Notice <span class="math">\(w_i\)</span> means the word <span class="math">\(i\)</span> in a sentence.</p>
+</li>
+</ul>
+<p>So how do HMMs compare to CRFs? CRFs are more powerful – they can model everything HMMs can and more. One way of seeing this is as follows.</p>
+<p>Note that the log of the HMM probability is <span class="math">\(\log p(l,s) = \log p(l_0) + \sum_i \log p(l_i | l_{i-1}) + \sum_i \log p(w_i | l_i)\)</span>. This has exactly the log-linear form of a CRF if we consider these log-probabilities to be the weights associated to binary transition and emission indicator features.</p>
+<p>That is, we can build a CRF equivalent to any HMM by…</p>
+<ul>
+<li>
+<p>For each HMM transition probability <span class="math">\(p(l_i = y | l_{i-1} = x)\)</span>, define a set of CRF transition features of the form <span class="math">\(f_{x,y}(s, i, l_i, l_{i-1}) = 1\)</span> if <span class="math">\(l_i = y\)</span> and <span class="math">\(l_{i-1} = x\)</span>. Give each feature a weight of <span class="math">\(w_{x,y} = \log p(l_i = y | l_{i-1} = x)\)</span>.</p>
+</li>
+<li>
+<p>Similarly, for each HMM emission probability <span class="math">\(p(w_i = z | l_{i} = x)\)</span>, define a set of CRF emission features of the form <span class="math">\(g_{x,y}(s, i, l_i, l_{i-1}) = 1\)</span> if <span class="math">\(w_i = z\)</span> and <span class="math">\(l_i = x\)</span>. Give each feature a weight of <span class="math">\(w_{x,z} = \log p(w_i = z | l_i = x)\)</span>. Again, <span class="math">\(w_i\)</span> represents the word <span class="math">\(i\)</span>.</p>
+</li>
+</ul>
+<p>Thus, the score <span class="math">\(p(l|s)\)</span> computed by a CRF using these feature functions is precisely proportional to the score computed by the associated HMM, and so every HMM is equivalent to some CRF.</p>
+<p>However, CRFs can model a much richer set of label distributions as well, for two main reasons:</p>
+<ul>
+<li>
+<p><strong>CRFs can define a much larger set of features.</strong> Whereas HMMs are necessarily local in nature (because they’re constrained to binary transition and emission feature functions, which force each word to depend only on the current label and each label to depend only on the previous label), CRFs can use more global features. For example, one of the features in our POS tagger above increased the probability of labelings that tagged the first word of a sentence as a VERB if the end of the sentence contained a question mark.</p>
+</li>
+<li>
+<p><strong>CRFs can have arbitrary weights.</strong> Whereas the probabilities of an HMM must satisfy certain constraints (e.g., <span class="math">\(0 &lt;= p(w_i | l_i) &lt;= 1, \sum_w p(w_i = w | l_1) = 1)\)</span>, the weights of a CRF are unrestricted (e.g., <span class="math">\(\log p(w_i | l_i)\)</span> can be anything it wants).</p>
+</li>
+</ul>
+<h2 id="learning-weights">Learning Weights</h2>
+<p>Let’s go back to the question of how to learn the feature weights in a CRF. One way is (surprise) to use gradient ascent.</p>
+<p>Assume we have a bunch of training examples (sentences and associated part-of-speech labels). Randomly initialize the weights of our CRF model. To shift these randomly initialized weights to the correct ones, for each training example…</p>
+<ul>
+<li>
+<p>Go through each feature function <span class="math">\(f_i\)</span>, and calculate the gradient of the log probability of the training example with respect to <span class="math">\(\lambda_i\)</span>: <span class="math">\(\frac{\partial}{\partial w_j} \log p(l | s) = \sum_{j = 1}^m f_i(s, j, l_j, l_{j-1}) - \sum_{l’} p(l’ | s) \sum_{j = 1}^m f_i(s, j, l’_j, l’_{j-1})\)</span></p>
+</li>
+<li>
+<p>Note that the first term in the gradient is the contribution of feature <span class="math">\(f_i\)</span> under the true label, and the second term in the gradient is the expected contribution of feature <span class="math">\(f_i\)</span> under the current model. This is exactly the form you’d expect gradient ascent to take.</p>
+</li>
+<li>
+<p>Move <span class="math">\(\lambda_i\)</span> in the direction of the gradient: <span class="math">\(\lambda_i = \lambda_i + \alpha [\sum_{j = 1}^m f_i(s, j, l_j, l_{j-1}) - \sum_{l’} p(l’ | s) \sum_{j = 1}^m f_i(s, j, l’_j, l’_{j-1})]\)</span> where <span class="math">\(\alpha\)</span> is some learning rate.</p>
+</li>
+<li>
+<p>Repeat the previous steps until some stopping condition is reached (e.g., the updates fall below some threshold).</p>
+</li>
+</ul>
+<p>In other words, every step takes the difference between what we want the model to learn and the model’s current state, and moves <span class="math">\(\lambda_i\)</span> in the direction of this difference.</p>
+<h2 id="finding-the-optimal-labeling">Finding the Optimal Labeling</h2>
+<p>Suppose we’ve trained our CRF model, and now a new sentence comes in. How do we do label it?</p>
+<p>The naive way is to calculate <span class="math">\(p(l | s)\)</span> for every possible labeling l, and then choose the label that maximizes this probability. However, since there are <span class="math">\(k^m\)</span> possible labels for a tag set of size k and a sentence of length m, this approach would have to check an exponential number of labels.</p>
+<p>A better way is to realize that (linear-chain) CRFs satisfy an optimal substructure property that allows us to use a (polynomial-time) dynamic programming algorithm to find the optimal label, similar to the Viterbi algorithm for HMMs.</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script></body></html>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/09.html">09</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2017.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
