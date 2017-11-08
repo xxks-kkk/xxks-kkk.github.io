@@ -64,7 +64,7 @@
         </header>
         
         <article>
-            <html><head></head><body><p>Portability is a kind of issue that people always talk about in software engineering field.
+            <html><body><p>Portability is a kind of issue that people always talk about in software engineering field.
 I never have been through such problem on my own probably because I don't have to port my
 stuff into different platforms. However, this is not the case anymore during the work.</p>
 <p>Recently, I revisit the first task I owned when I joined the team, which is to develop a lightweight
@@ -78,13 +78,15 @@ time is reduced by 75%. Everyone in my team loves it until someone decides to ru
 <p>The environment I develop the tool is SUSE with <tt class="docutils literal">ksh</tt> installed. The AIX that my colleague tries to test my tool on also has <tt class="docutils literal">ksh</tt> configured
 but there are some quirky behavior difference on different platform.</p>
 <p>For instance, when I try to split an array, say <tt class="docutils literal">tmp2</tt> with delimiter <tt class="docutils literal">:</tt>, the following code works great on SUSE:</p>
-<pre class="literal-block">saveIFS=$IFS
+<pre class="literal-block">
+saveIFS=$IFS
 IFS=":"
 local tmp2=($tmp) # split tmp with ":" and stored into tmp2 as array
 IFS=$saveIFS
 </pre>
 <p>However, on AIX, only the following way will work:</p>
-<pre class="literal-block">#!/bin/sh
+<pre class="literal-block">
+#!/bin/sh
 tmp=a:b:c:d
 saveIFS=$IFS
 IFS=":"

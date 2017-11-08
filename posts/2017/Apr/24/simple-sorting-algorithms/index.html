@@ -62,7 +62,7 @@
         </header>
         
         <article>
-            <html><head></head><body><p>This post summarizes three typical simple sorting algorithms: <em>bubble sort</em>, 
+            <html><body><p>This post summarizes three typical simple sorting algorithms: <em>bubble sort</em>, 
 <em>selection sort</em>, and <em>insertion sort</em>. In chapter 7, MAW mainly talks about 
 <em>insertion sort</em> but for the sake of completeness, I will include the other two as
 well <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>.</p>
@@ -102,8 +102,6 @@ from the first to the end of unsorted part of the array.</p>
       <span class="k">if</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="n">SWAP</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span> 
 <span class="p">}</span>
 </pre></div>
-
-
 <p>The key for the alogorithm is that we only do the "bubble up" operation for the
 unsorted part. The following gives an example of the algorithm in action:</p>
 <div class="highlight"><pre><span></span>| index    | 0  | 1  | 2  | 3  | 4  | 5  |
@@ -116,8 +114,6 @@ unsorted part. The following gives an example of the algorithm in action:</p>
 | pass 4   | 8  | 21 | 32 | 34 | 51 | 64 |
 | pass 5   | 8  | 21 | 32 | 34 | 51 | 64 |
 </pre></div>
-
-
 <h3 id="analysis">Analysis</h3>
 <p>Bubble sort is stable and in place. The running time is <span class="math">\(O(N^2)\)</span>, which is true
 for both worst case and average case. <span class="math">\(O(N)\)</span> can be achieved in the best case, where
@@ -151,8 +147,6 @@ the end of array).</p>
   <span class="p">}</span>
 <span class="p">}</span>   
 </pre></div>
-
-
 <p>Here is an example of the algorithm in action:</p>
 <div class="highlight"><pre><span></span>| index    | 0  | 1  | 2  | 3  | 4  | 5  |
 | original | 34 | 8  | 64 | 51 | 32 | 21 |
@@ -163,8 +157,6 @@ the end of array).</p>
 | pass 3   | 8  | 21 | 32 | 34 | 64 | 51 |
 | pass 4   | 8  | 21 | 32 | 34 | 51 | 64 |
 </pre></div>
-
-
 <h3 id="analysis_1">Analysis</h3>
 <p>The selection sort is NOT STABLE but in place. Selection sort is not sensitive
 to the input and thus running time should be the same in best, average, and worst cases:
@@ -194,8 +186,6 @@ the first <span class="math">\(P+1\)</span> elements.</p>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <p>Here is an example of the algorithm in action:</p>
 <div class="highlight"><pre><span></span>| index    | 0  | 1  | 2  | 3  | 4  | 5  |
 | original | 34 | 8  | 64 | 51 | 32 | 21 |
@@ -206,8 +196,6 @@ the first <span class="math">\(P+1\)</span> elements.</p>
 | pass 4   | 8  | 32 | 34 | 51 | 64 | 21 |
 | pass 5   | 8  | 21 | 32 | 34 | 51 | 64 |
 </pre></div>
-
-
 <h3 id="analysis_2">Analysis</h3>
 <p>Due to the nested loops, the running time is <span class="math">\(O(N^2)\)</span>, which can be achieved
 when the input array is in reverse sorted order. In the best case, where 

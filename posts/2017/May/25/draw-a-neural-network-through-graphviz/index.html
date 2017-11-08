@@ -64,7 +64,7 @@
         </header>
         
         <article>
-            <html><head></head><body><h2 id="preface">Preface</h2>
+            <html><body><h2 id="preface">Preface</h2>
 <p><a href="http://graphviz.org/">Graphviz</a> is a language (called DOT) and
 a set of tools to automatically generate graphs. It is widely used
 by researchers to do visualizations in papers. Essentially, you just
@@ -94,8 +94,6 @@ highlights some key points in the code:</p>
 <span class="n">splines</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span>
 <span class="n">edge</span><span class="p">[</span><span class="n">style</span><span class="o">=</span><span class="n">invis</span><span class="p">];</span>
 </pre></div>
-
-
 <ol>
 <li><code>rankdir=LR</code> makes the directed graphs drawn from left to right.</li>
 <li><code>splines=false</code> controls how the edges are represented and in this case, edges 
@@ -110,8 +108,6 @@ graphviz layout. </li>
   <span class="n">a03</span> <span class="p">[</span><span class="n">label</span><span class="o">=&lt;</span><span class="n">a</span><span class="o">&lt;</span><span class="n">sub</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">&lt;/</span><span class="n">sub</span><span class="o">&gt;&lt;</span><span class="n">sup</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">sup</span><span class="o">&gt;&gt;</span><span class="p">];</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <ol>
 <li><code>node[...]</code> sets the default node property: specify the node shape, node color. This
 node property will apply to three nodes: <code>x0</code>, <code>a02</code>, <code>a03</code>.</li>
@@ -126,8 +122,6 @@ how we can specify several nodes at the once with the same node property <sup id
   <span class="n">x0</span><span class="o">-&gt;</span><span class="n">x1</span><span class="o">-&gt;</span><span class="n">x2</span><span class="o">-&gt;</span><span class="n">x3</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <ol>
 <li><code>rank=same</code> is another trick I'll talk about later. This specifies what "layer"
 (or "rank" by official term) a set of nodes belongs. You can read <a href="http://www.graphviz.org/doc/info/attrs.html#d:rank">the official doc</a> for the details.</li>
@@ -139,8 +133,6 @@ is how we draw the NN layers.</li>
 </ol>
 <div class="highlight"><pre><span></span><span class="n">a02</span><span class="o">-&gt;</span><span class="n">a03</span><span class="p">;</span>
 </pre></div>
-
-
 <ol>
 <li>This line is used to prevent tilting of the graph. As you can see, we specify
 how the nodes should be arranged in a layer but we don't much constraint on how
@@ -152,8 +144,6 @@ layer with <code>a03</code>.</li>
 <span class="n">l0</span><span class="o">-&gt;</span><span class="n">x0</span><span class="p">;</span>
 <span class="p">{</span><span class="n">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">l0</span><span class="p">;</span><span class="n">x0</span><span class="p">};</span>
 </pre></div>
-
-
 <ol>
 <li>This code chunk is how we add label text to each layer. As you can see we use
 another node <code>l0</code> with shape <code>plaintext</code>, which says <code>l0</code> is just a text message.
@@ -162,8 +152,6 @@ the text to the layer 1.</li>
 </ol>
 <div class="highlight"><pre><span></span><span class="n">edge</span><span class="p">[</span><span class="n">style</span><span class="o">=</span><span class="n">solid</span><span class="p">,</span> <span class="n">tailport</span><span class="o">=</span><span class="n">e</span><span class="p">,</span> <span class="n">headport</span><span class="o">=</span><span class="n">w</span><span class="p">];</span>
 </pre></div>
-
-
 <ol>
 <li>We specify the edge style again. This will only affect the edges after this setup
 not before. One small trick here is <code>tailport=e, headport=w</code>. This will let all the edges
@@ -173,8 +161,6 @@ point to the same position.</li>
 <span class="p">{</span><span class="n">a02</span><span class="p">;</span><span class="n">a12</span><span class="p">;</span><span class="n">a22</span><span class="p">;</span><span class="n">a32</span><span class="p">;</span><span class="n">a42</span><span class="p">;</span><span class="n">a52</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">a13</span><span class="p">;</span><span class="n">a23</span><span class="p">;</span><span class="n">a33</span><span class="p">;</span><span class="n">a43</span><span class="p">;</span><span class="n">a53</span><span class="p">};</span>
 <span class="p">{</span><span class="n">a03</span><span class="p">;</span><span class="n">a13</span><span class="p">;</span><span class="n">a23</span><span class="p">;</span><span class="n">a33</span><span class="p">;</span><span class="n">a43</span><span class="p">;</span><span class="n">a53</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">O1</span><span class="p">,</span><span class="n">O2</span><span class="p">,</span><span class="n">O3</span><span class="p">,</span><span class="n">O4</span><span class="p">};</span>
 </pre></div>
-
-
 <ol>
 <li>This code chunk is how we actually draw the edges. In the simple example above,
 it explicitly draws the edges between two nodes. It is quite pain to do. Above code
@@ -217,8 +203,6 @@ rank is bottommost or rightmost.)</p>
   <span class="p">{</span><span class="n">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">d</span><span class="p">;}</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <p>This example gives a graph with two rows. <code>a-&gt;b</code> is above <code>c-&gt;d</code>.
 However, if I change <code>{rank=source; a-&gt;b;}</code> to <code>{rank=min; a-&gt;b;}</code>, we'll
 end up with one row: <code>a-&gt;b</code> will be to the left of <code>c-&gt;d</code>. This is due to
@@ -232,8 +216,6 @@ with <code>c-&gt;d</code> at the top and <code>a-&gt;b</code> at the bottom:</p>
   <span class="p">{</span><span class="n">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">d</span><span class="p">;}</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <div class="footnote">
 <hr/>
 <ol>

@@ -62,7 +62,7 @@
         </header>
         
         <article>
-            <html><head></head><body><p>This is the summary of <em>Splay tree</em> part in MAW Chapter 4.</p>
+            <html><body><p>This is the summary of <em>Splay tree</em> part in MAW Chapter 4.</p>
 <h2 id="motivation">Motivation</h2>
 <p>Ordinary BST has no balance conditions and thus, it is possible for a whole sequnece of <span class="math">\(O(N)\)</span> accesses to take place. This cumulative running time 
 then becomes noticeable. So, we introduce the balance condition on BST to improve our running time. One way to do so is to enforce a balance condition
@@ -94,8 +94,6 @@ rotating it up the trees does not have this property. However, the following thr
                  /            x   z              \
                 x                                 z
 </pre></div>
-
-
 <p>In the above pictures, x is the node that was accessed (that will
 eventually be at the root of the tree).  By looking at the local
 structure of the tree defined by x, x's parent, and x's grandparent we
@@ -117,8 +115,6 @@ apply the rules until x is at the root of the tree.</p>
    /                          \
   1                            3
 </pre></div>
-
-
 <h2 id="implementation-details">Implementation details</h2>
 <p>Splay tree is really a flexible data structure in the sense that there are many options to implement 
 the "splay" rules and corresponding tree operations and still have the property hold. Reference <a href="https://en.wikipedia.org/wiki/Splay_tree">wiki</a>
@@ -135,8 +131,6 @@ value as the new root and adjust the orginal tree to form the new tree. For exam
   <span class="n">T</span><span class="o">-&gt;</span><span class="n">Left</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <p>The code is straightforward but <code>newT-&gt;Left = T-&gt;Left</code> is worth a remark. Here, when <code>T</code> is the parent of the insertion point, 
 we know <code>T</code>'s left subtree's values are smaller than <code>elem</code> as well. This is because 
 if there is any node <span class="math">\(x\)</span> greater than <code>elem</code> but smaller than <code>T</code>'s value, then <code>T</code> should be <span class="math">\(x\)</span> instead (by splaying), which is a contradiction.</p>

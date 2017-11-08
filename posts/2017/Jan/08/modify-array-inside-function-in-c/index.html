@@ -60,7 +60,7 @@
         </header>
         
         <article>
-            <html><head></head><body><p>In this post, I want to write down the lesson learned
+            <html><body><p>In this post, I want to write down the lesson learned
 about modifying array inside a function in C with an example
 from MAW 3.15.a:</p>
 <blockquote>
@@ -98,18 +98,21 @@ examine accordingly.</p>
 <span class="p">}</span>
 </pre></div>
 <p>The output looks something like:</p>
-<pre class="literal-block">Before:1 2 3
+<pre class="literal-block">
+Before:1 2 3
 before change, test address: 0x7fffffffe050
 array address inside function: 0x7fffffffe050
 After:5 5 5
 after change, test address: 0x7fffffffe050
 </pre>
 <p>Let's examine our <tt class="docutils literal">change</tt> function under gdb.:</p>
-<pre class="literal-block">p array
+<pre class="literal-block">
+p array
 $1 = (int *) 0x7fffffffe050
 </pre>
 <p>shows us that actually <tt class="docutils literal">array</tt> is a pointer to int with the address <tt class="docutils literal">0x7fffffffe050</tt>.:</p>
-<pre class="literal-block">(gdb) p *0x7fffffffe050
+<pre class="literal-block">
+(gdb) p *0x7fffffffe050
 $3 = 1
 </pre>
 <p>If we take a look at what value hold the address, we can see that it's <tt class="docutils literal">1</tt>, which is the first element of
@@ -120,12 +123,14 @@ In other words, we can do <tt class="docutils literal">p *array</tt> in gdb and 
 </ul>
 <p>Since the size of int under my system is 4 bytes (check by <tt class="docutils literal">p sizeof(int)</tt> in gdb), and let's examine the four conseuctive
 bytes with starting address <tt class="docutils literal">0x7fffffffe050</tt>:</p>
-<pre class="literal-block">(gdb) x/4bx array
+<pre class="literal-block">
+(gdb) x/4bx array
 0x7fffffffe050: 0x01    0x00    0x00    0x00
 </pre>
 <p>As you can see, this is integer <tt class="docutils literal">1</tt>. Now, let's start with the first iteration of the loop in <tt class="docutils literal">change</tt>. Once we finish the
 iteration, <tt class="docutils literal">i</tt> becomes <tt class="docutils literal">1</tt> and let's see what change to our <tt class="docutils literal">array</tt>:</p>
-<pre class="literal-block">(gdb) p array[0]
+<pre class="literal-block">
+(gdb) p array[0]
 $12 = 5
 
 (gdb) p array
@@ -149,7 +154,8 @@ caller function without any <tt class="docutils literal">return</tt> statement.<
 </li>
 <li><p class="first">However, doing so, we doesn't change the address of the array. It seems that array is a local variable inside both caller function
 and callee function. Its address is copied and passed from <tt class="docutils literal">test_change</tt> to <tt class="docutils literal">change</tt>:</p>
-<pre class="literal-block">Inside change:
+<pre class="literal-block">
+Inside change:
 
                  +---+---+--+
 array -----&gt;  -&gt; | 1 | 2 | 3|
@@ -168,7 +174,8 @@ test --------
 <span class="p">}</span>
 </pre></div>
 <p>With the similar test program <tt class="docutils literal">test_change2()</tt> we get the following output:</p>
-<pre class="literal-block">TEST: change2
+<pre class="literal-block">
+TEST: change2
 Before:1 2 3
 before change, test address: 0x7ffda5b41bc0
 array address inside function: 0x7ffda5b41bc0
@@ -179,7 +186,8 @@ after change, test address: 0x7ffda5b41bc0
 the output confirms our observation above: array is local variable to the caller function and callee function, and when we pass a array into a function, the address is
 passed (copied) from caller to callee. After that, address inside callee can reassign and will have no effect on the array (address) in caller. In other words, even though
 the address inside <tt class="docutils literal">change2</tt> and <tt class="docutils literal">test_change2</tt> are the same, but they are independent with each other:</p>
-<pre class="literal-block">after change2:
+<pre class="literal-block">
+after change2:
 
                  +---+---+--+
 test  ---------&gt; | 1 | 2 | 3|
@@ -239,7 +247,8 @@ So now our template sentence becomes "array is pointer to ... int". Great! Let's
 "array is pointer to pointer to ... int". Then we meet <tt class="docutils literal">int</tt>, which means all the symbol in the declaration is consumed and our sentence is complete:
 "array is pointer to pointer to int". This means <tt class="docutils literal">array</tt> variable itself is a pointer containing an address of a pointer, which holds an address of a int.</p>
 <p>Let's see if this is true with gdb.:</p>
-<pre class="literal-block">(gdb) p array
+<pre class="literal-block">
+(gdb) p array
 $1 = (int **) 0x7fffffffe070
 
 (gdb) p/a *0x7fffffffe070
@@ -257,7 +266,8 @@ $3 = 1
 <p>The address holds by <tt class="docutils literal">array</tt> is <tt class="docutils literal">0x7fffffffe070</tt>. We further examine the value holds by <tt class="docutils literal">0x7fffffffe070</tt> and by our assumption, it should be another address
 and it is: <tt class="docutils literal">0x601010</tt>. Then, we check the value hold by that address, which is expected <tt class="docutils literal">1</tt> the first element of our <tt class="docutils literal">test</tt> array.</p>
 <p>Our goal is to let <tt class="docutils literal">test</tt> array in <tt class="docutils literal">test_change3()</tt> be <tt class="docutils literal">5,5,5</tt>:</p>
-<pre class="literal-block">Before change3
+<pre class="literal-block">
+Before change3
 
                  +---+---+--+
 test  ---------&gt; | 1 | 2 | 3|
@@ -279,7 +289,8 @@ test(array) -------
 In other words, we want both <tt class="docutils literal">test</tt> and <tt class="docutils literal">array</tt> no longer independent but want them "tie up" as the same pointer with different names. How do we do that?</p>
 <p>The solution is given by <tt class="docutils literal">change3</tt> but we really need to think about why it makes sense. Firstly, we want to use gdb to examine the address
 of key variables:</p>
-<pre class="literal-block">(gdb) p array
+<pre class="literal-block">
+(gdb) p array
 $4 = (int **) 0x7fffffffe070
 (gdb) p *array
 $5 = (int *) 0x601010
@@ -309,7 +320,8 @@ $12 = 5
 </pre>
 <p>We first print out the <tt class="docutils literal">array</tt> address of each element and we print out the <tt class="docutils literal">tmp</tt> address of each element.
 With the information above, let's compose our conceptual picture:</p>
-<pre class="literal-block">Before *array = tmp;
+<pre class="literal-block">
+Before *array = tmp;
 
    4 bytes                                         4 bytes
 +-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
@@ -320,13 +332,15 @@ With the information above, let's compose our conceptual picture:</p>
                                                 tmp                                     array
 </pre>
 <p>Now, let's execute <tt class="docutils literal">*array = tmp</tt>, we get the following:</p>
-<pre class="literal-block">(gdb) p *array
+<pre class="literal-block">
+(gdb) p *array
 $19 = (int *) 0x601010
 (gdb) p *array
 $20 = (int *) 0x601030
 </pre>
 <p>Now the picture looks like:</p>
-<pre class="literal-block">After *array = tmp;
+<pre class="literal-block">
+After *array = tmp;
 
    4 bytes                                         4 bytes
 +-----------+-----------+----------+------------+-----------+----------+--------+-------+----------+------
@@ -342,7 +356,8 @@ This may seem like magic. However, in C, a variable (i.e. <tt class="docutils li
 by invoking <tt class="docutils literal">change3</tt> through <tt class="docutils literal">&amp;test</tt>, we pass in the address <tt class="docutils literal">0x601010</tt> via a carrier <tt class="docutils literal">0x7fffffffe070</tt>, and we modify the
 address to <tt class="docutils literal">0x601030</tt> and send the address back again through carrier.</p>
 <p>With this understanding, we can see why the output looks like:</p>
-<pre class="literal-block">TEST: change3
+<pre class="literal-block">
+TEST: change3
 Before:1 2 3
 before change, test address: 0x601010
 After:5 5 5

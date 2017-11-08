@@ -66,7 +66,7 @@
         </header>
         
         <article>
-            <html><head></head><body><h2 id="preface">Preface</h2>
+            <html><body><h2 id="preface">Preface</h2>
 <p>This is actually MAW 3.10. I gradually realize how dense MAW is.
 In the <a href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">previous problem</a>,
 I write almost 500 lines of code. For this one, the problem is not really diffcult to solve if we implement a program 
@@ -129,8 +129,6 @@ this by building a table of small values:</p>
 |------|---|-------|---------------|-------------------------------------|----|
 | F(n) | 1 | 1   3 | 1   3   5   7 | 1   3   5    7    9    11   13   15 | 1  |
 </pre></div>
-
-
 <p>We can group the columns by powers of <span class="math">\(2\)</span> (marked by vertical lines in the table); Inside each group,
 <span class="math">\(F(n)\)</span> is always <span class="math">\(1\)</span> at the beginning and then it increases by <span class="math">\(2\)</span> until the next group, which is 
 the next power of <span class="math">\(2\)</span>. So, for every number <span class="math">\(n\)</span>, there exists an integer <span class="math">\(a\)</span> such that <span class="math">\(2^a &lt;= n &lt; 2^{a+1}\)</span>.
@@ -159,7 +157,6 @@ F(2^a + l) &amp;= 2F(2^{a-1} + l/2) - 1 &amp;&amp;\text{(by equation 1)} \\
         &amp;= 2l + 1
 \end{align*}
 $$</div>
-<p></p>
 </li>
 <li>
 <p>If <span class="math">\(2^a + l = 2k+1\)</span>, then</p>
@@ -171,7 +168,6 @@ F(2^a + l) &amp;= 2F(2^{a-1} + (l-1)/2) + 1 &amp;&amp;\text{(by equation 2)} \\
         &amp;= 2l + 1
 \end{align*}
 $$</div>
-<p></p>
 </li>
 </ul>
 </li>
@@ -208,8 +204,6 @@ after the first-round.</p>
                     | 10    | 7    |
                     +-------+------+
 </pre></div>
-
-
 <p>By looking at the table on the left, we can easily see that <span class="math">\(F(2k) = 2F(k) - 1\)</span>. 
 However, there is no nice clean linear relation that we can get between <span class="math">\(F(2k)\)</span> and <span class="math">\(F(k)\)</span> 
 when <span class="math">\(n = 10\)</span>, <span class="math">\(m = 3\)</span>.</p>
@@ -219,7 +213,6 @@ solution to the Josephus problem, the author shift their focus to solve a genera
 recurrence of \ref{eq:1} and \ref{eq:2}, which is (1.11) in the book. This has nothing to do
 with the Josephus problem and I'm guessing the reason why the author want to talk about 
 the solution to the generalized recurrence is to illustrate dynamic programming philosophy.</p>
-<p></p>
 </div>
 <h2 id="general-solution">General solution</h2>
 <p>The big picture here is we need to find out the relative position of the final survivor to the
@@ -259,28 +252,20 @@ fig.3
 | n = 2 | 5 | X | 5 | X | 5 | X | J(2,2) = 1 = (2-1 + 1) mod 2 + 1
 | n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 1
 </pre></div>
-
-
 <p>By looking at fig.1, we know that <span class="math">\(J(6,2) = 5\)</span>. Now, if we take a look at fig.2, the row with <span class="math">\(n = 5% shows that $J(5,2) = 3\)</span>. By the insight,
 <span class="math">\(3\)</span> here means the <em>index</em> not the <em>number</em>. So, our final survivor is <span class="math">\(5\)</span>, which is positioned on <span class="math">\(3\)</span> in this row.</p>
 <p>Let's generalize the example a little bit. Suppose we want to know <span class="math">\(J(n,2)\)</span>. You can imagine 
 we have <span class="math">\(n\)</span> people lined up like this: </p>
 <div class="highlight"><pre><span></span>1 2 3 4 5 ... n
 </pre></div>
-
-
 <p>The first thing that happens is that person <span class="math">\(2\)</span> get eliminated, as shown here:</p>
 <div class="highlight"><pre><span></span>1 X 3 4 5 ... n
 </pre></div>
-
-
 <p>Now, we are left with a subproblem of the following form: there are <span class="math">\(n - 1\)</span> people remaining, every other
 person is going to be eliminated, and the first person who will start to pass potato is person <span class="math">\(3\)</span>. In other 
 words, the subproblem <span class="math">\(J(n-1, 2)\)</span> now looks like:</p>
 <div class="highlight"><pre><span></span>3 4 5 ... n 1
 </pre></div>
-
-
 <p><span class="math">\(J(n-1, 2)\)</span> will be the <em>index</em> of who survives in a line of <span class="math">\(n - 1\)</span> of people. Given that we have the <em>index</em>
 of the person who will survive, and we also know who the starting person is, we can determine which person 
 will be left. Here's how we'll do it.</p>
@@ -308,13 +293,9 @@ zero-indexing.</p>
 <p>Now, we're finally ready to generalize the solution to arbitrary <span class="math">\(m\)</span>, not just <span class="math">\(m = 2\)</span>. After person <span class="math">\(m\)</span> get eliminated, we have an array like this:</p>
 <div class="highlight"><pre><span></span>1 2 3 ... m-1 X m+1 ... n
 </pre></div>
-
-
 <p>We now essentailly need to solve a subproblem where person <span class="math">\(m+1\)</span> comes first:</p>
 <div class="highlight"><pre><span></span>m+1 m+2 ... n 1 2 ... m-1
 </pre></div>
-
-
 <p>So we compute <span class="math">\(J(n-1, m)\)</span> to get the one-indexed survivor of a ring of <span class="math">\(n-1\)</span> people, then shift forward by that many steps:</p>
 <div class="math">$$(m+1 + J(n-1, m) - 1)$$</div>
 <p>We need to worry about the case where we wrap around, so we need to mod by <span class="math">\(n\)</span>:</p>
@@ -335,18 +316,12 @@ zero-indexing.</p>
 | n = 2 | 5 | 1 | 5 | 1 | 5 | 1 | J(2,2) = 0 = (0 + 2 ) mod 2 
 | n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 0
 </pre></div>
-
-
 <p>Let's apply the same logic from the one-indexed case. After person <span class="math">\(m-1\)</span> get eliminated, we have an array like this:</p>
 <div class="highlight"><pre><span></span>0 1 2 ... m-2 X m ... n-1
 </pre></div>
-
-
 <p>We now essentailly need to solve a subproblem where person <span class="math">\(m\)</span> comes first:</p>
 <div class="highlight"><pre><span></span>m m+1 ... n-1 0 1 2 ... m-2
 </pre></div>
-
-
 <p>So, we compute <span class="math">\(J(n-1,m)\)</span> to give us the zero-indexed survivor of a ring of <span class="math">\(n-1\)</span> people and we shfit forward by that many steps:</p>
 <div class="math">$$(m + J(n-1,m))$$</div>
 <p>We take care of wrapping around by mod <span class="math">\(n\)</span>:</p>
@@ -355,42 +330,26 @@ zero-indexing.</p>
 <div class="math">$$(m + J(n-1,m) \bmod n + 1$$</div>
 <p>Note that <span class="math">\(J(1,m) = 0\)</span> in this case, which indicates that we're zero-indexed.</p>
 <!-- ### Implementation -->
-
 <!-- There are many ways to solve this question. -->
-
 <!-- *Brute force* -->
-
 <!-- We can use a cricular double linked list to implement the solution. -->
-
 <!-- *Recurrence* -->
-
 <!-- Use the recurrence relation we just derived. -->
-
 <h2 id="whats-left-out">What's left out</h2>
 <ul>
 <li><a href="http://blue.butler.edu/~phenders/InRoads/MathCounts8.pdf">Equivalence Class Solution</a> is interesting to check out.</li>
 <li><a href="https://www.scribd.com/document/3567390/Rank-Trees">Rank tree</a> as a data sturcture is worth to check out to solve this problem. <a href="http://www.imt.ro/romjist/Volum12/Number12_1/pdf/02-MCosulschi.pdf">This paper</a> gives a more detailed analysis.</li>
 </ul>
 <!-- ## Reference -->
-
 <!-- - https://en.wikipedia.org/wiki/Josephus_problem -->
-
 <!-- - Graham, R.L.; Knuth, D.E.; Patashnik, O. (1989), Concrete Mathematics: A Foundation for Computer Science, Addison Wesley, p. 8, ISBN 978-0-201-14236-5 -->
-
 <!-- - http://www.cut-the-knot.org/recurrence/r_solution.shtml -->
-
 <!-- - http://www.exploringbinary.com/powers-of-two-in-the-josephus-problem -->
-
 <!-- - http://www.math.northwestern.edu/~mlerma/problem_solving/solutions/josephus.pdf -->
-
 <!-- - http://blue.butler.edu/~phenders/InRoads/MathCounts8.pdf -->
-
 <!-- - http://stackoverflow.com/questions/31775604/explanation-for-recursive-implementation-of-josephus-prob?answertab=active#tab-top -->
-
 <!-- - http://stackoverflow.com/questions/21737771/can-someone-please-explain-the-use-of-modulus-in-this-code?rq=1 -->
-
 <!-- - https://rosettacode.org/wiki/Josephus_problem -->
-
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",

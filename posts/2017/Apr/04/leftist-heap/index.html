@@ -62,7 +62,7 @@
         </header>
         
         <article>
-            <html><head></head><body><p>This is the summary of <em>leftist heaps</em> part in MAW Chapter 6.</p>
+            <html><body><p>This is the summary of <em>leftist heaps</em> part in MAW Chapter 6.</p>
 <h2 id="motivation">Motivation</h2>
 <p>Merge two priority queues into one can be a very hard operation to do. For binary
 heap, this can be done at <span class="math">\(O(N)\)</span>. However, we want to do better. Leftist heap
@@ -150,8 +150,6 @@ swap step.</p>
   <span class="k">return</span> <span class="n">H1</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <h3 id="insert">insert</h3>
 <p>We can carry out insertion by making the item to be inserted a one-node heap
 and perform a merge. </p>
@@ -171,8 +169,6 @@ actual implementation is on maw p.199 and copied below:</p>
   <span class="k">return</span> <span class="n">H</span><span class="p">;</span>    
 <span class="p">}</span>
 </pre></div>
-
-
 <h3 id="deletemin">deleteMin</h3>
 <p>deleteMin can be done by remove the root and merge the left and subtree tree into
 a new leftist heap.</p>
@@ -192,8 +188,6 @@ a new leftist heap.</p>
   <span class="k">return</span> <span class="n">Merge</span><span class="p">(</span><span class="n">LeftHeap</span><span class="p">,</span> <span class="n">RightHeap</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <h3 id="buildheap">BuildHeap</h3>
 <p>As described in MAW 6.22, we can perform <code>BuildHeap</code> in linear time for leftist 
 heaps by considering each element as a one-node leftist heap, placing all these

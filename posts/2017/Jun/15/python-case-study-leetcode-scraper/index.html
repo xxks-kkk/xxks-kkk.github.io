@@ -66,7 +66,7 @@
         </header>
         
         <article>
-            <html><head></head><body><p>It has been many years since 
+            <html><body><p>It has been many years since 
 <a href="http://pages.cs.wisc.edu/~zeyuan/projects/notes/diveintopython/diveintopython.html">last time</a> 
 I touched python. Things get very rusty. Recently, I have been practicing
 my algorithm skills on leetcode and I keep all my solutions in a 
@@ -89,8 +89,6 @@ have consistency formatting shown below</p>
 
  <span class="c1">// Source code begins here ...</span>
 </pre></div>
-
-
 <p>The overhead of adding this header comment can be quite large. 
 So, I ask myself if there is a better way
 to make the whole process automated as much as possible. Python and its famous
@@ -105,8 +103,6 @@ leetcode page as a working example to demonstrate the python techniques.</p>
 <div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3.6</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 </pre></div>
-
-
 <p>The very first thing is "shebang". This is important for our task because
 the web page is often written in the unicode (i.e. mathematical symbols).
 This shebang will help us avoid unicode &amp; ascii madness. </p>
@@ -114,8 +110,6 @@ This shebang will help us avoid unicode &amp; ascii madness. </p>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 </pre></div>
-
-
 <p>We use a lot of libraries through <code>import</code>. If I use <em>import module</em>, I have to use quantifier
 for any module function call (i.e. <code>sys.exit()</code>). By the contrast, I can directly
 call the module function if I do <em>from module import</em>. This brings a question on
@@ -133,16 +127,12 @@ when to use which. Here, I want to quote the explanation from
 <div class="highlight"><pre><span></span><span class="n">script</span><span class="p">,</span> <span class="n">url</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
 <span class="k">print</span><span class="p">(</span><span class="s1">'url is {:s}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
 </pre></div>
-
-
 <p>I used to really like Python2.7 and not a big fan of Python3. However, with python2.7 EOS,
 change must be made. the <code>print</code> statement is how we do format printing in python3.</p>
 <div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
 <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">"lxml"</span><span class="p">)</span>
 </pre></div>
-
-
 <p>Here, I use <a href="http://docs.python-requests.org/en/master/user/quickstart/#make-a-request">requests</a>
 library to fetch the content of the <code>url</code> and then feed it into our <code>BeautifulSoup</code>
 with parser <code>lxml</code>.</p>
@@ -169,15 +159,11 @@ for the question title</p>
       <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
     <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
 </pre></div>
-
-
 <p>As you can see, the question title ("92. Reverse Linked List II") is wrapped around
 by the <code>&lt;div&gt;</code> tag with class name <code>question-title</code>. </p>
 <div class="highlight"><pre><span></span><span class="n">title_corp</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">"div"</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">"question-title"</span><span class="p">)</span>
 <span class="n">title_raw</span> <span class="o">=</span> <span class="n">title_corp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">h3</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
 </pre></div>
-
-
 <p>So, we invoke <a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/#calling-a-tag-is-like-calling-find-all">find_all</a>
 method from beautiful soup to find all the <code>&lt;div&gt;&lt;/div&gt;</code> tags with class name <code>question-title</code>.
 Fortunately, <code>question-title</code> class appears only once in the whole html page. 
@@ -207,8 +193,6 @@ directory name: <code>reverseLinkedListII.c</code>. That's what following code c
     <span class="n">path</span> <span class="o">=</span> <span class="s2">"./leetcode/"</span> <span class="o">+</span> <span class="n">title</span>
     <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </pre></div>
-
-
 <p><code>title_lines = title_raw.split('\n')</code> will split the whole text into a list 
 of strings with each string being a line of code. In our case, this will give
 <code>['', '            92. Reverse Linked List II', '          ']</code>.</p>
@@ -247,8 +231,6 @@ of string into lower case. The code is below</p>
 <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="n">filename</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 <span class="n">target</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s2">"/"</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="n">extension</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span>
 </pre></div>
-
-
 <p>The regular expression is best illsutrated from a snippet taken from 
 <a href="https://docs.python.org/3/library/re.html">re</a> library</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">email</span> <span class="o">=</span> <span class="s2">"tony@tiremove_thisger.net"</span>
@@ -256,8 +238,6 @@ of string into lower case. The code is below</p>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">email</span><span class="p">[:</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span> <span class="o">+</span> <span class="n">email</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">():]</span>
 <span class="s1">'tony@tiger.net'</span>
 </pre></div>
-
-
 <p><code>^</code> matches the beginning of the string and <code>\d</code> means numeric digits and <code>+</code>
 means at least once appearance (of <code>\d</code>). Just like official doc snippet above,
 <code>filename=title[:m.start()] + title[m.end():]</code> removes, for instance, <code>92-</code> and

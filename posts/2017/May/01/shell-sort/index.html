@@ -62,7 +62,7 @@
         </header>
         
         <article>
-            <html><head></head><body><p>Per the final paragraph of the <a href="../../../../../posts/2017/Apr/24/simple-sorting-algorithms/">last post</a>,
+            <html><body><p>Per the final paragraph of the <a href="../../../../../posts/2017/Apr/24/simple-sorting-algorithms/">last post</a>,
 the algorithm needs to avoid doing adjacent swap (in other words, comparing elements that are distant) 
 so that we can have the opportunity to remove more than one inversion for each swap, which
 can break <span class="math">\(O(N^2)\)</span> barrier. This is exactly what shellsort tries to achieve. </p>
@@ -103,8 +103,6 @@ In other words, all elements spaced <span class="math">\(h_k\)</span> apart are 
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <p>Here is an example of the algorithm in action (using Shell's increment sequence):</p>
 <div class="highlight"><pre><span></span>| index        | 0  | 1  | 2  | 3  | 4  | 5  | 6  | 7  | 8  | 9  | 10 | 11 | 12 |
 | original     | 81 | 94 | 11 | 96 | 12 | 35 | 17 | 95 | 28 | 58 | 41 | 75 | 15 |
@@ -113,8 +111,6 @@ In other words, all elements spaced <span class="math">\(h_k\)</span> apart are 
 | After 3-sort | 15 | 12 | 11 | 17 | 41 | 28 | 58 | 94 | 35 | 81 | 95 | 75 | 96 |
 | After 1-sort | 11 | 12 | 15 | 17 | 28 | 35 | 41 | 58 | 75 | 81 | 94 | 95 | 96 |
 </pre></div>
-
-
 <h2 id="analysis">Analysis</h2>
 <p>The running time of shellsort depends on how we pick the increment sequence. MAW gives 
 running time for two commonly-seen increment sequences:</p>

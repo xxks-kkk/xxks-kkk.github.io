@@ -62,7 +62,7 @@
         </header>
         
         <article>
-            <html><head></head><body><p>Understanding assembly language is crucial for system programming. Some nasty defects of the system
+            <html><body><p>Understanding assembly language is crucial for system programming. Some nasty defects of the system
 can only be solved by digging into the assembly level of the program. In this post, I'll revisit 
 call stack concept as a way to understand how function call works under the cover of high-level language.
 In addition, this post belongs to part of future work mentioned in <a href="../../../../../posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/">my post back in January</a>.</p>
@@ -244,8 +244,6 @@ Argument 2
 Argument 1
 Return address &lt;--- (%esp)
 </pre></div>
-
-
 <p>As noted previously, the stack pointer holds the address, which contains return address as its value.</p>
 <h4 id="writing-a-function">Writing a function</h4>
 <p>Writing a function in x86 assembly essentially contains of three parts: setup, using the stack frame to perform
@@ -256,8 +254,6 @@ will be explained in details.</p>
 <div class="highlight"><pre><span></span><span class="nf">pushl</span> <span class="nv">%ebp</span>
 <span class="nf">movl</span> <span class="nv">%esp</span> <span class="nv">%ebp</span>
 </pre></div>
-
-
 <p>The first instruction is to save the current base pointer register (aka frame pointer), <span class="math">\(\mathtt{\%ebp}\)</span>. 
 The base pointer is a special register used for accessing function parameters and local 
 variables.The stack frame is delimited by two pointers: <span class="math">\(\mathtt{\%ebp}\)</span> serves as the pointer pointing
@@ -280,8 +276,6 @@ Argument 1     &lt;--- 12(%ebp)
 Return address &lt;--- 4(%ebp)
 Old %ebp       &lt;--- (%esp) and (%ebp)
 </pre></div>
-
-
 <h5 id="using-the-stack-frame">Using the stack frame</h5>
 <p>Once we have performed the fix setup, we can now use the stack frame to:</p>
 <ul>
@@ -310,8 +304,6 @@ we are going to need two words of memory to run a function. We can simply move t
 down two words to serve the space:</p>
 <div class="highlight"><pre><span></span><span class="nf">subl</span> <span class="no">$8</span><span class="p">,</span> <span class="nv">%esp</span>  <span class="c"># Allocate 8 bytes of space on the stack</span>
 </pre></div>
-
-
 <p>While it is possible to make space on the stack as needed in a function body, it is generally
 more efficient to allocate this space all at once at the beginning of the function. This way,
 we are free of worring about clobbering them with pushes that we may make for next function calls
@@ -329,8 +321,6 @@ and with our two words for local storage, our stack now looks like this:</p>
 <span class="n">Local</span> <span class="n">variable1</span> <span class="o">&lt;---</span> <span class="o">-</span><span class="mi">8</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
 <span class="n">Local</span> <span class="n">variable2</span> <span class="o">&lt;---</span> <span class="o">-</span><span class="mi">12</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span> <span class="n">and</span> <span class="p">(</span><span class="nf">%esp</span><span class="p">)</span>
 </pre></div>
-
-
 <p>As you can see, we can now access all of the data we need for this function by
 using base pointer addressing using different offsets from <span class="math">\(\mathtt{\%ebp}\)</span>.
 <span class="math">\(\mathtt{\%ebp}\)</span> was made specifically for this purpose, which is why it is
@@ -358,8 +348,6 @@ Since we need to perform caller's frame pointer restoration anyway, everything j
 <span class="nf">popl</span> <span class="nv">%ebp</span>       <span class="c"># Restore the caller's base pointer and now stack pointer pointing to Return address</span>
 <span class="nf">ret</span>             <span class="c"># Since stack pointer pointing to return address, we can now call ret</span>
 </pre></div>
-
-
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The step 2 and 3 are unecessary if we don't save any registers at all. The reason we do step 2
@@ -445,14 +433,10 @@ a given number, which demonstrates how the recursive function is done.</p>
         <span class="nf">pop</span> <span class="nv">%ebp</span>                  <span class="c"># restore the base pointer</span>
         <span class="nf">ret</span>
 </pre></div>
-
-
 <p>The key to understand the function call is to trace through the status of stack frame. One thing to 
 highlight as a side note is:</p>
 <div class="highlight"><pre><span></span><span class="na">.type</span> <span class="no">power</span><span class="p">,</span><span class="na">@function</span>
 </pre></div>
-
-
 <p>This tells the linker that the symbol power should be treated as a function. 
 Since this program is only in one file, it would work just the same with this left out. However, it is good practice.</p>
 <div class="admonition note">
@@ -513,8 +497,6 @@ ld -m elf_i386 -s power.o -o power</code></p>
         <span class="nf">popl</span> <span class="nv">%ebp</span>          <span class="c"># %ebp and %esp to where they were before the function started</span>
         <span class="nf">ret</span>                <span class="c"># return to the function (this pops the return value, too)</span>
 </pre></div>
-
-
 <p>One good practice we should note is that we should always clean up our stack parameter after a function 
 call returns. In this program, we do <code>addl $4, %esp</code> immediately after we <code>call factorial</code> in our <code>_start</code>.</p>
 <h2 id="future-works">Future works</h2>

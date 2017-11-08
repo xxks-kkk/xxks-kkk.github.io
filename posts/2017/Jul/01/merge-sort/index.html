@@ -62,7 +62,7 @@
         </header>
         
         <article>
-            <html><head></head><body><p>We continue our journey in sorting. Specifically, we'll study
+            <html><body><p>We continue our journey in sorting. Specifically, we'll study
 the mergesort in this post.</p>
 <h2 id="concept">Concept</h2>
 <p>The fundamental idea in the mergesort is merging two sorted lists into one. 
@@ -141,8 +141,6 @@ phase consists of patching together the answers.</p>
   <span class="n">free</span><span class="p">(</span><span class="n">tmpArray</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <p>Note that we use <code>tmpArray</code> working as array <span class="math">\(C\)</span> in our merging algorithm
 to hold the merge result from our two input sorted arrays. One naive implementation
 is that we declare a temporary array locally each time we call <code>Merge</code>. This can
@@ -175,8 +173,6 @@ non-recursive algorithm as follows:</p>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <p>Let's take a look at an example for better understanding of the implementation
 above. Suppose we want to sort the following list using mergesort: 
 <span class="math">\(31, 41, 59, 26, 53, 58, 97\)</span>. We start from very basic case: merge two sorted
@@ -204,8 +200,6 @@ part2Start: 4
 part2End: 6
 After mergeSort: 26, 31, 41, 53, 58, 59, 97,
 </pre></div>
-
-
 <h2 id="analysis">Analysis</h2>
 <p>The running time of mergesort is <span class="math">\(O(N \log N)\)</span>, which can be obtained
 by <a href="../../../../../posts/2017/Jun/12/solving-recurrence-relations-part-2/">solving the recurrence relation</a>:</p>

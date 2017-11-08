@@ -60,7 +60,7 @@
         </header>
         
         <article>
-            <html><head></head><body><p>Surprisingly, even I work with the product that is written majorly in C++, I don't have to deal
+            <html><body><p>Surprisingly, even I work with the product that is written majorly in C++, I don't have to deal
 with the stuff that differentiate C++ from C. However, I'm now working on a defect that
 forces me to simplify C++ objects in order to get the root cause of the problem. That's the place
 where I have to really need to know how exactly C++ class is structured. </p>
@@ -95,15 +95,11 @@ is good enough for me now.</p>
   <span class="n">dog</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <p>Now, inside the <code>main</code>, we call <code>animal-&gt;getClass()</code> and <code>dog-&gt;getClass()</code>. We compile our code 
 using <code>g++ -std=c++11 a.cpp</code> and run the program and get</p>
 <div class="highlight"><pre><span></span>I'm an Animal
 I'm a Dog
 </pre></div>
-
-
 <p>As you can see, each object calls their <code>getClass</code> method respectively.
 Now, let's add a function called <code>whatClassAreYou()</code> to our code above </p>
 <div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">whatClassAreYou</span><span class="p">(</span><span class="n">Animal</span> <span class="o">*</span><span class="n">animal</span><span class="p">)</span>
@@ -111,22 +107,16 @@ Now, let's add a function called <code>whatClassAreYou()</code> to our code abov
   <span class="n">animal</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <p>and in our <code>main</code> function, we call our newly-added function with</p>
 <div class="highlight"><pre><span></span><span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">animal</span><span class="p">);</span>
 <span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">dog</span><span class="p">);</span>
 </pre></div>
-
-
 <p>and the output looks like below</p>
 <div class="highlight"><pre><span></span>I'm an Animal
 I'm a Dog
 I'm an Animal
 I'm an Animal
 </pre></div>
-
-
 <p>As you can see <code>whatClassAreYou()</code> only calls the <code>getClass()</code> method of our base class <code>Animal</code> even when we pass in 
 <code>Dog</code> class object. Ideally, we want our <code>whatClassAreYou()</code> method call the right <code>getClass()</code> method depending on
 what class object we pass into. In other words, if our <code>Dog</code> class implements its own <code>getClass()</code> method, we want
@@ -177,16 +167,12 @@ wants to call it.</p>
   <span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">dog</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <p>and the output is</p>
 <div class="highlight"><pre><span></span>I'm an Animal
 I'm a Dog
 I'm an Animal
 I'm a Dog
 </pre></div>
-
-
 <p>The reason behind this scenario is what we called <strong>polymorphism</strong>, which means "many form" in Greek. Here is how this
 concept get explained in <a href="https://www.amazon.com/Primer-5th-Stanley-B-Lippman/dp/0321714113">C++ Primer</a>:</p>
 <blockquote>
@@ -252,8 +238,6 @@ an object’s dynamic type to differ from its static type.</p>
   <span class="n">whatClassAreYou2</span><span class="p">(</span><span class="n">dog2</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <p>In this example, we define another method <code>whatClassAreYou2</code> calls on object instead of pointers. Now, we apply this method
 to our newly created objects <code>animal2</code> and <code>dog2</code> and we get</p>
 <div class="highlight"><pre><span></span>I'm an Animal
@@ -263,8 +247,6 @@ I'm a Dog
 I'm an Animal
 I'm an Animal
 </pre></div>
-
-
 <p>As you can see, even we have virtual function in our base class, <code>whatClassAreYou2()</code> invokes only the base class's <code>getClass()</code>
 method and ignores the subclass overrides. </p>
 <p>Aside note, you may notice that we use two ways to initialize our objects. The first way is through <code>Animal *animal = new Animal;</code>
@@ -277,8 +259,6 @@ Another way to initialize object is through value initilialization <sup id="fnre
 <span class="kt">int</span> <span class="o">*</span><span class="n">pi1</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">;</span>         <span class="c1">// default initialized; *pi1 is undefined</span>
 <span class="kt">int</span> <span class="o">*</span><span class="n">pi2</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">();</span>       <span class="c1">// value initialized to 0; *pi2 is 0</span>
 </pre></div>
-
-
 <h2 id="pure-virtual-function-abstract-base-class">Pure virtual function &amp; abstract base class</h2>
 <p>Another important concept related with <strong>virtual</strong> is called <strong>pure virtual</strong>. The difference between this concept
 is that, as stated in wikipedia:</p>
@@ -321,8 +301,6 @@ is required to be implemented by a derived class that is not abstract.</p>
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <p>Here, we have a base class called <code>Car</code> and a class that derives from the <code>Car</code> class called <code>StationWagon</code>.  <code>Car</code>
 is a lot similar to our <code>Animal</code> class in the sense that both classes have methods that have keyword <code>virtual</code>. However,
 <code>Car</code> class's methods have <code>=0</code>. This is exactly how we identify <strong>pure virtual</strong>: we specify that a virtual function 

@@ -62,7 +62,7 @@
         </header>
         
         <article>
-            <html><head></head><body><p>I have been using Sphinx since 2012 and I spend quite a amount of time to customize
+            <html><body><p>I have been using Sphinx since 2012 and I spend quite a amount of time to customize
 my old Sphinx-based websites
 (<a class="reference external" href="https://zeyuanhu.wordpress.com/2016/11/24/under-construction-part-12/">This article revisits all my past website construction effort</a>).
 However, most of the time I'm tweaking the CSS and content organization of the site.
@@ -86,7 +86,7 @@ language itself just looks really bizzare to me.</p>
 you will see that we have to work with <tt class="docutils literal">archives.html</tt>. Pelican will use the layout
 specified in this file to generate our archive page.</p>
 <p>For the first iteration, my <tt class="docutils literal">archives.html</tt> looks something like this</p>
-<table class=" table-striped table highlighttable table-hover"><tbody><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<table class=" table-striped table highlighttable table-hover"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -128,13 +128,14 @@ specified in this file to generate our archive page.</p>
  &lt;/section&gt;
  {% endblock %}
 </pre></div>
-</td></tr></tbody></table><p>Let's first take a look at what archive page we can get from this code.</p>
+</td></tr></table><p>Let's first take a look at what archive page we can get from this code.</p>
 <img alt="pelican-hack-1 result" class="img-responsive" src="/images/pelican-hack-1.png"/>
 <p>Line[1],[2] illustrates how usually template file get organized. Usually, we create
 a basic html file that specifies the layout of our site, which is <tt class="docutils literal">base.html</tt> in my case.
 Then, we want to extends this basic html to tailor to different needs. Inside <tt class="docutils literal">base.html</tt>,
 we will place a placeholder, which will be replaced by the content of each child html page:</p>
-<pre class="literal-block">{% block content %}
+<pre class="literal-block">
+{% block content %}
 {% endblock %}
 </pre>
 <p>In my case, I extends <tt class="docutils literal">base.html</tt> to make an archive page. The content enclosed between
@@ -144,7 +145,8 @@ with its content. <tt class="docutils literal">SITENAME</tt> is the same variabl
 result will be the value we assign to <tt class="docutils literal">SITENAME</tt> variable in config file. In my case, the expansion
 result will be "Tech Stuff".</p>
 <p>Starts from Line[8], things start to get interesting:</p>
-<pre class="literal-block">{% for year, year_group in dates|groupby('date.year')|reverse %}
+<pre class="literal-block">
+{% for year, year_group in dates|groupby('date.year')|reverse %}
 ...
 {% endfor %}
 </pre>
@@ -152,18 +154,22 @@ result will be "Tech Stuff".</p>
 <tt class="docutils literal">{% for ... %} ... {% endfor %}</tt> is what for loop looks like in Jinja.</p>
 <p><tt class="docutils literal">dates</tt> itself is a list of articles ordered by date, with each element is an <em>article</em> object. Here is what
 <tt class="docutils literal">dates</tt> looks like in my mind:</p>
-<pre class="literal-block">dates = [ article1, article2, article2, ... ]
+<pre class="literal-block">
+dates = [ article1, article2, article2, ... ]
 </pre>
 <p>and each <em>article</em> looks like:</p>
-<pre class="literal-block">article = [ title, summary, author, date, ... ]
+<pre class="literal-block">
+article = [ title, summary, author, date, ... ]
 </pre>
 <p>Let's put the following code in our <tt class="docutils literal">archives.html</tt> to better understand the structure of <tt class="docutils literal">dates</tt>:</p>
-<pre class="literal-block">{% for year in dates %}
+<pre class="literal-block">
+{% for year in dates %}
 &lt;h1&gt;{{ year }}&lt;/h4&gt;
 {% endfor %}
 </pre>
 <p>The output looks like:</p>
-<pre class="literal-block">/Users/zeyuan/Documents/projects/linuxjedi.co.uk/content/blog/2016/12/17/pelican-hack.rst
+<pre class="literal-block">
+/Users/zeyuan/Documents/projects/linuxjedi.co.uk/content/blog/2016/12/17/pelican-hack.rst
 /Users/zeyuan/Documents/projects/linuxjedi.co.uk/content/blog/2016/12/16/portability.rst
 /Users/zeyuan/Documents/projects/linuxjedi.co.uk/content/blog/2016/12/03/maw-003.rst
 /Users/zeyuan/Documents/projects/linuxjedi.co.uk/content/blog/2016/11/28/maw-002.rst
@@ -178,12 +184,14 @@ they describe those objects in word.</p>
 <p><tt class="docutils literal">groupby</tt> is a <a class="reference external" href="http://jinja.pocoo.org/docs/dev/templates/">Jinja filter which can group a sequence of objects by a common attribute</a>
 In our case, we want to group the info based on year. In other words, <em>article</em> with the same year should be in the same group.
 Let's experiment with the following code:</p>
-<pre class="literal-block">{% for year, year_group in dates|groupby('date.year') %}
+<pre class="literal-block">
+{% for year, year_group in dates|groupby('date.year') %}
     &lt;h1&gt;{{ year }} {{ year_group }}&lt;/h4&gt;
 {% endfor %}
 </pre>
 <p>The output looks like:</p>
-<pre class="literal-block">2015 []
+<pre class="literal-block">
+2015 []
 2016 [, , , , , , ]
 </pre>
 <p>Then, we apply <tt class="docutils literal">reverse</tt> filter to make <tt class="docutils literal">2016</tt> on top of <tt class="docutils literal">2015</tt>. The reset of the code shouldn't be hard to decode.</p>
@@ -195,7 +203,8 @@ Let's experiment with the following code:</p>
 <div class="section" id="count-posts">
 <h2>Count posts</h2>
 <p>This is what my current archive page layout looks like:</p>
-<pre class="literal-block">{% extends "base.html" %}
+<pre class="literal-block">
+{% extends "base.html" %}
 {% block content %}
 &lt;section id="content" class="body"&gt;
 &lt;h1&gt;Archives for {{ SITENAME }}&lt;/h1&gt;
@@ -231,14 +240,16 @@ the page display "Archives for 2016". "2016" can be replaced based on the year I
 This leads to a problem to me: how do I know which year the user click? In other words, how do I pass the information
 to "period_archives.html"?</blockquote>
 <p>I couldn't find a nice way to solve this problem. Here is what I do:</p>
-<pre class="literal-block">{% for year, null in dates|groupby('date.year') %}
+<pre class="literal-block">
+{% for year, null in dates|groupby('date.year') %}
     &lt;h1&gt;Archives for {{ year }}&lt;/h1&gt;
 {% endfor %}
 </pre>
 <p>Since each articles under a certain year archive should have the same year value, I need to take a look at one of them
 to find out the year value and put the value to the heading. However, I don't have to do this trick for tag. I can somehow
 magically reference the value:</p>
-<pre class="literal-block">&lt;h1&gt;Archives by tag '{{ tag }}'&lt;/h1&gt;
+<pre class="literal-block">
+&lt;h1&gt;Archives by tag '{{ tag }}'&lt;/h1&gt;
 </pre>
 <p>Last point I want to point out is that you can define your own Jinja filter under <tt class="docutils literal">pelicanconf.py</tt>.</p>
 </div>

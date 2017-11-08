@@ -66,7 +66,7 @@
         </header>
         
         <article>
-            <html><head></head><body><p>This is MAW 3.24: </p>
+            <html><body><p>This is MAW 3.24: </p>
 <blockquote>
 <p>If the recursive rotuine in Section 2.4 used to computeFibonacci numbers is run for N = 50, is stack space likely to run out?Why or why not?</p>
 </blockquote>
@@ -79,8 +79,6 @@
     <span class="k">return</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Fib</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
-
-
 <p>Let's first do an empirical experimentation. By running <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/numCalls/numCalls.c">our test program numCalls</a>
 and we can get the following output:</p>
 <div class="highlight"><pre><span></span>    i               Fib(i)          numCalls
@@ -107,8 +105,6 @@ and we can get the following output:</p>
     ... snip ...
     i = 50          20365011074     40730022147
 </pre></div>
-
-
 <p>We know that the Fibonacci numbers are defined by the following recurrence relation:</p>
 <div class="math">$$
 \begin{equation}
@@ -163,16 +159,12 @@ to get some insights.</p>
 stack size              <span class="o">(</span>kbytes, -s<span class="o">)</span> 10240
 ... snip ...
 </pre></div>
-
-
 <p>As you can see, the default stack size is <code>10 MB</code>. Let's see how large space our <code>Fib</code>
 is going to use on stack: as of <code>gcc 4.6</code>, there is an option <code>-fstack-usage</code> to allow
 us check the function max amount of stack use. <a href="https://gcc.gnu.org/onlinedocs/gnat_ugn/Static-Stack-Usage-Analysis.html&gt;">Read more info here</a>.</p>
 <div class="highlight"><pre><span></span>numCalls.c:17:1:Fib     48      static
 numCalls.c:27:1:main    64      static
 </pre></div>
-
-
 <p>As you can see, <code>Fib</code> only uses <code>48 bytes</code> and it's quite unlikely to drain out our stack space. 
 But, of course, the runing time is another thing. I mean it's going to be very slow to get the output
 for <span class="math">\(N = 50\)</span>.</p>

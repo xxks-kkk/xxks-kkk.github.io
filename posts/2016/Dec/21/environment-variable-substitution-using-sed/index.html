@@ -62,8 +62,9 @@
         </header>
         
         <article>
-            <html><head></head><body><p>Suppose we have a text file <tt class="docutils literal">config.ini</tt> looks something like this:</p>
-<pre class="literal-block">[MSSQLSERVER]
+            <html><body><p>Suppose we have a text file <tt class="docutils literal">config.ini</tt> looks something like this:</p>
+<pre class="literal-block">
+[MSSQLSERVER]
 Driver=INSTHOME/foo/foo.so
 
 [SYBASE]
@@ -89,7 +90,8 @@ twice on the same line, only the first <tt class="docutils literal">INSTHOME</tt
 inside <tt class="docutils literal">"</tt>. In this case, <tt class="docutils literal">$HOME</tt>.</p>
 </div>
 <p>However, when I type this in and I got the following error:</p>
-<pre class="literal-block">sed: -e expression #1, char 13: unknown option to `s'
+<pre class="literal-block">
+sed: -e expression #1, char 13: unknown option to `s'
 </pre>
 <p>Why did this error happen? That confused me for a while. Then, I try to
 simulate what the program will do for the above expression:</p>
@@ -97,7 +99,8 @@ simulate what the program will do for the above expression:</p>
 </pre></div>
 <p>Ah! This expansion result doesn't make sense at all because <tt class="docutils literal">sed</tt> expression
 inside <tt class="docutils literal">"</tt> needs to follow:</p>
-<pre class="literal-block">"s/[target_expression]/[replace_expression/g"
+<pre class="literal-block">
+"s/[target_expression]/[replace_expression/g"
 </pre>
 <p>So, the first thought comes to me is to escape all <tt class="docutils literal">/</tt> in the expression:</p>
 <div class="highlight"><pre><span></span>sed -i -e <span class="s2">"s/INSTHOME/\/home\/iidev20/g"</span> config.ini
