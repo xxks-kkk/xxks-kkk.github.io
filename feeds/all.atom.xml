@@ -1,5 +1,321 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2017-12-30T12:30:00+08:00</updated><entry><title>[Paper Reading] Crowdsourcing / Human Computation</title><link href="https://zhu45.org/posts/2017/Dec/30/paper-reading-crowdsourcing-human-computation/" rel="alternate"></link><published>2017-12-30T12:30:00+08:00</published><updated>2017-12-30T12:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-12-30:posts/2017/Dec/30/paper-reading-crowdsourcing-human-computation/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-01-12T16:24:00+08:00</updated><entry><title>How to write binary search correctly</title><link href="https://zhu45.org/posts/2018/Jan/12/how-to-write-binary-search-correctly/" rel="alternate"></link><published>2018-01-12T16:24:00+08:00</published><updated>2018-01-12T16:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-01-12:posts/2018/Jan/12/how-to-write-binary-search-correctly/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#term-explanation"&gt;Term explanation&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#invariant"&gt;Invariant&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#bound-function"&gt;Bound function&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#precondition-and-postcondtion"&gt;Precondition and postcondtion&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#binary-search"&gt;Binary search&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem-statement"&gt;Problem statement&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#implementation"&gt;Implementation&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#implementation-1"&gt;Implementation 1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#implementation-2"&gt;Implementation 2&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#binary-search-variations"&gt;Binary search variations&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#example-1"&gt;Example 1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#example-2"&gt;Example 2&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Binary search is a straightforward algorithm to understand but it is hard to code it right.
+This is especially true given the forms of implementation on binary search can take on many.
+In addition, there are many problems can be solved by binary search with slight adjustment.
+Thus, it is not feasible to simply memorize the template of implementation without understanding.
+In this post, We illustrate how we can use the loop invariant in combination with pre and
+postcondition to code binary search correctly. One thing to note is that this post is drafted for 
+practical purpose and it may not be theoretical rigorous.&lt;/p&gt;
+&lt;h2 id="term-explanation"&gt;Term explanation&lt;/h2&gt;
+&lt;h3 id="invariant"&gt;Invariant&lt;/h3&gt;
+&lt;p&gt;&lt;a href="https://reprog.wordpress.com/2010/04/25/writing-correct-code-part-1-invariants-binary-search-part-4a/"&gt;Mike's post&lt;/a&gt; 
+has an excellent description of &lt;a href="https://en.wikipedia.org/wiki/Invariant_(computer_science)"&gt;invariant&lt;/a&gt;, which I 
+directly paste below:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;An invariant is a property that remains true throughout the execution of a piece of code.  It’s a statement about the state of a program — primarily the values of variables — that is not allowed to become false.  (If it does become false, then the code is wrong.)  Choosing the correct invariant — one that properly expresses the intent of an algorithm — is a key part of the design of code (as opposed to the design of APIs); and ensuring that the invariant remains true is a key part of the actual coding.  Roughly speaking, if your invariant properly expresses the intent of the algorithm, and if your code properly maintains the invariant, then that is enough for you to be confident that the code, if it terminates, yields the correct answer.  (Ensuring that it does in fact terminate is the job of the bound function.)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In short, an invariant is a condition that can be relied upon to be true during execution of a program, or during some portion of it. 
+In practice, we formalize that invariant in terms of specific variables and values that appeared in the algorithm.&lt;/p&gt;
+&lt;h3 id="bound-function"&gt;Bound function&lt;/h3&gt;
+&lt;p&gt;Again, &lt;a href="https://reprog.wordpress.com/2010/04/27/writing-correct-code-part-2-bound-functions-binary-search-part-4b/"&gt;Mike's post&lt;/a&gt; has a nice
+explanation of &lt;a href="https://en.wikipedia.org/wiki/Loop_variant"&gt;bound function&lt;/a&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The bound function of a loop is defined as an upper bound on the number of iterations still to perform.  More generally, you can think of it as an expression whose value decreases monotonically as the loop progresses.  When it reaches zero (or drops below), you exit the loop.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id="precondition-and-postcondtion"&gt;Precondition and postcondtion&lt;/h3&gt;
+&lt;p&gt;We borrow definition from &lt;a href="https://reprog.wordpress.com/2010/04/30/writing-correct-code-part-3-preconditions-and-postconditions-binary-search-part-4c/"&gt;Mike's post&lt;/a&gt; once again:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;When you invoke a function — or, all right, a method — you have a sense of what needs to be true when you invoke it, and what it guarantees to be true when it returns.  For example, when you call a function oneMoreThan(val), you undertake to ensure that val is an integer, and the function undertakes to ensure that the value it returns is one more than the one you passed in.  These two promises — the precondition and postcondition — constitute the contract of the function.  So:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The precondition is the promise that you make before running a bit of code;&lt;/li&gt;
+&lt;li&gt;The postcondition is the promise that the code makes after it’s been run.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id="binary-search"&gt;Binary search&lt;/h2&gt;
+&lt;h3 id="problem-statement"&gt;Problem statement&lt;/h3&gt;
+&lt;p&gt;Before we actually implement our algorithm, we first need to make sure we understand the problem correctly. By understanding, we need to make
+sure we understand the given input and the expectation of the output. Those will be translated into the precondition and postcondition for our algorithm.
+Precondition helps us to design the algorithm and postcondition helps us to make sure we get the intended result.&lt;/p&gt;
+&lt;p&gt;Binary search problem is following: given an integer &lt;span class="math"&gt;\(X\)&lt;/span&gt; and integers &lt;span class="math"&gt;\(A_0, A_1, \dots, A_{N-1}\)&lt;/span&gt;, which are presorted in ascending order, find
+&lt;span class="math"&gt;\(i\)&lt;/span&gt; such that &lt;span class="math"&gt;\(A_i = X\)&lt;/span&gt;, or return &lt;span class="math"&gt;\(i = -1\)&lt;/span&gt; if &lt;span class="math"&gt;\(X\)&lt;/span&gt; is not in the input. There might be multiple of &lt;span class="math"&gt;\(i\)&lt;/span&gt; with &lt;span class="math"&gt;\(A_i = X\)&lt;/span&gt;.&lt;/p&gt;
+&lt;h3 id="implementation"&gt;Implementation&lt;/h3&gt;
+&lt;p&gt;The invariant for our binary search algorithm is: "if the target value &lt;span class="math"&gt;\(X\)&lt;/span&gt; is present in the array, then the target value is present in the current range."
+As mentioned above, invariant is formalized using specific variables and values. Here, we need to decide the representation of "current range". This is
+the place where the binary search has many ways of implementation. We use &lt;code&gt;low&lt;/code&gt; and &lt;code&gt;high&lt;/code&gt; to define the range and we use &lt;code&gt;n&lt;/code&gt; to denote the length of array.
+There are several popular formalization of the "current range":&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;1. A[low] &amp;lt;  A[i] &amp;lt;  A[high]
+2. A[low] &amp;lt;= A[i] &amp;lt;  A[high]
+3. A[low] &amp;lt;  A[i] &amp;lt;= A[high]
+4. A[low] &amp;lt;= A[i] &amp;lt;= A[high]
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Number 2 and 4 are the invariants that behind two most popular implementation of binary search you can find on the internet. &lt;/p&gt;
+&lt;h4 id="implementation-1"&gt;Implementation 1&lt;/h4&gt;
+&lt;p&gt;For 2, the equation means that &lt;span class="math"&gt;\(i \in [\text{low}, \text{high})\)&lt;/span&gt;. Thus, &lt;code&gt;low&lt;/code&gt; is initialized to &lt;code&gt;0&lt;/code&gt; and &lt;code&gt;high&lt;/code&gt; initialized to &lt;code&gt;n&lt;/code&gt;. Thus, the invariant
+for this is "If &lt;span class="math"&gt;\(X\)&lt;/span&gt; is at any position &lt;span class="math"&gt;\(i\)&lt;/span&gt; in &lt;span class="math"&gt;\(A\)&lt;/span&gt; (i.e., &lt;span class="math"&gt;\(A_i = X\)&lt;/span&gt;) then &lt;code&gt;low &amp;lt;= i &amp;lt; high&lt;/code&gt;". The implementation represents this invariant is below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;binarySearch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;low&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;high&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;low&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;high&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;low&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;high&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;low&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+            &lt;span class="n"&gt;low&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="c1"&gt;# X &amp;lt; A[i]&lt;/span&gt;
+            &lt;span class="n"&gt;high&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In order to show the correctness of the above implementation, we need to make sure that we maintain the invariant through the execution of the function:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The first thing is to establish the invariant that’s going to hold true for the rest of the function, so we set the variables &lt;code&gt;low&lt;/code&gt; and &lt;code&gt;high&lt;/code&gt; to appropriate values (i.e. the lowest and one pass the highest indexes of the whole &lt;span class="math"&gt;\(A\)&lt;/span&gt;).&lt;/li&gt;
+&lt;li&gt;We have ensured that the invariant is true when we first enter the loop. To show that stays true throughout the running of the function, we need to show that whenever it’s true at the top of the loop, it’s also true at the bottom. Here, our invariant is also the loop invariant.&lt;/li&gt;
+&lt;li&gt;The first statement of the loop (assigning to &lt;code&gt;i&lt;/code&gt;) does not affect any of the variables referenced by the invariant, so it can’t possibly cause the invariant to stop being true.&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;What follows is a three-way &lt;code&gt;if&lt;/code&gt; statement: we need to show that each of the three branches maintains the invariant.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The first branch (i.e., &lt;code&gt;X == A[i]&lt;/code&gt;) covers the case where we have found the target. At this point, we’re returning from the function (and therefore breaking out of the loop) so we don’t really care about the invariant any more; but for what it’s worth, it remains true, as we don’t change the values of &lt;code&gt;low&lt;/code&gt; or &lt;code&gt;high&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The second branch (i.e., &lt;code&gt;X &amp;gt; A[i]&lt;/code&gt;) is the first time we need to use non-trivial reasoning.  If we’re in this branch, we know that the condition guarding it was true, i.e., &lt;code&gt;X &amp;lt; A[i]&lt;/code&gt;.  But because &lt;code&gt;A&lt;/code&gt; is sorted in ascending order, we know that for all &lt;span class="math"&gt;\(j &amp;lt; i, A[j] &amp;lt;= A[i]\)&lt;/span&gt;. 
+This means that &lt;span class="math"&gt;\(X\)&lt;/span&gt; &amp;gt; all A[j] with &lt;span class="math"&gt;\(j &amp;lt;= i\)&lt;/span&gt;. Thus, the lowest position the target can be at is &lt;code&gt;A[i+1]&lt;/code&gt;. In addition, since our invariant is &lt;span class="math"&gt;\(i \in [low, high)\)&lt;/span&gt;,
+we can set &lt;code&gt;low&lt;/code&gt; to &lt;code&gt;i+1&lt;/code&gt;. &lt;/li&gt;
+&lt;li&gt;The third branch follows the same form as the second: since we know that &lt;code&gt;X &amp;lt; A[i]&lt;/code&gt; and that &lt;span class="math"&gt;\(A[j] &amp;gt;= A[i] \forall j &amp;gt; i\)&lt;/span&gt;, we know the highest position the 
+target can be at is &lt;code&gt;A[i-1]&lt;/code&gt;. However, our invariant insists that &lt;span class="math"&gt;\(i \in [low, high)\)&lt;/span&gt; with &lt;code&gt;high&lt;/code&gt; being exclusive brace. Thus, we cannot set &lt;code&gt;high&lt;/code&gt; to be &lt;code&gt;i-1&lt;/code&gt;
+and instead, we set it to &lt;code&gt;i&lt;/code&gt;. Doing so, we maintain our invariant unchanged.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Since we’ve verified that all three branches of the &lt;code&gt;if&lt;/code&gt; maintain the invariant, we know that the invariant holds on exiting that &lt;code&gt;if&lt;/code&gt;. That means the invariant is
+true at the bottom of the loop, which means it will be true at the start of the next time around the loop. And by induction we deduce that it always remains true.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;Finally, we break out of the loop when &lt;code&gt;low &amp;lt; high&lt;/code&gt; is false, which means that the candidate range is empty (i.e. &lt;code&gt;low == high&lt;/code&gt;). At this point, we know that the condition of the invariant (“If &lt;span class="math"&gt;\(X\)&lt;/span&gt; is at any position &lt;span class="math"&gt;\(i\)&lt;/span&gt; in &lt;span class="math"&gt;\(A\)&lt;/span&gt;”) does not hold, so the invariant is trivially true; and we return the out-of-band value &lt;code&gt;-1&lt;/code&gt;. &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="implementation-2"&gt;Implementation 2&lt;/h4&gt;
+&lt;p&gt;For 4, the equation means that &lt;span class="math"&gt;\(i \in [\text{low}, \text{high}]\)&lt;/span&gt;. Thus, &lt;code&gt;low&lt;/code&gt; is initialized to &lt;code&gt;0&lt;/code&gt; and &lt;code&gt;high&lt;/code&gt; initialized to &lt;code&gt;n-1&lt;/code&gt;. Thus, the invariant
+for this is "If &lt;span class="math"&gt;\(X\)&lt;/span&gt; is at any position &lt;span class="math"&gt;\(i\)&lt;/span&gt; in &lt;span class="math"&gt;\(A\)&lt;/span&gt; (i.e., &lt;span class="math"&gt;\(A_i = X\)&lt;/span&gt;) then &lt;code&gt;low &amp;lt;= i &amp;lt;= high&lt;/code&gt;". The implementation represents this invariant is below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;binarySearch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;low&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;high&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;low&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;high&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;low&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;high&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;low&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+            &lt;span class="n"&gt;low&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;high&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;a href="https://reprog.wordpress.com/2010/04/25/writing-correct-code-part-1-invariants-binary-search-part-4a/"&gt;Mike's post&lt;/a&gt; has done the similar invariant unchanged
+analysis, which I'll skip for this implementation. Until now, we haven't touched on the concept of "bound function" and "postcondition" in our analysis. However,
+that doesn't mean these two concepts are not important. Usually, "bound function" is used to prove our loop terminates (Mike's post talks about how to use 
+"bound function" to show above implementation terminates; TopCoder link gives an example of why we need to show algorithm actually terminates). 
+Next section, we'll see an example of checking postcondition is important to make sure we have correct return result.&lt;/p&gt;
+&lt;h2 id="binary-search-variations"&gt;Binary search variations&lt;/h2&gt;
+&lt;p&gt;In this section, we'll talk about two examples that use binary search and see how we can implement the binary search correctly if we are able to maintain the
+invariant. &lt;/p&gt;
+&lt;h3 id="example-1"&gt;Example 1&lt;/h3&gt;
+&lt;p&gt;The first example is &lt;a href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/"&gt;LC153. Find Minimum in Rotated Sorted Array&lt;/a&gt;.
+Here, we are asked to find the minimum element given the rotated array. Suppose we have array &lt;code&gt;[0,1,2,4,5,6,7]&lt;/code&gt; and there are seven ways of rotation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;0,1,2,4,5,6,7
+7,0,1,2,4,5,6
+6,7,0,1,2,4,5
+5,6,7,0,1,2,4
+4,5,6,7,0,1,2
+2,4,5,6,7,0,1
+1,2,4,5,6,7,0
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The key observation is that if the middle value is greater than the left value, then the minimum value appears on the righthand-side of the middle value
+(i.e., for &lt;code&gt;[4,5,6,7,0,1,2]&lt;/code&gt;, the middle value is &lt;code&gt;7&lt;/code&gt; and the minimum value &lt;code&gt;0&lt;/code&gt; appears on the righthand-side of &lt;code&gt;7&lt;/code&gt;).
+Otherwise, the minimum value appears on the lefthand-side of the middle value. Like the previous section, we need to define &lt;code&gt;left&lt;/code&gt; and &lt;code&gt;right&lt;/code&gt; and then our invariant.
+Here, we define the &lt;code&gt;left&lt;/code&gt; as the &lt;code&gt;0&lt;/code&gt; index of the array and &lt;code&gt;right&lt;/code&gt; as the last index of the array. Then, our invariant can be formulated as: "the index of minimum
+value (i.e., &lt;span class="math"&gt;\(i\)&lt;/span&gt;) is always contained in the subarray denoted by &lt;code&gt;left&lt;/code&gt; and &lt;code&gt;right&lt;/code&gt; (i.e., &lt;span class="math"&gt;\(i \in [\text{left}, \text{right}]\)&lt;/span&gt;)". In addition, our precondition
+is: an array sorted in ascending order is rotated at some pivot unknown. Our postcondition is: the minimum value. Then, our implementation is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;findMin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+    &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="n"&gt;mid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+            &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="c1"&gt;# nums[mid] &amp;lt; nums[left]&lt;/span&gt;
+            &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We verify our invariant unchanged as follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The invariant is unchanged before the first &lt;code&gt;if&lt;/code&gt; when &lt;code&gt;nums[left] &amp;lt; nums[right]&lt;/code&gt;. Here, we know that there is no rotation in the array (i.e.,
+&lt;code&gt;[0,1,2,3,4,5,6,7]&lt;/code&gt;) and we return &lt;code&gt;nums[left]&lt;/code&gt;, which keeps invariant and satisfy the postcondition.&lt;/li&gt;
+&lt;li&gt;For the second &lt;code&gt;if&lt;/code&gt;: when &lt;code&gt;nums[mid] &amp;gt;= nums[left]&lt;/code&gt;, by our observation, we know that the minimum value appears 
+on the righthand-side of the middle value. &lt;code&gt;mid&lt;/code&gt; value cannot be the minimum because &lt;code&gt;nums[mid] &amp;gt;= nums[left]&lt;/code&gt;. Thus, we can set &lt;code&gt;left&lt;/code&gt; to &lt;code&gt;mid + 1&lt;/code&gt;
+and still maintains our invariant unchanged.&lt;/li&gt;
+&lt;li&gt;For the case when &lt;code&gt;nums[mid] &amp;lt; nums[left]&lt;/code&gt;, we know that the minimum value appear on the lefthand-side of the middle value. However, &lt;code&gt;mid&lt;/code&gt; value 
+can be the minimum value and thus we set &lt;code&gt;right&lt;/code&gt; to &lt;code&gt;mid&lt;/code&gt; to maintain the invariant.&lt;/li&gt;
+&lt;li&gt;The loop exit when &lt;code&gt;left == rigt&lt;/code&gt;. Our invariant is &lt;span class="math"&gt;\(i \in [\text{left}, \text{right}]\)&lt;/span&gt;, which is different from postcondition requires: 1. postcondition
+asks us to return the actual minimum value instead of the index 2. We still haven't found the minimum value yet. The invariant states that
+&lt;span class="math"&gt;\(i \in [\text{left}, \text{right}]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(i \in [\text{left}, \text{left}]\)&lt;/span&gt; given &lt;code&gt;left == right&lt;/code&gt;. Thus, minimum value can only appear on index pointed by
+&lt;code&gt;left&lt;/code&gt; and to meet the postcondition requirement, we &lt;code&gt;return nums[left]&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Usually, for the iterative algorithm, the invariant is the same as the loop invariant. However, this example also shows the power of the postcondition. In the 
+basic binary search above, maintaining the invariant naturally gives us the result that meets the postcondition requirement. However, for this example, our invariant
+doesn't give us the required result. By checking the postcondition, we know what's the expected return is and it also indicates how we can find one.&lt;/p&gt;
+&lt;h3 id="example-2"&gt;Example 2&lt;/h3&gt;
+&lt;p&gt;The second example we are asked to find the index of the first number that is greater than the given target number in the array. Like basic binary search problem,
+the array is sorted in ascending order. As always, let's consider some examples for this problem. Suppose we are given an array &lt;code&gt;[0,1,5,7,8,10,12,15]&lt;/code&gt;, if the
+target number is &lt;code&gt;3&lt;/code&gt;, we should return &lt;code&gt;2&lt;/code&gt;, which is the index of the first number that is greater than &lt;code&gt;3&lt;/code&gt; (i.e., &lt;code&gt;5&lt;/code&gt;). What about the target number is &lt;code&gt;16&lt;/code&gt;?
+In this case, there is no number in the array is greater than the target number, and we should return &lt;code&gt;-1&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;What's the invariant for this problem? Similar to the other binary search problem, the invariant is "the index &lt;span class="math"&gt;\(i\)&lt;/span&gt; of the first number that is greater than
+the given target number in the array is in &lt;span class="math"&gt;\([\text{low}, \text{high}]\)&lt;/span&gt;". Thus, we can initialize &lt;code&gt;low&lt;/code&gt; to be &lt;code&gt;0&lt;/code&gt; and &lt;code&gt;high&lt;/code&gt; to be &lt;code&gt;n&lt;/code&gt;. Here, we set &lt;code&gt;high&lt;/code&gt; to 
+&lt;code&gt;n&lt;/code&gt; because we need to maintain the invariant. For the case when there is no number in the array that is greater than the target number, we can think about
+the first number that is greater than the target number happens one past the last index. Then, by our invariant, we need to include that number and thus, we set
+our &lt;code&gt;high&lt;/code&gt; to &lt;code&gt;n&lt;/code&gt; instead of &lt;code&gt;n-1&lt;/code&gt;. Then, the implementation follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;findFirstGreaterTo&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;low&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;high&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;low&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;high&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;mid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;low&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;high&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;low&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;low&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="c1"&gt;# nums[mid] &amp;gt; target&lt;/span&gt;
+            &lt;span class="n"&gt;high&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;high&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="n"&gt;high&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The invariant is maintained as follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Invariant is unchanged until the first &lt;code&gt;if&lt;/code&gt;: &lt;code&gt;nums[mid] &amp;lt;= target&lt;/code&gt;. There are two cases here: when &lt;code&gt;nums[mid] &amp;lt; target&lt;/code&gt;, since the array is sorted in
+ascending order and we are looking for the number that is greater than the target number, thus we can set &lt;code&gt;low&lt;/code&gt; to &lt;code&gt;mid + 1&lt;/code&gt; without breaking the invariant.
+When &lt;code&gt;nums[mid] == target&lt;/code&gt;, again we are looking for the first number that is greater than the target number, thus we can set &lt;code&gt;low&lt;/code&gt; to &lt;code&gt;mid + 1&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;When &lt;code&gt;nums[mid] &amp;gt; target&lt;/code&gt;, we can set &lt;code&gt;high&lt;/code&gt; to &lt;code&gt;mid&lt;/code&gt; to maintain our invariant.&lt;/li&gt;
+&lt;li&gt;The loop exit when &lt;code&gt;low == high&lt;/code&gt;, since our invariant is the index of the first number greater than the target number is in &lt;span class="math"&gt;\([\text{low}, \text{high}]\)&lt;/span&gt;, which
+is &lt;span class="math"&gt;\([\text{high}, \text{high}]\)&lt;/span&gt; in this case. Our invariant still holds.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Once we exit the loop, we need to check our postcondition once again. Our postcondition asks us the index of the first number that is greater than the target number
+if it is in the array and &lt;code&gt;-1&lt;/code&gt; otherwise. However, during the initialization of &lt;code&gt;high&lt;/code&gt;, we consider &lt;code&gt;n&lt;/code&gt; represents the case when no such number exists and at the same
+time, satisfies our invariant. Thus, before returning the result, we need to check whether &lt;code&gt;high&lt;/code&gt; within the index range of the given array to satisfy the
+postcondition constraint.&lt;/p&gt;
+&lt;p&gt;In this post, we take a look at the technique that helps us implement the binary search correctly: maintain the invariant. Also, we emphasize the importance
+of the postcondition to help us get the returen result correctly. We haven't empahsized the importance of bound function in the post but we should consider
+it as well. There are two ways to check the loop indeed terminates: one is through reasoning similar what we have done in invariant analysis 
+(&lt;a href="https://reprog.wordpress.com/2010/04/27/writing-correct-code-part-2-bound-functions-binary-search-part-4b/"&gt;Mike's post&lt;/a&gt; and 
+&lt;a href="http://coldattic.info/post/95/"&gt;Paul's post&lt;/a&gt; give us examples on how to do that); another way is by considering some special cases like there are only two 
+elements in the array suggested by the TopCoder article below.&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt; Some details are left out in this post: 1. why use &lt;code&gt;mid = low + (high - low)//2&lt;/code&gt; instead of
+&lt;code&gt;mid = (low + high) // 2&lt;/code&gt; &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt; 2. Use &lt;code&gt;A[low] &amp;lt;= A[i] &amp;lt;  A[high]&lt;/code&gt; as an invariant is better than &lt;code&gt;A[low] &amp;lt;= A[i] &amp;lt;= A[high]&lt;/code&gt;. &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4" rel="footnote"&gt;4&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://stackoverflow.com/questions/504335/what-are-the-pitfalls-in-implementing-binary-search"&gt;StackOverflow - What are the pitfalls in implementing binary search?&lt;/a&gt; (has a short explanation of the importance of invariant with an example)&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://stackoverflow.com/questions/26564658/binary-search-and-invariant-relation"&gt;StackOverflow - Binary search and invariant relation&lt;/a&gt; (has a nice example)&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.topcoder.com/community/data-science/data-science-tutorials/binary-search/"&gt;TopCoder - Binary Search&lt;/a&gt; (think about binary search through predicate inquiry)&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.eecs.yorku.ca/course_archive/2013-14/W/2011/lectures/09%20Loop%20Invariants%20and%20Binary%20Search.pdf"&gt;Loop Invariants and Binary Search&lt;/a&gt; 
+(Nice illustration (i.e., "safe place") between precondition, loop invariant, postcondition)&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www-inst.cs.berkeley.edu/~cs170/fa14/tutorials/tutorial1.pdf"&gt;Invariants and Proofs of correctness&lt;/a&gt; (Gives relative formalization of our invariant
+analysis in the post. Essentially, invariant is the same as the inductive hypothesis.)&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.cs.cornell.edu/courses/cs2110/2014sp/L12-Sorting/L12cs2110BSearchInvariants.pdf"&gt;Binary search and loop invariants&lt;/a&gt; (Slide 6 is good: it tells us how 
+to setup the terminate condition of the loop. Loop terminates when the invariant looks like the postcondition. This slide also gives example of writing terminate
+condition as &lt;code&gt;while(low != high - 1)&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.cs.cornell.edu/courses/cs2112/2015fa/lectures/lec_loopinv/index.html"&gt;Loop invariants&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;The rigorous analysis on this binary search implementation can be found from &lt;a href="https://www.cs.cmu.edu/~rjsimmon/15122-s13/06-binsearch.pdf"&gt;Frank's lecture notes on binary search&lt;/a&gt;. He encodes &lt;a href="https://www.cs.cmu.edu/~rjsimmon/15122-s13/02-contracts.pdf"&gt;contract&lt;/a&gt; 
+directly into the implementation, which displays the loop invariant, precondition, and postcondition directly. &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;Topcoder article offers an equivalent thought of thinking about invariant: predicate inquiry. For example, our last example invariant can be translated
+into the predicate: "Is &lt;code&gt;nums[i]&lt;/code&gt; greater than the target number?" Then, each element is tagged with either "yes" or "no". Then, the problem asks us to find
+out the first element has tag "yes". The two elements special case shown in the article is "no,yes" array. Details see the article. &lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:3"&gt;
+&lt;p&gt;The explanation can be found on &lt;a href="https://rosettacode.org/wiki/Binary_search"&gt;Rosettacode page&lt;/a&gt; and 
+&lt;a href="https://www.cs.cmu.edu/~rjsimmon/15122-s13/06-binsearch.pdf"&gt;Frank's lecture notes on binary search on page L6.12&lt;/a&gt;. &lt;a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:4"&gt;
+&lt;p&gt;&lt;a href="https://reprog.wordpress.com/2010/04/21/binary-search-redux-part-1/#comment-2178"&gt;A comment on Mike's post&lt;/a&gt; sheds some insights. &lt;a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="algorithm"></category></entry><entry><title>[Paper Reading] Crowdsourcing / Human Computation</title><link href="https://zhu45.org/posts/2017/Dec/30/paper-reading-crowdsourcing-human-computation/" rel="alternate"></link><published>2017-12-30T12:30:00+08:00</published><updated>2017-12-30T12:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-12-30:posts/2017/Dec/30/paper-reading-crowdsourcing-human-computation/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#intro"&gt;Intro&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#the-human-processing-unit-hpu"&gt;"The Human Processing Unit (HPU)"&lt;/a&gt;&lt;/li&gt;
