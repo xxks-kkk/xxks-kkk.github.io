@@ -1,5 +1,274 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>https://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Wed, 17 Jan 2018 16:24:00 +0800</lastBuildDate><item><title>"Introduction to Distributed System Design"</title><link>https://zhu45.org/posts/2018/Jan/17/introduction-to-distributed-system-design/</link><description>&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>https://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Sun, 21 Jan 2018 20:24:00 +0800</lastBuildDate><item><title>"Why do computers stop and what can be done about it?"</title><link>https://zhu45.org/posts/2018/Jan/21/why-do-computers-stop-and-what-can-be-done-about-it/</link><description>&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#availability"&gt;Availability&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#terminology"&gt;Terminology&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#key-to-availability"&gt;Key to Availability&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#achieving-high-availability"&gt;Achieving High Availability&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#study-of-failures"&gt;Study of Failures&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#lessons-from-tandem-study"&gt;Lessons from Tandem Study&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#software-fault-tolerance"&gt;Software Fault Tolerance&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#containing-software-faults"&gt;Containing Software Faults&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#fail-fast-software"&gt;Fail Fast Software&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#process-pairs"&gt;Process Pairs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#transactions"&gt;Transactions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#fault-tolerant-communication"&gt;Fault-Tolerant Communication&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Gray, J. &lt;a href="http://pages.cs.wisc.edu/~remzi/Classes/739/Fall2017/Papers/gray-why-do-computers-stop-85.pdf"&gt;Why do computers stop and what can be done about it?&lt;/a&gt;, 1985.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="availability"&gt;Availability&lt;/h2&gt;
+&lt;h3 id="terminology"&gt;Terminology&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mean Time Between Failures (MTBF)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mean Time to Repair (MTTR)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Availability&lt;/strong&gt;: percentage of time the system is operational&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(99.37\%\)&lt;/span&gt; percentage availability over 10 days translates to 1.5 hours outage every 10 days on average (i.e. &lt;span class="math"&gt;\((1 - 99.37\%) \times 10 \times 24 = 1.51\)&lt;/span&gt;)&lt;/li&gt;
+&lt;li&gt;Availability = MTBF / (MTBF + MTTR) = &lt;span class="math"&gt;\(\frac{10*24}{(10*24 + 1.5)} = 0.9937\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;If &lt;span class="math"&gt;\(90\%\)&lt;/span&gt; of servers are available &lt;span class="math"&gt;\(90\%\)&lt;/span&gt; of the time, overall availability could be &lt;span class="math"&gt;\(81\%\)&lt;/span&gt; (could be higher when using certain techniques)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="key-to-availability"&gt;Key to Availability&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;If MTTR is zero, then Availability = MTTF/ (MTTF + 0) = 1&lt;/li&gt;
+&lt;li&gt;We need to give the illusion of instantaneous repair&lt;/li&gt;
+&lt;li&gt;Key idea: Modularize the system so that modules can be repaired “instantly”&lt;/li&gt;
+&lt;li&gt;How to provide instant repair? Have a “hot” spare that can take over instantly&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We can analyze schemes to increase availability along several dimensions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CAPEX (one time capital expense) &lt;/li&gt;
+&lt;li&gt;OPEX (on-going operating expenses) &lt;/li&gt;
+&lt;li&gt;Increase in latency?&lt;/li&gt;
+&lt;li&gt;Reduction in throughput?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="achieving-high-availability"&gt;Achieving High Availability&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Key ideas: &lt;strong&gt;modularity&lt;/strong&gt; and &lt;strong&gt;redundancy&lt;/strong&gt; &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Modularity: a failure within a module affects only that module&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;von Neuman’s system required 20K replicas to achieve a MTBF of 100 years&lt;/li&gt;
+&lt;li&gt;Why? No modularity&lt;/li&gt;
+&lt;li&gt;Large combinations of modules were replicated&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Jim Gray’s algorithm (can have the system has MTBF in decades or centuries)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hierarchically decompose the system into modules&lt;/li&gt;
+&lt;li&gt;Design each module to have MTBF &amp;gt; 1 year&lt;/li&gt;
+&lt;li&gt;Make each module fail-fast&lt;/li&gt;
+&lt;li&gt;Have a heart-beat message for each module so you know when it fails&lt;/li&gt;
+&lt;li&gt;Have spare modules which pick up job of failed module. Failover to spare module should be quick.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="study-of-failures"&gt;Study of Failures&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Analyzed cause of failures over 7 months &lt;/li&gt;
+&lt;li&gt;Study covers 2000 systems, 10M system hours &lt;/li&gt;
+&lt;li&gt;166 failures reported in this period&lt;/li&gt;
+&lt;li&gt;59 of these failures are “infant” failures - faulty hardware or new &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;42% of failures caused by system administration&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Includes software and hardware maintenance: 25% &lt;/li&gt;
+&lt;li&gt;Operations: 9%, configuration: 8%&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;25% software failures, 18% hardware failures&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;14% of failures caused by environmental failures &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;9% power failures, 5% communication and facilities&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="lessons-from-tandem-study"&gt;Lessons from Tandem Study&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Key to high availability: tolerating human errors and operations failures&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Need to design systems to have:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Minimal configuration &lt;/li&gt;
+&lt;li&gt;Minimal maintenance &lt;/li&gt;
+&lt;li&gt;Simple, consistent interfaces&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;New systems often have higher failure rate&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Need time to work out these bugs&lt;/li&gt;
+&lt;li&gt;Do not deploy systems until they become stable&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Jim Gray suggests:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Do regular hardware maintenance&lt;/li&gt;
+&lt;li&gt;Delay software upgrades as long as possible, allow them time to become mature&lt;/li&gt;
+&lt;li&gt;Only patch a bug if it is causing outages&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="software-fault-tolerance"&gt;Software Fault Tolerance&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Applying lessons from before:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Software modularity through processes and messages &lt;/li&gt;
+&lt;li&gt;Fail-fast software modules&lt;/li&gt;
+&lt;li&gt;Process-pairs to handle transient faults&lt;/li&gt;
+&lt;li&gt;Transactions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Underlying assumption: software faults are transient&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Why? The hard software faults would have been removed in testing and quality assurance checks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="containing-software-faults"&gt;Containing Software Faults&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Two main approaches:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Static checking checks the code before it is even run&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Conservative checking&lt;/li&gt;
+&lt;li&gt;May throw up lots of false positives&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Dynamic checking checks code that is executed&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Has lower false positives&lt;/li&gt;
+&lt;li&gt;Might not catch all bugs, especially in rarely run code paths&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="fail-fast-software"&gt;Fail Fast Software&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;In today’s terms, lots of assert conditions in the code&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Linux kernel is filled with PANIC calls. If something goes wrong, print the stack trace and kill the kernel.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="process-pairs"&gt;Process Pairs&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;When one process fails, the other process takes over&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Types of process pairs:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Lockstep: both execute every instruction&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Checkpointing: primary occasionally checkpoints its state, which is copied over to backup&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Variants: Delta Checkpointing, Kernel Checkpointing&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Persistence: backup gets all its knowledge from persistent storage&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Need to ensure persistent storage is not inconsistent&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="transactions"&gt;Transactions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Provide the ACID property: atomicity, consistency, isolation, durability&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Jim Gray argues for persistent process pairs combined with transactions&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Implemented in the Encompass system&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="fault-tolerant-communication"&gt;Fault-Tolerant Communication&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Key idea: sessions and sequence numbers &lt;/li&gt;
+&lt;li&gt;Same idea used in TCP&lt;/li&gt;
+&lt;li&gt;Sequence numbers used to identify duplicate and lost messages&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Sun, 21 Jan 2018 20:24:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2018-01-21:posts/2018/Jan/21/why-do-computers-stop-and-what-can-be-done-about-it/</guid><category>papers</category><category>distributed-systems</category></item><item><title>"Introduction to Distributed System Design"</title><link>https://zhu45.org/posts/2018/Jan/17/introduction-to-distributed-system-design/</link><description>&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#the-basics"&gt;The Basics&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href="#what-is-a-distributed-system"&gt;What is a distributed system?&lt;/a&gt;&lt;/li&gt;

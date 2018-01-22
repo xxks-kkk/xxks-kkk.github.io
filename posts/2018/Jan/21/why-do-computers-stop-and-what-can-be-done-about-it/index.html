@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Why do computers stop and what can be done about it?"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/svg-with-js/js/fontawesome-all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+    <h1 id="site-title"><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
+            <a href="../../../../../courses.html" style="padding: 10px">COURSES</a>
+            <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+            <a href="../../../../../links.html" style="padding: 10px">LINKS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+            <h1 class="post-title">"Why do computers stop and what can be done about it?"</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2018-01-21T20:24:00+08:00"> Jan 21, 2018</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/papers.html">papers</a>
+        /
+	<a href="../../../../../tag/distributed-systems.html">distributed-systems</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <html><body><div class="toc">
+<ul>
+<li><a href="#availability">Availability</a><ul>
+<li><a href="#terminology">Terminology</a></li>
+<li><a href="#key-to-availability">Key to Availability</a></li>
+<li><a href="#achieving-high-availability">Achieving High Availability</a></li>
+</ul>
+</li>
+<li><a href="#study-of-failures">Study of Failures</a></li>
+<li><a href="#lessons-from-tandem-study">Lessons from Tandem Study</a></li>
+<li><a href="#software-fault-tolerance">Software Fault Tolerance</a><ul>
+<li><a href="#containing-software-faults">Containing Software Faults</a></li>
+<li><a href="#fail-fast-software">Fail Fast Software</a></li>
+<li><a href="#process-pairs">Process Pairs</a></li>
+<li><a href="#transactions">Transactions</a></li>
+<li><a href="#fault-tolerant-communication">Fault-Tolerant Communication</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Gray, J. <a href="http://pages.cs.wisc.edu/~remzi/Classes/739/Fall2017/Papers/gray-why-do-computers-stop-85.pdf">Why do computers stop and what can be done about it?</a>, 1985.</p>
+</div>
+<h2 id="availability">Availability</h2>
+<h3 id="terminology">Terminology</h3>
+<ul>
+<li><strong>Mean Time Between Failures (MTBF)</strong></li>
+<li><strong>Mean Time to Repair (MTTR)</strong></li>
+<li>
+<p><strong>Availability</strong>: percentage of time the system is operational</p>
+<ul>
+<li><span class="math">\(99.37\%\)</span> percentage availability over 10 days translates to 1.5 hours outage every 10 days on average (i.e. <span class="math">\((1 - 99.37\%) \times 10 \times 24 = 1.51\)</span>)</li>
+<li>Availability = MTBF / (MTBF + MTTR) = <span class="math">\(\frac{10*24}{(10*24 + 1.5)} = 0.9937\)</span></li>
+<li>If <span class="math">\(90\%\)</span> of servers are available <span class="math">\(90\%\)</span> of the time, overall availability could be <span class="math">\(81\%\)</span> (could be higher when using certain techniques)</li>
+</ul>
+</li>
+</ul>
+<h3 id="key-to-availability">Key to Availability</h3>
+<ul>
+<li>If MTTR is zero, then Availability = MTTF/ (MTTF + 0) = 1</li>
+<li>We need to give the illusion of instantaneous repair</li>
+<li>Key idea: Modularize the system so that modules can be repaired “instantly”</li>
+<li>How to provide instant repair? Have a “hot” spare that can take over instantly</li>
+<li>
+<p>We can analyze schemes to increase availability along several dimensions:</p>
+<ul>
+<li>CAPEX (one time capital expense) </li>
+<li>OPEX (on-going operating expenses) </li>
+<li>Increase in latency?</li>
+<li>Reduction in throughput?</li>
+</ul>
+</li>
+</ul>
+<h3 id="achieving-high-availability">Achieving High Availability</h3>
+<ul>
+<li>Key ideas: <strong>modularity</strong> and <strong>redundancy</strong> </li>
+<li>
+<p>Modularity: a failure within a module affects only that module</p>
+<ul>
+<li>von Neuman’s system required 20K replicas to achieve a MTBF of 100 years</li>
+<li>Why? No modularity</li>
+<li>Large combinations of modules were replicated</li>
+</ul>
+</li>
+<li>
+<p>Jim Gray’s algorithm (can have the system has MTBF in decades or centuries)</p>
+<ul>
+<li>Hierarchically decompose the system into modules</li>
+<li>Design each module to have MTBF &gt; 1 year</li>
+<li>Make each module fail-fast</li>
+<li>Have a heart-beat message for each module so you know when it fails</li>
+<li>Have spare modules which pick up job of failed module. Failover to spare module should be quick.</li>
+</ul>
+</li>
+</ul>
+<h2 id="study-of-failures">Study of Failures</h2>
+<ul>
+<li>Analyzed cause of failures over 7 months </li>
+<li>Study covers 2000 systems, 10M system hours </li>
+<li>166 failures reported in this period</li>
+<li>59 of these failures are “infant” failures - faulty hardware or new </li>
+<li>
+<p>42% of failures caused by system administration</p>
+<ul>
+<li>Includes software and hardware maintenance: 25% </li>
+<li>Operations: 9%, configuration: 8%</li>
+</ul>
+</li>
+<li>
+<p>25% software failures, 18% hardware failures</p>
+</li>
+<li>
+<p>14% of failures caused by environmental failures </p>
+<ul>
+<li>9% power failures, 5% communication and facilities</li>
+</ul>
+</li>
+</ul>
+<h2 id="lessons-from-tandem-study">Lessons from Tandem Study</h2>
+<ul>
+<li>Key to high availability: tolerating human errors and operations failures</li>
+<li>
+<p>Need to design systems to have:</p>
+<ul>
+<li>Minimal configuration </li>
+<li>Minimal maintenance </li>
+<li>Simple, consistent interfaces</li>
+</ul>
+</li>
+<li>
+<p>New systems often have higher failure rate</p>
+<ul>
+<li>Need time to work out these bugs</li>
+<li>Do not deploy systems until they become stable</li>
+</ul>
+</li>
+<li>
+<p>Jim Gray suggests:</p>
+<ul>
+<li>Do regular hardware maintenance</li>
+<li>Delay software upgrades as long as possible, allow them time to become mature</li>
+<li>Only patch a bug if it is causing outages</li>
+</ul>
+</li>
+</ul>
+<h2 id="software-fault-tolerance">Software Fault Tolerance</h2>
+<ul>
+<li>
+<p>Applying lessons from before:</p>
+<ul>
+<li>Software modularity through processes and messages </li>
+<li>Fail-fast software modules</li>
+<li>Process-pairs to handle transient faults</li>
+<li>Transactions</li>
+</ul>
+</li>
+<li>
+<p>Underlying assumption: software faults are transient</p>
+<ul>
+<li>Why? The hard software faults would have been removed in testing and quality assurance checks</li>
+</ul>
+</li>
+</ul>
+<h3 id="containing-software-faults">Containing Software Faults</h3>
+<ul>
+<li>
+<p>Two main approaches:</p>
+<ul>
+<li>
+<p>Static checking checks the code before it is even run</p>
+<ul>
+<li>Conservative checking</li>
+<li>May throw up lots of false positives</li>
+</ul>
+</li>
+<li>
+<p>Dynamic checking checks code that is executed</p>
+<ul>
+<li>Has lower false positives</li>
+<li>Might not catch all bugs, especially in rarely run code paths</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="fail-fast-software">Fail Fast Software</h3>
+<ul>
+<li>
+<p>In today’s terms, lots of assert conditions in the code</p>
+<ul>
+<li>Linux kernel is filled with PANIC calls. If something goes wrong, print the stack trace and kill the kernel.</li>
+</ul>
+</li>
+</ul>
+<h3 id="process-pairs">Process Pairs</h3>
+<ul>
+<li>When one process fails, the other process takes over</li>
+<li>
+<p>Types of process pairs:</p>
+<ul>
+<li>Lockstep: both execute every instruction</li>
+<li>
+<p>Checkpointing: primary occasionally checkpoints its state, which is copied over to backup</p>
+<ul>
+<li>Variants: Delta Checkpointing, Kernel Checkpointing</li>
+</ul>
+</li>
+<li>
+<p>Persistence: backup gets all its knowledge from persistent storage</p>
+<ul>
+<li>Need to ensure persistent storage is not inconsistent</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="transactions">Transactions</h3>
+<ul>
+<li>Provide the ACID property: atomicity, consistency, isolation, durability</li>
+<li>
+<p>Jim Gray argues for persistent process pairs combined with transactions</p>
+<ul>
+<li>Implemented in the Encompass system</li>
+</ul>
+</li>
+</ul>
+<h3 id="fault-tolerant-communication">Fault-Tolerant Communication</h3>
+<ul>
+<li>Key idea: sessions and sequence numbers </li>
+<li>Same idea used in TCP</li>
+<li>Sequence numbers used to identify duplicate and lost messages</li>
+</ul>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script></body></html>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/system.html">system</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2018.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
