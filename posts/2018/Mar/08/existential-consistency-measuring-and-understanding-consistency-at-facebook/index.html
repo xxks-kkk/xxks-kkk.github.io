@@ -167,6 +167,7 @@ results of the most recently completed write.</li>
 <ul>
 <li>Eventual consistency requires that replicas “eventually” agree on a value of an object, i.e., when they all have received the same set of writes, they will have the same value.</li>
 <li>Eventual consistency allows replicas to answer reads immediately using their current version of the data, while writes are asynchronously propagated in the background. While writes are propagating between replicas, different replicas may return different results for reads.</li>
+<li>A client can update any replica of an object and all updates to an object will eventually be applied, but potentially in different orders at different replicas.</li>
 </ul>
 </li>
 <li>
@@ -181,6 +182,7 @@ results of the most recently completed write.</li>
 <h2 id="reference">Reference</h2>
 <ul>
 <li>https://www.cs.utexas.edu/~vijay/cs380D-s18/feb6-fb.pdf</li>
+<li>https://www.allthingsdistributed.com/2008/12/eventually_consistent.html</li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",

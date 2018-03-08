@@ -134,7 +134,7 @@ about state of whole system)</p>
 <li>
 <p>Implementing Vector Clocks:</p>
 <ul>
-<li>Each process <span class="math">\(P_i\)</span> updates its component <span class="math">\(C_i\)</span> in its vector clock (This update happens for each internal event)</li>
+<li>Each process <span class="math">\(P_i\)</span> updates its component <span class="math">\(C_i\)</span> in its vector clock (This update happens for each internal event (e.g. on receiving a message))</li>
 <li>Each message has a vector clock time stamp</li>
 <li>On getting the message, for each field <span class="math">\(x\)</span> in the vector: <span class="math">\(C[x] = \max(C[x], message\_time\_stamp[x])\)</span></li>
 </ul>
