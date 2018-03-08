@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
-        <title>    "Why do computers stop and what can be done about it?"
+        <title>    "Existential Consistency: Measuring and Understanding Consistency at Facebook"
 </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -40,13 +40,13 @@
 </header>
     <div class="post">
         <header>
-            <h1 class="post-title">"Why do computers stop and what can be done about it?"</h1>
+            <h1 class="post-title">"Existential Consistency: Measuring and Understanding Consistency at Facebook"</h1>
             <div class="panel">
                 <div class="panel-body">
 <footer class="post-info">
     <span class="label label-default">Date</span>
     <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2018-01-21T20:24:00+08:00"> Jan 21, 2018</time>
+        <i class="fa fa-calendar"></i><time datetime="2018-03-08T20:24:00+08:00"> Mar 08, 2018</time>
     </span>
 
 
@@ -57,10 +57,6 @@
 	<a href="../../../../../tag/papers.html">papers</a>
         /
 	<a href="../../../../../tag/distributed-systems.html">distributed systems</a>
-        /
-	<a href="../../../../../tag/system-design-principle.html">system design principle</a>
-        /
-	<a href="../../../../../tag/system-concepts.html">system concepts</a>
     
 </footer><!-- /.post-info -->                </div>
             </div>
@@ -69,216 +65,122 @@
         <article>
             <html><body><div class="toc">
 <ul>
-<li><a href="#availability">Availability</a><ul>
-<li><a href="#terminology">Terminology</a></li>
-<li><a href="#key-to-availability">Key to Availability</a></li>
-<li><a href="#achieving-high-availability">Achieving High Availability</a></li>
-</ul>
-</li>
-<li><a href="#study-of-failures">Study of Failures</a></li>
-<li><a href="#lessons-from-tandem-study">Lessons from Tandem Study</a></li>
-<li><a href="#software-fault-tolerance">Software Fault Tolerance</a><ul>
-<li><a href="#containing-software-faults">Containing Software Faults</a></li>
-<li><a href="#fail-fast-software">Fail Fast Software</a></li>
-<li><a href="#process-pairs">Process Pairs</a></li>
-<li><a href="#transactions">Transactions</a></li>
-<li><a href="#fault-tolerant-communication">Fault-Tolerant Communication</a></li>
-</ul>
-</li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#facebooks-replicated-storage">Facebook’s Replicated Storage</a></li>
+<li><a href="#consistency-models">Consistency Models</a></li>
+<li><a href="#reference">Reference</a></li>
 </ul>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Gray, J. <a href="http://pages.cs.wisc.edu/~remzi/Classes/739/Fall2017/Papers/gray-why-do-computers-stop-85.pdf">Why do computers stop and what can be done about it?</a>, 1985.</p>
-</div>
-<h2 id="availability">Availability</h2>
-<h3 id="terminology">Terminology</h3>
+<h2 id="overview">Overview</h2>
 <ul>
-<li><strong>Mean Time Between Failures (MTBF)</strong></li>
-<li><strong>Mean Time to Repair (MTTR)</strong></li>
 <li>
-<p><strong>Availability</strong>: percentage of time the system is operational</p>
+<p>Facebook Study</p>
 <ul>
-<li><span class="math">\(99.37\%\)</span> percentage availability over 10 days translates to 1.5 hours outage every 10 days on average (i.e. <span class="math">\((1 - 99.37\%) \times 10 \times 24 = 1.51\)</span>)</li>
-<li>Availability = MTBF / (MTBF + MTTR) = <span class="math">\(\frac{10*24}{(10*24 + 1.5)} = 0.9937\)</span></li>
-<li>If <span class="math">\(90\%\)</span> of servers are available <span class="math">\(90\%\)</span> of the time, overall availability could be <span class="math">\(81\%\)</span> (could be higher when using certain techniques)</li>
+<li>Analyzed a small portion of the Facebook traffic to the TAO graph system </li>
+<li>Analyzed what consistency models hold</li>
+<li>Analyzed when readers get anomalous results</li>
 </ul>
 </li>
 </ul>
-<h3 id="key-to-availability">Key to Availability</h3>
+<h2 id="facebooks-replicated-storage">Facebook’s Replicated Storage</h2>
 <ul>
-<li>If MTTR is zero, then Availability = MTTF/ (MTTF + 0) = 1</li>
-<li>We need to give the illusion of instantaneous repair</li>
-<li>Key idea: Modularize the system so that modules can be repaired “instantly”</li>
-<li>How to provide instant repair? Have a “hot” spare that can take over instantly</li>
 <li>
-<p>We can analyze schemes to increase availability along several dimensions:</p>
+<p>Facebook Data Model</p>
 <ul>
-<li>CAPEX (one time capital expense) </li>
-<li>OPEX (on-going operating expenses) </li>
-<li>Increase in latency?</li>
-<li>Reduction in throughput?</li>
-</ul>
-</li>
-</ul>
-<h3 id="achieving-high-availability">Achieving High Availability</h3>
-<ul>
-<li>Key ideas: <strong>modularity</strong> and <strong>redundancy</strong> </li>
-<li>
-<p>Modularity: a failure within a module affects only that module</p>
-<ul>
-<li>von Neuman’s system required 20K replicas to achieve a MTBF of 100 years</li>
-<li>Why? No modularity</li>
-<li>Large combinations of modules were replicated</li>
+<li>Graph Data Model</li>
+<li>Vertex: unique ID + data</li>
+<li>Edges: between two vertexes, contains data, indexed by source vertex</li>
 </ul>
 </li>
 <li>
-<p>Jim Gray’s algorithm (can have the system has MTBF in decades or centuries)</p>
+<p>Database</p>
 <ul>
-<li>Hierarchically decompose the system into modules</li>
-<li>Design each module to have MTBF &gt; 1 year</li>
-<li>Make each module fail-fast</li>
-<li>Have a heart-beat message for each module so you know when it fails</li>
-<li>Have spare modules which pick up job of failed module. Failover to spare module should be quick.</li>
-</ul>
-</li>
-</ul>
-<h2 id="study-of-failures">Study of Failures</h2>
-<ul>
-<li>Analyzed cause of failures over 7 months </li>
-<li>Study covers 2000 systems, 10M system hours </li>
-<li>166 failures reported in this period</li>
-<li>59 of these failures are “infant” failures - faulty hardware or new </li>
-<li>
-<p>42% of failures caused by system administration</p>
-<ul>
-<li>Includes software and hardware maintenance: 25% </li>
-<li>Operations: 9%, configuration: 8%</li>
+<li>Horizontally (i.e., row) sharded, geo-replicated database</li>
+<li>Each region has a full copy</li>
+<li>Each shard has a master which asynchronously updates the other regions</li>
 </ul>
 </li>
 <li>
-<p>25% software failures, 18% hardware failures</p>
-</li>
-<li>
-<p>14% of failures caused by environmental failures </p>
+<p>Two-Level Cache</p>
 <ul>
-<li>9% power failures, 5% communication and facilities</li>
+<li>Root cache sits in front of the database</li>
+<li>Leaf caches sit in front of the root caches</li>
+<li>Write-through caches</li>
+<li>Reads:<ul>
+<li>progress down the stack in their local region on cache misses from leaf cache to root cache, and then to local database. 
+  The cache-hit ratios are very high, so reads are typically served by the leaf caches.</li>
 </ul>
 </li>
-</ul>
-<h2 id="lessons-from-tandem-study">Lessons from Tandem Study</h2>
-<ul>
-<li>Key to high availability: tolerating human errors and operations failures</li>
-<li>
-<p>Need to design systems to have:</p>
-<ul>
-<li>Minimal configuration </li>
-<li>Minimal maintenance </li>
-<li>Simple, consistent interfaces</li>
-</ul>
-</li>
-<li>
-<p>New systems often have higher failure rate</p>
-<ul>
-<li>Need time to work out these bugs</li>
-<li>Do not deploy systems until they become stable</li>
-</ul>
-</li>
-<li>
-<p>Jim Gray suggests:</p>
-<ul>
-<li>Do regular hardware maintenance</li>
-<li>Delay software upgrades as long as possible, allow them time to become mature</li>
-<li>Only patch a bug if it is causing outages</li>
+<li>Writes:<ul>
+<li>They are synchronously routed through their leaf cache (1) to their local root cache (2) to the root-master cache (3), and to the master database shard (4) and back (5–8).</li>
+<li>Each of those caches applies the write when it forwards the database’s acknowledgment back towards the client.</li>
+<li>The root caches in the master (<span class="math">\(6'\)</span>) and originating regions (<span class="math">\(7'\)</span>) both asynchronously invalidate the other leaf caches in their region</li>
+<li>The database master asynchronously replicates the write to the slave regions (<span class="math">\(5'\)</span>). When a slave database in a region that did not originate the write receives it, the database asynchronously invalidates its root cache (<span class="math">\(6''\)</span>) that in turn asynchronously invalidates all its leaf caches (<span class="math">\(7''\)</span>).</li>
 </ul>
 </li>
 </ul>
-<h2 id="software-fault-tolerance">Software Fault Tolerance</h2>
+<p><img alt="facebook replicated storage" class="img-responsive" src="/images/fb-storage.png"/></p>
+</li>
+</ul>
+<h2 id="consistency-models">Consistency Models</h2>
 <ul>
 <li>
-<p>Applying lessons from before:</p>
+<p>Local Consistency Models</p>
 <ul>
-<li>Software modularity through processes and messages </li>
-<li>Fail-fast software modules</li>
-<li>Process-pairs to handle transient faults</li>
-<li>Transactions</li>
+<li><strong>Local</strong>: A consistency model, C, is local if the system as a whole provides C whenever each individual object provides C</li>
 </ul>
 </li>
 <li>
-<p>Underlying assumption: software faults are transient</p>
+<p>Linearizability</p>
 <ul>
-<li>Why? The hard software faults would have been removed in testing and quality assurance checks</li>
+<li>Linearizability is the strongest consistency model for non-transactional systems. </li>
+<li>Intuitively, linearizability ensures that each operation appears to take effect instantaneously at some point between when the client invokes the operation and it receives the response. </li>
+<li>More formally, linearizability dictates that there exists a total order over all operations in the system, and that this order is consistent with the real-time order of operations. <ul>
+<li>If operation A completes before operation B begins, then A will be ordered before B. </li>
 </ul>
 </li>
-</ul>
-<h3 id="containing-software-faults">Containing Software Faults</h3>
-<ul>
-<li>
-<p>Two main approaches:</p>
-<ul>
-<li>
-<p>Static checking checks the code before it is even run</p>
-<ul>
-<li>Conservative checking</li>
-<li>May throw up lots of false positives</li>
+<li>Linearizability avoids anomalies by ensuring that writes take effect in some sequential order consistent with real time, and that reads always see the 
+results of the most recently completed write.</li>
 </ul>
 </li>
 <li>
-<p>Dynamic checking checks code that is executed</p>
+<p>Per-Object Sequential Consistency</p>
 <ul>
-<li>Has lower false positives</li>
-<li>Might not catch all bugs, especially in rarely run code paths</li>
+<li>Per-object sequential consistency requires that there exists a legal, total order over all requests to each object that is consistent with client’s orders. </li>
+<li>Intuitively, there is one logical version of each object that progresses forward in time. </li>
+<li>Clients always see a newer version of an object as they interact with it. </li>
+<li>Different clients, however, may see different versions of the object.<ul>
+<li>One client may be on version 100 of an object, while another client may see version 105.</li>
 </ul>
 </li>
 </ul>
 </li>
-</ul>
-<h3 id="fail-fast-software">Fail Fast Software</h3>
-<ul>
 <li>
-<p>In today’s terms, lots of assert conditions in the code</p>
+<p>Read-After-Write Consistency</p>
 <ul>
-<li>Linux kernel is filled with PANIC calls. If something goes wrong, print the stack trace and kill the kernel.</li>
-</ul>
-</li>
-</ul>
-<h3 id="process-pairs">Process Pairs</h3>
-<ul>
-<li>When one process fails, the other process takes over</li>
-<li>
-<p>Types of process pairs:</p>
-<ul>
-<li>Lockstep: both execute every instruction</li>
-<li>
-<p>Checkpointing: primary occasionally checkpoints its state, which is copied over to backup</p>
-<ul>
-<li>Variants: Delta Checkpointing, Kernel Checkpointing</li>
+<li>when a write request has committed, all following read requests to that cache always reflect this write or later writes.</li>
+<li>Region read-after-write consistency applies the constraint for reads in the same region as a write. Global read-after-write consistency applies the constraint for all reads.</li>
 </ul>
 </li>
 <li>
-<p>Persistence: backup gets all its knowledge from persistent storage</p>
+<p>Eventual Consistency</p>
 <ul>
-<li>Need to ensure persistent storage is not inconsistent</li>
+<li>Eventual consistency requires that replicas “eventually” agree on a value of an object, i.e., when they all have received the same set of writes, they will have the same value.</li>
+<li>Eventual consistency allows replicas to answer reads immediately using their current version of the data, while writes are asynchronously propagated in the background. While writes are propagating between replicas, different replicas may return different results for reads.</li>
 </ul>
 </li>
-</ul>
-</li>
-</ul>
-<h3 id="transactions">Transactions</h3>
-<ul>
-<li>Provide the ACID property: atomicity, consistency, isolation, durability</li>
 <li>
-<p>Jim Gray argues for persistent process pairs combined with transactions</p>
+<p>Facebook’s Consistency</p>
 <ul>
-<li>Implemented in the Encompass system</li>
+<li>per-object sequential consistency (per-cache) + read-after-write (per-cache) + eventual consistency (across caches)</li>
+<li>User sessions are typically handled exclusively by one leaf cache, and thus we expect most of them to receive per-object sequential and read-after-write consistency.</li>
+<li>User sessions spread across multiple leaf caches receive eventual consistency.</li>
 </ul>
 </li>
 </ul>
-<h3 id="fault-tolerant-communication">Fault-Tolerant Communication</h3>
+<h2 id="reference">Reference</h2>
 <ul>
-<li>Key idea: sessions and sequence numbers </li>
-<li>Same idea used in TCP</li>
-<li>Sequence numbers used to identify duplicate and lost messages</li>
+<li>https://www.cs.utexas.edu/~vijay/cs380D-s18/feb6-fb.pdf</li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",

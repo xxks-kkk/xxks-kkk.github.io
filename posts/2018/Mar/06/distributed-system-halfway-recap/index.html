@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
-        <title>    "Why do computers stop and what can be done about it?"
+        <title>    Distributed System Halfway Recap
 </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -40,13 +40,13 @@
 </header>
     <div class="post">
         <header>
-            <h1 class="post-title">"Why do computers stop and what can be done about it?"</h1>
+            <h1 class="post-title">Distributed System Halfway Recap</h1>
             <div class="panel">
                 <div class="panel-body">
 <footer class="post-info">
     <span class="label label-default">Date</span>
     <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2018-01-21T20:24:00+08:00"> Jan 21, 2018</time>
+        <i class="fa fa-calendar"></i><time datetime="2018-03-06T16:24:00+08:00"> Mar 06, 2018</time>
     </span>
 
 
@@ -58,6 +58,8 @@
         /
 	<a href="../../../../../tag/distributed-systems.html">distributed systems</a>
         /
+	<a href="../../../../../tag/protocol.html">protocol</a>
+        /
 	<a href="../../../../../tag/system-design-principle.html">system design principle</a>
         /
 	<a href="../../../../../tag/system-concepts.html">system concepts</a>
@@ -67,219 +69,109 @@
         </header>
         
         <article>
-            <html><body><div class="toc">
+            <html><body><p>This post is made for <a href="https://docs.google.com/spreadsheets/d/1fdh8zYxRyJtNtfOwcS0-mMpAyhmjckaGP8vA3NWsTRU/edit#gid=0">CS 380D Distributed Systems</a>
+midterm review. All the papers mentioned below can either be found through the link above or in the <a href="https://github.com/xxks-kkk/Code-for-blog/tree/master/2018/380D-vijay/papers">paper list</a> that I maintain.</p>
+<div class="toc">
 <ul>
-<li><a href="#availability">Availability</a><ul>
-<li><a href="#terminology">Terminology</a></li>
-<li><a href="#key-to-availability">Key to Availability</a></li>
-<li><a href="#achieving-high-availability">Achieving High Availability</a></li>
+<li><a href="#system-concepts">System Concepts</a><ul>
+<li><a href="#lamport-clocks">Lamport Clocks</a></li>
+<li><a href="#vector-clocks">Vector Clocks</a></li>
 </ul>
 </li>
-<li><a href="#study-of-failures">Study of Failures</a></li>
-<li><a href="#lessons-from-tandem-study">Lessons from Tandem Study</a></li>
-<li><a href="#software-fault-tolerance">Software Fault Tolerance</a><ul>
-<li><a href="#containing-software-faults">Containing Software Faults</a></li>
-<li><a href="#fail-fast-software">Fail Fast Software</a></li>
-<li><a href="#process-pairs">Process Pairs</a></li>
-<li><a href="#transactions">Transactions</a></li>
-<li><a href="#fault-tolerant-communication">Fault-Tolerant Communication</a></li>
-</ul>
-</li>
+<li><a href="#system-performance-measurements">System Performance Measurements</a></li>
+<li><a href="#protocol">Protocol</a></li>
+<li><a href="#design-principles">Design Principles</a></li>
 </ul>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Gray, J. <a href="http://pages.cs.wisc.edu/~remzi/Classes/739/Fall2017/Papers/gray-why-do-computers-stop-85.pdf">Why do computers stop and what can be done about it?</a>, 1985.</p>
-</div>
-<h2 id="availability">Availability</h2>
-<h3 id="terminology">Terminology</h3>
+<h2 id="system-concepts">System Concepts</h2>
+<h3 id="lamport-clocks">Lamport Clocks</h3>
 <ul>
-<li><strong>Mean Time Between Failures (MTBF)</strong></li>
-<li><strong>Mean Time to Repair (MTTR)</strong></li>
+<li>In a distributed system, there is <strong>no global time</strong> and <strong>no global state</strong> <span class="math">\(\implies\)</span> the clock of different nodes in a distributed system
+can have different values.</li>
 <li>
-<p><strong>Availability</strong>: percentage of time the system is operational</p>
+<p>Happened-before Relationship:</p>
 <ul>
-<li><span class="math">\(99.37\%\)</span> percentage availability over 10 days translates to 1.5 hours outage every 10 days on average (i.e. <span class="math">\((1 - 99.37\%) \times 10 \times 24 = 1.51\)</span>)</li>
-<li>Availability = MTBF / (MTBF + MTTR) = <span class="math">\(\frac{10*24}{(10*24 + 1.5)} = 0.9937\)</span></li>
-<li>If <span class="math">\(90\%\)</span> of servers are available <span class="math">\(90\%\)</span> of the time, overall availability could be <span class="math">\(81\%\)</span> (could be higher when using certain techniques)</li>
-</ul>
-</li>
-</ul>
-<h3 id="key-to-availability">Key to Availability</h3>
-<ul>
-<li>If MTTR is zero, then Availability = MTTF/ (MTTF + 0) = 1</li>
-<li>We need to give the illusion of instantaneous repair</li>
-<li>Key idea: Modularize the system so that modules can be repaired “instantly”</li>
-<li>How to provide instant repair? Have a “hot” spare that can take over instantly</li>
+<li>Some events in a distributed system happened before other events and others are concurrent</li>
 <li>
-<p>We can analyze schemes to increase availability along several dimensions:</p>
-<ul>
-<li>CAPEX (one time capital expense) </li>
-<li>OPEX (on-going operating expenses) </li>
-<li>Increase in latency?</li>
-<li>Reduction in throughput?</li>
-</ul>
-</li>
-</ul>
-<h3 id="achieving-high-availability">Achieving High Availability</h3>
-<ul>
-<li>Key ideas: <strong>modularity</strong> and <strong>redundancy</strong> </li>
-<li>
-<p>Modularity: a failure within a module affects only that module</p>
-<ul>
-<li>von Neuman’s system required 20K replicas to achieve a MTBF of 100 years</li>
-<li>Why? No modularity</li>
-<li>Large combinations of modules were replicated</li>
-</ul>
-</li>
-<li>
-<p>Jim Gray’s algorithm (can have the system has MTBF in decades or centuries)</p>
-<ul>
-<li>Hierarchically decompose the system into modules</li>
-<li>Design each module to have MTBF &gt; 1 year</li>
-<li>Make each module fail-fast</li>
-<li>Have a heart-beat message for each module so you know when it fails</li>
-<li>Have spare modules which pick up job of failed module. Failover to spare module should be quick.</li>
-</ul>
-</li>
-</ul>
-<h2 id="study-of-failures">Study of Failures</h2>
-<ul>
-<li>Analyzed cause of failures over 7 months </li>
-<li>Study covers 2000 systems, 10M system hours </li>
-<li>166 failures reported in this period</li>
-<li>59 of these failures are “infant” failures - faulty hardware or new </li>
-<li>
-<p>42% of failures caused by system administration</p>
-<ul>
-<li>Includes software and hardware maintenance: 25% </li>
-<li>Operations: 9%, configuration: 8%</li>
-</ul>
-</li>
-<li>
-<p>25% software failures, 18% hardware failures</p>
-</li>
-<li>
-<p>14% of failures caused by environmental failures </p>
-<ul>
-<li>9% power failures, 5% communication and facilities</li>
-</ul>
-</li>
-</ul>
-<h2 id="lessons-from-tandem-study">Lessons from Tandem Study</h2>
-<ul>
-<li>Key to high availability: tolerating human errors and operations failures</li>
-<li>
-<p>Need to design systems to have:</p>
-<ul>
-<li>Minimal configuration </li>
-<li>Minimal maintenance </li>
-<li>Simple, consistent interfaces</li>
-</ul>
-</li>
-<li>
-<p>New systems often have higher failure rate</p>
-<ul>
-<li>Need time to work out these bugs</li>
-<li>Do not deploy systems until they become stable</li>
-</ul>
-</li>
-<li>
-<p>Jim Gray suggests:</p>
-<ul>
-<li>Do regular hardware maintenance</li>
-<li>Delay software upgrades as long as possible, allow them time to become mature</li>
-<li>Only patch a bug if it is causing outages</li>
-</ul>
-</li>
-</ul>
-<h2 id="software-fault-tolerance">Software Fault Tolerance</h2>
-<ul>
-<li>
-<p>Applying lessons from before:</p>
-<ul>
-<li>Software modularity through processes and messages </li>
-<li>Fail-fast software modules</li>
-<li>Process-pairs to handle transient faults</li>
-<li>Transactions</li>
-</ul>
-</li>
-<li>
-<p>Underlying assumption: software faults are transient</p>
-<ul>
-<li>Why? The hard software faults would have been removed in testing and quality assurance checks</li>
-</ul>
-</li>
-</ul>
-<h3 id="containing-software-faults">Containing Software Faults</h3>
-<ul>
-<li>
-<p>Two main approaches:</p>
-<ul>
-<li>
-<p>Static checking checks the code before it is even run</p>
-<ul>
-<li>Conservative checking</li>
-<li>May throw up lots of false positives</li>
-</ul>
-</li>
-<li>
-<p>Dynamic checking checks code that is executed</p>
-<ul>
-<li>Has lower false positives</li>
-<li>Might not catch all bugs, especially in rarely run code paths</li>
-</ul>
+<p>Happened-before is a partial ordering on events in a distributed system:</p>
+<p>Given events <span class="math">\(E1, E2, E3\)</span> and <span class="math">\(E1\)</span> happens before <span class="math">\(E2\)</span> and <span class="math">\(E1\)</span> happens before <span class="math">\(E3\)</span>, we have <span class="math">\(E2\)</span> and <span class="math">\(E3\)</span> are concurrent and
+<span class="math">\(E1 &lt; E3\)</span> and <span class="math">\(E1 &lt; E3\)</span>.</p>
 </li>
 </ul>
 </li>
-</ul>
-<h3 id="fail-fast-software">Fail Fast Software</h3>
-<ul>
 <li>
-<p>In today’s terms, lots of assert conditions in the code</p>
-<ul>
-<li>Linux kernel is filled with PANIC calls. If something goes wrong, print the stack trace and kill the kernel.</li>
-</ul>
+<p><span class="math">\(\rightarrow\)</span> relation satisfies the following conditions:</p>
+<p>1) If <span class="math">\(a\)</span> and <span class="math">\(b\)</span> are events in the same process, and <span class="math">\(a\)</span> comes before <span class="math">\(b\)</span>, then <span class="math">\(a \rightarrow b\)</span></p>
+<p>2) If <span class="math">\(a\)</span> is the sending of a message by one process and <span class="math">\(b\)</span> is the receipt of the same message by another process, then <span class="math">\(a \rightarrow b\)</span></p>
+<p>3) If <span class="math">\(a \rightarrow b\)</span> and <span class="math">\(b \rightarrow c\)</span>, then <span class="math">\(a \rightarrow c\)</span></p>
 </li>
-</ul>
-<h3 id="process-pairs">Process Pairs</h3>
-<ul>
-<li>When one process fails, the other process takes over</li>
 <li>
-<p>Types of process pairs:</p>
-<ul>
-<li>Lockstep: both execute every instruction</li>
+<p>Two distinct events <span class="math">\(a\)</span> and <span class="math">\(b\)</span> are said to be concurrent if <span class="math">\(a \not\rightarrow b\)</span> and <span class="math">\(b \not\rightarrow a\)</span></p>
+</li>
 <li>
-<p>Checkpointing: primary occasionally checkpoints its state, which is copied over to backup</p>
+<p>Logical Clocks:</p>
 <ul>
-<li>Variants: Delta Checkpointing, Kernel Checkpointing</li>
+<li>Assigns a monotonically increasing number <span class="math">\(C(x)\)</span> for each event <span class="math">\(x\)</span> in a process </li>
+<li>If event <span class="math">\(x\)</span> happens before event <span class="math">\(y\)</span>, <span class="math">\(C(x) &lt; C(y)\)</span> (Note, <span class="math">\(C(x) &lt; C(y) \not\implies x &lt; y\)</span>)</li>
+<li>If <span class="math">\(x\)</span> and <span class="math">\(y\)</span> are in the same process, and <span class="math">\(x &lt; y\)</span>, then <span class="math">\(C(x) &lt; C(y)\)</span></li>
+<li>If <span class="math">\(x\)</span> is sending of message, and <span class="math">\(y\)</span> receipt of the message, then <span class="math">\(x &lt; y\)</span> and <span class="math">\(C(x) &lt; C(y)\)</span></li>
 </ul>
 </li>
 <li>
-<p>Persistence: backup gets all its knowledge from persistent storage</p>
+<p>Implementing Logical Clocks:</p>
 <ul>
-<li>Need to ensure persistent storage is not inconsistent</li>
+<li>Within a process <span class="math">\(X\)</span>, increment <span class="math">\(C(x)\)</span> every time an event happens</li>
+<li>When process <span class="math">\(X\)</span> receives a message with timestamp <span class="math">\(T\)</span>, <span class="math">\(C(x) = \max(T, C(x)) + 1\)</span></li>
 </ul>
 </li>
-</ul>
-</li>
-</ul>
-<h3 id="transactions">Transactions</h3>
-<ul>
-<li>Provide the ACID property: atomicity, consistency, isolation, durability</li>
 <li>
-<p>Jim Gray argues for persistent process pairs combined with transactions</p>
+<p>How do we break the tie of the concurrent events and achive total ordering of the events in the sytem:</p>
 <ul>
-<li>Implemented in the Encompass system</li>
+<li>If <span class="math">\(x\)</span> and <span class="math">\(y\)</span> in same process, and <span class="math">\(x &lt; y\)</span>, <span class="math">\(C(x) &lt; C(y)\)</span></li>
+<li>If <span class="math">\(x\)</span> and <span class="math">\(y\)</span> are concurrent (<span class="math">\(x = y\)</span>), then <span class="math">\(P(x) &lt; P(y) \implies C(x) &lt; C(y)\)</span> (<span class="math">\(P(\cdot)\)</span> means process ID)</li>
 </ul>
 </li>
 </ul>
-<h3 id="fault-tolerant-communication">Fault-Tolerant Communication</h3>
+<h3 id="vector-clocks">Vector Clocks</h3>
 <ul>
-<li>Key idea: sessions and sequence numbers </li>
-<li>Same idea used in TCP</li>
-<li>Sequence numbers used to identify duplicate and lost messages</li>
+<li>
+<p>Limitation of Lamport Clocks:</p>
+<ul>
+<li>If <span class="math">\(C(x) &lt; C(y)\)</span>, we cannot tell whether <span class="math">\(x &lt; y\)</span></li>
+<li>We can only say if <span class="math">\(x &lt; y\)</span>, then <span class="math">\(C(x) &lt; C(y)\)</span></li>
 </ul>
+</li>
+<li>
+<p>Goal: to enable each process to have an <strong>approximation of global time</strong> at all processes (Every message propagates info
+about state of whole system)</p>
+</li>
+<li>
+<p>Each process has a vector of clocks: </p>
+<ul>
+<li>Clock <span class="math">\(C_i\)</span> is time for process <span class="math">\(i\)</span> as seen by the owner of the vector </li>
+<li><span class="math">\(C_i\)</span> in two different vectors may not be the same</li>
+</ul>
+</li>
+<li>
+<p>Implementing Vector Clocks:</p>
+<ul>
+<li>Each process <span class="math">\(P_i\)</span> updates its component <span class="math">\(C_i\)</span> in its vector clock (This update happens for each internal event)</li>
+<li>Each message has a vector clock time stamp</li>
+<li>On getting the message, for each field <span class="math">\(x\)</span> in the vector: <span class="math">\(C[x] = \max(C[x], message\_time\_stamp[x])\)</span></li>
+</ul>
+</li>
+<li>
+<p>Comparing Vector Timestamps:</p>
+<ul>
+<li>Timestamp <span class="math">\(X \le Y\)</span> if all components of <span class="math">\(X \le\)</span> corresponding components in <span class="math">\(Y\)</span></li>
+<li>Timestamp <span class="math">\(X &lt; Y\)</span> if at least one component is strictly lesser, with all others being equal  </li>
+<li>Otherwise, <span class="math">\(X\)</span> and <span class="math">\(Y\)</span> are concurrent</li>
+</ul>
+</li>
+</ul>
+<h2 id="system-performance-measurements">System Performance Measurements</h2>
+<h2 id="protocol">Protocol</h2>
+<h2 id="design-principles">Design Principles</h2>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",

@@ -1,5 +1,563 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-01-21T20:24:00+08:00</updated><entry><title>"Why do computers stop and what can be done about it?"</title><link href="https://zhu45.org/posts/2018/Jan/21/why-do-computers-stop-and-what-can-be-done-about-it/" rel="alternate"></link><published>2018-01-21T20:24:00+08:00</published><updated>2018-01-21T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-01-21:posts/2018/Jan/21/why-do-computers-stop-and-what-can-be-done-about-it/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-03-08T20:24:00+08:00</updated><entry><title>"Existential Consistency: Measuring and Understanding Consistency at Facebook"</title><link href="https://zhu45.org/posts/2018/Mar/08/existential-consistency-measuring-and-understanding-consistency-at-facebook/" rel="alternate"></link><published>2018-03-08T20:24:00+08:00</published><updated>2018-03-08T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-03-08:posts/2018/Mar/08/existential-consistency-measuring-and-understanding-consistency-at-facebook/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#overview"&gt;Overview&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#facebooks-replicated-storage"&gt;Facebook’s Replicated Storage&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#consistency-models"&gt;Consistency Models&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="overview"&gt;Overview&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Facebook Study&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Analyzed a small portion of the Facebook traffic to the TAO graph system &lt;/li&gt;
+&lt;li&gt;Analyzed what consistency models hold&lt;/li&gt;
+&lt;li&gt;Analyzed when readers get anomalous results&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="facebooks-replicated-storage"&gt;Facebook’s Replicated Storage&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Facebook Data Model&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Graph Data Model&lt;/li&gt;
+&lt;li&gt;Vertex: unique ID + data&lt;/li&gt;
+&lt;li&gt;Edges: between two vertexes, contains data, indexed by source vertex&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Database&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Horizontally (i.e., row) sharded, geo-replicated database&lt;/li&gt;
+&lt;li&gt;Each region has a full copy&lt;/li&gt;
+&lt;li&gt;Each shard has a master which asynchronously updates the other regions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Two-Level Cache&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Root cache sits in front of the database&lt;/li&gt;
+&lt;li&gt;Leaf caches sit in front of the root caches&lt;/li&gt;
+&lt;li&gt;Write-through caches&lt;/li&gt;
+&lt;li&gt;Reads:&lt;ul&gt;
+&lt;li&gt;progress down the stack in their local region on cache misses from leaf cache to root cache, and then to local database. 
+  The cache-hit ratios are very high, so reads are typically served by the leaf caches.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Writes:&lt;ul&gt;
+&lt;li&gt;They are synchronously routed through their leaf cache (1) to their local root cache (2) to the root-master cache (3), and to the master database shard (4) and back (5–8).&lt;/li&gt;
+&lt;li&gt;Each of those caches applies the write when it forwards the database’s acknowledgment back towards the client.&lt;/li&gt;
+&lt;li&gt;The root caches in the master (&lt;span class="math"&gt;\(6'\)&lt;/span&gt;) and originating regions (&lt;span class="math"&gt;\(7'\)&lt;/span&gt;) both asynchronously invalidate the other leaf caches in their region&lt;/li&gt;
+&lt;li&gt;The database master asynchronously replicates the write to the slave regions (&lt;span class="math"&gt;\(5'\)&lt;/span&gt;). When a slave database in a region that did not originate the write receives it, the database asynchronously invalidates its root cache (&lt;span class="math"&gt;\(6''\)&lt;/span&gt;) that in turn asynchronously invalidates all its leaf caches (&lt;span class="math"&gt;\(7''\)&lt;/span&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="facebook replicated storage" class="img-responsive" src="/images/fb-storage.png"/&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="consistency-models"&gt;Consistency Models&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Local Consistency Models&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Local&lt;/strong&gt;: A consistency model, C, is local if the system as a whole provides C whenever each individual object provides C&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Linearizability&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Linearizability is the strongest consistency model for non-transactional systems. &lt;/li&gt;
+&lt;li&gt;Intuitively, linearizability ensures that each operation appears to take effect instantaneously at some point between when the client invokes the operation and it receives the response. &lt;/li&gt;
+&lt;li&gt;More formally, linearizability dictates that there exists a total order over all operations in the system, and that this order is consistent with the real-time order of operations. &lt;ul&gt;
+&lt;li&gt;If operation A completes before operation B begins, then A will be ordered before B. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Linearizability avoids anomalies by ensuring that writes take effect in some sequential order consistent with real time, and that reads always see the 
+results of the most recently completed write.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Per-Object Sequential Consistency&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Per-object sequential consistency requires that there exists a legal, total order over all requests to each object that is consistent with client’s orders. &lt;/li&gt;
+&lt;li&gt;Intuitively, there is one logical version of each object that progresses forward in time. &lt;/li&gt;
+&lt;li&gt;Clients always see a newer version of an object as they interact with it. &lt;/li&gt;
+&lt;li&gt;Different clients, however, may see different versions of the object.&lt;ul&gt;
+&lt;li&gt;One client may be on version 100 of an object, while another client may see version 105.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Read-After-Write Consistency&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;when a write request has committed, all following read requests to that cache always reflect this write or later writes.&lt;/li&gt;
+&lt;li&gt;Region read-after-write consistency applies the constraint for reads in the same region as a write. Global read-after-write consistency applies the constraint for all reads.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Eventual Consistency&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Eventual consistency requires that replicas “eventually” agree on a value of an object, i.e., when they all have received the same set of writes, they will have the same value.&lt;/li&gt;
+&lt;li&gt;Eventual consistency allows replicas to answer reads immediately using their current version of the data, while writes are asynchronously propagated in the background. While writes are propagating between replicas, different replicas may return different results for reads.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Facebook’s Consistency&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;per-object sequential consistency (per-cache) + read-after-write (per-cache) + eventual consistency (across caches)&lt;/li&gt;
+&lt;li&gt;User sessions are typically handled exclusively by one leaf cache, and thus we expect most of them to receive per-object sequential and read-after-write consistency.&lt;/li&gt;
+&lt;li&gt;User sessions spread across multiple leaf caches receive eventual consistency.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;https://www.cs.utexas.edu/~vijay/cs380D-s18/feb6-fb.pdf&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="papers"></category><category term="distributed systems"></category></entry><entry><title>Cache, Lease, Consistency, Invalidation</title><link href="https://zhu45.org/posts/2018/Mar/07/cache-lease-consistency-invalidation/" rel="alternate"></link><published>2018-03-07T20:24:00+08:00</published><updated>2018-03-07T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-03-07:posts/2018/Mar/07/cache-lease-consistency-invalidation/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#concepts"&gt;Concepts&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#cache"&gt;Cache&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#consistency-model"&gt;Consistency model&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="concepts"&gt;Concepts&lt;/h2&gt;
+&lt;h3 id="cache"&gt;Cache&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Cache is built on client side&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Write-through:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Writes go to the server &lt;/li&gt;
+&lt;li&gt;No modified caches&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Write-back:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Writes go to cache&lt;/li&gt;
+&lt;li&gt;Dirty cache written to server when necessary&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Invalidations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Track where data is cached&lt;/li&gt;
+&lt;li&gt;When doing a write, invalidate all (other) locations&lt;/li&gt;
+&lt;li&gt;Data can live in multiple caches for reading&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Write-through invalidations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Track all reading caches &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;On a write: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Server send invalidations to all caches &lt;/li&gt;
+&lt;li&gt;Each cache invalidates, responds &lt;/li&gt;
+&lt;li&gt;Server waits for all invalidations, do update&lt;/li&gt;
+&lt;li&gt;Server return&lt;ul&gt;
+&lt;li&gt;Reads can proceed:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;If there is a cached copy and if no write waiting at server&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Write-back invalidations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Track all reading and writing caches&lt;/li&gt;
+&lt;li&gt;On a write:&lt;ul&gt;
+&lt;li&gt;Server send invalidations to all caches&lt;/li&gt;
+&lt;li&gt;Each cache invalidates, responds (possibly with updated data)&lt;/li&gt;
+&lt;li&gt;Wait for all invalidations&lt;/li&gt;
+&lt;li&gt;Return&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Reads can proceed when there is a local copy&lt;/li&gt;
+&lt;li&gt;Order requests carefully at server &lt;ul&gt;
+&lt;li&gt;Enforce processor order, avoid deadlock&lt;/li&gt;
+&lt;li&gt;Write-through invalidation不用在server order requests因为所有writes直接在server端写，根据request来的order写就可以了。
+但是Write-back invalidation需要在server端order因为写写在cache里，那么requests写的order就没有了，因此在cache把更新好的data
+return给server端时，需要在server端重新排序。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Leases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Permission to serve data for some time period&lt;/li&gt;
+&lt;li&gt;Wait until lease expires before applying updates&lt;/li&gt;
+&lt;li&gt;Must account for clock skew!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Strong Leases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The term "Lease" referred in Jim Gray's paper&lt;/li&gt;
+&lt;li&gt;Read request: key, TIL (time to live)&lt;ul&gt;
+&lt;li&gt;When server returns, he server won't accept writes to the key for TIL seconds after reply sent&lt;/li&gt;
+&lt;li&gt;Client invalidates its cache after TTL seconds from when request was sent&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Write-through strong leases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Server queues writes until all leases expire (after all leases expire, the cache got invalidated and server then can write)&lt;/li&gt;
+&lt;li&gt;Avoid starvation: don’t accept new reads&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Write-back strong leases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cache can get a write lease (exclusive) &lt;/li&gt;
+&lt;li&gt;Server queues read requests until lease expires&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Strong leases vs. Invalidations&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Strong leases potentially slower&lt;/li&gt;
+&lt;li&gt;What if a cache fails when it has a key? Strong leases provide better availability &lt;/li&gt;
+&lt;li&gt;Can combine techniques:&lt;ul&gt;
+&lt;li&gt;Short lease on entire cache, periodically revalidated &lt;/li&gt;
+&lt;li&gt;All keys invalidated on failure (after lease)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Weak leases&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cache values until lease expires&lt;/li&gt;
+&lt;li&gt;Allow writes, other reads simultaneously&lt;/li&gt;
+&lt;li&gt;Advantages:&lt;ul&gt;
+&lt;li&gt;Stateless at server (don’t care who is caching) &lt;/li&gt;
+&lt;li&gt;Reads, writes always processed immediately&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Disadvantages:&lt;ul&gt;
+&lt;li&gt;Consistency model&lt;/li&gt;
+&lt;li&gt;Overhead of revalidations&lt;/li&gt;
+&lt;li&gt;Synchronized revalidations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;The key idea is that cache can become stale and we need to have a policy
+for validating the a cached data item before using it. Thus, we have invalidations
+and leases to answer the question: If we cache data, how do we make sure it reflects
+writes of other nodes while maintaining performance? This question implies how we implement
+consistency. For example, to ensure sequential consistency, we need to make sure all operations 
+to a single key are serialized (as if all the operations go to a single copy), which is done
+with the help of invalidations / leases.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h3 id="consistency-model"&gt;Consistency model&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Anomaly&lt;/strong&gt;: some sequence of operations (reads and writes) that “shouldn’t” be allowed &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Consistency model:  which anomalies are possible&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Linearizability (Strict Consistency, Strong Consistency)&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;matches the ideal system&lt;/li&gt;
+&lt;li&gt;Talks about single operations on single objects&lt;/li&gt;
+&lt;li&gt;Literally means: “did the operations happen in a straight line (one after the other)?” &lt;/li&gt;
+&lt;li&gt;Reads always reflect latest write (i.e. Once a read returns value V1, all reads have to return V1 or later values)&lt;/li&gt;
+&lt;li&gt;Concurrent operations can be executed in any order&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Serializability (Sequential Consistency)&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Execution always equivalent to some interleaving&lt;/li&gt;
+&lt;li&gt;Each node’s operations done in order &lt;/li&gt;
+&lt;li&gt;Guarantees execution of a set of operations (usually each a transaction) is equivalent to some serial execution order &lt;/li&gt;
+&lt;li&gt;Given operations A1, and A2 serializability only demands that the execution order is A1 followed by A2 or A2 followed by A1 &lt;/li&gt;
+&lt;li&gt;Serializability makes it seem as if there are no concurrent operations, everything happened one after another&lt;/li&gt;
+&lt;li&gt;Relaxation of linearizability &lt;/li&gt;
+&lt;li&gt;Instead of conforming to a real-time partial order, we use a client-observed partial order&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Strict Serializability&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Combines linearizability and serializability&lt;/li&gt;
+&lt;li&gt;Transactions need to happen in real-time order&lt;/li&gt;
+&lt;li&gt;T1 and T2 are executing concurrently &lt;ul&gt;
+&lt;li&gt;T1 writes object A, and later T2 reads object A&lt;/li&gt;
+&lt;li&gt;Strict Serializability: T1 before T2 &lt;/li&gt;
+&lt;li&gt;Serializability: T2 before T1 also valid (In this case, T2 will read old value of object A)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Weaker models (could have anomalies):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Read Your Writes + Eventual Consistency (anomalies are “temporary”)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Facebook model, approximately &lt;/li&gt;
+&lt;li&gt;Clients will always see their own writes &lt;/li&gt;
+&lt;li&gt;Clients will eventually see everyone’s writes &lt;/li&gt;
+&lt;li&gt;Eventually the order will be consistent&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Causal consistency &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Causal order (Lamport happens-before) observed everywhere &lt;/li&gt;
+&lt;li&gt;Concurrent events can have arbitrary and inconsistent order &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Transactional models (e.g. Snapshot reads)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Some other consistency model + atomicity of transactions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Why different models?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Tradeoff between:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Performance: consistency requires sync &lt;/li&gt;
+&lt;li&gt;Availability: want to operate when disconnected &lt;/li&gt;
+&lt;li&gt;Programmability: weaker consistency makes applications harder to write (i.e., harder to provide app-level guarantees) &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If you want availability, must give up consistency (by CAP (Consistency, availability, partition tolerance))&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;https://courses.cs.washington.edu/courses/cse452/17sp/slides/Caching.pdf&lt;/li&gt;
+&lt;li&gt;https://courses.cs.washington.edu/courses/cse452/17sp/slides/ImplementingCaches1.&lt;/li&gt;
+&lt;li&gt;https://www.cs.utexas.edu/~vijay/cs380D-s18/feb6-fb.pdf&lt;/li&gt;
+&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="distributed systems"></category><category term="system concepts"></category></entry><entry><title>Lamport Clocks, Vector Clocks</title><link href="https://zhu45.org/posts/2018/Mar/06/lamport-clocks-vector-clocks/" rel="alternate"></link><published>2018-03-06T20:24:00+08:00</published><updated>2018-03-06T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-03-06:posts/2018/Mar/06/lamport-clocks-vector-clocks/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;h2 id="lamport-clocks"&gt;Lamport Clocks&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;In a distributed system, there is &lt;strong&gt;no global time&lt;/strong&gt; and &lt;strong&gt;no global state&lt;/strong&gt; &lt;span class="math"&gt;\(\implies\)&lt;/span&gt; the clock of different nodes in a distributed system
+can have different values.&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Happened-before Relationship:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Some events in a distributed system happened before other events and others are concurrent&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Happened-before is a partial ordering on events in a distributed system:&lt;/p&gt;
+&lt;p&gt;Given events &lt;span class="math"&gt;\(E1, E2, E3\)&lt;/span&gt; and &lt;span class="math"&gt;\(E1\)&lt;/span&gt; happens before &lt;span class="math"&gt;\(E2\)&lt;/span&gt; and &lt;span class="math"&gt;\(E1\)&lt;/span&gt; happens before &lt;span class="math"&gt;\(E3\)&lt;/span&gt;, we have &lt;span class="math"&gt;\(E2\)&lt;/span&gt; and &lt;span class="math"&gt;\(E3\)&lt;/span&gt; are concurrent and
+&lt;span class="math"&gt;\(E1 &amp;lt; E3\)&lt;/span&gt; and &lt;span class="math"&gt;\(E1 &amp;lt; E3\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\rightarrow\)&lt;/span&gt; relation satisfies the following conditions:&lt;/p&gt;
+&lt;p&gt;1) If &lt;span class="math"&gt;\(a\)&lt;/span&gt; and &lt;span class="math"&gt;\(b\)&lt;/span&gt; are events in the same process, and &lt;span class="math"&gt;\(a\)&lt;/span&gt; comes before &lt;span class="math"&gt;\(b\)&lt;/span&gt;, then &lt;span class="math"&gt;\(a \rightarrow b\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;2) If &lt;span class="math"&gt;\(a\)&lt;/span&gt; is the sending of a message by one process and &lt;span class="math"&gt;\(b\)&lt;/span&gt; is the receipt of the same message by another process, then &lt;span class="math"&gt;\(a \rightarrow b\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;3) If &lt;span class="math"&gt;\(a \rightarrow b\)&lt;/span&gt; and &lt;span class="math"&gt;\(b \rightarrow c\)&lt;/span&gt;, then &lt;span class="math"&gt;\(a \rightarrow c\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Two distinct events &lt;span class="math"&gt;\(a\)&lt;/span&gt; and &lt;span class="math"&gt;\(b\)&lt;/span&gt; are said to be concurrent if &lt;span class="math"&gt;\(a \not\rightarrow b\)&lt;/span&gt; and &lt;span class="math"&gt;\(b \not\rightarrow a\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Logical Clocks:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Assigns a monotonically increasing number &lt;span class="math"&gt;\(C(x)\)&lt;/span&gt; for each event &lt;span class="math"&gt;\(x\)&lt;/span&gt; in a process &lt;/li&gt;
+&lt;li&gt;If event &lt;span class="math"&gt;\(x\)&lt;/span&gt; happens before event &lt;span class="math"&gt;\(y\)&lt;/span&gt;, &lt;span class="math"&gt;\(C(x) &amp;lt; C(y)\)&lt;/span&gt; (Note, &lt;span class="math"&gt;\(C(x) &amp;lt; C(y) \not\implies x &amp;lt; y\)&lt;/span&gt;)&lt;/li&gt;
+&lt;li&gt;If &lt;span class="math"&gt;\(x\)&lt;/span&gt; and &lt;span class="math"&gt;\(y\)&lt;/span&gt; are in the same process, and &lt;span class="math"&gt;\(x &amp;lt; y\)&lt;/span&gt;, then &lt;span class="math"&gt;\(C(x) &amp;lt; C(y)\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;If &lt;span class="math"&gt;\(x\)&lt;/span&gt; is sending of message, and &lt;span class="math"&gt;\(y\)&lt;/span&gt; receipt of the message, then &lt;span class="math"&gt;\(x &amp;lt; y\)&lt;/span&gt; and &lt;span class="math"&gt;\(C(x) &amp;lt; C(y)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Implementing Logical Clocks:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Within a process &lt;span class="math"&gt;\(X\)&lt;/span&gt;, increment &lt;span class="math"&gt;\(C(x)\)&lt;/span&gt; every time an event happens&lt;/li&gt;
+&lt;li&gt;When process &lt;span class="math"&gt;\(X\)&lt;/span&gt; receives a message with timestamp &lt;span class="math"&gt;\(T\)&lt;/span&gt;, &lt;span class="math"&gt;\(C(x) = \max(T, C(x)) + 1\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;How do we break the tie of the concurrent events and achive total ordering of the events in the sytem:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If &lt;span class="math"&gt;\(x\)&lt;/span&gt; and &lt;span class="math"&gt;\(y\)&lt;/span&gt; in same process, and &lt;span class="math"&gt;\(x &amp;lt; y\)&lt;/span&gt;, &lt;span class="math"&gt;\(C(x) &amp;lt; C(y)\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;If &lt;span class="math"&gt;\(x\)&lt;/span&gt; and &lt;span class="math"&gt;\(y\)&lt;/span&gt; are concurrent (&lt;span class="math"&gt;\(x = y\)&lt;/span&gt;), then &lt;span class="math"&gt;\(P(x) &amp;lt; P(y) \implies C(x) &amp;lt; C(y)\)&lt;/span&gt; (&lt;span class="math"&gt;\(P(\cdot)\)&lt;/span&gt; means process ID)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="vector-clocks"&gt;Vector Clocks&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Limitation of Lamport Clocks:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If &lt;span class="math"&gt;\(C(x) &amp;lt; C(y)\)&lt;/span&gt;, we cannot tell whether &lt;span class="math"&gt;\(x &amp;lt; y\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;We can only say if &lt;span class="math"&gt;\(x &amp;lt; y\)&lt;/span&gt;, then &lt;span class="math"&gt;\(C(x) &amp;lt; C(y)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Goal: to enable each process to have an &lt;strong&gt;approximation of global time&lt;/strong&gt; at all processes (Every message propagates info
+about state of whole system)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Each process has a vector of clocks: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Clock &lt;span class="math"&gt;\(C_i\)&lt;/span&gt; is time for process &lt;span class="math"&gt;\(i\)&lt;/span&gt; as seen by the owner of the vector &lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(C_i\)&lt;/span&gt; in two different vectors may not be the same&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Implementing Vector Clocks:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Each process &lt;span class="math"&gt;\(P_i\)&lt;/span&gt; updates its component &lt;span class="math"&gt;\(C_i\)&lt;/span&gt; in its vector clock (This update happens for each internal event)&lt;/li&gt;
+&lt;li&gt;Each message has a vector clock time stamp&lt;/li&gt;
+&lt;li&gt;On getting the message, for each field &lt;span class="math"&gt;\(x\)&lt;/span&gt; in the vector: &lt;span class="math"&gt;\(C[x] = \max(C[x], message\_time\_stamp[x])\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Comparing Vector Timestamps:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Timestamp &lt;span class="math"&gt;\(X \le Y\)&lt;/span&gt; if all components of &lt;span class="math"&gt;\(X \le\)&lt;/span&gt; corresponding components in &lt;span class="math"&gt;\(Y\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Timestamp &lt;span class="math"&gt;\(X &amp;lt; Y\)&lt;/span&gt; if at least one component is strictly lesser, with all others being equal  &lt;/li&gt;
+&lt;li&gt;Otherwise, &lt;span class="math"&gt;\(X\)&lt;/span&gt; and &lt;span class="math"&gt;\(Y\)&lt;/span&gt; are concurrent&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="distributed systems"></category><category term="system concepts"></category></entry><entry><title>"Why do computers stop and what can be done about it?"</title><link href="https://zhu45.org/posts/2018/Jan/21/why-do-computers-stop-and-what-can-be-done-about-it/" rel="alternate"></link><published>2018-01-21T20:24:00+08:00</published><updated>2018-01-21T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-01-21:posts/2018/Jan/21/why-do-computers-stop-and-what-can-be-done-about-it/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#availability"&gt;Availability&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href="#terminology"&gt;Terminology&lt;/a&gt;&lt;/li&gt;
@@ -268,7 +826,7 @@
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="papers"></category><category term="distributed systems"></category></entry><entry><title>"Introduction to Distributed System Design"</title><link href="https://zhu45.org/posts/2018/Jan/17/introduction-to-distributed-system-design/" rel="alternate"></link><published>2018-01-17T16:24:00+08:00</published><updated>2018-01-17T16:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-01-17:posts/2018/Jan/17/introduction-to-distributed-system-design/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="papers"></category><category term="distributed systems"></category><category term="system design principle"></category><category term="system concepts"></category></entry><entry><title>"Introduction to Distributed System Design"</title><link href="https://zhu45.org/posts/2018/Jan/17/introduction-to-distributed-system-design/" rel="alternate"></link><published>2018-01-17T16:24:00+08:00</published><updated>2018-01-17T16:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-01-17:posts/2018/Jan/17/introduction-to-distributed-system-design/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#the-basics"&gt;The Basics&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href="#what-is-a-distributed-system"&gt;What is a distributed system?&lt;/a&gt;&lt;/li&gt;
@@ -501,7 +1059,7 @@ __connectionless (UDP)&lt;/strong&gt;: &lt;/p&gt;
 &lt;li&gt;
 &lt;p&gt;Retransmission is costly. It's important to experiment so you can tune the delay that prompts a retransmission to be optimal.&lt;/p&gt;
 &lt;/li&gt;
-&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="papers"></category><category term="distributed systems"></category></entry><entry><title>How to write binary search correctly</title><link href="https://zhu45.org/posts/2018/Jan/12/how-to-write-binary-search-correctly/" rel="alternate"></link><published>2018-01-12T16:24:00+08:00</published><updated>2018-01-12T16:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-01-12:posts/2018/Jan/12/how-to-write-binary-search-correctly/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</summary><category term="papers"></category><category term="distributed systems"></category><category term="system design principle"></category><category term="system concepts"></category></entry><entry><title>How to write binary search correctly</title><link href="https://zhu45.org/posts/2018/Jan/12/how-to-write-binary-search-correctly/" rel="alternate"></link><published>2018-01-12T16:24:00+08:00</published><updated>2018-01-12T16:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-01-12:posts/2018/Jan/12/how-to-write-binary-search-correctly/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#term-explanation"&gt;Term explanation&lt;/a&gt;&lt;ul&gt;

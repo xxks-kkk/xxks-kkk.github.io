@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Distributed System Reference Guide
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/svg-with-js/js/fontawesome-all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+    <h1 id="site-title"><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
+            <a href="../../../../../courses.html" style="padding: 10px">COURSES</a>
+            <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+            <a href="../../../../../links.html" style="padding: 10px">LINKS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+            <h1 class="post-title">Distributed System Reference Guide</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2018-03-06T16:24:00+08:00"> Mar 06, 2018</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/papers.html">papers</a>
+        /
+	<a href="../../../../../tag/distributed-systems.html">distributed systems</a>
+        /
+	<a href="../../../../../tag/protocol.html">protocol</a>
+        /
+	<a href="../../../../../tag/system-design-principle.html">system design principle</a>
+        /
+	<a href="../../../../../tag/system-concepts.html">system concepts</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <html><body><p>This post is reference guide that points to the concepts, system design principles, system concepts
+mentioned in my posts.</p>
+<div class="toc">
+<ul>
+<li><a href="#system-concepts">System Concepts</a></li>
+<li><a href="#system-performance-measurements">System Performance Measurements</a></li>
+<li><a href="#protocol">Protocol</a></li>
+<li><a href="#system-designs">System Designs</a></li>
+<li><a href="#system-principles">System Principles</a></li>
+</ul>
+</div>
+<h2 id="system-concepts">System Concepts</h2>
+<ul>
+<li><a href="../../../../../posts/2018/Mar/06/lamport-clocks-vector-clocks/">Logical Clocks, Vector Clocks</a></li>
+<li><strong>State Machine</strong>: A process whose state depends entirely on the starting state and sequence of operations</li>
+<li><strong>Replication</strong>: All servers exhibit the same behavior</li>
+<li><strong>Sharding</strong>: Different data on different servers; Partitioned via some function on keys </li>
+<li><strong>Clock Skew</strong>: the same sourced clock signal arrives at different components at different times</li>
+</ul>
+<h2 id="system-performance-measurements">System Performance Measurements</h2>
+<h2 id="protocol">Protocol</h2>
+<h2 id="system-designs">System Designs</h2>
+<ul>
+<li><a href="../../../../../posts/2018/Mar/07/state-machine-replication-approach/">State Machine Replication</a></li>
+</ul>
+<h2 id="system-principles">System Principles</h2>
+<ul>
+<li>
+<p>Scability: sharding + replication</p>
+<ul>
+<li>Usually, shard then replicate </li>
+<li>Each piece of data lives on one replicated shard</li>
+</ul>
+</li>
+<li>
+<p>Stronger consistency models are easier to reason about (and program for), but more expensive to obtain </p>
+</li>
+<li>Weaker consistency models provide more performance, but hard to understand and program for</li>
+</ul></body></html>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/system.html">system</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2018.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

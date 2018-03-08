@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
-        <title>    "Why do computers stop and what can be done about it?"
+        <title>    State Machine Replication Approach
 </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -40,13 +40,13 @@
 </header>
     <div class="post">
         <header>
-            <h1 class="post-title">"Why do computers stop and what can be done about it?"</h1>
+            <h1 class="post-title">State Machine Replication Approach</h1>
             <div class="panel">
                 <div class="panel-body">
 <footer class="post-info">
     <span class="label label-default">Date</span>
     <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2018-01-21T20:24:00+08:00"> Jan 21, 2018</time>
+        <i class="fa fa-calendar"></i><time datetime="2018-03-06T20:24:00+08:00"> Mar 06, 2018</time>
     </span>
 
 
@@ -54,232 +54,79 @@
 
 
 <span class="label label-default">Tags</span>
-	<a href="../../../../../tag/papers.html">papers</a>
-        /
 	<a href="../../../../../tag/distributed-systems.html">distributed systems</a>
         /
-	<a href="../../../../../tag/system-design-principle.html">system design principle</a>
-        /
 	<a href="../../../../../tag/system-concepts.html">system concepts</a>
+        /
+	<a href="../../../../../tag/system-design-principle.html">system design principle</a>
     
 </footer><!-- /.post-info -->                </div>
             </div>
         </header>
         
         <article>
-            <html><body><div class="toc">
+            <html><body><h2 id="state-machine-replication">State Machine Replication</h2>
 <ul>
-<li><a href="#availability">Availability</a><ul>
-<li><a href="#terminology">Terminology</a></li>
-<li><a href="#key-to-availability">Key to Availability</a></li>
-<li><a href="#achieving-high-availability">Achieving High Availability</a></li>
-</ul>
-</li>
-<li><a href="#study-of-failures">Study of Failures</a></li>
-<li><a href="#lessons-from-tandem-study">Lessons from Tandem Study</a></li>
-<li><a href="#software-fault-tolerance">Software Fault Tolerance</a><ul>
-<li><a href="#containing-software-faults">Containing Software Faults</a></li>
-<li><a href="#fail-fast-software">Fail Fast Software</a></li>
-<li><a href="#process-pairs">Process Pairs</a></li>
-<li><a href="#transactions">Transactions</a></li>
-<li><a href="#fault-tolerant-communication">Fault-Tolerant Communication</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Gray, J. <a href="http://pages.cs.wisc.edu/~remzi/Classes/739/Fall2017/Papers/gray-why-do-computers-stop-85.pdf">Why do computers stop and what can be done about it?</a>, 1985.</p>
-</div>
-<h2 id="availability">Availability</h2>
-<h3 id="terminology">Terminology</h3>
-<ul>
-<li><strong>Mean Time Between Failures (MTBF)</strong></li>
-<li><strong>Mean Time to Repair (MTTR)</strong></li>
 <li>
-<p><strong>Availability</strong>: percentage of time the system is operational</p>
+<p>State Machine Replaction system properties:</p>
 <ul>
-<li><span class="math">\(99.37\%\)</span> percentage availability over 10 days translates to 1.5 hours outage every 10 days on average (i.e. <span class="math">\((1 - 99.37\%) \times 10 \times 24 = 1.51\)</span>)</li>
-<li>Availability = MTBF / (MTBF + MTTR) = <span class="math">\(\frac{10*24}{(10*24 + 1.5)} = 0.9937\)</span></li>
-<li>If <span class="math">\(90\%\)</span> of servers are available <span class="math">\(90\%\)</span> of the time, overall availability could be <span class="math">\(81\%\)</span> (could be higher when using certain techniques)</li>
-</ul>
-</li>
-</ul>
-<h3 id="key-to-availability">Key to Availability</h3>
-<ul>
-<li>If MTTR is zero, then Availability = MTTF/ (MTTF + 0) = 1</li>
-<li>We need to give the illusion of instantaneous repair</li>
-<li>Key idea: Modularize the system so that modules can be repaired “instantly”</li>
-<li>How to provide instant repair? Have a “hot” spare that can take over instantly</li>
-<li>
-<p>We can analyze schemes to increase availability along several dimensions:</p>
-<ul>
-<li>CAPEX (one time capital expense) </li>
-<li>OPEX (on-going operating expenses) </li>
-<li>Increase in latency?</li>
-<li>Reduction in throughput?</li>
-</ul>
-</li>
-</ul>
-<h3 id="achieving-high-availability">Achieving High Availability</h3>
-<ul>
-<li>Key ideas: <strong>modularity</strong> and <strong>redundancy</strong> </li>
-<li>
-<p>Modularity: a failure within a module affects only that module</p>
-<ul>
-<li>von Neuman’s system required 20K replicas to achieve a MTBF of 100 years</li>
-<li>Why? No modularity</li>
-<li>Large combinations of modules were replicated</li>
+<li><a href="../../../../../posts/2018/Jan/21/why-do-computers-stop-and-what-can-be-done-about-it/">Available</a></li>
+<li>Fault tolerant</li>
+<li>Appear to behave like a single machine</li>
 </ul>
 </li>
 <li>
-<p>Jim Gray’s algorithm (can have the system has MTBF in decades or centuries)</p>
-<ul>
-<li>Hierarchically decompose the system into modules</li>
-<li>Design each module to have MTBF &gt; 1 year</li>
-<li>Make each module fail-fast</li>
-<li>Have a heart-beat message for each module so you know when it fails</li>
-<li>Have spare modules which pick up job of failed module. Failover to spare module should be quick.</li>
-</ul>
-</li>
-</ul>
-<h2 id="study-of-failures">Study of Failures</h2>
-<ul>
-<li>Analyzed cause of failures over 7 months </li>
-<li>Study covers 2000 systems, 10M system hours </li>
-<li>166 failures reported in this period</li>
-<li>59 of these failures are “infant” failures - faulty hardware or new </li>
-<li>
-<p>42% of failures caused by system administration</p>
-<ul>
-<li>Includes software and hardware maintenance: 25% </li>
-<li>Operations: 9%, configuration: 8%</li>
-</ul>
+<p>t fault tolerant: A system consisting of a set of distinct components is <em>t fault tolerant</em>
+if it satisfies its specification provided that no more than <em>t</em> of those components become 
+faulty during some interval of interest.</p>
 </li>
 <li>
-<p>25% software failures, 18% hardware failures</p>
+<p>t fault-tolerant state machine implementation:  replicating that state machine and running
+a replica on each of the processors in a distributed system. Provided each replica being run
+by a nonfaulty processor starts in the same initial state and executes the same requests in 
+the same order, then each will do the same thing and produce the same output.</p>
 </li>
 <li>
-<p>14% of failures caused by environmental failures </p>
-<ul>
-<li>9% power failures, 5% communication and facilities</li>
-</ul>
+<p>When processors can experience Byzantine failures, an ensemble implementing a 
+t fault-tolerant state machine must have at least <span class="math">\(2t + 1\)</span> replicas, 
+and the output of the ensemble is the output produced by the majority of the replicas. 
+(因为Byzantine failures可以产生错误的结果，因此需要大多数replica的结果正确。由于我们是t fault-tolerant,
+因此有t replicas可以产生Byzantine failures，因此我们需要额外t+1产生正确结果的replica,也就是2t+1 total replicas)</p>
 </li>
-</ul>
-<h2 id="lessons-from-tandem-study">Lessons from Tandem Study</h2>
-<ul>
-<li>Key to high availability: tolerating human errors and operations failures</li>
 <li>
-<p>Need to design systems to have:</p>
+<p>If processors experience only fail-stop failures, then an ensemble containing <span class="math">\(t + 1\)</span> replicas suffices, 
+and the output of the ensemble can be the output produced by any of its members.
+(Fail-stop failures的话，replica产生错误就停止工作了，因此我们总共只需要t+1 replicas因为只要保证有一个replica工作就可以了)</p>
+</li>
+<li>
+<p>Implementing Replication:</p>
 <ul>
-<li>Minimal configuration </li>
-<li>Minimal maintenance </li>
-<li>Simple, consistent interfaces</li>
+<li>
+<p>Agreement: Every nonfaulty state machine replica receives every request.</p>
+<ul>
+<li>Implemented by clients</li>
+<li>When a client makes a request, it broadcasts the request to all servers in the system</li>
 </ul>
 </li>
 <li>
-<p>New systems often have higher failure rate</p>
+<p>Order: Every nonfaulty state machine replica processes the requests it receives in the same relative order.</p>
 <ul>
-<li>Need time to work out these bugs</li>
-<li>Do not deploy systems until they become stable</li>
-</ul>
-</li>
+<li>Implemented by servers</li>
+<li>Define a total order of requests in the system and execute requests in that order</li>
+<li>Process a request with the lowest timestamp that has been received by that replica</li>
 <li>
-<p>Jim Gray suggests:</p>
+<p><strong>Stability</strong>: The replica can never receive an event with a lower timestamp</p>
 <ul>
-<li>Do regular hardware maintenance</li>
-<li>Delay software upgrades as long as possible, allow them time to become mature</li>
-<li>Only patch a bug if it is causing outages</li>
-</ul>
-</li>
-</ul>
-<h2 id="software-fault-tolerance">Software Fault Tolerance</h2>
-<ul>
-<li>
-<p>Applying lessons from before:</p>
-<ul>
-<li>Software modularity through processes and messages </li>
-<li>Fail-fast software modules</li>
-<li>Process-pairs to handle transient faults</li>
-<li>Transactions</li>
-</ul>
-</li>
-<li>
-<p>Underlying assumption: software faults are transient</p>
-<ul>
-<li>Why? The hard software faults would have been removed in testing and quality assurance checks</li>
-</ul>
-</li>
-</ul>
-<h3 id="containing-software-faults">Containing Software Faults</h3>
-<ul>
-<li>
-<p>Two main approaches:</p>
-<ul>
-<li>
-<p>Static checking checks the code before it is even run</p>
-<ul>
-<li>Conservative checking</li>
-<li>May throw up lots of false positives</li>
-</ul>
-</li>
-<li>
-<p>Dynamic checking checks code that is executed</p>
-<ul>
-<li>Has lower false positives</li>
-<li>Might not catch all bugs, especially in rarely run code paths</li>
+<li>Implementing stability: Receive requests from a client in increasing order (Given by FIFO channels and logical clocks)</li>
+<li>A request is stable once a request has been received from each client with a greater timestamp</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<h3 id="fail-fast-software">Fail Fast Software</h3>
-<ul>
-<li>
-<p>In today’s terms, lots of assert conditions in the code</p>
-<ul>
-<li>Linux kernel is filled with PANIC calls. If something goes wrong, print the stack trace and kill the kernel.</li>
-</ul>
 </li>
 </ul>
-<h3 id="process-pairs">Process Pairs</h3>
-<ul>
-<li>When one process fails, the other process takes over</li>
-<li>
-<p>Types of process pairs:</p>
-<ul>
-<li>Lockstep: both execute every instruction</li>
-<li>
-<p>Checkpointing: primary occasionally checkpoints its state, which is copied over to backup</p>
-<ul>
-<li>Variants: Delta Checkpointing, Kernel Checkpointing</li>
-</ul>
-</li>
-<li>
-<p>Persistence: backup gets all its knowledge from persistent storage</p>
-<ul>
-<li>Need to ensure persistent storage is not inconsistent</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="transactions">Transactions</h3>
-<ul>
-<li>Provide the ACID property: atomicity, consistency, isolation, durability</li>
-<li>
-<p>Jim Gray argues for persistent process pairs combined with transactions</p>
-<ul>
-<li>Implemented in the Encompass system</li>
-</ul>
-</li>
-</ul>
-<h3 id="fault-tolerant-communication">Fault-Tolerant Communication</h3>
-<ul>
-<li>Key idea: sessions and sequence numbers </li>
-<li>Same idea used in TCP</li>
-<li>Sequence numbers used to identify duplicate and lost messages</li>
-</ul>
+<h2 id="applications">Applications</h2>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
