@@ -1,5 +1,276 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>https://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Thu, 08 Mar 2018 20:24:00 +0800</lastBuildDate><item><title>"Existential Consistency: Measuring and Understanding Consistency at Facebook"</title><link>https://zhu45.org/posts/2018/Mar/08/existential-consistency-measuring-and-understanding-consistency-at-facebook/</link><description>&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>https://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Wed, 28 Mar 2018 01:24:00 +0800</lastBuildDate><item><title>"BLEU: a Method for Automatic Evaluation of Machine Translation"</title><link>https://zhu45.org/posts/2018/Mar/28/bleu-a-method-for-automatic-evaluation-of-machine-translation/</link><description>&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#the-baseline-bleu-metric"&gt;The Baseline BLEU Metric&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#modified-n-gram-precision"&gt;Modified n-gram precision&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#remarks-on-bleu"&gt;Remarks on BLEU&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;How does one measure translation performance? The central idea: &lt;em&gt;The closer a machine translation is to a professional human translation, the better it is.&lt;/em&gt;
+Thus requires:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a numerical “translation closeness” metric&lt;/li&gt;
+&lt;li&gt;a corpus of good quality human reference translations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Fashion the closeness metric after &lt;em&gt;word error rate&lt;/em&gt; metric used by the speech recognition community&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The main idea is to use a weighted average of variable length phrase matches against the reference translations.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="the-baseline-bleu-metric"&gt;The Baseline BLEU Metric&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Example 1:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Candidate 1: It is a guide to action which ensures that the military always obeys the commands of the party.&lt;/li&gt;
+&lt;li&gt;Candidate 2: It is to insure the troops forever hearing the activity guidebook that party direct.&lt;/li&gt;
+&lt;li&gt;Reference 1: It is a guide to action that ensures that the military will forever heed Party commands.&lt;/li&gt;
+&lt;li&gt;Reference 2: It is the guiding principle which guarantees the military forces always being under the command of the Party.&lt;/li&gt;
+&lt;li&gt;Reference 3: It is the practical guide for the army always to heed the directions of the party.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Candidate 1 is better than Candidate 2 because Candidate 1 shares many words and phrases with these three reference translations, while Candidate 2 does not.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Candidate 1 shares "It is a guide to action" with Reference 1, "which" with Reference 2, "ensures that the military" with Reference 1, 
+"always" with References 2 and 3, "commands" with Reference 1, and finally "of the party" with Reference 2 (all ignoring capitalization). 
+In contrast, Candidate 2 ex- hibits far fewer matches, and their extent is less.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Rank Candidate 1 higher than Candidate 2 simply by comparing n-￼￼gram matches between each candidate translation and the reference translations.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The primary programming task for a BLEU implementor is to compare n-grams of the candidate with the n-grams of the reference translation and count the number of matches. These matches are position-independent. The more the matches, the better the candidate translation is.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="modified-n-gram-precision"&gt;Modified n-gram precision&lt;/h3&gt;
+&lt;p&gt;We compute unigram matches to illustrate the idea.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Example 2:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Candidate: the the the the the the the. &lt;/li&gt;
+&lt;li&gt;Reference 1: The cat is on the mat. &lt;/li&gt;
+&lt;li&gt;Reference 2: There is a cat on the mat.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;Precision&lt;/em&gt; (# candidate translation words (unigrams) which occur in any reference translation / the total number of words in the candidate translation) 
+doesn't work: MT systems can overgenerate “reasonable” words, resulting in improbable, but high-precision, translations like Example 2.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Intuition: a reference word should be considered exhausted after a matching candidate word is identified. We formalize this intuition as the
+&lt;em&gt;modified unigram precision&lt;/em&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;How to compute &lt;em&gt;modified unigram precision&lt;/em&gt;:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;counts the maximum number of times a word occurs in any single reference translation&lt;/li&gt;
+&lt;li&gt;one clips the total count of each candidate word by its maximum reference count&lt;/li&gt;
+&lt;li&gt;adds these clipped counts (i.e., &lt;span class="math"&gt;\(\text{Count}_{clip}\)&lt;/span&gt;) up, and divides by the total (unclipped) number of candidate words.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\text{Count}_{clip} = \min(\text{Count}, \text{Max_Ref_Count})\)&lt;/span&gt;. In other words, one truncates each word’s count, if necessary, to not exceed the largest count observed in any single reference for that word.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Examples on &lt;em&gt;modified unigram precision&lt;/em&gt; calculation:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Example 2: modified unigram precision is &lt;span class="math"&gt;\(2/7\)&lt;/span&gt;, even though its standard unigram precision is &lt;span class="math"&gt;\(7/7\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Example 1: Candidate 1 achieves a modified unigram precision of &lt;span class="math"&gt;\(17/18\)&lt;/span&gt;; whereas Candidate 2 achieves a modified unigram precision of &lt;span class="math"&gt;\(8/14\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Let's calculate &lt;span class="math"&gt;\(17/18\)&lt;/span&gt;. The counts shown below. For word "the", "the" appears 3 times in Candidate 1 and 4 comes from
+max(# "the" in ref1, # "the" in ref2, # "the" in ref3) = max(1,4,4). &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;| word          | it | is | a | guide | to | action | which | ensures | that | the | miltary | always | obeys | commands | of | party | SUM |
+|---------------|----|----|---|-------|----|--------|-------|---------|------|-----|---------|--------|-------|----------|----|-------|-----|
+| count         | 1  | 1  | 1 | 1     | 1  | 1      | 1     | 1       | 1    | 3   | 1       | 1      | 1     | 1        | 1  | 1     | 18  |
+| Max_Ref_Count | 1  | 1  | 1 | 1     | 1  | 1      | 1     | 1       | 2    | 4   | 1       | 1      | 0     | 1        | 1  | 1     |     |
+| Count_clip    | 1  | 1  | 1 | 1     | 1  | 1      | 1     | 1       | 1    | 3   | 1       | 1      | 0     | 1        | 1  | 1     | 17  |
+&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;How to compute Modified n-gram precision (computed similarly for any n): &lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;all candidate n-gram counts and their corresponding maximum reference counts are collected. &lt;/li&gt;
+&lt;li&gt;The candidate counts are clipped by their corresponding reference maximum value, summed, and divided by the total number of candidate n-grams.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Examples on &lt;em&gt;modified bigram precision&lt;/em&gt; calculation:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Example 1: Candidate 1 achieves a modified bigram precision of &lt;span class="math"&gt;\(10/17\)&lt;/span&gt;, whereas the lower quality Candidate 2 achieves a modified bigram precision of &lt;span class="math"&gt;\(1/13\)&lt;/span&gt;. &lt;/li&gt;
+&lt;li&gt;Example 2: the (implausible) candidate achieves a modified bigram precision of 0.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Modified n-gram precision on corpus&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;We first compute the n-gram matches sentence by sentence. Next, we add the clipped n-gram counts for all the candidate sentences and divide by the number of candidate n-grams in the test corpus to compute a modified precision score, &lt;span class="math"&gt;\(p_n\)&lt;/span&gt;, for the entire test corpus.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="modified n-gram precision on corpus" class="img-responsive" src="https://zhu45.org/images/bleu-corpus.png"/&gt;
+
+￼- We want to combine all n-gram precision on corpus (i.e., &lt;span class="math"&gt;\(n=1,2,3,4\)&lt;/span&gt;) together into a single number metric. the modified n-gram precision decays roughly exponentially with n: the modified unigram precision is much larger than the modified bigram precision which in turn is much bigger than the modified trigram precision. BLEU uses the geometric mean of the modified n-gram precisions.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Modified n-gram precision alone fails to enforce the proper translation length. Candidate translations longer than their references are already penalized by the modified n-gram precision measure. However, candidate translations shorter than their references are not penalized.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Example 3:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Candidate: of the&lt;/li&gt;
+&lt;li&gt;Reference 1: It is a guide to action that ensures that the military will forever heed Party commands.&lt;/li&gt;
+&lt;li&gt;Reference 2: It is the guiding principle which guarantees the military forces always being under the command of the Party.&lt;/li&gt;
+&lt;li&gt;Reference 3: It is the practical guide for the army always to heed the directions of the party.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Because this candidate is so short compared to the proper length, one expects to find inflated precisions: the modified unigram precision is 2/2, and the modified bigram precision is 1/1.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Traditional recall is not a good measure to enforce proper length translation:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Example 4:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Candidate 1: I always invariably perpetually do.&lt;/li&gt;
+&lt;li&gt;Candidate 2: I always do.&lt;/li&gt;
+&lt;li&gt;Reference 1: I always do.&lt;/li&gt;
+&lt;li&gt;Reference 2: I invariably do. &lt;/li&gt;
+&lt;li&gt;Reference 3: I perpetually do.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The first candidate recalls more words from the references, but is obviously a poorer translation than the second candidate
+￼￼￼￼￼￼￼￼￼￼ &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Sentence ￼￼￼￼￼￼￼brevity penalty&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We wish to make the brevity penalty 1.0 when the candidate’s length is the same as any reference translation’s length.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;if there are three references with lengths 12, 15, and 17 words and the candidate translation is a terse 12 words, we want the brevity penalty to be 1. &lt;/li&gt;
+&lt;li&gt;We call the closest reference sentence length the “&lt;em&gt;best match length&lt;/em&gt;.”&lt;/li&gt;
+&lt;li&gt;we compute the brevity penalty over the entire corpus to al- low some freedom at the sentence level.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Compute sentence brevity penalty&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Compute the test corpus’ effective reference length, &lt;span class="math"&gt;\(r\)&lt;/span&gt;, by summing the best match lengths for each candidate sentence in the corpus. &lt;/li&gt;
+&lt;li&gt;We choose the brevity penalty to be a decaying exponential in &lt;span class="math"&gt;\(r/c\)&lt;/span&gt;, where &lt;span class="math"&gt;\(c\)&lt;/span&gt; is the total length of the candidate translation corpus.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Put everything together to calculate BLEU&lt;/p&gt;
+&lt;p&gt;We take the geometric mean of the test corpus’ modified precision scores and then multiply the result by an exponential brevity penalty factor.
+We first compute the geometric average of the modified n-gram precisions, &lt;span class="math"&gt;\(p_n\)&lt;/span&gt;, using n-grams up to length &lt;span class="math"&gt;\(N\)&lt;/span&gt; and positive weights &lt;span class="math"&gt;\(w_n\)&lt;/span&gt; summing to one.
+Next, let &lt;span class="math"&gt;\(c\)&lt;/span&gt; be the length of the candidate translation and &lt;span class="math"&gt;\(r\)&lt;/span&gt; be the effective reference corpus length. We compute the brevity penalty BP,&lt;/p&gt;
+&lt;p&gt;&lt;img alt="BLEU calculation" class="img-responsive" src="https://zhu45.org/images/bleu-calc.png"/&gt; &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="remarks-on-bleu"&gt;Remarks on BLEU&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;This sort of modified n-gram precision scoring captures two aspects of translation: adequacy and fluency:&lt;/p&gt;
+&lt;p&gt;A translation using the same words (1-grams) as in the references tends to satisfy adequacy. The longer n-gram matches account for fluency. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;BLEU only needs to match human judgment when averaged over a test corpus; scores on individual sentences will often vary from human judgments.
+(For example, a system which produces the fluent phrase “East Asian economy” is penalized heavily on the longer n-gram precisions if all the references happen to read “economy of East Asia.”)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The BLEU metric ranges from 0 to 1. Few translations will attain a score of 1 unless they are identical to a reference translation&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;the more reference translations per sentence there are, the higher the score is.&lt;/li&gt;
+&lt;li&gt;We may use a big test corpus with a single reference translation, provided that the translations are not all from the same translator.&lt;/li&gt;
+&lt;li&gt;BLEU has shown good performance for corpus-level comparisons over which a high number of n-gram matches exist. However, at a sentence-level the
+n-gram matches for higher n rarely occur. As a result, BLEU performs poorly when comparing individual sentences.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.aclweb.org/anthology/P02-1040.pdf"&gt;Bleu: a method for automatic evaluation of machine translation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://arxiv.org/pdf/1504.00325.pdf"&gt;Microsoft COCO Captions: Data Collection and Evaluation Server&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Wed, 28 Mar 2018 01:24:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2018-03-28:posts/2018/Mar/28/bleu-a-method-for-automatic-evaluation-of-machine-translation/</guid><category>natural language processing</category><category>evaluation metrics</category></item><item><title>"Existential Consistency: Measuring and Understanding Consistency at Facebook"</title><link>https://zhu45.org/posts/2018/Mar/08/existential-consistency-measuring-and-understanding-consistency-at-facebook/</link><description>&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#overview"&gt;Overview&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#facebooks-replicated-storage"&gt;Facebook’s Replicated Storage&lt;/a&gt;&lt;/li&gt;
