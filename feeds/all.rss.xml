@@ -1,5 +1,393 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Fluffy Stuff</title><link>https://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Wed, 28 Mar 2018 01:24:00 +0800</lastBuildDate><item><title>"BLEU: a Method for Automatic Evaluation of Machine Translation"</title><link>https://zhu45.org/posts/2018/Mar/28/bleu-a-method-for-automatic-evaluation-of-machine-translation/</link><description>&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<rss version="2.0"><channel><title>Fluffy Stuff</title><link>https://zhu45.org/</link><description>A tmp place to rest</description><lastBuildDate>Fri, 30 Mar 2018 00:45:00 +0800</lastBuildDate><item><title>"PebblesDB: Building Key-Value Stores using Fragmented Log-Structured Merge Trees"</title><link>https://zhu45.org/posts/2018/Mar/30/pebblesdb-building-key-value-stores-using-fragmented-log-structured-merge-trees/</link><description>&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#key-value-store-operations"&gt;Key-Value Store Operations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#lsm"&gt;LSM&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#lsm-operations"&gt;LSM Operations&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#write-amplification-root-cause"&gt;Write Amplification: Root Cause&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#fragmented-log-structured-merge-tree-flsm"&gt;Fragmented Log-Structured Merge Tree (FLSM)&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#guards"&gt;Guards&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#selecting-guards"&gt;Selecting Guards&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#inserting-and-deleting-guards"&gt;Inserting and Deleting Guards&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#flsm-operations"&gt;FLSM Operations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#limitations"&gt;Limitations&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#building-pebblesdb-over-flsm"&gt;Building PebblesDB over FLSM&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#improving-read-performance"&gt;Improving Read Performance&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#improving-range-query-performance"&gt;Improving Range Query Performance&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;One fundamental problem is the high write amplification of key-value stores for write-intensive workloads. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Write amplification = the ratio of total write IO performed by the store to the total user written&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;High write amplification is bad&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;increases the load on storage devices such as SSDs, which have limited write cycles before the bit error rate becomes unacceptable&lt;/li&gt;
+&lt;li&gt;results in frequent device wear out and high storage &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;reduces write throughput&lt;/p&gt;
+&lt;p&gt;RocksDB write throughput is 10% of read throughput thanks to write amplifcation&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;虽然LSM的写放大最近被研究很多，但是就写放大本身而言，是一个很古老的问题。在计算机体系中，如果相邻两层的处理单元不一致或者应用对一致性等有特殊的需求，就很可能出现写放大问题。比如CPU cache和内存cell，文件系统block和磁盘扇区，数据库block和文件系统block，数据库redo/undo，文件系统journal等.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Reduce write amplification inuition: log-structured merge trees (LSM) data structures is the root cause to the write amplification&lt;/p&gt;
+&lt;p&gt;LSM stores maintain data in sorted order on storage, enabling efficient querying of data. However, when new data is inserted into an LSM-store, existing data is rewritten to maintain the sorted order, resulting in large amounts of write IO.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Key idea to reduce write amplification:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Combine LSM with skip list: fragmenting data into smaller chunks that are organized using guards on storage. Guards allow FLSM to find keys efficiently. &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Why the idea can improve write throughput intuitively:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Write operations on LSM stores are often stalled or blocked while data is compacted (rewritten for better read performance); by drastically reducing write IO, FLSM makes compaction signicantly faster, thereby increasing write throughput.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="background"&gt;Background&lt;/h2&gt;
+&lt;h3 id="key-value-store-operations"&gt;Key-Value Store Operations&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;The &lt;code&gt;get(key)&lt;/code&gt; operation returns the latest value associated with key.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The &lt;code&gt;put(key, value)&lt;/code&gt; operation stores the mapping from key to value in the store. If key was already present in the store, its associated value is updated.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Some key-value stores such as LevelDB provide an iterator over the entire key-value store. &lt;code&gt;it.seek(key)&lt;/code&gt; positions the iterator &lt;code&gt;it&lt;/code&gt; at the smallest key 
+&lt;code&gt;&amp;gt;= key&lt;/code&gt;. The &lt;code&gt;it.next()&lt;/code&gt; call moves &lt;code&gt;it&lt;/code&gt; to the next key in sequence. The &lt;code&gt;it.value()&lt;/code&gt; call returns the value associated with the key at the current iterator position.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The &lt;code&gt;range_query(key1, key2)&lt;/code&gt; operation returns all key-value pairs falling within the given range. Range queries are often implemented by doing a &lt;code&gt;seek()&lt;/code&gt; to &lt;code&gt;key1&lt;/code&gt; and doing &lt;code&gt;next()&lt;/code&gt; calls until the iterator passes &lt;code&gt;key2&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="lsm"&gt;LSM&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;LSM &lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt; is treated as a replacement for B+ Tree&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Why not B+ Tree:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;low write throughput: B+ Trees are a poor fit for write-intensive workloads: updating the tree requires multiple random writes (10-100X slower than sequential writes).&lt;/li&gt;
+&lt;li&gt;high write amplification (61X write amplification)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The log-structured merge trees (LSM) data structure takes advantage of high sequential bandwidth by only writing sequentially to storage. 
+Writes are batched together in memory and written to storage as a sequential log (termed an &lt;strong&gt;sstable&lt;/strong&gt;). Each sstable contains a sorted sequence of keys.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="sstable" class="img-responsive" src="https://zhu45.org/images/sstable.png"/&gt; &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;A "Sorted String Table" then is exactly what it sounds like, it is a file which contains a set of arbitrary, sorted key-value pairs inside. Duplicate keys are fine, there is no need for "padding" for keys or values, and keys and values are arbitrary blobs. Read in the entire file sequentially and you have a sorted index. Optionally, if the file is very large, we can also prepend, or create a standalone &lt;code&gt;key:offset&lt;/code&gt; index for fast access. That's all an SSTable is: very simple, but also a very useful way to exchange large, sorted data segments.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Sstables on storage are organized as hierarchy of &lt;strong&gt;levels&lt;/strong&gt;. Each level contains multiple sstables, and has a maximum size for its sstables.&lt;/p&gt;
+&lt;p&gt;In a 5-level LSM, Level 0 is the lowest level and Level 5 is the highest level. The amount of data (and the number of sstables) in each level increases as the levels get higher. The last level in an LSM may contain hundreds of gigabytes. Application data usually flows into the lower levels and is then compacted into the higher levels. The lower levels are usually cached in memory.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;LSM maintains the following invariant at each level: all sstables contain disjoint sets of keys.&lt;/p&gt;
+&lt;p&gt;For example, a level might contain three sstables: &lt;span class="math"&gt;\([1 \dots 6], [8 \dots 12]\)&lt;/span&gt;, and &lt;span class="math"&gt;\([100 \dots 105]\)&lt;/span&gt;. Each key will be present in exactly one sstable on a given level. As a result, locating a key requires only two binary searches: one binary search on the starting keys of sstables (maintained separately) to locate the correct sstable and another binary search inside the sstable to find the key. If the search fails, the key is not present in that level.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="lsm-operations"&gt;LSM Operations&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;get()&lt;/code&gt; returns the latest value of the key&lt;/p&gt;
+&lt;p&gt;Since the most recent data will be in lower levels, the key-value store searches for the key level by level, starting from Level 0; if it finds the key, it returns the value. Each key has a sequence number that indicates its version. Finding the key at each level requires reading and searching exactly one sstable.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;seek()&lt;/code&gt; and &lt;code&gt;next()&lt;/code&gt; require positioning an iterator over the entire key-value store. &lt;/p&gt;
+&lt;p&gt;implemented using multiple iterators (one per level); each iterator is first positioned inside the appropriate sstable in each level, and the iterator results are merged. The &lt;code&gt;seek()&lt;/code&gt; requires finding the appropriate sstables on each level, and positioning the sstable iterators. The results of the sstable iterators are merged (by identifying the smallest key) to position the key-value store iterator. The &lt;code&gt;next()&lt;/code&gt; operation simply advances the correct sstable iterator, merges the iterators again, and re-positions the key-value store iterator.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;put()&lt;/code&gt; writes the key-value pair, along with a monotonically increasing sequence number, to an in-memory skip list called the &lt;strong&gt;memtable&lt;/strong&gt;. When the memtable reaches a certain size, it is written to storage as a sstable at Level 0. When each level contains a threshold number of files, it is compacted into the next level. &lt;/p&gt;
+&lt;p&gt;Assume Level 0 contains &lt;code&gt;[2, 3]&lt;/code&gt; and &lt;code&gt;[10, 12]&lt;/code&gt; sstables. If Level 1 contains &lt;code&gt;[1,4]&lt;/code&gt; and &lt;code&gt;[9, 13]&lt;/code&gt; sstables, then during compaction, Level 1 sstables are rewritten as &lt;code&gt;[1, 2, 3, 4]&lt;/code&gt; and &lt;code&gt;[9, 10, 12, 13]&lt;/code&gt;, merging the sstables from Level 0 and Level 1. Compacting sstables reduces the total number of sstables in the key-value store and pushes colder data into higher levels. The lower levels are usually cached in memory, thus leading to faster reads of recent data.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Think about &lt;em&gt;memtable&lt;/em&gt; as in-memory SSTable.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;Updating or deleting keys in LSM-based stores does not update the key in place, since all write IO is sequential. Instead, the key is inserted once again into the memtable with a higher sequence number; a delete key is inserted again with a special flag (often called a &lt;strong&gt;tombstone&lt;/strong&gt; flag). Due to the higher sequence number, the latest version of the flag will be returned by the store to the user.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="write-amplification-root-cause"&gt;Write Amplification: Root Cause&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="sstable" class="img-responsive" src="https://zhu45.org/images/lsm-root-cause.png"/&gt; &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;The root cause for write amplification: multiple rewrites of sstables during compaction. In other words, sstables can be rewritten multiple
+times when new data is compacted into them.&lt;/p&gt;
+&lt;p&gt;For example, when compaction happens from &lt;span class="math"&gt;\(t_1\)&lt;/span&gt; to &lt;span class="math"&gt;\(t_2\)&lt;/span&gt;, sstable with &lt;code&gt;[1,100]&lt;/code&gt; has to be rewritten to &lt;code&gt;[1,10,100]&lt;/code&gt; and
+sstable with &lt;code&gt;[200,400]&lt;/code&gt; has to be rewritten as &lt;code&gt;[200,210,400]&lt;/code&gt; (i.e., We have to read &lt;code&gt;[10,210]&lt;/code&gt;, &lt;code&gt;[1,100]&lt;/code&gt;, &lt;code&gt;[200,400]&lt;/code&gt; out of levels, merge sort them, and write them back.)&lt;/p&gt;
+&lt;p&gt;L0文件里面包含的key同时在L1层的多个文件（甚至全部文件）被包含，所以如果想把L0下推到L1，那么就需要将整个L0/L1文件内的key读出来重新排序写入到L1。典型情况下，L0数据量是L1的1/10，为了这么点数据量重写所有数据显然不划算。L1...Ln道理类似&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;放大问题的本质是一个系统对“随时全局有序"的需求有多么的强烈。所谓随时，就是任何的写入都不能导致系统无序；所谓全局，即系统内任意元单位之间都要保持有序。B-Tree系列是随时全局有序的典型代表，而Fractal tree打破了全局的约束，允许局部无序，提升了随机写能力；LSM系列进一步打破了随时的约束，允许通过后台的compaction来整理排序。在LSM这种依靠后台整理来保序的系统里面，系统对序的要求越强烈，写放大越严重。PebblesDB针对写放大提出的解决方案是弱化全局有序的约束，其将每一层进行分段，每个段称为一个guard，guard之间没有重叠的key，且每层的guard之间要求保序，但是guard内部可以无序。&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="fragmented-log-structured-merge-tree-flsm"&gt;Fragmented Log-Structured Merge Tree (FLSM)&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;FLSM counters mutlple rewrites of sstables by fragmenting sstables into smaller units. Instead of rewriting the sstable, FLSM’s compaction simply appends a new sstable fragment to the next level. Doing so ensures that data is written exactly once in most levels&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Here, I'm guessing "append" really means pointer change from one node to another. Thus, the only time IO is performed when the data is first written
+to sstable at a level.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h3 id="guards"&gt;Guards&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;In the classical LSM, each level contains sstables with disjoint key ranges (i.e., each key will be present in exactly one sstable). Maintaining this invariant is the root cause of write amplification, as it forces data to be rewritten in the same level.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The FLSM data structure discards this invariant: each level can contain multiple sstables with overlapping key ranges, so that a key may be present in multiple sstables. To quickly find keys in each level, FLSM organizes the sstables into guards (similar to level concept in skip list)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Each level contains multiple guards. Guards divide the key space (for that level) into disjoint units. Each guard &lt;span class="math"&gt;\(G_i\)&lt;/span&gt; has an associated key &lt;span class="math"&gt;\(K_i\)&lt;/span&gt;, chosen from among keys inserted into the FLSM. Each level in the FLSM contains more guards than the level above it; the guards get progressively more fine-grained as the data gets pushed deeper and deeper into the FLSM. As in a skip-list, if a key is a guard at a given level &lt;span class="math"&gt;\(i\)&lt;/span&gt;, it will be a guard for all levels &lt;span class="math"&gt;\(&amp;gt; i\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Each guard has a set of associated sstables. Each sstable is sorted. If guard &lt;span class="math"&gt;\(G_i\)&lt;/span&gt; is associated with key &lt;span class="math"&gt;\(K_i\)&lt;/span&gt; and guard &lt;span class="math"&gt;\(G_{i+1}\)&lt;/span&gt; with &lt;span class="math"&gt;\(K_{i+1}\)&lt;/span&gt;, an sstable with keys in the range &lt;span class="math"&gt;\([K_i,K_{i+1})\)&lt;/span&gt; will be attached to &lt;span class="math"&gt;\(G_i\)&lt;/span&gt; . Sstables with keys smaller than the first guard are stored in a special sentinel guard in each level. The last guard&lt;span class="math"&gt;\(G_n\)&lt;/span&gt; in the level stores all sstables with keys &lt;span class="math"&gt;\(\ge K_n\)&lt;/span&gt; . Guards within a level never have overlapping key ranges. Thus, to find a key in a given level, only one guard will have to be examined.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In FLSM compaction, the sstables of a given guard are (merge) sorted and then fragmented (partitioned), so that each child guard receives a new sstable that fits into the key range of that child guard in the next level.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="guards" class="img-responsive" src="https://zhu45.org/images/guards.png"/&gt; &lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Some observations about Figure 3:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;A &lt;code&gt;put()&lt;/code&gt; results in keys being added to the in-memory memtable (not shown). Eventually, the memtable becomes full, and is written as an sstable to Level 0. Level 0 does not have guards, and collects together recently written sstables.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Each level has a sentinel guard that is responsible for sstables with keys &amp;lt; than the first guard.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Data inside an FLSM level is partially sorted: guards do not have overlapping key ranges, but the sstables attached to each guard can have overlapping key ranges.（In level 3 Guard: 5, &lt;code&gt;[5,35,40]&lt;/code&gt; and &lt;code&gt;[7]&lt;/code&gt; are overlapping)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h4 id="selecting-guards"&gt;Selecting Guards&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;In the worst case, if one guard contains all sstables, reading and searching such a large guard (and all its constituent sstables) would cause an un-acceptable increase in latency for reads and range queries&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;guards are not selected statically; guards are selected probabilistically from inserted keys, preventing skew.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Current selection policy: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;if the guard probability is 1/10, one in every 10 inserted keys will be randomly selected to be a guard.&lt;/li&gt;
+&lt;li&gt;The guard probability is designed to be lowest at Level 1 (which has the fewest guards), and it increases with the level number (as higher levels have more guards)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;if a key &lt;span class="math"&gt;\(K\)&lt;/span&gt; is selected as a guard in level i, it becomes a guard for all higher levels &lt;span class="math"&gt;\(i + 1, i + 2\)&lt;/span&gt; etc. The guards in level &lt;span class="math"&gt;\(i + 1\)&lt;/span&gt; are a strict superset of the guards in level &lt;span class="math"&gt;\(i\)&lt;/span&gt; (in Figure 3, key 5 is chosen as a guard for Level 1; therefore it is also a guard for levels 2 and 3.)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="inserting-and-deleting-guards"&gt;Inserting and Deleting Guards&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Guards are inserted asynchronously into FLSM&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;When guards are selected, they are added to an in-memory set termed the &lt;em&gt;uncommitted guards&lt;/em&gt;. Sstables are not partitioned on storage based on (as of yet) uncommitted guards; as a result, FLSM reads are performed as if these guards did not exist. At the next compaction cycle, sstables are partitioned and compacted based on both old guards and uncommitted guards; any sstable that needs to be split due to an uncommitted guard is compacted to the next level. At the end of compaction, the uncommitted guards are persisted on storage and added to the full set of guards. Future reads will be performed based on the full set of guards.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;guard deletion was not required&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Guard deletion is also performed asynchronously similar to guard insertion. Deleted guards are added to an in-memory set. At the next compaction cycle, sstables are re-arranged to account for the deleted guards. Deleting a guard G at level i is done lazily at compaction time. During compaction, guard G is deleted and sstables belonging to guard G will be partitioned and appended to either the neighboring guards in the same level i or child guards in level i + 1. Compaction from level i to i + 1 proceeds as normal (since G is still a guard in level i + 1). At the end of compaction, FLSM persists metadata indicating G has been deleted at level i. If required, the guard is deleted in other levels in a similar manner. Note that if a guard is deleted at level i, it should be deleted at all levels &amp;lt; i; FLSM can choose whether to delete the guard at higher levels &amp;gt; i.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="flsm-operations"&gt;FLSM Operations&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;get()&lt;/code&gt; operation first checks the in-memory memtable. If the key is not found, the search continues level by level, starting with level 0. During the search, if the key is found, it is returned immediately; To check if a key is present in a given level, binary search is used to find the single guard that could contain the key. Once the guard is located, its sstables are searched for the key. Thus, in the worst case, a &lt;code&gt;get()&lt;/code&gt; requires reading one guard from each level, and all the sstables of each guard.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Range queries require collecting all the keys in the given range. FLSM first identifies the guards at each level that intersect with the given range. Inside each guard, there may be multiple sstables that intersect with the given range; a binary search is performed on each sstable to identify the smallest key overall in the range. Identifying the next smallest key in the range is similar to the merge procedure in merge . When the end of range query interval is reached, the operation is complete, and the result is returned to the user.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;put()&lt;/code&gt; adds data to an in-memory memtable. When the memtable gets full, it is written as a sorted sstable to Level 0. When each level reaches a certain size, it is compacted into the next level. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Similar to LSM, updating or deleting a key involves inserting the key into the store with an updated sequence number or a deletion flag respectively. the deletion of the key does not result in deletion of the related guard; deleting a guard will involve a signicant amount of compaction work. Thus, empty guards are possible.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Compaction:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;The sstables in the guard are first (merge) sorted and then partitioned into new sstables based on the guards of the next level; the new sstables are then attached to the correct guards. &lt;/p&gt;
+&lt;p&gt;Assume a guard at Level 1 contains keys &lt;code&gt;[1, 20, 45, 101, 245]&lt;/code&gt;. If the next level has guards 1, 40, and 200, the sstable will be partitioned into three sstables containing &lt;code&gt;[1, 20]&lt;/code&gt;, &lt;code&gt;[45, 101]&lt;/code&gt;, and &lt;code&gt;[245]&lt;/code&gt; and attached to guards 1, 40, and 200 respectively.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;New sstables are simply added to the correct guard in the next level.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Two exceptions to no-rewrite rule:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;at the highest level (e.g,. Level 5) of FLSM, the sstables have to be rewritten during compaction; there is no higher level for the sstables to be partitioned and attached to.&lt;/li&gt;
+&lt;li&gt;for the second-highest level (e.g,. Level 4), FLSM will rewrite an sstable into the same level if the alternative is to merge into a large sstable in the highest level &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="limitations"&gt;Limitations&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Since &lt;code&gt;get()&lt;/code&gt; and range query operations need to examine all sstables within a guard, the latency of these operations is increased in comparison to LSM.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="building-pebblesdb-over-flsm"&gt;Building PebblesDB over FLSM&lt;/h2&gt;
+&lt;p&gt;Due to the limitation of FLSM, several existing techniques are applied to improve read performance (i.e., &lt;code&gt;put()&lt;/code&gt; and range query operations)&lt;/p&gt;
+&lt;h3 id="improving-read-performance"&gt;Improving Read Performance&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Cause: &lt;code&gt;get()&lt;/code&gt; in FLSM causes all the sstables of one guard in each level to be examined. In contrast, in LSM, exactly one sstable per level needs to be examined.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Improvement technique:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Sstable Bloom Filters:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A Bloom filter is a space-efficient probabilistic data structure used to test whether an element is present in a given set in constant time&lt;/li&gt;
+&lt;li&gt;A bloom filter can produce false positives, but not false negatives (i.e., the key is in sstables but bloom filters say no)&lt;/li&gt;
+&lt;li&gt;PebblesDB attaches a bloom filter to each sstable to eciently detect if a given key could be present in the sstable. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="improving-range-query-performance"&gt;Improving Range Query Performance&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Cause: require examining all the sstables of a guard for FLSM. Since LSM stores examine only one sstable per level, FLSM stores have significant overhead for range queries&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Improvement technique:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Seek-Based Compaction&lt;/li&gt;
+&lt;li&gt;Parallel Seek&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="http://www.cs.utexas.edu/~vijay/papers/sosp17-pebblesdb.pdf"&gt;PebblesDB: Building Key-Value Stores using Fragmented Log-Structured Merge Trees&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="https://www.igvita.com/2012/02/06/sstable-and-log-structured-storage-leveldb/"&gt;SSTable and Log Structured Storage: LevelDB&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="https://zhuanlan.zhihu.com/p/32225460"&gt;PebblesDB读后感&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;&lt;a href="https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/skiplists.pdf"&gt;CMU slides&lt;/a&gt;, &lt;a href="http://igoro.com/archive/skip-lists-are-fascinating/"&gt;this post&lt;/a&gt;, and
+&lt;a href="https://www.ics.uci.edu/~pattis/ICS-23/lectures/notes/Skip%20Lists.pdf"&gt;UCI reading&lt;/a&gt; give an intuitive introduction to skip list. &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;&lt;a href="http://www.benstopford.com/2015/02/14/log-structured-merge-trees/"&gt;This post&lt;/a&gt; contains a plenty of good pointers to get familiar with LSM. Also,
+&lt;a href="http://webee.technion.ac.il/~idish/ftp/clsm.pdf"&gt;cLSM paper&lt;/a&gt; (section 2.3 and Figure 2) also provides a good summary.  &lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['CommonHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Fri, 30 Mar 2018 00:45:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2018-03-30:posts/2018/Mar/30/pebblesdb-building-key-value-stores-using-fragmented-log-structured-merge-trees/</guid><category>papers</category><category>storage</category><category>LSM</category></item><item><title>"BLEU: a Method for Automatic Evaluation of Machine Translation"</title><link>https://zhu45.org/posts/2018/Mar/28/bleu-a-method-for-automatic-evaluation-of-machine-translation/</link><description>&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#the-baseline-bleu-metric"&gt;The Baseline BLEU Metric&lt;/a&gt;&lt;ul&gt;
@@ -44,7 +432,7 @@ Thus requires:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Candidate 1 shares "It is a guide to action" with Reference 1, "which" with Reference 2, "ensures that the military" with Reference 1, 
 "always" with References 2 and 3, "commands" with Reference 1, and finally "of the party" with Reference 2 (all ignoring capitalization). 
-In contrast, Candidate 2 ex- hibits far fewer matches, and their extent is less.&lt;/li&gt;
+In contrast, Candidate 2 exhibits far fewer matches, and their extent is less.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
@@ -125,12 +513,11 @@ max(# "the" in ref1, # "the" in ref2, # "the" in ref3) = max(1,4,4). &lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;We first compute the n-gram matches sentence by sentence. Next, we add the clipped n-gram counts for all the candidate sentences and divide by the number of candidate n-grams in the test corpus to compute a modified precision score, &lt;span class="math"&gt;\(p_n\)&lt;/span&gt;, for the entire test corpus.&lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;&lt;img alt="modified n-gram precision on corpus" class="img-responsive" src="https://zhu45.org/images/bleu-corpus.png"/&gt;&lt;/p&gt;
 &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img alt="modified n-gram precision on corpus" class="img-responsive" src="https://zhu45.org/images/bleu-corpus.png"/&gt;
-
-￼- We want to combine all n-gram precision on corpus (i.e., &lt;span class="math"&gt;\(n=1,2,3,4\)&lt;/span&gt;) together into a single number metric. the modified n-gram precision decays roughly exponentially with n: the modified unigram precision is much larger than the modified bigram precision which in turn is much bigger than the modified trigram precision. BLEU uses the geometric mean of the modified n-gram precisions.&lt;/p&gt;
-&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;We want to combine all n-gram precision on corpus (i.e., &lt;span class="math"&gt;\(n=1,2,3,4\)&lt;/span&gt;) together into a single number metric. the modified n-gram precision decays roughly exponentially with n: the modified unigram precision is much larger than the modified bigram precision which in turn is much bigger than the modified trigram precision. BLEU uses the geometric mean of the modified n-gram precisions.&lt;/p&gt;
+&lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Modified n-gram precision alone fails to enforce the proper translation length. Candidate translations longer than their references are already penalized by the modified n-gram precision measure. However, candidate translations shorter than their references are not penalized.&lt;/p&gt;
 &lt;ul&gt;
@@ -162,15 +549,14 @@ max(# "the" in ref1, # "the" in ref2, # "the" in ref3) = max(1,4,4). &lt;/p&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;The first candidate recalls more words from the references, but is obviously a poorer translation than the second candidate
-￼￼￼￼￼￼￼￼￼￼ &lt;/p&gt;
+&lt;p&gt;The first candidate recalls more words from the references, but is obviously a poorer translation than the second candidate&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Sentence ￼￼￼￼￼￼￼brevity penalty&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;We wish to make the brevity penalty 1.0 when the candidate’s length is the same as any reference translation’s length.&lt;/p&gt;
-&lt;/li&gt;
+&lt;ul&gt;
+&lt;li&gt;We wish to make the brevity penalty 1.0 when the candidate’s length is the same as any reference translation’s length.&lt;/li&gt;
 &lt;li&gt;if there are three references with lengths 12, 15, and 17 words and the candidate translation is a terse 12 words, we want the brevity penalty to be 1. &lt;/li&gt;
 &lt;li&gt;We call the closest reference sentence length the “&lt;em&gt;best match length&lt;/em&gt;.”&lt;/li&gt;
 &lt;li&gt;we compute the brevity penalty over the entire corpus to al- low some freedom at the sentence level.&lt;/li&gt;
@@ -270,7 +656,7 @@ n-gram matches for higher n rarely occur. As a result, BLEU performs poorly when
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Wed, 28 Mar 2018 01:24:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2018-03-28:posts/2018/Mar/28/bleu-a-method-for-automatic-evaluation-of-machine-translation/</guid><category>natural language processing</category><category>evaluation metrics</category></item><item><title>"Existential Consistency: Measuring and Understanding Consistency at Facebook"</title><link>https://zhu45.org/posts/2018/Mar/08/existential-consistency-measuring-and-understanding-consistency-at-facebook/</link><description>&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Zeyuan Hu</dc:creator><pubDate>Wed, 28 Mar 2018 01:24:00 +0800</pubDate><guid isPermaLink="false">tag:zhu45.org,2018-03-28:posts/2018/Mar/28/bleu-a-method-for-automatic-evaluation-of-machine-translation/</guid><category>natural language processing</category><category>evaluation metrics</category><category>papers</category></item><item><title>"Existential Consistency: Measuring and Understanding Consistency at Facebook"</title><link>https://zhu45.org/posts/2018/Mar/08/existential-consistency-measuring-and-understanding-consistency-at-facebook/</link><description>&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#overview"&gt;Overview&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#facebooks-replicated-storage"&gt;Facebook’s Replicated Storage&lt;/a&gt;&lt;/li&gt;
