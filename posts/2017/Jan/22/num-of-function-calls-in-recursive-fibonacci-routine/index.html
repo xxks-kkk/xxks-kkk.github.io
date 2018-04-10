@@ -157,7 +157,7 @@ to get some insights.</p>
 <p>We can use <code>ulimit -a</code> or <code>ulimit -s</code> to find out the size of stack that system allows:</p>
 <div class="highlight"><pre><span></span>$ <span class="nb">ulimit</span> -a
 ... snip ...
-stack size              <span class="o">(</span>kbytes, -s<span class="o">)</span> 10240
+stack size              <span class="o">(</span>kbytes, -s<span class="o">)</span> <span class="m">10240</span>
 ... snip ...
 </pre></div>
 <p>As you can see, the default stack size is <code>10 MB</code>. Let's see how large space our <code>Fib</code>
@@ -197,16 +197,14 @@ for <span class="math">\(N = 50\)</span>.</p>
     }
 
     var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
-        "    config: ['CommonHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
-        "    jax: ['input/TeX','input/MathML','output/CommonHTML']," +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
         "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
         "    displayAlign: '"+ align +"'," +
         "    displayIndent: '"+ indent +"'," +

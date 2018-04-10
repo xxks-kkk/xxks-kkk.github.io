@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Fast Crash Recovery in RAMCloud"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/svg-with-js/js/fontawesome-all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+    <h1 id="site-title"><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
+            <a href="../../../../../courses.html" style="padding: 10px">COURSES</a>
+            <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+            <a href="../../../../../links.html" style="padding: 10px">LINKS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+            <h1 class="post-title">"Fast Crash Recovery in RAMCloud"</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2018-04-09T22:00:00+08:00"> Apr 09, 2018</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/papers.html">papers</a>
+        /
+	<a href="../../../../../tag/storage.html">storage</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <html><body><div class="toc">
+<ul>
+<li><a href="#problem-motivation">Problem, Motivation</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#durability-and-availability">Durability and Availability</a><ul>
+<li><a href="#buffered-logging">Buffered Logging</a></li>
+<li><a href="#fast-recovery">Fast Recovery</a></li>
+</ul>
+</li>
+<li><a href="#remarks-thoughts">Remarks &amp; Thoughts</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+</div>
+<h2 id="problem-motivation">Problem, Motivation</h2>
+<p>RAMCloud is a large-scale general-purpose DRAM storage system for datacenters. 
+The system is motivated by the fact that Large-scale apps struggle with utilizing
+DRAM to its full potential:</p>
+<ul>
+<li>DRAM is still majorly used as a cache for some other storage system</li>
+<li>Developers have to manage consistency between caches in DRAM and its storage system</li>
+<li>Cache misses and backing store overheads</li>
+</ul>
+<p><img alt="RAMCloud concept" class="img-responsive" src="/images/RAMCloud-datacenter.png" style="height 300px"/></p>
+<p>It has four design goals:</p>
+<ul>
+<li>Scalbility: 1000-10000 commodity servers with 32-64 GB DRAM/server</li>
+<li>Low latency: uniform low-latency access (5-10 μs round-trip times for small read operations)</li>
+<li>High throughput: 1M ops/sec/server</li>
+<li>High durability and availability</li>
+</ul>
+<p>This paper focuses on the "high durability and availability". Replicating all data (x3) in DRAM fix
+some availability issue but triple the cost and energy usage of the system. Thus, RAMCloud only 
+stores a single copy of data in DRAM, which brings the problem of availability: what happens when server
+crashes? RAMCloud’s solution to the availability problem is fast crash recovery. Then the problem 
+becomes how to recover from crash within 1s~2s for 64GB or more DRAM data?</p>
+<h2 id="challenges">Challenges</h2>
+<ul>
+<li>Durability: RAM is lack of durability. Data is unavailable on crashed nodes.</li>
+<li>
+<p>Availability: How to recover as soon as possible?</p>
+<ul>
+<li>Fast writes: Synchronous disk I/O’s during writes?? Too slow </li>
+<li>Fast crash recovery: Data unavailable after crashes?? No!</li>
+</ul>
+</li>
+<li>
+<p>Large scale: 10,000 nodes, 100TB to 1PB</p>
+</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<p><img alt="RAMCloud main architecture" class="img-responsive" src="/images/RAMCloud-architecture.png"/></p>
+<ul>
+<li>
+<p>Each storage server contains a master and a backup. A central coordinator <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> manages the server pool and <a href="../../../../../posts/2018/Mar/08/pnuts-yahoos-hosted-data-serving-platform/">tablet</a> configuration. Client applications run on separate machines and access RAMCloud using a client library that makes remote procedure calls.</p>
+<ul>
+<li>master: manages RAMCloud objects in its DRAM and services client requests</li>
+<li>backup: stores redundant copies of objects from other masters using its disk or flash memory</li>
+<li>coordinator: manages configuration information such as the network addresses of the storage servers and the locations of objects</li>
+<li>tablets: consecutive key ranges within a single table</li>
+</ul>
+</li>
+<li>
+<p>Data model: object consists of [identifier(64b), version(64b), Blob(&lt;=1MB)]</p>
+</li>
+</ul>
+<h2 id="durability-and-availability">Durability and Availability</h2>
+<ul>
+<li>Durability: 1 copy in DRAM; Backup copies on disk/flash: durability ~ free!</li>
+<li>
+<p>Availiability: </p>
+<ul>
+<li>Fast writes: Buffered Logging</li>
+<li>Fast crash recovery: Large-scale parallelism to reconstruct data (similar to MapReduce)</li>
+</ul>
+</li>
+</ul>
+<h3 id="buffered-logging">Buffered Logging</h3>
+<p><img alt="Buffered Logging" class="img-responsive" src="/images/buffered-logging.png"/></p>
+<ul>
+<li>
+<p>When a master receives a write requests, it updates its in-memory log and forwards the new data to several backups, which buffer the data in their memory. Master maintains a hash table to record locations of data objects. The data is eventually written to disk or flash in large batches. Backups must use an auxiliary power source to ensure that buffers can be written to stable storage after a power failure.</p>
+<ul>
+<li>No disk I/O during write requests</li>
+<li>Master’s memory also log-structured</li>
+<li>Log cleaning ~ generational garbage collection</li>
+<li>master's log is divided into 8MB segments</li>
+<li>Hash table is used for quickly lookup object in log</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This part idea borrows from <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-lfs.pdf">log-structured file system</a>.</p>
+</div>
+<h3 id="fast-recovery">Fast Recovery</h3>
+<p><img alt="Fast Recovery Overview" class="img-responsive" src="/images/fast-recovery-overview.png"/></p>
+<ul>
+<li>
+<p>Three different recovery schemas:</p>
+<ul>
+<li>One recovery master, small backup servers (disk bandwidth bottleneck)</li>
+<li>One recovery master, large backup servers (network bandwidth bottleneck)</li>
+<li>Several recovery masters, large backup servers (good!)</li>
+</ul>
+</li>
+</ul>
+<p><img alt="Recovery Overview" class="img-responsive" src="/images/recovery.png"/></p>
+<ul>
+<li>
+<p>Divide each master’s data into partitions</p>
+<ul>
+<li>Partition and scatter log data to more backups randomly. So backup data can be read in parallel when the master crashed.</li>
+<li>Recover each partition on a separate recovery master</li>
+<li>Partitions based on tables &amp; key ranges, not log segment</li>
+<li>Each backup divides its log data among recovery masters</li>
+</ul>
+</li>
+<li>
+<p>Each mater computes the strategy to form partitions and upload the strategy to coordinator as <em>will</em>. Coordinator follows crashed master's will to 
+divide crashed master's data into partitions and assign the recoverying work to recovery masters (see section 3.5.3)</p>
+</li>
+</ul>
+<p><img alt="log distribution" class="img-responsive" src="/images/log-distribution.png"/></p>
+<p><img alt="recovery ops" class="img-responsive" src="/images/recovery-ops.png"/></p>
+<p><img alt="recovery ops details" class="img-responsive" src="/images/recovery-ops-details.png"/></p>
+<h2 id="remarks-thoughts">Remarks &amp; Thoughts</h2>
+<p>The authors use the log-structured storage instead of synchronous disk write to preserve durability. 
+And the availability is achieved via data parallelism. The design harness the scale well and has exceptional performance.</p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="https://web.stanford.edu/~ouster/cgi-bin/papers/ramcloud-recovery.pdf">Fast Crash Recovery in RAMCloud</a>, <a href="https://ramcloud.atlassian.net/wiki/spaces/RAM/pages/6848659/RAMCloud+Presentations">slides</a>, <a href="https://www.youtube.com/watch?v=lcUvU3b5co8">video on paper</a>,
+<a href="https://www.youtube.com/channel/UCqnEwnxxNoHwCwY5W5kfGVA/videos">videos on details of paper</a>. </li>
+<li><a href="http://www.puncsky.com/blog/2012/12/13/fast-crash-recovery-in-ramcloud/">Tian Pan's Blog on RAMCloud</a></li>
+<li><a href="https://ongardie.net/var/blurbs/pubs/ramcloud-tocs15.pdf">The RAMCloud Storage System</a></li>
+</ul>
+<div class="footnote">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>The coordinator will use ZooKeeper to store its configuration information, which consists of a list of active storage servers along with the tablets they manage. ZooKeeper本身是一个非常牢靠的记事本，用于记录一些概要信息。Hadoop依靠这个记事本来记录当前哪些节点正在用，哪些已掉线，哪些是备用等，以此来管理机群。 <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+</li>
+</ol>
+</div></body></html>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/system.html">system</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2018.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
