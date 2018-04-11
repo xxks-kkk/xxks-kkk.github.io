@@ -126,8 +126,13 @@ divide crashed master's data into partitions and assign the recoverying work to 
 &lt;p&gt;&lt;img alt="recovery ops" class="img-responsive" src="/images/recovery-ops.png"/&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="recovery ops details" class="img-responsive" src="/images/recovery-ops-details.png"/&gt;&lt;/p&gt;
 &lt;h2 id="remarks-thoughts"&gt;Remarks &amp;amp; Thoughts&lt;/h2&gt;
-&lt;p&gt;The authors use the log-structured storage instead of synchronous disk write to preserve durability. 
-And the availability is achieved via data parallelism. The design harness the scale well and has exceptional performance.&lt;/p&gt;
+&lt;p&gt;Each segment is randomly shuffled to multiple backups and recovery is constructed in parallel, which reminds me of the MapReduce. Segments are
+distributed uniformly across backups, which mirrors chunking the data evenly in Map phase. The recovery from multiple recovery masters and
+each recovery master only done part of the whole need-to-be-recovered data, which reminds me of Reduce phase. Even Prof. John Ousterhout in the &lt;a href="https://www.youtube.com/watch?v=lcUvU3b5co8"&gt;video&lt;/a&gt; thinks that MapReduce almost solve their problem. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="map reduce" class="img-responsive" src="/images/mapreduce.png"/&gt;&lt;/p&gt;
+&lt;p&gt;This finding is quite atonishing to me because &lt;a href="https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf"&gt;MapReduce paper&lt;/a&gt;
+comes out in 2004 and RAMCloud comes out in 2011. If we take a slightly different angle to look at prior work, we may find something new. That's provoking for
+me in terms of research.&lt;/p&gt;
 &lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://web.stanford.edu/~ouster/cgi-bin/papers/ramcloud-recovery.pdf"&gt;Fast Crash Recovery in RAMCloud&lt;/a&gt;, &lt;a href="https://ramcloud.atlassian.net/wiki/spaces/RAM/pages/6848659/RAMCloud+Presentations"&gt;slides&lt;/a&gt;, &lt;a href="https://www.youtube.com/watch?v=lcUvU3b5co8"&gt;video on paper&lt;/a&gt;,
