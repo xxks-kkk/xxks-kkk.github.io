@@ -32,7 +32,6 @@
     <nav>
         <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
         <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
-            <a href="../../../../../courses.html" style="padding: 10px">COURSES</a>
             <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
             <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
             <a href="../../../../../links.html" style="padding: 10px">LINKS</a>
@@ -57,6 +56,8 @@
 	<a href="../../../../../tag/papers.html">papers</a>
         /
 	<a href="../../../../../tag/storage.html">storage</a>
+        /
+	<a href="../../../../../tag/distributed-systems.html">distributed systems</a>
     
 </footer><!-- /.post-info -->                </div>
             </div>
@@ -67,12 +68,14 @@
 <ul>
 <li><a href="#problem-motivation">Problem, Motivation</a></li>
 <li><a href="#challenges">Challenges</a></li>
+<li><a href="#assumptions">Assumptions</a></li>
 <li><a href="#architecture">Architecture</a></li>
 <li><a href="#durability-and-availability">Durability and Availability</a><ul>
 <li><a href="#buffered-logging">Buffered Logging</a></li>
 <li><a href="#fast-recovery">Fast Recovery</a></li>
 </ul>
 </li>
+<li><a href="#other-interesting-details">Other interesting details</a></li>
 <li><a href="#remarks-thoughts">Remarks &amp; Thoughts</a></li>
 <li><a href="#reference">Reference</a></li>
 </ul>
@@ -111,6 +114,24 @@ becomes how to recover from crash within 1s~2s for 64GB or more DRAM data?</p>
 </li>
 <li>
 <p>Large scale: 10,000 nodes, 100TB to 1PB</p>
+</li>
+</ul>
+<h2 id="assumptions">Assumptions</h2>
+<ul>
+<li>
+<p>Use low-latency Infiniband NICs and switches </p>
+<ul>
+<li>Ethernet switches and NICs typically add at least 200-500 μs to round-trip latency in a large datacenter</li>
+</ul>
+</li>
+<li>
+<p>DRAM uses an auxiliary power source</p>
+<ul>
+<li>to ensure that buffers can be written to stable storage after a power failure</li>
+</ul>
+</li>
+<li>
+<p>Every byte of data is in DRAM</p>
 </li>
 </ul>
 <h2 id="architecture">Architecture</h2>
@@ -156,7 +177,8 @@ becomes how to recover from crash within 1s~2s for 64GB or more DRAM data?</p>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This part idea borrows from <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-lfs.pdf">log-structured file system</a>.</p>
+<p>This part idea borrows from <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-lfs.pdf">log-structured file system</a>. Log structure
+in memory is thought to be interesting by Vijay.</p>
 </div>
 <h3 id="fast-recovery">Fast Recovery</h3>
 <p><img alt="Fast Recovery Overview" class="img-responsive" src="/images/fast-recovery-overview.png"/></p>
@@ -189,6 +211,26 @@ divide crashed master's data into partitions and assign the recoverying work to 
 <p><img alt="log distribution" class="img-responsive" src="/images/log-distribution.png"/></p>
 <p><img alt="recovery ops" class="img-responsive" src="/images/recovery-ops.png"/></p>
 <p><img alt="recovery ops details" class="img-responsive" src="/images/recovery-ops-details.png"/></p>
+<h2 id="other-interesting-details">Other interesting details</h2>
+<ul>
+<li>
+<p>Each RAMCloud master decides independently where to place each replica, using a combination of randomization and refinement.</p>
+<p>When a master needs to select a backup for a segment, it chooses several candidates at random from a list of all backups in the cluster. Then it selects the best candidate, using its knowledge of where it has already allocated segment replicas and information about the speed of each backup’s disk. The best backup is the one that can read its share of the master’s segment replicas most quickly from disk during recovery. A backup is rejected if it is in the same rack as the master or any other replica for the current segment. Once a backup has been selected, the master contacts that backup to reserve space for the segment. At this point the backup can reject the request if it is overloaded, in which case the master selects another candidate.</p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Advantages of randomization + refinement:</p>
+<ul>
+<li>eliminate behavior: all masters choosing the same backups in a lock-step fashion</li>
+<li>provides a solution nearly as optimal as a centralized manager</li>
+<li>make segment distribution nearly uniform<ul>
+<li>compensate for each machine difference: more powerful machine, high disk speed, more likely to be selected</li>
+<li>handles the entry of new backups gracefully: new machine, less workload, more likely to be selected</li>
+</ul>
+</li>
+</ul>
+</div>
 <h2 id="remarks-thoughts">Remarks &amp; Thoughts</h2>
 <p>Each segment is randomly shuffled to multiple backups and recovery is constructed in parallel, which reminds me of the MapReduce. Segments are
 distributed uniformly across backups, which mirrors chunking the data evenly in Map phase. The recovery from multiple recovery masters and

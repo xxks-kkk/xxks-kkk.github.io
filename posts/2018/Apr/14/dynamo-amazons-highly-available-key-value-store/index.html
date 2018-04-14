@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Dynamo: Amazon’s Highly Available Key-value Store"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/svg-with-js/js/fontawesome-all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+    <h1 id="site-title"><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
+            <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+            <a href="../../../../../links.html" style="padding: 10px">LINKS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+            <h1 class="post-title">"Dynamo: Amazon’s Highly Available Key-value Store"</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2018-04-14T20:24:00+08:00"> Apr 14, 2018</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/papers.html">papers</a>
+        /
+	<a href="../../../../../tag/distributed-systems.html">distributed systems</a>
+        /
+	<a href="../../../../../tag/storage.html">storage</a>
+        /
+	<a href="../../../../../tag/consistent-hashing.html">consistent hashing</a>
+        /
+	<a href="../../../../../tag/quorum.html">quorum</a>
+        /
+	<a href="../../../../../tag/merkle-tree.html">merkle tree</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <html><body><div class="toc">
+<ul>
+<li><a href="#problem-motivation">Problem, Motivation</a></li>
+<li><a href="#system-assumptions-and-requirements">System Assumptions and Requirements</a></li>
+<li><a href="#design-considerations">Design Considerations</a></li>
+<li><a href="#design-requirement">Design Requirement</a></li>
+<li><a href="#architecture">Architecture</a><ul>
+<li><a href="#partitioning-algorithm">Partitioning Algorithm</a></li>
+<li><a href="#replication">Replication</a></li>
+<li><a href="#data-versioning">Data Versioning</a></li>
+<li><a href="#execution-of-get-and-put-operations">Execution of get () and put () operations</a></li>
+<li><a href="#handling-temporary-failures-hinted-handoff">Handling temporary failures: Hinted Handoff</a></li>
+<li><a href="#handling-permanent-failures-replica-synchronization">Handling permanent failures: Replica synchronization</a></li>
+<li><a href="#membership-and-failure-detection">Membership and Failure Detection</a></li>
+</ul>
+</li>
+<li><a href="#remarks-thoughts">Remarks &amp; Thoughts</a></li>
+<li><a href="#further-readings">Further Readings</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+</div>
+<h2 id="problem-motivation">Problem, Motivation</h2>
+<ul>
+<li>How to build a highly available (i.e. reliability) and scalable distributed key-value storage system?</li>
+</ul>
+<h2 id="system-assumptions-and-requirements">System Assumptions and Requirements</h2>
+<ul>
+<li>
+<p>Query Model: simple KV store operations: read &amp; write</p>
+<ul>
+<li>store small objects (&lt;= 1 MB)</li>
+<li>no operations span multiple data items; no need for relational schema</li>
+</ul>
+</li>
+<li>
+<p>ACID properties: trade consistency in ACID for high availability</p>
+<ul>
+<li>no isolation guarantees</li>
+<li>permits only single key updates</li>
+</ul>
+</li>
+<li>
+<p>Efficiency: commodity machines; stringent latency requirements specified by SLAs</p>
+<ul>
+<li>SLA (Sevice Level Agreement): a contract where a client and a service agree on several system-related characteristics: client’s expected request rate distribution for a particular API, the expected service latency under those conditions, etc.</li>
+<li>Dynamo:<ul>
+<li>SLAs measured at the 99.9th percentile of the distribution (e.g., a response within 300ms for 99.9% of its requests for a peak client load of 500 requests per second)</li>
+<li>configurable: to meet service latency &amp; throughput requirements</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li>Dynamo is an AP system</li>
+<li>Measuring tail latency instead of average latency is because Dynamo wants to optimize the worst case scenario. In the system
+is designed for the common usage situations, average latency is a fine measurement.</li>
+</ul>
+</div>
+<h2 id="design-considerations">Design Considerations</h2>
+<ul>
+<li>
+<p>Strong consistency and high data availability cannot be achieved simultaneously</p>
+<ul>
+<li>Dynamo sacrifice strong consistency: Dynamo is designed to be an eventually consistent data store; that is all updates reach all replicas eventually.</li>
+</ul>
+</li>
+<li>
+<p>Increase availability for system prone to server and network failures: Optimistic replication techniques</p>
+<ul>
+<li>changes are allowed to propagate to replicas in the background, and concurrent, disconnected work is tolerated.</li>
+<li>Conflicts must be detected and reolved:<ul>
+<li>When (whether conflicts should be resolved during reads or writes?):<ul>
+<li>Dynamo: resolved when read; writes are never rejected </li>
+</ul>
+</li>
+<li>Who (who performs the process of conflict resolution: data store or application?):<ul>
+<li>Dynamo: the application; data store implements a simple policy (i.e., "last write wins")</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Incremental scalability: scale out one storage host (<em>node</em>) at a time with minimal impact</p>
+</li>
+<li>Symmetry: every node in Dynamo should have the same set of responsibilities as its peers (i.e., no special nodes)</li>
+<li>Decentralization: design favors decentralized peer-to-peer techniques</li>
+<li>Heterogeneity: system needs to be able to exploit heterogeneity in the infrastructure it runs on (e.g. the work distribution must be proportional to the capabilities of the individual servers)</li>
+</ul>
+<h2 id="design-requirement">Design Requirement</h2>
+<ul>
+<li>"Always writeable": no updates are rejected due to failures or concurrent writes</li>
+<li>All nodes are assumed to be trusted</li>
+<li>No support for hierarchical namespaces (a norm in many file systems) or complex relational schema</li>
+<li>Built for latency sensitvie applications: at least 99.9% of read and write operations to be performed within a few hundred milliseconds</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The architecture of a storage system in a production setting needs to include:</p>
+<ul>
+<li>actual data persistence component</li>
+<li>load balancing</li>
+<li>membership and failure detection</li>
+<li>failure recovery</li>
+<li>replica synchronization</li>
+<li>overload handling</li>
+<li>state transfer</li>
+<li>concurrency and job scheduling</li>
+<li>request marshalling</li>
+<li>request routing</li>
+<li>system monitoring and alarming</li>
+<li>configuration management</li>
+</ul>
+</div>
+<p><img alt="Dynamo Architecture Main Techniques" class="img-responsive" src="/images/dynamo-arch-overview.png"/></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The relation between Table 1 entry and the following sections:</p>
+<ul>
+<li>Partitioning (Partitioning Algorithm, Replication)</li>
+<li>High Availability for writes (Data Versioning)</li>
+<li>Handling temporary failures (Execution of get () and put () operations, Handling temporary failures: Hinted Handoff)</li>
+<li>Recovering from permanent failures (Handling permanent failures: Replica synchronization)</li>
+</ul>
+</div>
+<h3 id="partitioning-algorithm">Partitioning Algorithm</h3>
+<ul>
+<li>
+<p>Dynamo’s partitioning scheme relies on consistent hashing to distribute the load across multiple storage hosts (i.e., nodes).</p>
+</li>
+<li>
+<p>Consistent hashing:</p>
+<p>the output range of a hash function is treated as a fixed circular space or “ring” (i.e. the largest hash value wraps around to the smallest hash value). Each node in the system is assigned a random value within this space which represents its “position” on the ring. Each data item identified by a key is assigned to a node by hashing the data item’s key to yield its position on the ring, and then walking the ring clockwise to find the first node with a position larger than the item’s position. Thus, each node becomes responsible for the region in the ring between it and its predecessor node on the ring.</p>
+</li>
+<li>
+<p>Pro &amp; Cons of consistent hashing:</p>
+<ul>
+<li>Pro:<ul>
+<li>departure or arrival of a node only affects its immediate neighbors and other nodes remain unaffected</li>
+</ul>
+</li>
+<li>Cons:<ul>
+<li>the random position assignment of each node on the ring leads to non-uniform data and load distribution</li>
+<li>The basic algorithm is oblivious to the heterogeneity in the performance of nodes 
+(i.e., some node may have a more powerful setup but consistent hashing treat it the same as others)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Dynamo uses a variant of consistent hashing:</p>
+<p>Instead of mapping a node to a single point in the circle, each node gets assigned to multiple points in the ring. To this end, Dynamo uses the concept of “<em>virtual nodes</em>”. A virtual node looks like a single node in the system, but each node can be responsible for more than one virtual node. Effectively, when a new node is added to the system, it is assigned multiple positions (i.e., “<em>tokens</em>”) in the ring.</p>
+</li>
+<li>
+<p>Advantages of using virtual nodes:</p>
+<ul>
+<li>If a node becomes unavailable (due to failures or routine maintenance), the load handled by this node is evenly dispersed across the remaining available nodes</li>
+<li>When a node becomes available again, or a new node is added to the system, the newly available node accepts a roughly equivalent amount of load from each of the other available nodes</li>
+<li>The number of virtual nodes that a node is responsible can decided based on its capacity, accounting for heterogeneity in the physical infrastructure</li>
+</ul>
+</li>
+</ul>
+<h3 id="replication">Replication</h3>
+<ul>
+<li>
+<p>To achieve high availability and durability, Dynamo replicates its data on multiple hosts.</p>
+<p>Each data item is replicated at N hosts, where N is a parameter configured “per-instance”. Each key, k, is assigned to a coordinator node (the node that a key is assigned to in consistent hashing; the first among the top N nodes in the preference list). The coordinator is in charge of the replication of the data items that fall within its range. In addition to locally storing each key within its range, the coordinator replicates these keys at the N-1 clockwise successor nodes in the ring. This results in a system where each node is responsible for the region of the ring between it and its Nth predecessor.</p>
+<p><img alt="Dynamo Replication Example" class="img-responsive" src="/images/dynamo-replication-example.png"/></p>
+<p>Example: node B replicates the key k at nodes C and D in addition to storing it locally. Node D will store the keys that fall in the ranges (A, B], (B, C], and (C, D].</p>
+<p>The list of nodes that is responsible for storing a particular key is called the <em>preference list</em>. Every node in the system can determine which nodes should be in this list for any particular key. To account for node failures, preference list contains more than N nodes. The preference list for a key is constructed by skipping positions in the ring to ensure that the list contains only distinct physical nodes (first N virtual nodes may all be hosted by one physical node).</p>
+</li>
+</ul>
+<h3 id="data-versioning">Data Versioning</h3>
+<ul>
+<li>Dynamo provides eventual consistency, which allows for updates to be propagated to all replicas asynchronously.</li>
+<li>Dynamo allows multiple versions of the same object but if reconcilation fails, the client must perform the reconciliation in order to collapse multiple branches of data evolution back into one (semantic reconciliation).</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Works like Git: if Git can merge different modifications into one, Git is done automatically for you. If not, you (client)
+have to manually reconcile conflicts.</p>
+</div>
+<ul>
+<li>Dynamo uses <a href="../../../../../posts/2018/Mar/06/lamport-clocks-vector-clocks/">vector clocks</a> in order to capture causality between different versions of the same object. </li>
+</ul>
+<p><img alt="Dynamo Data Versioning Example" class="img-responsive" src="/images/dynamo-data-version.png"/></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Each object (e.g., D5) contains a vector clock (e.g., <code>([Sx,3],[Sy,1],[Sz,1])</code>). Note that it is not a list of vector clocks.
+You can think about <code>Sx</code>, <code>Sy</code>, <code>Sz</code> as process names to map to the original vector clock example.</p>
+</div>
+<ul>
+<li>Dynamo uses a clock truncation scheme to control the size of vector clocks</li>
+</ul>
+<h3 id="execution-of-get-and-put-operations">Execution of get () and put () operations</h3>
+<ul>
+<li>Any storage node in Dynamo is eligible to receive client get and put operations for any key</li>
+<li>Read and write operations involve the first N <em>healthy</em> nodes in the preference list, skipping over those that are down or inaccessible (remember preference list contains more than N nodes).</li>
+<li>
+<p>To maintain consistency among its replicas, Dynamo uses a consistency protocol similar to those used in quorum systems.</p>
+<p>This protocol has two key configurable values: R and W. R is the minimum number of nodes that must participate in a successful read operation. W is the minimum number of nodes that must participate in a successful write operation. Setting R and W such that R + W &gt; N yields a quorum-like system. In this model, the latency of a get (or put) operation is dictated by the slowest of the R (or W) replicas. For this reason, R and W are usually configured to be less than N, to provide better latency.</p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Dynamo client applications can tune the values of N, R and W to achieve their desired levels of performance, availability and durability:</p>
+<ul>
+<li>N determines the durability of each object</li>
+<li>
+<p>The values of W and R impact object availability, durability and consistency</p>
+<ul>
+<li>If W is set to 1, then the system will never reject a write request as long as there is at least one node in the system that can successfully process a write request</li>
+<li>low values of W and R can increase the risk of inconsistency as write requests are deemed successful and returned to the clients even if they are not processed by a majority of the replicas; This also introduces a vulnerability window for durability when a write request is successfully returned to the client even though it has been persisted at only a small number of nodes.</li>
+</ul>
+</li>
+</ul>
+</div>
+<ul>
+<li>
+<p>Execution of put() operation:</p>
+<ul>
+<li>Coordinator generates the vector clock for the new version</li>
+<li>Coordinator writes the new version locally</li>
+<li>Coordinator sends the new version + vector clock to the N highest-ranked reachable nodes</li>
+<li>If at least W-1 nodes respond then the write is considered successful.</li>
+</ul>
+</li>
+</ul>
+<!-- !!!note
+    From the execution of put() operation, we can tell Dynamo guarantees atomicity for put() operation. Atomicity in this context
+    means that once the application receives the success signal from put() operation, he can assume that the data written by put()
+    has been stored in Dynamo successfully. There is no way that put() operation success but the data being written is actually lost.
+    [ref](https://cs.stackexchange.com/questions/45809/what-does-atomicity-mean-in-distributed-systems) -->
+<ul>
+<li>
+<p>Execution of get() operation:</p>
+<ul>
+<li>Coordinator requests all existing versions of data for that key from the N highest-ranked reachable nodes in the preference list for that key</li>
+<li>Coordinator waits for R responses before returning the result to the client</li>
+<li>Reconcilation done by the applications is written back</li>
+</ul>
+</li>
+</ul>
+<h3 id="handling-temporary-failures-hinted-handoff">Handling temporary failures: Hinted Handoff</h3>
+<ul>
+<li>
+<p>Cons of traditional quorum approach:</p>
+<p>Unavailable during server failures and network partitions and durability reduced under the simplest of failure conditions</p>
+</li>
+<li>
+<p>Doesn't strict quorum membership and use "sloppy quorum":</p>
+<p>all read and write operations are performed on the first N <em>healthy</em> nodes from the preference list, which may not always be the first N nodes encountered while walking the consistent hashing ring.</p>
+</li>
+<li>
+<p>Hinted Handoff:</p>
+<p>Consider the example of Dynamo configuration given in Figure 2 with N=3. In this example, if node A is temporarily down or unreachable during a write operation then a replica that would normally have lived on A will now be sent to node D. This is done to maintain the desired availability and durability guarantees. The replica sent to D will have a hint in its metadata that suggests which node was the intended recipient of the replica (in this case A). Nodes that receive hinted replicas will keep them in a separate local database that is scanned periodically. Upon detecting that A has recovered, D will attempt to deliver the replica to A. Once the transfer succeeds, D may delete the object from its local store without decreasing the total number of replicas in the system.</p>
+</li>
+<li>
+<p>Using hinted handoff, Dynamo ensures that the read and write operations are not failed due to temporary node or network failures.</p>
+</li>
+</ul>
+<h3 id="handling-permanent-failures-replica-synchronization">Handling permanent failures: Replica synchronization</h3>
+<ul>
+<li>Dynamo implements an anti-entropy (replica synchronization) protocol to keep the replicas synchronized.</li>
+<li>
+<p>To detect the inconsistencies between replicas faster and to minimize the amount of transferred data, Dynamo uses Merkle trees:</p>
+<p>A Merkle tree is a hash tree where leaves are hashes of the values of individual keys. Parent nodes higher in the tree are hashes of their respective children. The principal advantage of Merkle tree is that each branch of the tree can be checked independently without requiring nodes to download the entire tree or the entire data set. Moreover, Merkle trees help in reducing the amount of data that needs to be transferred while checking for inconsistencies among replicas. For instance, if the hash values of the root of two trees are equal, then the values of the leaf nodes in the tree are equal and the nodes require no synchronization. If not, it implies that the values of some replicas are different. In such cases, the nodes may exchange the hash values of children and the process continues until it reaches the leaves of the trees, at which point the hosts can identify the keys that are “out of sync”. Merkle trees minimize the amount of data that needs to be transferred for synchronization and reduce the number of disk reads performed during the anti-entropy process.</p>
+</li>
+</ul>
+<h3 id="membership-and-failure-detection">Membership and Failure Detection</h3>
+<ul>
+<li>
+<p>Use explicit command to add and remove nodes from a Dynamo Ring:</p>
+<ul>
+<li>Adv: nodes may be temporarily down and we don't have to immediately redistribute workload (i.e., think they are out of ring membership) whenever some node are uncontactable. Redistribute workload is expensive.</li>
+</ul>
+</li>
+<li>
+<p>To prevent logical partitions, some Dynamo nodes play the role of seeds:</p>
+<ul>
+<li>Case: node A joins the ring; node B joins the ring; but A and B would consider each other be the member of the ring at once</li>
+<li>Seeds are nodes that are discovered via an external mechanism and are known to all nodes.</li>
+<li>Typically seeds are fully functional nodes in the Dynamo ring</li>
+</ul>
+</li>
+<li>
+<p>node A may consider node B failed if node B does not respond to node A’s messages (even if B is responsive to node C's messages)</p>
+<p>Decentralized failure detection protocols use a simple gossip-style protocol that enable each node in the system to learn about the arrival (or departure) of other nodes.</p>
+</li>
+</ul>
+<h2 id="remarks-thoughts">Remarks &amp; Thoughts</h2>
+<p>I really like this paper. It connects all the classic distributed techniques (i.e., gossip, quorum, consistent hashing, merkle tree)
+into one.</p>
+<h2 id="further-readings">Further Readings</h2>
+<ul>
+<li>Some views from peers <a href="http://pages.cs.wisc.edu/~swift/classes/cs739-fa14/blog/2014/09/post.html#comments">CS 739 Reviews - Fall 2014</a>, <a href="http://pages.cs.wisc.edu/~swift/classes/cs739-sp12/blog/2012/01/post.html">CS 739 Reviews - Spring 2012</a></li>
+</ul>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf">Dynamo: Amazon’s Highly Available Key-value Store</a></li>
+<li><a href="http://www.puncsky.com/blog/2013/04/06/dynamo-kv-store">Tian Pan's Blog</a></li>
+<li><a href="http://www.shangzeyuan.com/static/talks/dynamo.pdf">Zeyuan's Talk on Dynamo</a></li>
+</ul></body></html>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/system.html">system</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2018.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
