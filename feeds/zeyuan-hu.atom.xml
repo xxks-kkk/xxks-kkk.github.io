@@ -1,5 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-04-14T20:24:00+08:00</updated><entry><title>"Dynamo: Amazon’s Highly Available Key-value Store"</title><link href="https://zhu45.org/posts/2018/Apr/14/dynamo-amazons-highly-available-key-value-store/" rel="alternate"></link><published>2018-04-14T20:24:00+08:00</published><updated>2018-04-14T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-04-14:/posts/2018/Apr/14/dynamo-amazons-highly-available-key-value-store/</id><summary type="html">&lt;p&gt;"Dynamo: Amazon’s Highly Available Key-value Store" paper reading&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-04-30T01:30:00+08:00</updated><entry><title>"Scaling Distributed Machine Learning with the Parameter Server"</title><link href="https://zhu45.org/posts/2018/Apr/30/scaling-distributed-machine-learning-with-the-parameter-server/" rel="alternate"></link><published>2018-04-30T01:30:00+08:00</published><updated>2018-04-30T01:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-04-30:/posts/2018/Apr/30/scaling-distributed-machine-learning-with-the-parameter-server/</id><summary type="html">&lt;p&gt;"Scaling Distributed Machine Learning with the Parameter Server" paper reading&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem-to-solve"&gt;Problem to solve&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#challenges"&gt;Challenges&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#design-assumptions"&gt;Design assumptions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#design"&gt;Design&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#remarks"&gt;Remarks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem-to-solve"&gt;Problem to solve&lt;/h2&gt;
+&lt;p&gt;Build a parameter server framework for distributed machine learning problems.&lt;/p&gt;
+&lt;h2 id="challenges"&gt;Challenges&lt;/h2&gt;
+&lt;p&gt;machine learning model has &lt;span class="math"&gt;\(10^9\)&lt;/span&gt; to &lt;span class="math"&gt;\(10^{12}\)&lt;/span&gt; shared parameters that need to frequently access&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;High network bandwidth requirement&lt;/li&gt;
+&lt;li&gt;Synchronization cost and high machine latency can hurt model performance&lt;/li&gt;
+&lt;li&gt;Fault tolerance is critical&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="design-assumptions"&gt;Design assumptions&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Machine learning algorithms are quite tolerant to perturbations&lt;/li&gt;
+&lt;li&gt;Machine learning algorithms can be thought of consisting data + parameters&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="design"&gt;Design&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="Parameter Server Architecture" class="img-responsive" src="/images/parameter-server-architecture.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Use a group of parameter servers&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;can all serve one algorithm to have high availability&lt;/li&gt;
+&lt;li&gt;can also run more than one algorithm simultaneously&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;A server node in the server group maintains a partition of the globally shared parameters.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Partition might be a bad idea from fault tolearance and availability perspectives (the two main purposes
+behind doing replication). By doing partition, we can reduce the workload on each server but we still effectively
+use one server to serve a set of parameters, which makes the server group idea meaningless. In other words,
+we want to use several servers to serve the same set of parameters to increase fault tolerance and availability.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Parameter servers in the server group partition keys using consistent hashing with virtual nodes (See &lt;a href="https://zhu45.org/posts/2018/Apr/14/dynamo-amazons-highly-available-key-value-store/"&gt;Dynamo Paper&lt;/a&gt; for details).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Virtual nodes adv: improve load balancing &amp;amp; recovery&lt;/li&gt;
+&lt;li&gt;Consistent hashing adv: failure locality (only three nodes are affected)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Live replication of parameters between servers supports hot failover&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The communication of parameter updates and processing are batched to reduce network overhead (e.g. send a segment of a vector
+or entire row of matrix)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The communication is also compressed to reduce network usage&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Parameters are stored using (key, value) vectors to facilitate linear algebra operations&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Tasks are executed asynchronously: the caller can perform further computation immediately after issuing a task.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Flexible consistency: training iterations vs. throughput tradeoff&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Eventual consistency: all tasks may be started simultaneously. Highest throughput (i.e., system efficiency) but
+the algorithm may take more iterations to converge because the update may be on stale parameters. Thus, eventual consistency
+model is recommended for algorithms that are agnostic to delayed parameter value.&lt;/li&gt;
+&lt;li&gt;Sequential consistency: all tasks are executed one by one. Lowest throughput but all parameters are guaranteed to be latest.&lt;/li&gt;
+&lt;li&gt;Bounded Delay: consistency model between sequential consistency and eventual consistency.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Server node are replicated after aggregation to reduce network usage&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Worker crash: we don't recover the worker node because:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;when training data is large, recover worker node is very expensive&lt;/li&gt;
+&lt;li&gt;Losing a small amount of training data during optimization affects the model a little&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We can spawn new task if one of machnies appear to be slow (to handle straggler problem)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="remarks"&gt;Remarks&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Worker nodes may need to access the auxiliary metadata. In design, we always need to think of using metadata.&lt;/li&gt;
+&lt;li&gt;A server manager node maintains a consistent view of the metadata of the servers, such as node liveness and the assignment of parameter partitions. This is the place to use Paxos.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Paxos can also be used when we have small set of parameter servers. Their membership can be stored using Paxos.
+Usually, paxos cannot scale over 5 servers.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.cs.cmu.edu/~muli/file/parameter_server_osdi14.pdf"&gt;Scaling Distributed Machine Learning with the Parameter Server&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</content><category term="papers"></category><category term="distributed systems"></category></entry><entry><title>"Dynamo: Amazon’s Highly Available Key-value Store"</title><link href="https://zhu45.org/posts/2018/Apr/14/dynamo-amazons-highly-available-key-value-store/" rel="alternate"></link><published>2018-04-14T20:24:00+08:00</published><updated>2018-04-14T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-04-14:/posts/2018/Apr/14/dynamo-amazons-highly-available-key-value-store/</id><summary type="html">&lt;p&gt;"Dynamo: Amazon’s Highly Available Key-value Store" paper reading&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem-motivation"&gt;Problem, Motivation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#system-assumptions-and-requirements"&gt;System Assumptions and Requirements&lt;/a&gt;&lt;/li&gt;
@@ -286,7 +447,8 @@ You can think about &lt;code&gt;Sx&lt;/code&gt;, &lt;code&gt;Sy&lt;/code&gt;, &l
 &lt;ul&gt;
 &lt;li&gt;Case: node A joins the ring; node B joins the ring; but A and B would consider each other be the member of the ring at once&lt;/li&gt;
 &lt;li&gt;Seeds are nodes that are discovered via an external mechanism and are known to all nodes.&lt;/li&gt;
-&lt;li&gt;Typically seeds are fully functional nodes in the Dynamo ring&lt;/li&gt;
+&lt;li&gt;Typically seeds are fully functional nodes in the Dynamo ring.&lt;/li&gt;
+&lt;li&gt;Because all nodes eventually reconcile their membership with a seed, logical partitions are highly unlikely.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
