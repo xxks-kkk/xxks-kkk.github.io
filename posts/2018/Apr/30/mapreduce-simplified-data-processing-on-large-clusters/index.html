@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
-        <title>    "Scaling Distributed Machine Learning with the Parameter Server"
+        <title>    "MapReduce: Simplified Data Processing on Large Clusters"
 </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -39,13 +39,13 @@
 </header>
     <div class="post">
         <header>
-            <h1 class="post-title">"Scaling Distributed Machine Learning with the Parameter Server"</h1>
+            <h1 class="post-title">"MapReduce: Simplified Data Processing on Large Clusters"</h1>
             <div class="panel">
                 <div class="panel-body">
 <footer class="post-info">
     <span class="label label-default">Date</span>
     <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2018-04-30T01:30:00+08:00"> Apr 30, 2018</time>
+        <i class="fa fa-calendar"></i><time datetime="2018-04-30T23:20:00+08:00"> Apr 30, 2018</time>
     </span>
 
 
@@ -64,113 +64,160 @@
         <article>
             <html><body><div class="toc">
 <ul>
-<li><a href="#problem-to-solve">Problem to solve</a></li>
-<li><a href="#challenges">Challenges</a></li>
+<li><a href="#problem">Problem</a></li>
 <li><a href="#design-assumptions">Design assumptions</a></li>
-<li><a href="#design">Design</a></li>
+<li><a href="#programming-model">Programming model</a></li>
+<li><a href="#execution">Execution</a></li>
+<li><a href="#system-design">System design</a></li>
 <li><a href="#remarks">Remarks</a></li>
 <li><a href="#reference">Reference</a></li>
 </ul>
 </div>
-<h2 id="problem-to-solve">Problem to solve</h2>
-<p>Build a parameter server framework for distributed machine learning problems.</p>
-<h2 id="challenges">Challenges</h2>
-<p>machine learning model has <span class="math">\(10^9\)</span> to <span class="math">\(10^{12}\)</span> shared parameters that need to frequently access</p>
-<ul>
-<li>High network bandwidth requirement</li>
-<li>Synchronization cost and high machine latency can hurt model performance</li>
-<li>Fault tolerance is critical</li>
-</ul>
+<h2 id="problem">Problem</h2>
+<p>Design a simple-to-use (no exposure of messy details of parallelization, fault-tolerance, data distribution and load balancing to user)programming model (i.e., abstraction interface) that can process large amount of data 
+in a reasonable amount of time.</p>
 <h2 id="design-assumptions">Design assumptions</h2>
 <ul>
-<li>Machine learning algorithms are quite tolerant to perturbations</li>
-<li>Machine learning algorithms can be thought of consisting data + parameters</li>
-</ul>
-<h2 id="design">Design</h2>
-<p><img alt="Parameter Server Architecture" class="img-responsive" src="/images/parameter-server-architecture.png"/></p>
-<ul>
-<li>
-<p>Use a group of parameter servers</p>
-<ul>
-<li>can all serve one algorithm to have high availability</li>
-<li>can also run more than one algorithm simultaneously</li>
+<li>Large clusters of commodity PCs connected together with switched Ethernet<ul>
+<li>2-4GB memory Linux machine</li>
+<li>100 MB/s or 1 GB/s network bandwidth</li>
+<li>machine failures are common</li>
+<li>unreliable hardware</li>
+<li>distributed file system (use replication to provide availability and reliability)</li>
+<li>scheduler to schedule tasks to a set of available machines within a cluster</li>
 </ul>
 </li>
-<li>
-<p>A server node in the server group maintains a partition of the globally shared parameters.</p>
-</li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Partition might be a bad idea from fault tolearance and availability perspectives (the two main purposes
-behind doing replication). By doing partition, we can reduce the workload on each server but we still effectively
-use one server to serve a set of parameters, which makes the server group idea meaningless. In other words,
-we want to use several servers to serve the same set of parameters to increase fault tolerance and availability.</p>
-</div>
+<h2 id="programming-model">Programming model</h2>
+<p>The computation takes a set of input key/value pairs, and produces a set of output key/value pairs</p>
+<ul>
+<li><em>Map</em>, written by the user, takes an input pair and produces a set of <em>intermediate</em> key/value pairs</li>
+<li>The MapReduce library groups together all intermediate values associated with the same intermediate key I and passes them to the <em>Reduce</em> function.</li>
+<li>The <em>Reduce</em> function, also written by the user, accepts an intermediate key I and a set of values for that key. It merges together these values to form a possibly smaller set of values.</li>
+</ul>
+<p>Example:</p>
+<p>Count of URL Access Frequency: The map function processes logs of web page requests and outputs ⟨URL, 1⟩. The reduce function adds together all values for the same URL and emits a ⟨URL, total count⟩ pair.</p>
+<h2 id="execution">Execution</h2>
+<p><img alt="map reduce execution overview" class="img-responsive" src="/images/mapreduce-execution.png"/></p>
 <ul>
 <li>
-<p>Parameter servers in the server group partition keys using consistent hashing with virtual nodes (See <a href="../../../../../posts/2018/Apr/14/dynamo-amazons-highly-available-key-value-store/">Dynamo Paper</a> for details).</p>
+<p>The Map invocations are distributed across multiple machines by automatically partitioning the input data
+into a set of M splits.</p>
+</li>
+<li>
+<p>Reduce invocations are distributed by partitioning the intermediate key space into R pieces using a partitioning function
+(e.g., <span class="math">\(hash(key) \textbf{ mod } R\)</span>)</p>
+</li>
+<li>
+<p>Execution Process:</p>
+<ol>
+<li>
+<p>The MapReduce library in the user program first splits the input files into M pieces. It then starts up many copies of the program on a cluster of machines.</p>
+</li>
+<li>
+<p>One copy of the program is called <em>Master</em>. The rest are workers that are assigned work by the master. The master picks idle workers and assigns each one a map task or a reduce task.</p>
+</li>
+<li>
+<p>Worker assigned map task do Map job and buffer the output in memory</p>
+</li>
+<li>
+<p>Periodically, the buffered pairs are written to local disk, partitioned into R regions by the partitioning function. The locations of these buffered pairs on the local disk are passed back to the master, who is responsible for forwarding these locations to the reduce workers.</p>
+</li>
+<li>
+<p>Reduce worker reads the buffered data from the local disks of the map workers using RPC. Perform Group by on the immediate keys.</p>
+</li>
+<li>
+<p>Reduce worker do reduce job and append the output to a final output file of this reduce partition.</p>
+</li>
+<li>
+<p>All Map and Reduce tasks are done, the master wakes up the user program and return the program control.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Map &amp; Reduce tasks have three states: <em>idle</em>, <em>in-progress</em>, or <em>completed</em></p>
+</li>
+</ul>
+<h2 id="system-design">System design</h2>
 <ul>
-<li>Virtual nodes adv: improve load balancing &amp; recovery</li>
-<li>Consistent hashing adv: failure locality (only three nodes are affected)</li>
+<li>
+<p>In the execution, the output are buffered in memory and write to disk in batch to reduce disk I/O overhead.</p>
+</li>
+<li>
+<p>Fault tolerance:</p>
+<ul>
+<li>Master pings every worker periodically to detect worker failure</li>
+<li>Completed map tasks are re-executed on a failure (intermediate output are stored in local disk and thus inaccessible)</li>
+<li>Completed reduce tasks are not re-executed on failures (results are in GFS, which are replicated already)</li>
+<li>Master Failure:<ul>
+<li>Periodic checkpoints</li>
+<li>Aborts MapReduce computation if master fails (current implementation)</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>
-<p>Live replication of parameters between servers supports hot failover</p>
-</li>
-<li>
-<p>The communication of parameter updates and processing are batched to reduce network overhead (e.g. send a segment of a vector
-or entire row of matrix)</p>
-</li>
-<li>
-<p>The communication is also compressed to reduce network usage</p>
-</li>
-<li>
-<p>Parameters are stored using (key, value) vectors to facilitate linear algebra operations</p>
-</li>
-<li>
-<p>Tasks are executed asynchronously: the caller can perform further computation immediately after issuing a task.</p>
-</li>
-<li>
-<p>Flexible consistency: training iterations vs. throughput tradeoff</p>
+<p>Sequential consistency: when Map and Reduce operation is determinstic to the input file, the distributed execution output
+is the same as the non-faulting sequential execution of the entire program:</p>
 <ul>
-<li>Eventual consistency: all tasks may be started simultaneously. Highest throughput (i.e., system efficiency) but
-the algorithm may take more iterations to converge because the update may be on stale parameters. Thus, eventual consistency
-model is recommended for algorithms that are agnostic to delayed parameter value.</li>
-<li>Sequential consistency: all tasks are executed one by one. Lowest throughput but all parameters are guaranteed to be latest.</li>
-<li>Bounded Delay: consistency model between sequential consistency and eventual consistency.</li>
+<li>Atomic commits of map and reduce task outputs</li>
 </ul>
 </li>
 <li>
-<p>Server node are replicated after aggregation to reduce network usage</p>
-</li>
-<li>
-<p>Worker crash: we don't recover the worker node because:</p>
+<p>Trade-off on each task size vs. M or R:</p>
 <ul>
-<li>when training data is large, recover worker node is very expensive</li>
-<li>Losing a small amount of training data during optimization affects the model a little</li>
+<li><span class="math">\(O(M + R)\)</span> scheduling descisions</li>
+<li><span class="math">\(O(M \dot R)\)</span> states in memory</li>
+<li>small task size, large M or R given the input job size is fixed</li>
+<li>Large task size, small M or R given the input job size is fixed (make parallel meaningless)</li>
 </ul>
 </li>
 <li>
-<p>We can spawn new task if one of machnies appear to be slow (to handle straggler problem)</p>
+<p>Handle "straggler":</p>
+<ul>
+<li>"Straggler": a machine that takes an unusually long time to complete one of the last few map or reduce tasks in the computation.</li>
+<li>When a MapReduce operation is close to completion, the master schedules backup executions of the remaining <em>in-progress</em> tasks. The task is marked as completed whenever either the primary or the backup execution completes. </li>
+</ul>
+</li>
+<li>
+<p>Locality: schedule map tasks to the machines where the replicas of the input data is stored (input data can read locally
+and consume no network bandwidth). This is saying of "push program to the data node".</p>
+</li>
+<li>
+<p>Refinements:</p>
+<ul>
+<li>
+<p>Use a partition function on the intermediate keys such that, for example, all URLs from the same host to end up in the same
+output file. For ease-to-use from the application layer.</p>
+</li>
+<li>
+<p>within a given partition, the intermediate key/value pairs are processed in increasing key order. For efficient loopup in
+the output file.</p>
+</li>
+<li>
+<p>Optional <em>Combiner</em> function that does partial merging of the intermediate keys on the map task worker before the data is sent over the network to the reduce worker (reduce network usage)</p>
+</li>
+<li>
+<p>the MapReduce library detects which records cause deterministic crashes and skips these records in order to make forward progress.</p>
+</li>
+</ul>
 </li>
 </ul>
 <h2 id="remarks">Remarks</h2>
 <ul>
-<li>Worker nodes may need to access the auxiliary metadata. In design, we always need to think of using metadata.</li>
-<li>A server manager node maintains a consistent view of the metadata of the servers, such as node liveness and the assignment of parameter partitions. This is the place to use Paxos.</li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Paxos can also be used when we have small set of parameter servers. Their membership can be stored using Paxos.
-Usually, paxos cannot scale over 5 servers.</p>
-</div>
-<ul>
-<li>Machine learning algorithm tolerates stale data is the major point we exploit when design "Big data + ML" system</li>
+<li>Re-execution to provide fault tolearance is a commonly-seen technique (used in Spark as well) in "Big-data" paper</li>
+<li>Spawn multiple same tasks to handle "straggler" problem is also common</li>
+<li>Locality is a nice trick to use to reduce bandwidth usage</li>
+<li><a href="https://youtu.be/DJFKl_5JTnA?t=27m57s">Stonebraker's video on database research</a> mentions that MapReduce is no longer used
+in Google. We as researcher should play critical on the papers produced by "whales" and not treat them as the golden standard
+(we do because we lose connection to industry). Totally different topic.</li>
+<li>I don't think MapReduce is a database work. I feel it just some framework that allows Google to get their job done
+(If you think about Jeff Dean's major focus is on programming languages not database). Unlike database, the framework is hard to generalize.</li>
+<li>Spot Remzi's papers in the reference section. Neat!</li>
 </ul>
 <h2 id="reference">Reference</h2>
 <ul>
-<li><a href="https://www.cs.cmu.edu/~muli/file/parameter_server_osdi14.pdf">Scaling Distributed Machine Learning with the Parameter Server</a></li>
+<li><a href="https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf">MapReduce: Simplified Data Processing on Large Clusters</a></li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",

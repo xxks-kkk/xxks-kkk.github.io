@@ -1,5 +1,216 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-04-30T01:30:00+08:00</updated><entry><title>"Scaling Distributed Machine Learning with the Parameter Server"</title><link href="https://zhu45.org/posts/2018/Apr/30/scaling-distributed-machine-learning-with-the-parameter-server/" rel="alternate"></link><published>2018-04-30T01:30:00+08:00</published><updated>2018-04-30T01:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-04-30:/posts/2018/Apr/30/scaling-distributed-machine-learning-with-the-parameter-server/</id><summary type="html">&lt;p&gt;"Scaling Distributed Machine Learning with the Parameter Server" paper reading&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-04-30T23:20:00+08:00</updated><entry><title>"MapReduce: Simplified Data Processing on Large Clusters"</title><link href="https://zhu45.org/posts/2018/Apr/30/mapreduce-simplified-data-processing-on-large-clusters/" rel="alternate"></link><published>2018-04-30T23:20:00+08:00</published><updated>2018-04-30T23:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-04-30:/posts/2018/Apr/30/mapreduce-simplified-data-processing-on-large-clusters/</id><summary type="html">&lt;p&gt;"MapReduce: Simplified Data Processing on Large Clusters" paper reading&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#design-assumptions"&gt;Design assumptions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#programming-model"&gt;Programming model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#execution"&gt;Execution&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System design&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#remarks"&gt;Remarks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;Design a simple-to-use (no exposure of messy details of parallelization, fault-tolerance, data distribution and load balancing to user)programming model (i.e., abstraction interface) that can process large amount of data 
+in a reasonable amount of time.&lt;/p&gt;
+&lt;h2 id="design-assumptions"&gt;Design assumptions&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Large clusters of commodity PCs connected together with switched Ethernet&lt;ul&gt;
+&lt;li&gt;2-4GB memory Linux machine&lt;/li&gt;
+&lt;li&gt;100 MB/s or 1 GB/s network bandwidth&lt;/li&gt;
+&lt;li&gt;machine failures are common&lt;/li&gt;
+&lt;li&gt;unreliable hardware&lt;/li&gt;
+&lt;li&gt;distributed file system (use replication to provide availability and reliability)&lt;/li&gt;
+&lt;li&gt;scheduler to schedule tasks to a set of available machines within a cluster&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="programming-model"&gt;Programming model&lt;/h2&gt;
+&lt;p&gt;The computation takes a set of input key/value pairs, and produces a set of output key/value pairs&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Map&lt;/em&gt;, written by the user, takes an input pair and produces a set of &lt;em&gt;intermediate&lt;/em&gt; key/value pairs&lt;/li&gt;
+&lt;li&gt;The MapReduce library groups together all intermediate values associated with the same intermediate key I and passes them to the &lt;em&gt;Reduce&lt;/em&gt; function.&lt;/li&gt;
+&lt;li&gt;The &lt;em&gt;Reduce&lt;/em&gt; function, also written by the user, accepts an intermediate key I and a set of values for that key. It merges together these values to form a possibly smaller set of values.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;p&gt;Count of URL Access Frequency: The map function processes logs of web page requests and outputs ⟨URL, 1⟩. The reduce function adds together all values for the same URL and emits a ⟨URL, total count⟩ pair.&lt;/p&gt;
+&lt;h2 id="execution"&gt;Execution&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="map reduce execution overview" class="img-responsive" src="/images/mapreduce-execution.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;The Map invocations are distributed across multiple machines by automatically partitioning the input data
+into a set of M splits.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Reduce invocations are distributed by partitioning the intermediate key space into R pieces using a partitioning function
+(e.g., &lt;span class="math"&gt;\(hash(key) \textbf{ mod } R\)&lt;/span&gt;)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Execution Process:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;The MapReduce library in the user program first splits the input files into M pieces. It then starts up many copies of the program on a cluster of machines.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;One copy of the program is called &lt;em&gt;Master&lt;/em&gt;. The rest are workers that are assigned work by the master. The master picks idle workers and assigns each one a map task or a reduce task.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Worker assigned map task do Map job and buffer the output in memory&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Periodically, the buffered pairs are written to local disk, partitioned into R regions by the partitioning function. The locations of these buffered pairs on the local disk are passed back to the master, who is responsible for forwarding these locations to the reduce workers.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Reduce worker reads the buffered data from the local disks of the map workers using RPC. Perform Group by on the immediate keys.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Reduce worker do reduce job and append the output to a final output file of this reduce partition.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;All Map and Reduce tasks are done, the master wakes up the user program and return the program control.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Map &amp;amp; Reduce tasks have three states: &lt;em&gt;idle&lt;/em&gt;, &lt;em&gt;in-progress&lt;/em&gt;, or &lt;em&gt;completed&lt;/em&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="system-design"&gt;System design&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;In the execution, the output are buffered in memory and write to disk in batch to reduce disk I/O overhead.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Fault tolerance:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Master pings every worker periodically to detect worker failure&lt;/li&gt;
+&lt;li&gt;Completed map tasks are re-executed on a failure (intermediate output are stored in local disk and thus inaccessible)&lt;/li&gt;
+&lt;li&gt;Completed reduce tasks are not re-executed on failures (results are in GFS, which are replicated already)&lt;/li&gt;
+&lt;li&gt;Master Failure:&lt;ul&gt;
+&lt;li&gt;Periodic checkpoints&lt;/li&gt;
+&lt;li&gt;Aborts MapReduce computation if master fails (current implementation)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Sequential consistency: when Map and Reduce operation is determinstic to the input file, the distributed execution output
+is the same as the non-faulting sequential execution of the entire program:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Atomic commits of map and reduce task outputs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Trade-off on each task size vs. M or R:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(O(M + R)\)&lt;/span&gt; scheduling descisions&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(O(M \dot R)\)&lt;/span&gt; states in memory&lt;/li&gt;
+&lt;li&gt;small task size, large M or R given the input job size is fixed&lt;/li&gt;
+&lt;li&gt;Large task size, small M or R given the input job size is fixed (make parallel meaningless)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Handle "straggler":&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;"Straggler": a machine that takes an unusually long time to complete one of the last few map or reduce tasks in the computation.&lt;/li&gt;
+&lt;li&gt;When a MapReduce operation is close to completion, the master schedules backup executions of the remaining &lt;em&gt;in-progress&lt;/em&gt; tasks. The task is marked as completed whenever either the primary or the backup execution completes. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Locality: schedule map tasks to the machines where the replicas of the input data is stored (input data can read locally
+and consume no network bandwidth). This is saying of "push program to the data node".&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Refinements:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Use a partition function on the intermediate keys such that, for example, all URLs from the same host to end up in the same
+output file. For ease-to-use from the application layer.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;within a given partition, the intermediate key/value pairs are processed in increasing key order. For efficient loopup in
+the output file.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Optional &lt;em&gt;Combiner&lt;/em&gt; function that does partial merging of the intermediate keys on the map task worker before the data is sent over the network to the reduce worker (reduce network usage)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;the MapReduce library detects which records cause deterministic crashes and skips these records in order to make forward progress.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="remarks"&gt;Remarks&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Re-execution to provide fault tolearance is a commonly-seen technique (used in Spark as well) in "Big-data" paper&lt;/li&gt;
+&lt;li&gt;Spawn multiple same tasks to handle "straggler" problem is also common&lt;/li&gt;
+&lt;li&gt;Locality is a nice trick to use to reduce bandwidth usage&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://youtu.be/DJFKl_5JTnA?t=27m57s"&gt;Stonebraker's video on database research&lt;/a&gt; mentions that MapReduce is no longer used
+in Google. We as researcher should play critical on the papers produced by "whales" and not treat them as the golden standard
+(we do because we lose connection to industry). Totally different topic.&lt;/li&gt;
+&lt;li&gt;I don't think MapReduce is a database work. I feel it just some framework that allows Google to get their job done
+(If you think about Jeff Dean's major focus is on programming languages not database). Unlike database, the framework is hard to generalize.&lt;/li&gt;
+&lt;li&gt;Spot Remzi's papers in the reference section. Neat!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf"&gt;MapReduce: Simplified Data Processing on Large Clusters&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</content><category term="papers"></category><category term="distributed systems"></category></entry><entry><title>"Scaling Distributed Machine Learning with the Parameter Server"</title><link href="https://zhu45.org/posts/2018/Apr/30/scaling-distributed-machine-learning-with-the-parameter-server/" rel="alternate"></link><published>2018-04-30T01:30:00+08:00</published><updated>2018-04-30T01:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-04-30:/posts/2018/Apr/30/scaling-distributed-machine-learning-with-the-parameter-server/</id><summary type="html">&lt;p&gt;"Scaling Distributed Machine Learning with the Parameter Server" paper reading&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem-to-solve"&gt;Problem to solve&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#challenges"&gt;Challenges&lt;/a&gt;&lt;/li&gt;
@@ -102,6 +313,9 @@ model is recommended for algorithms that are agnostic to delayed parameter value
 &lt;p&gt;Paxos can also be used when we have small set of parameter servers. Their membership can be stored using Paxos.
 Usually, paxos cannot scale over 5 servers.&lt;/p&gt;
 &lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;Machine learning algorithm tolerates stale data is the major point we exploit when design "Big data + ML" system&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://www.cs.cmu.edu/~muli/file/parameter_server_osdi14.pdf"&gt;Scaling Distributed Machine Learning with the Parameter Server&lt;/a&gt;&lt;/li&gt;
