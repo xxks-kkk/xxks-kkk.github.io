@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Sun's Network File System (NFS)"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/svg-with-js/js/fontawesome-all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+    <h1 id="site-title"><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
+            <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+            <a href="../../../../../links.html" style="padding: 10px">LINKS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+            <h1 class="post-title">"Sun's Network File System (NFS)"</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2018-05-01T02:20:00+08:00"> May 01, 2018</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/papers.html">papers</a>
+        /
+	<a href="../../../../../tag/distributed-systems.html">distributed systems</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <html><body><div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#system-designs">System designs</a></li>
+<li><a href="#remarks">Remarks</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<p>Design a distributed file system with transparent access to files from clients</p>
+<h2 id="system-designs">System designs</h2>
+<p><img alt="nfs architecture" class="img-responsive" src="/images/nfs-architecture.png"/></p>
+<ul>
+<li>
+<p>the server stores the data on its disks, and clients request data through well-formed protocol messages</p>
+</li>
+<li>
+<p>Architecture advantages:</p>
+<ul>
+<li>easy sharing of data across clients</li>
+<li>centralized administration (backup done on multiple servers instead of many clients)</li>
+<li>security (put server behind firewall)</li>
+</ul>
+</li>
+<li>
+<p>Transparency:</p>
+<ul>
+<li>Location transparency: file name does not include name of the server where the file is stored</li>
+<li>Implemented using NFS Mount Protocol:<ul>
+<li>Mount remote directories as local directories</li>
+<li>Maintain a Mount table with (directory, server) mapping</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img alt="distributed file system architecture" class="img-responsive" src="/images/distributed-file-system-architecture.png"/></p>
+<ul>
+<li>
+<p>Clients talk to server using RPC:</p>
+<ul>
+<li>Use RPC to forward every file system request; remote server executes each request as a local request; server
+responds backk with result (Example: Figure 49.5 in Remzi's chapter)</li>
+<li>Advantage: server provides a consistent view of the file system to clients</li>
+<li>Disadvantage: performance (use cache)</li>
+</ul>
+</li>
+<li>
+<p>Crash Recovery:</p>
+<ul>
+<li>goal: simple and fast server crash recovery</li>
+<li>Use a stateless Protocol (NFSv2): the server doesn't keep track of anything about what is happening at each client</li>
+<li>Stateful: server maintain a filedescriptor(an integer) to actual file relationship (unknown after recovery)</li>
+<li>Stateless: file handle (a unique identifier for each directory and file). <ul>
+<li>Every client RPC call needs to pass a file handle</li>
+<li>Server returns file handle whenever needs (e.g., mkdir)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Server failure &amp; Message loss:</p>
+<ul>
+<li>Client retries the request (READ, WRITE are idempotent in NFS)</li>
+</ul>
+</li>
+<li>
+<p>Cache:</p>
+<ul>
+<li>Client side:<ul>
+<li>cache file data (and metadata) that is read from server in local memory</li>
+<li>Cache serves as a temporary buffer for writes (allow asyncronous write)</li>
+<li>Advantage: reduce network usage, improve performance</li>
+</ul>
+</li>
+<li>Server side:<ul>
+<li>server can buffer the write in memory and write to disk asychronously </li>
+<li>Problem: write in memory can lost</li>
+<li>Sol: battery-backed memory</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Cache consistency problem:</p>
+<ul>
+<li>Update visibility: when do updates from one client become visible at other clients?<ul>
+<li>sol: flush-on-close (write-back cache):<ul>
+<li>when a file is written to and subsequently closed by a client application, the client flushes all updates (i.e., dirty pages in the cache) to the server.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Stale cache: read the old copy<ul>
+<li>sol: issue GETATTR to get file stats (last modified date), if the time-of-modification is more recent than the time that the file was fetched into the client cache, the client invalidates the cache and subsequent reads will go to the server.</li>
+<li>Use attribute cache to reduce GETATTR requests (update attribute cache periodically)</li>
+<li>Still has problem: can still read stale value (polling interval, cache update/invalidation delayed by network)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You may think the solution to cache consistency problems look a lot like <a href="../../../../../posts/2018/Mar/07/cache-lease-consistency-invalidation/">write-back + invalidation</a>. The geenral idea is the same. However, the solution here takes client's perspective. However, the definitions in my previous
+post takes server's perspective. More formally, we call client's perspective "client-initiated consistency protocol" and
+server's perspective "server-initiated consistency protocol".</p>
+</div>
+<h2 id="remarks">Remarks</h2>
+<ul>
+<li>NFS issues:<ul>
+<li>multiple clients update the same file may get inconsistent view of the file (depends on cache update/invalidation, attribute
+cache polling frequency)</li>
+<li>Clients crash may lose data in buffer</li>
+</ul>
+</li>
+<li>NFS Key features:<ul>
+<li>Location-transparent naming</li>
+<li>Client-side and server-side caching for performance</li>
+<li>Stateless architecture</li>
+<li>Client-initiated consistency protocol</li>
+</ul>
+</li>
+<li>Good in NFS:<ul>
+<li>Simple</li>
+<li>Highly portable (open protocol)</li>
+</ul>
+</li>
+<li>Bad in NFS:<ul>
+<li>Lack of strong consistency</li>
+</ul>
+</li>
+</ul>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/dist-nfs.pdf">Sun’s Network File System (NFS)</a></li>
+<li><a href="https://www.cs.utexas.edu/users/ans/classes/cs439/schedule.html">CS439 Alison's slide "Other File Systems"</a></li>
+</ul></body></html>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/system.html">system</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2018.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
