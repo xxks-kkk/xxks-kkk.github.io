@@ -132,15 +132,20 @@ responds back with result (Example: Figure 49.5 in Remzi's chapter)</li>
 <p>Cache:</p>
 <ul>
 <li>Client side:<ul>
-<li>cache file data (and metadata) that is read from server in local memory</li>
+<li>cache file data and metadata by block that is read from server in local memory</li>
 <li>Cache serves as a temporary buffer for writes (allow asyncronous write)</li>
 <li>Advantage: reduce network usage, improve performance</li>
+<li>Disadvantage: write lost in memory after crash (safety vs. performance tradeoff)</li>
 </ul>
 </li>
 <li>Server side:<ul>
 <li>server can buffer the write in memory and write to disk asychronously </li>
 <li>Problem: write in memory can lost</li>
-<li>Sol: battery-backed memory</li>
+<li>Sol: <ul>
+<li>battery-backed memory</li>
+<li>commit each WRITE to stable storage before ack WRITE success to clients</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -155,7 +160,7 @@ responds back with result (Example: Figure 49.5 in Remzi's chapter)</li>
 </li>
 </ul>
 </li>
-<li>Stale cache: read the old copy<ul>
+<li>Stale cache: once the server has a new version, how long before clients see the new version instead of an older cached copy?<ul>
 <li>sol: issue GETATTR to get file stats (last modified date), if the time-of-modification is more recent than the time that the file was fetched into the client cache, the client invalidates the cache and subsequent reads will go to the server.</li>
 <li>Use attribute cache to reduce GETATTR requests (update attribute cache periodically)</li>
 <li>Still has problem: can still read stale value (polling interval, cache update/invalidation delayed by network)</li>
@@ -175,7 +180,7 @@ server's perspective "server-initiated consistency protocol".</p>
 <li>NFS issues:<ul>
 <li>multiple clients update the same file may get inconsistent view of the file (depends on cache update/invalidation, attribute
 cache polling frequency)</li>
-<li>Clients crash may lose data in buffer</li>
+<li>Clients crash may lose data in buffer (cache)</li>
 </ul>
 </li>
 <li>NFS Key features:<ul>

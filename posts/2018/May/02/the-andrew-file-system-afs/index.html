@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "The Andrew File System (AFS)"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/svg-with-js/js/fontawesome-all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+    <h1 id="site-title"><a href="../../../../..">Fluffy Stuff</a></h1>
+    <p> A tmp place to rest </p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
+            <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+            <a href="../../../../../links.html" style="padding: 10px">LINKS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+            <h1 class="post-title">"The Andrew File System (AFS)"</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2018-05-02T23:30:00+08:00"> May 02, 2018</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/papers.html">papers</a>
+        /
+	<a href="../../../../../tag/distributed-systems.html">distributed systems</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <html><body><div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#design-assumptions">Design assumptions</a></li>
+<li><a href="#design">Design</a></li>
+<li><a href="#nfs-vs-afs">NFS vs. AFS</a></li>
+<li><a href="#remarks">Remarks</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<p>Design a distributed file system that can scale: a server can support as many clients as possible?</p>
+<h2 id="design-assumptions">Design assumptions</h2>
+<ul>
+<li>Most files were not frequently shared, and accessed sequentially in their entirety.</li>
+<li>System is used for casual usage (e.g., when a user logs into a different client, they expect some reasonable version of their files to show up there.)<ul>
+<li>Not for concurrent access &amp; updates scenario</li>
+</ul>
+</li>
+</ul>
+<h2 id="design">Design</h2>
+<ul>
+<li>
+<p>Cache:</p>
+<ul>
+<li>
+<p>whole-file caching:</p>
+<ul>
+<li>
+<p>AFS is whole-file caching on the local disk of the client machine that is accessing a file</p>
+<p><code>open()</code> a file, the entire file (if it exists) is fetched from the server and stored in a file on your local disk. Subsequent application <code>read()</code> and <code>write()</code> operations are redirected to the local file system where the file is stored; thus, these operations require no network communication and are fast.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Use client memory to cache blocks of file when access locally</p>
+</li>
+<li>Contact the server (use TestAuth protocol) for future access of the file to see if client can use cache (i.e., no modification to the local cached file)<ul>
+<li>Advantage: no network transfer of the file</li>
+<li>Disadvantge: too many contacts to server for cached file no-modification verification<ul>
+<li>sol: use callback</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>cache both directories and file contents<ul>
+<li>motivation: server spends much CPU time traversing directories</li>
+<li>client caches and requests callback to directories along the way to the target file</li>
+<li>Sequential access assumption makes this technique works (e.g., access files within the same cached directory)</li>
+<li>Much effort spent on the client side (path traversing &amp; cache) alleviates the load for server</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Callback:</p>
+<ul>
+<li>a way to reduce number of client/server interactions (mainly for TestAuth message verification)</li>
+<li>A callback is simply a promise from the server to the client that the server will inform the client when a file that the client is caching has been modified</li>
+<li>client assumes cached files are valid until the server tells it otherwise</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The idea of callback vs. TestAuth message is analogous to interrupt vs. polling</p>
+</div>
+<ul>
+<li>
+<p>Cache consistency:</p>
+<ul>
+<li>consistency between processes on different machines:<ul>
+<li>update visibility sol: flush-on-close</li>
+<li>cache staleness sol: server-initiated cache invalidation ("break" callback)</li>
+</ul>
+</li>
+<li>consistency between processes on the same machine:<ul>
+<li>update visibility sol: writes to a file are immediately visible to other local processes (i.e., a process does not have to wait until a file is closed to see its latest updates) (same as UNIX semantics: tail a log file and can see the writes
+in real time)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Last writer wins (i.e., last closer wins) for concurrent modification of the same file</p>
+<ul>
+<li>The result is a file that was generated in its entirety either by one client or the other (unlike NFS, a file can contain
+blocks from different clients)</li>
+</ul>
+</li>
+<li>
+<p>Load balancing:</p>
+<ul>
+<li>use volumes, which an administrator could move across servers to balance load</li>
+</ul>
+</li>
+<li>
+<p>Building the server with thread instead of process per client to reduce the overhead (e.g. context switching)</p>
+</li>
+<li>
+<p>Crash Recovery:</p>
+<ul>
+<li>Clients:<ul>
+<li>Client send out TestAuth message to validate its cache after recovery</li>
+</ul>
+</li>
+<li>Servers:<ul>
+<li>callbacks are kept in memory -&gt; need to validate the cached file</li>
+<li>sol:<ul>
+<li>having the server send a message to each client after recovery to let clients start to validate their cache</li>
+<li>clients send heartbeat message periodically to server</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Even the cache is on disk, AFS can use client-side OS memory caching infrastructure to improve performance</p>
+</li>
+<li>
+<p>AFS provides a true global namespace to clients, thus ensuring that all files were named the same way on all client machines.</p>
+<ul>
+<li>clients in NFS can mount NFS server anyway -&gt; hard to administer</li>
+</ul>
+</li>
+<li>
+<p>AFS has security and access-control lists</p>
+</li>
+</ul>
+<h2 id="nfs-vs-afs">NFS vs. AFS</h2>
+<ul>
+<li>For large-file (greater than memory) sequential re-read, AFS &gt; NFS:<ul>
+<li>AFS use local disk to cache entire file </li>
+<li>NFS can cache blocks in memory and have to refetch the file for re-read</li>
+</ul>
+</li>
+<li>For access small subset of data within large files, NFS &gt; AFS:<ul>
+<li>AFS has to fetch entire file and send it back after modification</li>
+<li>NFS only read the blocks that need to be modified</li>
+<li>AFS is not good for append information to log periodically (little log writes that add small amounts of data to an existing large file)</li>
+</ul>
+</li>
+</ul>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th></th>
+<th>NFS</th>
+<th>AFS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cache unit</td>
+<td>block of a file</td>
+<td>whole file</td>
+</tr>
+<tr>
+<td>Cache location</td>
+<td>memory</td>
+<td>local disk</td>
+</tr>
+<tr>
+<td>Cache strategy</td>
+<td>cache block only</td>
+<td>cache directories and files</td>
+</tr>
+<tr>
+<td>Cache invalidation</td>
+<td>callback</td>
+<td>polling (issue GETATTR)</td>
+</tr>
+<tr>
+<td>Concurrent update of the same file</td>
+<td>Last Writer Wins</td>
+<td>Blocks flushed to servers during update</td>
+</tr>
+<tr>
+<td>Crash Recovery</td>
+<td>server crash is unnoticeable</td>
+<td>complex crash recovery</td>
+</tr>
+<tr>
+<td>Namespace</td>
+<td>single namespace to all clients</td>
+<td>namespace is arbitrary across clients</td>
+</tr>
+</tbody>
+</table>
+<h2 id="remarks">Remarks</h2>
+<ul>
+<li>
+<p>Several commonly-seen design techniques:</p>
+<ul>
+<li>Force the clients to spend much more effort (cache directory and request callback) to reduce load on server<ul>
+<li>techniques to avoid DDOS attack in security</li>
+<li>Mining in Bitcoin</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Cache consistency in file system is incapable of handling a file access from multiple clients (i.e., concurrent access)</p>
+<ul>
+<li>Need to implement explicit file-level locking on top of file system</li>
+<li>Need extra mechnaism to handle conflicts (e.g., concurrent updates):<ul>
+<li>Google doc use git-like <a href="https://www.quora.com/How-is-collaborative-document-editing-implemented-in-Google-Docs-How-are-infinite-undo-redo-implemented-separately-for-each-user-What-tasks-are-offloaded-to-the-client-and-which-are-done-at-the-server-itself">operational transformation</a> to resolve conflict</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/dist-afs.pdf">The Andrew File System (AFS)</a></li>
+</ul></body></html>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/system.html">system</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2018.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
