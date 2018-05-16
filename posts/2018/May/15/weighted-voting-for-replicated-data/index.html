@@ -202,8 +202,8 @@ the servers we pick for R together and give them the sequential numbering.</p>
 \begin{eqnarray}
 \sum_{i=j}^m k_i + \sum_{i=h}^t k_i &amp; &gt; &amp; \sum_{i=1}^N k_i \\
 \sum_{i=1}^N k_i - \sum_{i=h}^t k_i - \sum_{i=j}^m k_i &amp; &lt; &amp; 0 \\
-\sum_{i=1}^{\{1 \dots h-1\} \cup \{t+1 \dots n\}} k_i - \sum_{i=j}^m k_i &amp; &lt; &amp; 0   \label{1} \\
-\sum_{i=1}^{\{1 \dots h-1\} \cup \{t+1 \dots n\} \cup \{m+1 \dots n\}} k_i &amp; &lt; &amp; 0 \label{2} \\
+\sum_{i \in \{1 \dots h-1\} \cup \{t+1 \dots n\}} k_i - \sum_{i=j}^m k_i &amp; &lt; &amp; 0   \label{1} \\
+\sum_{i \in \{1 \dots h-1\} \cup \{t+1 \dots n\} \cup \{m+1 \dots n\}} k_i &amp; &lt; &amp; 0 \label{2} \\
 \end{eqnarray}
 $$</div>
 <p>From equation <span class="math">\(\eqref{1}\)</span> to equation <span class="math">\(\eqref{2}\)</span>, since there is no intersection between two sets of servers, we can pick
@@ -216,7 +216,6 @@ votes to each server.</p>
 <li><a href="https://dl.acm.org/citation.cfm?id=806583">Weighted Voting for Replicated Data paper</a></li>
 <li><a href="https://pdfs.semanticscholar.org/presentation/337c/ddcf5753b3b06fd43044319ce51172ff89e4.pdf">Weighted Voting for Replicated Data slides</a></li>
 <li><a href="https://www.cs.utexas.edu/~vijay/cs380D-s18/feb8-pnuts-voting.pdf">Vijay's Slides</a></li>
-<li><a href="http://www.cs.cornell.edu/Info/Courses/Spring-97/CS614/voting.html">Html writeup on paper</a></li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
