@@ -63,6 +63,15 @@
         
         <article>
             <html><body><p>This is the summary of <em>binary tree</em> and <em>binary search tree</em> part in MAW Chapter 4.</p>
+<div class="toc">
+<ul>
+<li><a href="#concept">Concept</a></li>
+<li><a href="#classification-of-binary-trees">Classification of binary trees</a></li>
+<li><a href="#properties">Properties</a></li>
+<li><a href="#selected-proofs">Selected Proofs</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+</div>
 <h2 id="concept">Concept</h2>
 <ul>
 <li>A <em>binary tree</em> is a tree in which no node can have more than two children. </li>
@@ -100,8 +109,12 @@
 <ul>
 <li>The average depth of binary tree is <span class="math">\(O(\sqrt{n})\)</span></li>
 <li>The height of <em>balance</em> binary tree is <span class="math">\(O(\log n)\)</span></li>
+<li>A complete binary tree on <span class="math">\(n\)</span> nodes has height <span class="math">\(\lfloor \log n \rfloor\)</span></li>
 <li>A binary tree of <span class="math">\(N\)</span> nodes, there are <span class="math">\(N+1\)</span> <code>NULL</code> pointers representing children (MAW 4.4)</li>
-<li>The maximum number of nodes in a binary tree of height <span class="math">\(H\)</span> is <span class="math">\(2^{H+1}-1\)</span> (MAW 4.5)</li>
+<li>The maximum number of nodes in a binary tree of height <span class="math">\(H\)</span> is <span class="math">\(2^{H+1}-1\)</span> (MAW 4.5)<ul>
+<li>A perfect binary tree of height <span class="math">\(H\)</span> contains exactly <span class="math">\(2^{H+1}-1\)</span> nodes, of which <span class="math">\(2^H\)</span> are leaves.</li>
+</ul>
+</li>
 <li>The number of full nodes plus one is equal to the number of leaves in a nonempty binary tree</li>
 <li>The average depth of a node in a binary search tree constructed from random data is <span class="math">\(O(\log n)\)</span></li>
 <li>The average of height of a random binary search tree is <span class="math">\(O(\log n)\)</span> (i.e., <span class="math">\(E[h] = O(\log n)\)</span>) (MAW 4.14)</li>
@@ -122,11 +135,28 @@
 </ul>
 </li>
 </ul>
+<h2 id="selected-proofs">Selected Proofs</h2>
+<p>Let's prove "The number of full nodes plus one is equal to the number of leaves in a nonempty binary tree" using induction:</p>
+<ul>
+<li>
+<p>Let <span class="math">\(n\)</span> be the number of full nodes and <span class="math">\(m\)</span> be the number of leaves in a nonempty binary tree. Then, we have <span class="math">\(n + 1 = m\)</span>.</p>
+<ul>
+<li>Base case: <span class="math">\(n = 0\)</span>, since the binary tree is nonempty, we have the degenerated binary tree with <span class="math">\(m = 1\)</span>.</li>
+<li>Recursion: Suppose the claim holds for <span class="math">\(n\)</span> (i.e., <span class="math">\(n + 1 = m\)</span>. We want to show that the claim also holds for <span class="math">\(n+1\)</span>. There are two cases we need to consider:<ul>
+<li>We add two leaves to form one extra full node. In this case, we have <span class="math">\(m - 1 + 2 = m+1\)</span> leaves. Thus, we have 
+<span class="math">\(m+1 - (n+1) = n+1+1 - (n+1) = 1\)</span>. The claim holds.</li>
+<li>We add one leaf to form one extra full node. In this case, we have <span class="math">\(m + 1\)</span> leaves. Thus, we have
+<span class="math">\(m+1 - (n+1) = 1\)</span>. The claim holds.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <h2 id="reference">Reference</h2>
 <ul>
 <li>MAW Chapter 4</li>
-<li>https://en.wikipedia.org/wiki/Binary_tree</li>
-<li>https://www.cs.cmu.edu/~adamchik/15-121/lectures/Trees/trees.html</li>
+<li><a href="https://en.wikipedia.org/wiki/Binary_tree">Binary Tree Wikipedia</a></li>
+<li><a href="https://www.cs.cmu.edu/~adamchik/15-121/lectures/Trees/trees.html">Binary Tree CMU page</a></li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",

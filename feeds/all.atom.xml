@@ -71,7 +71,7 @@ we have to read Representative 1 because we need 1 vote to satisfy R = 1. At the
 Representative 1 for the same reason. In this example, Representative 1 can be the the server in the clients-server architecture
 (e.g., NFS) and all the read/write have to go to the server. However, we can also set R = 0, which we can read from the
 local cached copy directly (Representative 2 &amp;amp; 3 have 0 votes, which satisfy R requirement). But, in this case, weighted-voting
-algorithm doesn't guarantee that you can get the latest copy of the file.&lt;/p&gt;
+algorithm doesn't guarantee that we can get the latest copy of the file.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Giving each replica (server) one vote: decentralized quorum system with high availability, low performance&lt;/li&gt;
 &lt;li&gt;Giving one replica (server) all the votes: centralized system with high performance, low availability&lt;/li&gt;
@@ -12650,6 +12650,15 @@ well.&lt;/p&gt;
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</content><category term="recursion"></category><category term="combinatorics"></category><category term="math"></category></entry><entry><title>Binary Tree &amp; Binary Search Tree</title><link href="https://zhu45.org/posts/2017/Jan/29/binary-tree-binary-search-tree/" rel="alternate"></link><published>2017-01-29T13:20:00+08:00</published><updated>2017-01-29T13:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-01-29:/posts/2017/Jan/29/binary-tree-binary-search-tree/</id><summary type="html">&lt;p&gt;Binary tree and binary search tree summary&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;p&gt;This is the summary of &lt;em&gt;binary tree&lt;/em&gt; and &lt;em&gt;binary search tree&lt;/em&gt; part in MAW Chapter 4.&lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#concept"&gt;Concept&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#classification-of-binary-trees"&gt;Classification of binary trees&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#properties"&gt;Properties&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#selected-proofs"&gt;Selected Proofs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
 &lt;h2 id="concept"&gt;Concept&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;A &lt;em&gt;binary tree&lt;/em&gt; is a tree in which no node can have more than two children. &lt;/li&gt;
@@ -12687,8 +12696,12 @@ well.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The average depth of binary tree is &lt;span class="math"&gt;\(O(\sqrt{n})\)&lt;/span&gt;&lt;/li&gt;
 &lt;li&gt;The height of &lt;em&gt;balance&lt;/em&gt; binary tree is &lt;span class="math"&gt;\(O(\log n)\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;A complete binary tree on &lt;span class="math"&gt;\(n\)&lt;/span&gt; nodes has height &lt;span class="math"&gt;\(\lfloor \log n \rfloor\)&lt;/span&gt;&lt;/li&gt;
 &lt;li&gt;A binary tree of &lt;span class="math"&gt;\(N\)&lt;/span&gt; nodes, there are &lt;span class="math"&gt;\(N+1\)&lt;/span&gt; &lt;code&gt;NULL&lt;/code&gt; pointers representing children (MAW 4.4)&lt;/li&gt;
-&lt;li&gt;The maximum number of nodes in a binary tree of height &lt;span class="math"&gt;\(H\)&lt;/span&gt; is &lt;span class="math"&gt;\(2^{H+1}-1\)&lt;/span&gt; (MAW 4.5)&lt;/li&gt;
+&lt;li&gt;The maximum number of nodes in a binary tree of height &lt;span class="math"&gt;\(H\)&lt;/span&gt; is &lt;span class="math"&gt;\(2^{H+1}-1\)&lt;/span&gt; (MAW 4.5)&lt;ul&gt;
+&lt;li&gt;A perfect binary tree of height &lt;span class="math"&gt;\(H\)&lt;/span&gt; contains exactly &lt;span class="math"&gt;\(2^{H+1}-1\)&lt;/span&gt; nodes, of which &lt;span class="math"&gt;\(2^H\)&lt;/span&gt; are leaves.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
 &lt;li&gt;The number of full nodes plus one is equal to the number of leaves in a nonempty binary tree&lt;/li&gt;
 &lt;li&gt;The average depth of a node in a binary search tree constructed from random data is &lt;span class="math"&gt;\(O(\log n)\)&lt;/span&gt;&lt;/li&gt;
 &lt;li&gt;The average of height of a random binary search tree is &lt;span class="math"&gt;\(O(\log n)\)&lt;/span&gt; (i.e., &lt;span class="math"&gt;\(E[h] = O(\log n)\)&lt;/span&gt;) (MAW 4.14)&lt;/li&gt;
@@ -12709,11 +12722,28 @@ well.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
+&lt;h2 id="selected-proofs"&gt;Selected Proofs&lt;/h2&gt;
+&lt;p&gt;Let's prove "The number of full nodes plus one is equal to the number of leaves in a nonempty binary tree" using induction:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Let &lt;span class="math"&gt;\(n\)&lt;/span&gt; be the number of full nodes and &lt;span class="math"&gt;\(m\)&lt;/span&gt; be the number of leaves in a nonempty binary tree. Then, we have &lt;span class="math"&gt;\(n + 1 = m\)&lt;/span&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Base case: &lt;span class="math"&gt;\(n = 0\)&lt;/span&gt;, since the binary tree is nonempty, we have the degenerated binary tree with &lt;span class="math"&gt;\(m = 1\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Recursion: Suppose the claim holds for &lt;span class="math"&gt;\(n\)&lt;/span&gt; (i.e., &lt;span class="math"&gt;\(n + 1 = m\)&lt;/span&gt;. We want to show that the claim also holds for &lt;span class="math"&gt;\(n+1\)&lt;/span&gt;. There are two cases we need to consider:&lt;ul&gt;
+&lt;li&gt;We add two leaves to form one extra full node. In this case, we have &lt;span class="math"&gt;\(m - 1 + 2 = m+1\)&lt;/span&gt; leaves. Thus, we have 
+&lt;span class="math"&gt;\(m+1 - (n+1) = n+1+1 - (n+1) = 1\)&lt;/span&gt;. The claim holds.&lt;/li&gt;
+&lt;li&gt;We add one leaf to form one extra full node. In this case, we have &lt;span class="math"&gt;\(m + 1\)&lt;/span&gt; leaves. Thus, we have
+&lt;span class="math"&gt;\(m+1 - (n+1) = 1\)&lt;/span&gt;. The claim holds.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;MAW Chapter 4&lt;/li&gt;
-&lt;li&gt;https://en.wikipedia.org/wiki/Binary_tree&lt;/li&gt;
-&lt;li&gt;https://www.cs.cmu.edu/~adamchik/15-121/lectures/Trees/trees.html&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://en.wikipedia.org/wiki/Binary_tree"&gt;Binary Tree Wikipedia&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.cs.cmu.edu/~adamchik/15-121/lectures/Trees/trees.html"&gt;Binary Tree CMU page&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
