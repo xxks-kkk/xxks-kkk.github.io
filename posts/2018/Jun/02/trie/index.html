@@ -17,8 +17,8 @@
         <!-- add font-awesome -->
         <script defer src="../../../../../theme/fa-5/svg-with-js/js/fontawesome-all.js"></script>
         <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
-        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Fluffy Stuff Atom Feed" />
-        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Fluffy Stuff RSS Feed" />
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Ze-Yuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Ze-Yuan Hu's page RSS Feed" />
         <link href="../../../../../theme/images/favicon.ico" rel="icon">
     </head>
     <body>
@@ -27,8 +27,8 @@
         <![endif]-->
             <div class="container">
 <header class="blog-header">
-    <h1 id="site-title"><a href="../../../../..">Fluffy Stuff</a></h1>
-    <p> A tmp place to rest </p>
+        <h1 id="site-title"><a href="../../../../..">Ze-Yuan Hu's page</a></h1>
+    <p></p>
     <nav>
         <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
         <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
@@ -71,6 +71,7 @@
 <ul>
 <li><a href="#motivation">Motivation</a></li>
 <li><a href="#data-structure">Data Structure</a></li>
+<li><a href="#implementation">Implementation</a></li>
 <li><a href="#applications">Applications</a></li>
 <li><a href="#reference">Reference</a></li>
 </ul>
@@ -84,7 +85,7 @@ hash table or balanced trees for this task. However, trie has its unique advanta
 <p>Hash table has <span class="math">\(O(1)\)</span> time complexity for looking up a key but it is not efficient for the operations:</p>
 <ul>
 <li>Finding all keys with a common prefix. We have to traverse all keys in hash table, which can be <span class="math">\(O(n)\)</span> (<span class="math">\(n\)</span> is 
-the number of keys inserted). However, trie can take <span class="math">\(O(k)\)</span> (<span class="math">\(k\)</span> is the length of the prefix).</li>
+the number of keys inserted). However, trie takes <span class="math">\(O(k)\)</span> (<span class="math">\(k\)</span> is the length of the prefix).</li>
 <li>Enumerating a dataset of strings in lexicographical order. There is a sorting on all strings (i.e. keys)
 and thus <span class="math">\(O(n\log n)\)</span>. However, trie takes <span class="math">\(O(n)\)</span> time only.</li>
 </ul>
@@ -102,19 +103,28 @@ the key length)</p>
 <li>Search in balanced tree can take <span class="math">\(O(m \log n)\)</span> time. However, trie only takes <span class="math">\(O(m)\)</span>.</li>
 </ul>
 <h2 id="data-structure">Data Structure</h2>
-<p>To unavoid unnecessary complexity, we assume we are working with a collection of strings which consist of only lower case alphabetics.</p>
+<p>To avoid unnecessary complexity, we assume we are working with a collection of strings which consist of only lower case alphabetics.</p>
 <p><img alt="trie" class="img-responsive" src="../../../../../images/trie.png"/></p>
 <ul>
 <li>
 <p>A trie node contains two fields:</p>
 <ul>
-<li>An array of <span class="math">\(R\)</span> links, with each link representing one letter. A link connects two trie nodes together.
+<li>An array of <span class="math">\(R\)</span> links (<code>links</code>), with each link representing one letter. A link connects two trie nodes together.
 In our example, we have <span class="math">\(R = 26\)</span>.</li>
-<li>A boolean variable <code>isEnd</code>, which indicates whether we reach the end of the string. This is needed because
+<li>A boolean variable <code>isEnd</code>, which indicates whether we reach the end of a string. This is needed because
 if we are searching for a prefix, we should have <code>isEnd = false</code>. On the other hand, if we reach the end of a string,
 we have <code>isEnd = true</code>.</li>
 </ul>
 </li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Please note that <code>isEnd = true</code> doesn't indicate that we are at leaf node of the trie. The boolean only indicates
+whether we have reached the end of some string. In Figure 1, the end nodes of "wa" and "wax" are connected with each other.
+If we require that there is no common prefix for the string (e.g. strings in the dataset don't share the common prefix),
+we then don't need <code>isEnd</code> boolean variable.</p>
+</div>
+<ul>
 <li>
 <p>Insert a key into trie:</p>
 <ul>
@@ -170,10 +180,8 @@ we have <code>isEnd = true</code>.</li>
 </ul>
 </li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>We implement the trie data structure <a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/208-ImplementTrie/implementTrie.cc">here</a>.</p>
-</div>
+<h2 id="implementation">Implementation</h2>
+<p>We implement the trie data structure in C++ <a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/208-ImplementTrie/implementTrie.cc">here</a>.</p>
 <h2 id="applications">Applications</h2>
 <p>Trie is useful when we want to search some string based on the character appearance of the characters within the string:</p>
 <ul>

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-06-02T22:30:00+08:00</updated><entry><title>Trie</title><link href="https://zhu45.org/posts/2018/Jun/02/trie/" rel="alternate"></link><published>2018-06-02T22:30:00+08:00</published><updated>2018-06-02T22:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-06-02:/posts/2018/Jun/02/trie/</id><summary type="html">&lt;p&gt;A study of trie data structure&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;p&gt;Trie is a classic data structure (&lt;a href='#idreos2018data' id='ref-idreos2018data-1'&gt;Idreos et al., 2018&lt;/a&gt;) that is widely used in key-value store (&lt;a href='#zhang2018surf' id='ref-zhang2018surf-1'&gt;Zhang et al., 2018&lt;/a&gt;; &lt;a href='#wu2015lsm' id='ref-wu2015lsm-1'&gt;Wu et al., 2015&lt;/a&gt;). In this post, we describe the basics about the data structure.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ze-Yuan Hu's page - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-06-02T22:30:00+08:00</updated><entry><title>Trie</title><link href="https://zhu45.org/posts/2018/Jun/02/trie/" rel="alternate"></link><published>2018-06-02T22:30:00+08:00</published><updated>2018-06-02T22:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-06-02:/posts/2018/Jun/02/trie/</id><summary type="html">&lt;p&gt;A study of trie data structure&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;p&gt;Trie is a classic data structure (&lt;a href='#idreos2018data' id='ref-idreos2018data-1'&gt;Idreos et al., 2018&lt;/a&gt;) that is widely used in key-value store (&lt;a href='#zhang2018surf' id='ref-zhang2018surf-1'&gt;Zhang et al., 2018&lt;/a&gt;; &lt;a href='#wu2015lsm' id='ref-wu2015lsm-1'&gt;Wu et al., 2015&lt;/a&gt;). In this post, we describe the basics about the data structure.&lt;/p&gt;
 &lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#motivation"&gt;Motivation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#data-structure"&gt;Data Structure&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#implementation"&gt;Implementation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#applications"&gt;Applications&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -17,7 +18,7 @@ hash table or balanced trees for this task. However, trie has its unique advanta
 &lt;p&gt;Hash table has &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt; time complexity for looking up a key but it is not efficient for the operations:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Finding all keys with a common prefix. We have to traverse all keys in hash table, which can be &lt;span class="math"&gt;\(O(n)\)&lt;/span&gt; (&lt;span class="math"&gt;\(n\)&lt;/span&gt; is 
-the number of keys inserted). However, trie can take &lt;span class="math"&gt;\(O(k)\)&lt;/span&gt; (&lt;span class="math"&gt;\(k\)&lt;/span&gt; is the length of the prefix).&lt;/li&gt;
+the number of keys inserted). However, trie takes &lt;span class="math"&gt;\(O(k)\)&lt;/span&gt; (&lt;span class="math"&gt;\(k\)&lt;/span&gt; is the length of the prefix).&lt;/li&gt;
 &lt;li&gt;Enumerating a dataset of strings in lexicographical order. There is a sorting on all strings (i.e. keys)
 and thus &lt;span class="math"&gt;\(O(n\log n)\)&lt;/span&gt;. However, trie takes &lt;span class="math"&gt;\(O(n)\)&lt;/span&gt; time only.&lt;/li&gt;
 &lt;/ul&gt;
@@ -35,19 +36,28 @@ the key length)&lt;/p&gt;
 &lt;li&gt;Search in balanced tree can take &lt;span class="math"&gt;\(O(m \log n)\)&lt;/span&gt; time. However, trie only takes &lt;span class="math"&gt;\(O(m)\)&lt;/span&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="data-structure"&gt;Data Structure&lt;/h2&gt;
-&lt;p&gt;To unavoid unnecessary complexity, we assume we are working with a collection of strings which consist of only lower case alphabetics.&lt;/p&gt;
+&lt;p&gt;To avoid unnecessary complexity, we assume we are working with a collection of strings which consist of only lower case alphabetics.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="trie" class="img-responsive" src="https://zhu45.org/images/trie.png"/&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;A trie node contains two fields:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;An array of &lt;span class="math"&gt;\(R\)&lt;/span&gt; links, with each link representing one letter. A link connects two trie nodes together.
+&lt;li&gt;An array of &lt;span class="math"&gt;\(R\)&lt;/span&gt; links (&lt;code&gt;links&lt;/code&gt;), with each link representing one letter. A link connects two trie nodes together.
 In our example, we have &lt;span class="math"&gt;\(R = 26\)&lt;/span&gt;.&lt;/li&gt;
-&lt;li&gt;A boolean variable &lt;code&gt;isEnd&lt;/code&gt;, which indicates whether we reach the end of the string. This is needed because
+&lt;li&gt;A boolean variable &lt;code&gt;isEnd&lt;/code&gt;, which indicates whether we reach the end of a string. This is needed because
 if we are searching for a prefix, we should have &lt;code&gt;isEnd = false&lt;/code&gt;. On the other hand, if we reach the end of a string,
 we have &lt;code&gt;isEnd = true&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Please note that &lt;code&gt;isEnd = true&lt;/code&gt; doesn't indicate that we are at leaf node of the trie. The boolean only indicates
+whether we have reached the end of some string. In Figure 1, the end nodes of "wa" and "wax" are connected with each other.
+If we require that there is no common prefix for the string (e.g. strings in the dataset don't share the common prefix),
+we then don't need &lt;code&gt;isEnd&lt;/code&gt; boolean variable.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Insert a key into trie:&lt;/p&gt;
 &lt;ul&gt;
@@ -103,10 +113,8 @@ we have &lt;code&gt;isEnd = true&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="admonition note"&gt;
-&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
-&lt;p&gt;We implement the trie data structure &lt;a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/208-ImplementTrie/implementTrie.cc"&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
+&lt;h2 id="implementation"&gt;Implementation&lt;/h2&gt;
+&lt;p&gt;We implement the trie data structure in C++ &lt;a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/208-ImplementTrie/implementTrie.cc"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 id="applications"&gt;Applications&lt;/h2&gt;
 &lt;p&gt;Trie is useful when we want to search some string based on the character appearance of the characters within the string:&lt;/p&gt;
 &lt;ul&gt;
