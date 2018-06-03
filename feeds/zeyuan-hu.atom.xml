@@ -1,5 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-05-15T12:20:00+08:00</updated><entry><title>"Weighted Voting for Replicated Data"</title><link href="https://zhu45.org/posts/2018/May/15/weighted-voting-for-replicated-data/" rel="alternate"></link><published>2018-05-15T12:20:00+08:00</published><updated>2018-05-15T12:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-05-15:/posts/2018/May/15/weighted-voting-for-replicated-data/</id><summary type="html">&lt;p&gt;"Weighted Voting for Replicated Data" paper reading&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fluffy Stuff - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-06-02T22:30:00+08:00</updated><entry><title>Trie</title><link href="https://zhu45.org/posts/2018/Jun/02/trie/" rel="alternate"></link><published>2018-06-02T22:30:00+08:00</published><updated>2018-06-02T22:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-06-02:/posts/2018/Jun/02/trie/</id><summary type="html">&lt;p&gt;A study of trie data structure&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;p&gt;Trie is a classic data structure (&lt;a href='#idreos2018data' id='ref-idreos2018data-1'&gt;Idreos et al., 2018&lt;/a&gt;) that is widely used in key-value store (&lt;a href='#zhang2018surf' id='ref-zhang2018surf-1'&gt;Zhang et al., 2018&lt;/a&gt;; &lt;a href='#wu2015lsm' id='ref-wu2015lsm-1'&gt;Wu et al., 2015&lt;/a&gt;). In this post, we describe the basics about the data structure.&lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#motivation"&gt;Motivation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#data-structure"&gt;Data Structure&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#applications"&gt;Applications&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="motivation"&gt;Motivation&lt;/h2&gt;
+&lt;p&gt;The main motivation for using trie is that we want to efficiently search for a word in a dataset of strings. We can use
+hash table or balanced trees for this task. However, trie has its unique advantages:&lt;/p&gt;
+&lt;p&gt;VS. Hash Table:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Hash table has &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt; time complexity for looking up a key but it is not efficient for the operations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Finding all keys with a common prefix. We have to traverse all keys in hash table, which can be &lt;span class="math"&gt;\(O(n)\)&lt;/span&gt; (&lt;span class="math"&gt;\(n\)&lt;/span&gt; is 
+the number of keys inserted). However, trie can take &lt;span class="math"&gt;\(O(k)\)&lt;/span&gt; (&lt;span class="math"&gt;\(k\)&lt;/span&gt; is the length of the prefix).&lt;/li&gt;
+&lt;li&gt;Enumerating a dataset of strings in lexicographical order. There is a sorting on all strings (i.e. keys)
+and thus &lt;span class="math"&gt;\(O(n\log n)\)&lt;/span&gt;. However, trie takes &lt;span class="math"&gt;\(O(n)\)&lt;/span&gt; time only.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Search in hash table can be &lt;span class="math"&gt;\(O(n)\)&lt;/span&gt; if there are plenty of hash collisions. However, trie only takes &lt;span class="math"&gt;\(O(m)\)&lt;/span&gt; (&lt;span class="math"&gt;\(m\)&lt;/span&gt; is 
+the key length)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Compared to hash table, trie saves space when storing many keys with the same prefix. &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;VS. balanced trees:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Search in balanced tree can take &lt;span class="math"&gt;\(O(m \log n)\)&lt;/span&gt; time. However, trie only takes &lt;span class="math"&gt;\(O(m)\)&lt;/span&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="data-structure"&gt;Data Structure&lt;/h2&gt;
+&lt;p&gt;To unavoid unnecessary complexity, we assume we are working with a collection of strings which consist of only lower case alphabetics.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="trie" class="img-responsive" src="https://zhu45.org/images/trie.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;A trie node contains two fields:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;An array of &lt;span class="math"&gt;\(R\)&lt;/span&gt; links, with each link representing one letter. A link connects two trie nodes together.
+In our example, we have &lt;span class="math"&gt;\(R = 26\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;A boolean variable &lt;code&gt;isEnd&lt;/code&gt;, which indicates whether we reach the end of the string. This is needed because
+if we are searching for a prefix, we should have &lt;code&gt;isEnd = false&lt;/code&gt;. On the other hand, if we reach the end of a string,
+we have &lt;code&gt;isEnd = true&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Insert a key into trie:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;We insert a key by searching into the trie. We start from the root and search a link, which corresponds to the first key character. There are two cases :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A link exists. Then we move down the tree following the link to the next child level. The algorithm continues with searching for the next key character.&lt;/li&gt;
+&lt;li&gt;A link does not exist. Then we create a new node and link it with the parent's link matching the current key character. We repeat this step until we encounter the last character of the key, then we mark the current node as an end node and the algorithm finishes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Time complexity: &lt;span class="math"&gt;\(O(m)\)&lt;/span&gt; (In each iteration of the algorithm, we either examine or create a node in the trie till we reach the end of the key. This takes only &lt;span class="math"&gt;\(m\)&lt;/span&gt; operations.)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Space complexity: &lt;span class="math"&gt;\(O(m)\)&lt;/span&gt; (In the worst case newly inserted key doesn't share a prefix with the the keys already inserted in the trie. We have to add &lt;span class="math"&gt;\(m\)&lt;/span&gt; new nodes, which takes us &lt;span class="math"&gt;\(O(m)\)&lt;/span&gt; space.)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Search for a key in a trie:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Each key is represented in the trie as a path from the root to the internal node or leaf. We start from the root with the first key character. We examine the current node for a link corresponding to the key character. There are two cases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A link exist. We move to the next node in the path following this link, and proceed searching for the next key character.&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;A link does not exist. If there are no available key characters and current node is marked as &lt;code&gt;isEnd = true&lt;/code&gt; we return &lt;code&gt;true&lt;/code&gt;. Otherwise there are possible two cases in each of them we return &lt;code&gt;false&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;There are key characters left, but it is impossible to follow the key path in the trie, and the key is missing.&lt;/li&gt;
+&lt;li&gt;No key characters left, but current node is not marked as &lt;code&gt;isEnd&lt;/code&gt;. Therefore the search key is only a prefix of another key in the trie.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Time complexity: &lt;span class="math"&gt;\(O(m)\)&lt;/span&gt; (In each step of the algorithm we search for the next key character. In the worst case the algorithm performs &lt;span class="math"&gt;\(m\)&lt;/span&gt; operations.)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Space complexity: &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Search for a key prefix in a trie:&lt;/p&gt;
+&lt;p&gt;The approach is very similar to the one we used for searching a key in a trie. We traverse the trie from the root, till there are no characters left in key prefix or it is impossible to continue the path in the trie with the current key character. The only difference with the mentioned above search for a key algorithm is that when we come to an end of the key prefix, we always return true. We don't need to consider the &lt;code&gt;isEnd&lt;/code&gt; mark of the current trie node, because we are searching for a prefix of a key, not for a whole key.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Time complexity: &lt;span class="math"&gt;\(O(m)\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Space complexity: &lt;span class="math"&gt;\(O(1)\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;We implement the trie data structure &lt;a href="https://github.com/xxks-kkk/shuati/master/208/leetcode/208-ImplementTrie"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="applications"&gt;Applications&lt;/h2&gt;
+&lt;p&gt;Trie is useful when we want to search some string based on the character appearance of the characters within the string:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://en.wikipedia.org/wiki/Autocomplete"&gt;Autocomplete&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://en.wikipedia.org/wiki/Spell_checker"&gt;Spell checker&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://en.wikipedia.org/wiki/Longest_prefix_match"&gt;IP routing (Longest prefix matching&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://en.wikipedia.org/wiki/T9_(predictive_text)"&gt;T9 predictive text&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Solving &lt;a href="https://en.wikipedia.org/wiki/Boggle"&gt;Boggle&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Huffman Codes (&lt;span class="math"&gt;\(\S\)&lt;/span&gt;10.1.2 in MAW(cpp))&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;We use a sequence of 1 and 0 to represent character in Huffman Codes. Thus, &lt;span class="math"&gt;\(R = 2\)&lt;/span&gt; (e.g. 1 and 0). However, 
+to figure out the 0-1 encoding of each character, we cannot simply insert the character into trie. We should
+use Huffman algorithm instead.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://leetcode.com/articles/implement-trie-prefix-tree/"&gt;Leetcode article on Trie&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%&amp;#64;#$&amp;#64;#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%&amp;#64;#$&amp;#64;#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;&lt;hr&gt;
+&lt;p id='idreos2018data'&gt;Stratos Idreos, Kostas Zoumpatianos, Brian Hentschel, Michael&amp;nbsp;S Kester, and Demi Guo.
+The data calculator: data structure design and cost synthesis from first principles and learned cost models.
+In &lt;em&gt;Proceedings of the 2018 International Conference on Management of Data&lt;/em&gt;, 535–550. ACM, 2018. &lt;a class="cite-backref" href="#ref-idreos2018data-1" title="Jump back to reference 1"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p id='wu2015lsm'&gt;Xingbo Wu, Yuehai Xu, Zili Shao, and Song Jiang.
+Lsm-trie: an lsm-tree-based ultra-large key-value store for small data.
+In &lt;em&gt;Proceedings of the 2015 USENIX Conference on Usenix Annual Technical Conference&lt;/em&gt;, 71–82. USENIX Association, 2015. &lt;a class="cite-backref" href="#ref-wu2015lsm-1" title="Jump back to reference 1"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p id='zhang2018surf'&gt;Huanchen Zhang, Hyeontaek Lim, Viktor Leis, David&amp;nbsp;G Andersen, Michael Kaminsky, Kimberly Keeton, and Andrew Pavlo.
+Surf: practical range query filtering with fast succinct tries.
+In &lt;em&gt;Proceedings of the 2018 International Conference on Management of Data&lt;/em&gt;, 323–336. ACM, 2018. &lt;a class="cite-backref" href="#ref-zhang2018surf-1" title="Jump back to reference 1"&gt;↩&lt;/a&gt;&lt;/p&gt;
+</content><category term="trie"></category><category term="lsm"></category><category term="storage"></category><category term="prefix tree"></category></entry><entry><title>"Weighted Voting for Replicated Data"</title><link href="https://zhu45.org/posts/2018/May/15/weighted-voting-for-replicated-data/" rel="alternate"></link><published>2018-05-15T12:20:00+08:00</published><updated>2018-05-15T12:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-05-15:/posts/2018/May/15/weighted-voting-for-replicated-data/</id><summary type="html">&lt;p&gt;"Weighted Voting for Replicated Data" paper reading&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#design-assumptions"&gt;Design Assumptions&lt;/a&gt;&lt;/li&gt;
@@ -1678,7 +1870,7 @@ me in terms of research.&lt;/p&gt;
 &lt;p&gt;--- 05/22/18 UPDATE ---&lt;/p&gt;
 &lt;div class="admonition note"&gt;
 &lt;p class="admonition-title"&gt;Note&lt;/p&gt;
-&lt;p&gt;I write this post when I start to read system papers and even before I reading through PebblesDB's code. 
+&lt;p&gt;I write this post when I start to read system papers and even before I read through PebblesDB's code. 
 My system paper reading skill is lacking and I cannot fully grasp the essence of the paper back then. Please
 jump to the &lt;a href="#remarks"&gt;Remarks&lt;/a&gt; section for a concise summary of LSM and FLSM (PebblesDB's
 data structure). The other sections are filled with unnecessary details and they are helpful only when you
@@ -13332,7 +13524,7 @@ path from the root to &lt;span class="math"&gt;\(n_i\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;The sum of the depths of all nodes in a tree is known as the &lt;em&gt;internal path length&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;height&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The &lt;em&gt;height&lt;/em&gt; of &lt;span class="math"&gt;\(n_i\)&lt;/span&gt; is the length of the longest path from &lt;span class="math"&gt;\(n_i\)&lt;/span&gt; to
-a leaf.&lt;/p&gt;
+a leaf. (i.e., the height of a node is the number of edges from the node to the deepest leaf)&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;ancestor&lt;/strong&gt;, &lt;strong&gt;descendant&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;If there is a path from &lt;span class="math"&gt;\(n_1\)&lt;/span&gt; to &lt;span class="math"&gt;\(n_2\)&lt;/span&gt;, then &lt;span class="math"&gt;\(n_1\)&lt;/span&gt; is an &lt;em&gt;ancestor&lt;/em&gt;
 of &lt;span class="math"&gt;\(n_2\)&lt;/span&gt; and &lt;span class="math"&gt;\(n_2\)&lt;/span&gt; is a &lt;em&gt;descendant&lt;/em&gt; of &lt;span class="math"&gt;\(n_1\)&lt;/span&gt;. If &lt;span class="math"&gt;\(n_1 \neq n_2\)&lt;/span&gt;,
