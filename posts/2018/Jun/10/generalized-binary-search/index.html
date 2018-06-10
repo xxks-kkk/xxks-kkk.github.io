@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Generalized binary search
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan (Zack) Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, Zack Hu, zack, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/svg-with-js/js/fontawesome-all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Ze-Yuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Ze-Yuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../..">Ze-Yuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+        <!--<a href="../../../../../zeyuan-hus-resume.html" style="padding: 10px">RESUME</a>-->
+        <!-- <a href="../../../../../archives" style="padding: 10px">ARCHIVES</a> -->
+            <a href="../../../../../blog2" style="padding: 10px">BLOG</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+            <a href="../../../../../links.html" style="padding: 10px">LINKS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+            <h1 class="post-title">Generalized binary search</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2018-06-10T01:24:00+08:00"> Jun 10, 2018</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/algorithm.html">algorithm</a>
+        /
+	<a href="../../../../../tag/leetcode.html">leetcode</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+        </header>
+        
+        <article>
+            <html><body><div class="toc">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#example">Example</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+</div>
+<h2 id="introduction">Introduction</h2>
+<p>In the <a href="../../../../../posts/2018/Jan/12/how-to-write-binary-search-correctly/">earlier post</a>, we introduce the invariant concept to enable us
+to solve the binary search problem on the very first try. In this post, we further elaborate the binary
+search idea and introduce how we can use predicate + main theorem to solve more generalized binary search problem.</p>
+<h2 id="example">Example</h2>
+<p>Let's consider an example, which utilizes the generalized idea of binary search mentioned in <a href="https://www.topcoder.com/community/data-science/data-science-tutorials/binary-search/">TopCoder's article</a>. The problem we look at is 
+<a href="https://leetcode.com/problems/find-k-closest-elements/description/">Leetcode 658. Find K Closest Elements</a>: 
+Let <span class="math">\(A\)</span> be a sorted array of <span class="math">\(N\)</span> values. We want to find the index <span class="math">\(j\)</span> such that the elements <span class="math">\(A_j,A_{j+1},\dots,A_{j+k−1}\)</span> 
+have the <span class="math">\(k\)</span> closest values to the given target value <span class="math">\(T\)</span>. </p>
+<p>The generalization of binary search is done by formalizing how we reduce the search space by half: binary search can be used
+if and only if for all <span class="math">\(x\)</span> in the search space <span class="math">\(S\)</span> (i.e., the ordered set), <span class="math">\(p(x)\)</span> implies <span class="math">\(p(y)\)</span> for all <span class="math">\(y &gt; x\)</span> (<span class="math">\(p\)</span> stands
+for some predicate over <span class="math">\(S\)</span>). TopCoder article calls this formalization as <em>main theorem</em>. We use this theorem to discard
+the second half of search space. For example, in the most basic binary search problem in the ascending order array, our predicate <span class="math">\(p\)</span> 
+is defined as: is the value at <code>i</code> smaller than <code>X</code>? If answer is yes, we discard all the values 
+with index smaller than <span class="math">\(i\)</span> because given the ascending order and <code>A[i]</code> is smaller than <code>X</code>, any value comes before <code>A[i]</code> is also 
+smaller than <code>X</code>. By the same reasoning, if the answer is no, we discard the second half. We make some observations here:</p>
+<ul>
+<li>As you may have noticed, predicate is exactly what we check in the if-statement (e.g. <code>X &gt; A[i]</code>).</li>
+<li>If <code>X &lt; A[i]</code>, then for any <span class="math">\(y &gt; i\)</span>, we have <code>X &lt; A[y]</code>, which exactly matches the main theorem and that's how we can discard
+the second half of the array (i.e., search space).</li>
+</ul>
+<p>Now, let's consider our example. What does it mean a selected subrange is optimal (i.e., <span class="math">\(k\)</span> closest values to <span class="math">\(T\)</span>)? That means
+that we can neither move the subrange to the right (<span class="math">\(|A_{j+k} - T| &gt; |A_j - T|\)</span>) nor move the subrange to the left 
+(<span class="math">\(|A_{j+k-1} - T| &gt; |A_{j-1} - T|\)</span>). In details, since the subrange includes <span class="math">\(k\)</span> closest values to <span class="math">\(T\)</span> and by moving it to right,
+we exclude <span class="math">\(A_{j}\)</span> and include <span class="math">\(A_{j+k}\)</span>. Since the selected subrange is optimal, we must have <span class="math">\(|A_{j+k} - T| &gt; |A_j - T|\)</span>.
+Thus, we can formalize our predicate as: for a given index <span class="math">\(j\)</span>, does <span class="math">\(|A_{j+k} - T| &gt; |A_j - T|\)</span> hold? Another piece of information
+we need for binary search is the invariant. From the question description we can see that the key to this question is finding
+<span class="math">\(j\)</span>. Thus, our invariant is: the index of the first number that is among the k closest values for the given target <span class="math">\(T\)</span> 
+(i.e., <span class="math">\(j\)</span>) is in <span class="math">\([\text{left}, \text{right}]\)</span>.</p>
+<p>Now, we have to show that <em>main theorem</em> holds given our predicate formalization. Let's discuss this point
+in details:</p>
+<ul>
+<li>
+<p>When <span class="math">\(|A_{j+k} - T| &gt; |A_j - T|\)</span> is true:</p>
+<ul>
+<li>
+<p>If <span class="math">\(A\)</span> is sorted in ascending order, then we have three possible cases:</p>
+<ul>
+<li><span class="math">\(T &lt; A_j &lt; A_{j+k}\)</span>. In this case, we have <span class="math">\(A_{j+k} - T &gt; A_j - T\)</span>. Let <span class="math">\(d\)</span> be an integer with range
+<span class="math">\(0 &lt; d &lt; k\)</span>, then we have
+<span class="math">\(A_{j+k+d} - T &gt; A_{j+k} - T &gt; A_{j+d} - T &gt; A_{j} - T\)</span>. In other words, for any index <span class="math">\(i &gt; j\)</span>, our predicate
+holds (<span class="math">\(|A_{i+k} - T| &gt; |A_i - T|\)</span>). Thus, we can directly discard the second half of the array. Note that
+we still want to keep <span class="math">\(j\)</span> because it might be the optimal <span class="math">\(j\)</span> we are looking for.</li>
+<li><span class="math">\(A_j &lt; T &lt; A_{j+k}\)</span>. In this case, we have <span class="math">\(A_{j+k} - T &gt; T - A_j\)</span>. Then, we have 
+<span class="math">\(A_{j+k+d} - T &gt; A_{j+k} - T &gt; T - A_j &gt; T - A_{j+d}\)</span>. Then the predicate still holds for <span class="math">\(i &gt; j\)</span>.</li>
+<li><span class="math">\(A_j &lt; A_{j+k} &lt; T\)</span>. This is impossible given our predicate condition.</li>
+</ul>
+</li>
+<li>
+<p>If <span class="math">\(A\)</span> is sorted in descending order, we also have three possible cases:</p>
+<ul>
+<li><span class="math">\(T &gt; A_j &gt; A_{j+k}\)</span>. In this case, we have <span class="math">\(T - A_{j+k} &gt; T - A_j\)</span>, which leads to 
+<span class="math">\(T - A_{j+k+d} &gt; T - A_{j+k} &gt; T - A_{j+d} &gt; T - A_j\)</span>. Again, our predicate holds for any index <span class="math">\(i &gt; j\)</span> and
+we can discard the second half of the array.</li>
+<li><span class="math">\(A_j &gt; T &gt; A_{j+k}\)</span>. In this case, we have <span class="math">\(T - A_{j+k} &gt; A_j - T\)</span>. We have
+<span class="math">\(T - A_{j+k+d} &gt; T - A_{j+k} &gt; A_j - T &gt; A_{j+d} - T\)</span>. Predicate holds.</li>
+<li><span class="math">\(A_j &gt; A_{j+k} &gt; T\)</span>. Impossible.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The reason we have <span class="math">\(0 \le d \le k\)</span> is that in the extreme case, we have <span class="math">\(j = N - k\)</span> (otherwise, we won't have <span class="math">\(k\)</span> elements)
+and it is unnecessary to have <span class="math">\(d\)</span> goes beyond <span class="math">\(k\)</span>.</p>
+</div>
+<ul>
+<li>
+<p>When <span class="math">\(|A_{j-1} - T| &gt; |A_{j+k-1} - T|\)</span> is true:</p>
+<ul>
+<li>
+<p>If <span class="math">\(A\)</span> is sorted in ascending order, then we have three possible cases:</p>
+<ul>
+<li><span class="math">\(T &lt; A_{j-1} &lt; A_{j+k-1}\)</span>. Impossible.</li>
+<li><span class="math">\(A_{j-1} &lt; T &lt; A_{j+k-1}\)</span>. In this case, we have <span class="math">\(T - A_{j-1} &gt; A_{j+k-1} - T\)</span>. Then, let <span class="math">\(d\)</span> be an integer with
+range between 0 and <span class="math">\(j-1\)</span>. We have <span class="math">\(T - A_{j-1-d} &gt; T - A_{j-1} &gt; A_{j+k-1} - T &gt; A_{j+k-1-d} - T\)</span>. Thus, for any
+index <span class="math">\(i &lt;= j\)</span>, we have <span class="math">\(|A_{i-1} - T| &gt; |A_{i+k-1} - T|\)</span>. This suggests that we can discard first half of the array.</li>
+<li><span class="math">\(A_{j-1} &lt; A_{j+k-1} &lt; T\)</span>. We have <span class="math">\(T - A_{j-1} &gt; T - A_{j+k-1}\)</span>, which implies 
+<span class="math">\(T - A_{j-1-d} &gt; T - A_{j-1} &gt; T - A_{j+k-1-d} &gt; T - A_{j+k-1}\)</span>, which again the predication holds.</li>
+</ul>
+</li>
+<li>
+<p>If <span class="math">\(A\)</span> is sorted in descending order, then we have three possible cases:</p>
+<ul>
+<li><span class="math">\(T &gt; A_j &gt; A_{j+k}\)</span>. Impossible.</li>
+<li><span class="math">\(A_j &gt; T &gt; A_{j+k}\)</span>. In this case, we have <span class="math">\(A_{j-1} - T &gt; T - A_{j+k-1}\)</span>, which implies that 
+<span class="math">\(A_{j-1-d} - T &gt; A_{j-1} - T &gt; T - A_{j+k-1} &gt; T - A_{j+k-1-d}\)</span>. Predication holds: for all index <span class="math">\(i &lt;= j\)</span>,
+we have <span class="math">\(|A_{i-1} - T| &gt; |A_{i+k-1} - T|\)</span>, which means we can discard first half of the array and move subrange to the right.</li>
+<li><span class="math">\(A_j &gt; A_{j+k} &gt; T\)</span>. In this case, we have <span class="math">\(A_{j-1} - T &gt; A_{j+k-1} - T\)</span>, which imples that
+<span class="math">\(A_{j-1-d} - T &gt; A_{j-1} - T &gt; A_{j+k-1-d} - T &gt; A_{j+k-1} - T\)</span>. Predication holds.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Once we verify the predication satisifies the <em>main theorem</em>, the only thing we left is to build the connection between the
+invariant and predication, and make sure the invariant holds during the loop execution. Let's first list out the code:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">findClosestElements</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">arr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">right</span> <span class="o">=</span> <span class="n">arr</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="n">k</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="p">(</span><span class="n">right</span> <span class="o">-</span> <span class="n">left</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">fabs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">fabs</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="o">+</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">))</span>
+            <span class="p">{</span>
+                <span class="n">right</span> <span class="o">=</span> <span class="n">mid</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">fabs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">fabs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="o">+</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="p">{</span>
+                <span class="n">left</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">arr</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">left</span><span class="p">,</span> <span class="n">arr</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">left</span> <span class="o">+</span> <span class="n">k</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Notice that in the code we actually use <span class="math">\(|A_{j+k} - T| \ge |A_j - T|\)</span> instead of <span class="math">\(|A_{j+k} - T| &gt; |A_j - T|\)</span>. The reason
+is because whenever there is a tie, the smaller elements are always preferred. Consider <code>[1,2,3,4,5]</code> with <span class="math">\(k = 4\)</span> and <span class="math">\(
+T = 3\)</span>. Then, both <code>[1,2,3,4]</code> and <code>[2,3,4,5]</code> are the closest <span class="math">\(k\)</span> elements to the <span class="math">\(T\)</span> and sum of the elements to <span class="math">\(T\)</span> distance
+are the same, which is a tie. In this case, we prefer <code>[1,2,3,4]</code>. If we strictly follow the predicate, we end up with
+<code>[2,3,4,5]</code>. Switching <span class="math">\(|A_{j+k} - T| &gt; |A_j - T|\)</span> to <span class="math">\(|A_{j+k} - T| \ge |A_j - T|\)</span> still maintains the invariant in the loop
+because when <span class="math">\(|A_{j+k} - T| = |A_j - T|\)</span>, shifting the subrange to the right doesn't give any improvement and by set <code>right</code>
+to mid, we still ensure that the optimal <span class="math">\(j\)</span> falls inside <span class="math">\([\text{left}, \text{right}]\)</span>.</p>
+</div>
+<p><span class="math">\(|A_{j+k} - T| &gt; |A_j - T|\)</span> means we cannot move the subrange to the right to obtain the optimal subrange. We also show that
+under the condition, we can discard the second half of the array. <code>mid</code> represents <span class="math">\(j\)</span> in our condition and by not moving
+subrange to right, we are saying that the optimal <span class="math">\(j\)</span> has to be the left of <code>mid</code>. This implies that we can safely move
+set <span class="math">\(\text{right}\)</span> to <code>mid</code> and still maintains the invariant during the loop. On the other hand, <span class="math">\(|A_{j-1} - T| &gt; |A_{j+k-1} - T|\)</span>
+means that we cannot move the subrange to the left to obtain the optimal subrange. We also show that the inequality allows us
+to discard the first half of the array. Since for given <span class="math">\(j\)</span> (<code>mid</code>), we have <span class="math">\(|A_{j-1} - T| &gt; |A_{j+k-1} - T|\)</span>. We cannot
+move subrange (indicating by <span class="math">\(j\)</span> or <code>mid</code>) to the left; we have to move to right. Thus, we set
+<span class="math">\(\text{left}\)</span> to <code>mid+1</code> to narrow down the search space while maintainng the invariant unchanged.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The above code is theoretically correct but it has fundamentally implementation issue: <code>mid</code> can be 0,
+which will lead to index out of bound error in <code>else if (fabs(x - arr[mid-1]) &gt; fabs(x - arr[mid+k-1]))</code>.
+C++ doesn't enforce index out of bound error (i.e., <em>undefined behavior</em>) and the above code can run
+successfully for certain complier on certain platform (leetcode obvious can). However, issue will happen
+if you directly translate the above logic to another language. A safe way to do is to replace the <code>else if</code>
+statement with <code>else if ((mid &gt;0 &amp;&amp; fabs(x - arr[mid-1]) &gt; fabs(x - arr[mid+k-1])) || fabs(x - arr[mid]) &gt; fabs(arr[mid+k] - x))</code>,
+which you can see is redundant and can be optimized. This is exactly what we are going to do next.</p>
+</div>
+<p>One thing to note that <code>while(left &lt; right)</code> means we haven't found the optimal <span class="math">\(j\)</span> yet, which implies that we have to
+either move the subrange to left or move the subrange to right. This provides us the further opportunity to optimize the above
+code:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">findClosestElements</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">arr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">right</span> <span class="o">=</span> <span class="n">arr</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="n">k</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="p">(</span><span class="n">right</span> <span class="o">-</span> <span class="n">left</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">fabs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">fabs</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="o">+</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">))</span>
+            <span class="p">{</span>
+                <span class="n">right</span> <span class="o">=</span> <span class="n">mid</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">else</span>
+            <span class="p">{</span>
+                <span class="n">left</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">arr</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">left</span><span class="p">,</span> <span class="n">arr</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">left</span> <span class="o">+</span> <span class="n">k</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+<p>In the first version, we check two conditions explicitly and do nothing if both conditions are not true. However,
+as we state in the previous paragraph, since we are still in the <code>while</code> loop, that means one of those two conditions will be true. 
+In other words, there is no such case that both conditions are false and we are still in the loop. Thus, we can get rid of 
+one of the conditions and use <code>else</code> instead. Another way of thinking is that we do nothing if both conditions are failed
+and thus this third do-nothing case can be combined with the second <code>else if (fabs(x - arr[mid-1]) &gt; fabs(x - arr[mid+k-1]))</code> condition to form a <code>else</code> statement.</p>
+<p>There is another optimization code proposal I find online, which I don't think it is correct:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">findClosestElements</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">arr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">right</span> <span class="o">=</span> <span class="n">arr</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="n">k</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="p">(</span><span class="n">right</span> <span class="o">-</span> <span class="n">left</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="o">+</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">right</span> <span class="o">=</span> <span class="n">mid</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">else</span>
+            <span class="p">{</span>
+                <span class="n">left</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">arr</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">left</span><span class="p">,</span> <span class="n">arr</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">left</span> <span class="o">+</span> <span class="n">k</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+<p>But this code return the wrong answer for the following case: <code>arr = [5,4,3,2,1], x = 2, k = 4</code>. The above
+solution gives <code>[5,4,3,2]</code>, which is wrong because <code>[4,3,2,1]</code> is the closest elements to <code>2</code>. To see this,
+we can invoke the predicate: <code>5</code> is 3 units away from <code>2</code> but <code>1</code> is only 1 unit away from <code>2</code> (<span class="math">\(|A_j - T| &gt; |A_{j+k} - T|\)</span>), 
+which implies we can shift the subrange to the right. More straightforward way is to simply calculate the sum of distance of
+each element: <code>[5,4,3,2]</code> has sum <code>3+2+1 = 6</code> while <code>[4,3,2,1]</code> has sum <code>2+1+1 = 4</code>.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>We give one example showing the essence of the binary search: main theorem, which is a formalization of how we discard values. 
+Predicate helps us to find what to write in the <code>if</code> statement and invariant helps us to make sure we find the correct value. 
+In this post, we go through a relative formal proof of the correctness of our predicate. One thing to note that, the proof
+is in fact induction: we use <span class="math">\(d\)</span> to show inequalities hold for any index <span class="math">\(i &gt; j\)</span>. A nicer but equivalent way we can do is simply use
+the induction and show <span class="math">\(p(j+1)\)</span> holds given <span class="math">\(p(j)\)</span> is correct (we actually do <span class="math">\(p(j+d)\)</span> holds given <span class="math">\(p(j)\)</span> is correct). Another point 
+we should point out that we can derive the invariant
+from predicate: we try to find the index of the first number that is among the k closest values for the given target <span class="math">\(T\)</span>. This is 
+the exact same number that will <strong>first</strong> give "yes" response to our predicate.</p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="https://www.topcoder.com/community/data-science/data-science-tutorials/binary-search/">TopCoder's post</a></li>
+<li><a href="https://cs.stackexchange.com/questions/77364/searching-a-sorted-array-to-find-the-k-closest-values-to-a-target-value-t?rq=1">Stackexchange post: Searching a sorted array to find the k closest values to a target value T</a></li>
+</ul>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script></body></html>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/data-struct-algo.html">Data Struct & Algo</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<footer class="blog-footer">
+    <p class="disclaimer">
+        Zeyuan Hu &copy; 2015-2018.
+    </p>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

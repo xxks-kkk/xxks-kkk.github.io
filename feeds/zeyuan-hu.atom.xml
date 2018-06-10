@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ze-Yuan Hu's page - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-06-10T01:24:00+08:00</updated><entry><title>Generalized binary search idea</title><link href="https://zhu45.org/posts/2018/Jun/10/generalized-binary-search-idea/" rel="alternate"></link><published>2018-06-10T01:24:00+08:00</published><updated>2018-06-10T01:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-06-10:/posts/2018/Jun/10/generalized-binary-search-idea/</id><summary type="html">&lt;p&gt;Binary search idea can be generalized to other problems&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ze-Yuan Hu's page - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-06-10T01:24:00+08:00</updated><entry><title>Generalized binary search</title><link href="https://zhu45.org/posts/2018/Jun/10/generalized-binary-search/" rel="alternate"></link><published>2018-06-10T01:24:00+08:00</published><updated>2018-06-10T01:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-06-10:/posts/2018/Jun/10/generalized-binary-search/</id><summary type="html">&lt;p&gt;Binary search idea can be generalized to other problems&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#example"&gt;Example&lt;/a&gt;&lt;/li&gt;
@@ -126,6 +126,16 @@ invariant and predication, and make sure the invariant holds during the loop exe
     &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;span class="p"&gt;};&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Notice that in the code we actually use &lt;span class="math"&gt;\(|A_{j+k} - T| \ge |A_j - T|\)&lt;/span&gt; instead of &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt;. The reason
+is because whenever there is a tie, the smaller elements are always preferred. Consider &lt;code&gt;[1,2,3,4,5]&lt;/code&gt; with &lt;span class="math"&gt;\(k = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(
+T = 3\)&lt;/span&gt;. Then, both &lt;code&gt;[1,2,3,4]&lt;/code&gt; and &lt;code&gt;[2,3,4,5]&lt;/code&gt; are the closest &lt;span class="math"&gt;\(k\)&lt;/span&gt; elements to the &lt;span class="math"&gt;\(T\)&lt;/span&gt; and sum of the elements to &lt;span class="math"&gt;\(T\)&lt;/span&gt; distance
+are the same, which is a tie. In this case, we prefer &lt;code&gt;[1,2,3,4]&lt;/code&gt;. If we strictly follow the predicate, we end up with
+&lt;code&gt;[2,3,4,5]&lt;/code&gt;. Switching &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt; to &lt;span class="math"&gt;\(|A_{j+k} - T| \ge |A_j - T|\)&lt;/span&gt; still maintains the invariant in the loop
+because when &lt;span class="math"&gt;\(|A_{j+k} - T| = |A_j - T|\)&lt;/span&gt;, shifting the subrange to the right doesn't give any improvement and by set &lt;code&gt;right&lt;/code&gt;
+to mid, we still ensure that the optimal &lt;span class="math"&gt;\(j\)&lt;/span&gt; falls inside &lt;span class="math"&gt;\([\text{left}, \text{right}]\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt; means we cannot move the subrange to the right to obtain the optimal subrange. We also show that
 under the condition, we can discard the second half of the array. &lt;code&gt;mid&lt;/code&gt; represents &lt;span class="math"&gt;\(j\)&lt;/span&gt; in our condition and by not moving
 subrange to right, we are saying that the optimal &lt;span class="math"&gt;\(j\)&lt;/span&gt; has to be the left of &lt;code&gt;mid&lt;/code&gt;. This implies that we can safely move
@@ -136,13 +146,13 @@ move subrange (indicating by &lt;span class="math"&gt;\(j\)&lt;/span&gt; or &lt;
 &lt;span class="math"&gt;\(\text{left}\)&lt;/span&gt; to &lt;code&gt;mid+1&lt;/code&gt; to narrow down the search space while maintainng the invariant unchanged.&lt;/p&gt;
 &lt;div class="admonition note"&gt;
 &lt;p class="admonition-title"&gt;Note&lt;/p&gt;
-&lt;p&gt;Notice that in the code we actually use &lt;span class="math"&gt;\(|A_{j+k} - T| \ge |A_j - T|\)&lt;/span&gt; instead of &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt;. The reason
-is because whenever there is a tie, the smaller elements are always preferred. Consider &lt;code&gt;[1,2,3,4,5]&lt;/code&gt; with &lt;span class="math"&gt;\(k = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(
-T = 3\)&lt;/span&gt;. Then, both &lt;code&gt;[1,2,3,4]&lt;/code&gt; and &lt;code&gt;[2,3,4,5]&lt;/code&gt; are the closest &lt;span class="math"&gt;\(k\)&lt;/span&gt; elements to the &lt;span class="math"&gt;\(T\)&lt;/span&gt; and sum of the elements to &lt;span class="math"&gt;\(T\)&lt;/span&gt; distance
-are the same, which is a tie. In this case, we prefer &lt;code&gt;[1,2,3,4]&lt;/code&gt;. If we strictly follow the predicate, we end up with
-&lt;code&gt;[2,3,4,5]&lt;/code&gt;. Switching &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt; to &lt;span class="math"&gt;\(|A_{j+k} - T| \ge |A_j - T|\)&lt;/span&gt; still maintains the invariant in the loop
-because when &lt;span class="math"&gt;\(|A_{j+k} - T| = |A_j - T|\)&lt;/span&gt;, shifting the subrange to the right doesn't give any improvement and by set &lt;code&gt;right&lt;/code&gt;
-to mid, we still ensure that the optimal &lt;span class="math"&gt;\(j\)&lt;/span&gt; falls inside &lt;span class="math"&gt;\([\text{left}, \text{right}]\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The above code is theoretically correct but it has fundamentally implementation issue: &lt;code&gt;mid&lt;/code&gt; can be 0,
+which will lead to index out of bound error in &lt;code&gt;else if (fabs(x - arr[mid-1]) &amp;gt; fabs(x - arr[mid+k-1]))&lt;/code&gt;.
+C++ doesn't enforce index out of bound error (i.e., &lt;em&gt;undefined behavior&lt;/em&gt;) and the above code can run
+successfully for certain complier on certain platform (leetcode obvious can). However, issue will happen
+if you directly translate the above logic to another language. A safe way to do is to replace the &lt;code&gt;else if&lt;/code&gt;
+statement with &lt;code&gt;else if ((mid &amp;gt;0 &amp;amp;&amp;amp; fabs(x - arr[mid-1]) &amp;gt; fabs(x - arr[mid+k-1])) || fabs(x - arr[mid]) &amp;gt; fabs(arr[mid+k] - x))&lt;/code&gt;,
+which you can see is redundant and can be optimized. This is exactly what we are going to do next.&lt;/p&gt;
 &lt;/div&gt;
 &lt;p&gt;One thing to note that &lt;code&gt;while(left &amp;lt; right)&lt;/code&gt; means we haven't found the optimal &lt;span class="math"&gt;\(j\)&lt;/span&gt; yet, which implies that we have to
 either move the subrange to left or move the subrange to right. This provides us the further opportunity to optimize the above
@@ -173,7 +183,7 @@ as we state in the previous paragraph, since we are still in the &lt;code&gt;whi
 In other words, there is no such case that both conditions are false and we are still in the loop. Thus, we can get rid of 
 one of the conditions and use &lt;code&gt;else&lt;/code&gt; instead. Another way of thinking is that we do nothing if both conditions are failed
 and thus this third do-nothing case can be combined with the second &lt;code&gt;else if (fabs(x - arr[mid-1]) &amp;gt; fabs(x - arr[mid+k-1]))&lt;/code&gt; condition to form a &lt;code&gt;else&lt;/code&gt; statement.&lt;/p&gt;
-&lt;p&gt;In fact, we can even get rid of the &lt;code&gt;fabs&lt;/code&gt; and finally optimize our code into&lt;/p&gt;
+&lt;p&gt;There is another optimization code proposal I find online, which I don't think it is correct:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
 &lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;findClosestElements&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
@@ -195,46 +205,11 @@ and thus this third do-nothing case can be combined with the second &lt;code&gt;
     &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;span class="p"&gt;};&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;To see why this one is correct, we have to resort back to our predicate proof. In the second optimization, we get 
-rid of &lt;span class="math"&gt;\(|A_{j-1} - T| &amp;gt; |A_{j+k-1} - T|\)&lt;/span&gt; and focus ourselves on &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt; only. Then, we
-get rid of the absolute sign and rewrite the inequalities based on the sorted order of the given array, which
-are the same inequalities from our previous predicate proof:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Sorted Order&lt;/th&gt;
-&lt;th&gt;Inequalities&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;ascending&lt;/td&gt;
-&lt;td&gt;
-&lt;div class="math"&gt;$$\begin{eqnarray*}A_{j+k} - T &amp;amp; &amp;gt; &amp;amp; A_j - T \\A_{j+k} - T &amp;amp; &amp;gt; &amp;amp; T - A_j\end{eqnarray*}$$&lt;/div&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;descending&lt;/td&gt;
-&lt;td&gt;
-&lt;div class="math"&gt;$$\begin{eqnarray*}T - A_{j+k} &amp;amp; &amp;gt; &amp;amp; T - A_j \\ T - A_{j+k} &amp;amp; &amp;gt; &amp;amp; A_j - T\end{eqnarray*}$$&lt;/div&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;Let's first consider the ascending case. One can observe that the left-hand side of the inequalities are the same:
-&lt;span class="math"&gt;\(A_{j+k} - T\)&lt;/span&gt; and only right-hand side of the inequalities are different. If &lt;span class="math"&gt;\(T &amp;gt; A_j\)&lt;/span&gt;, that means
-&lt;span class="math"&gt;\(T - A_j &amp;lt; 0\)&lt;/span&gt; and thus &lt;span class="math"&gt;\(A_{j+k} - T &amp;gt; T - A_j\)&lt;/span&gt; implies &lt;span class="math"&gt;\(A_{j+k} - T &amp;gt; A_j - T\)&lt;/span&gt; 
-(a number that is greater than a positive number must be greater than a negative number) and we only need to check
-&lt;span class="math"&gt;\(A_{j+k} - T &amp;gt; T - A_j\)&lt;/span&gt; in the code. If &lt;span class="math"&gt;\(T &amp;lt; A_j\)&lt;/span&gt;, that means we should move the subrange to the left (to get
-&lt;span class="math"&gt;\(j\)&lt;/span&gt; closer to the index of &lt;span class="math"&gt;\(T\)&lt;/span&gt;), which is exactly the same thing we are going to do when &lt;span class="math"&gt;\(T &amp;gt; A_j\)&lt;/span&gt;: &lt;code&gt;right = mid&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;For the descending case, we have to realize that descending is just the reverse of the ascending. Mathematically,
-this means that &lt;span class="math"&gt;\(A_{j+k}\)&lt;/span&gt; and &lt;span class="math"&gt;\(A_{j}\)&lt;/span&gt; are swapped. For example, consider &lt;code&gt;[1,2,3,4,5]&lt;/code&gt; with &lt;span class="math"&gt;\(A_j = 1\)&lt;/span&gt; and &lt;span class="math"&gt;\(A_{j+k} = 5\)&lt;/span&gt;.
-However, for the descending &lt;code&gt;[5,4,3,2,1]&lt;/code&gt;, &lt;span class="math"&gt;\(A_j = 5\)&lt;/span&gt; and &lt;span class="math"&gt;\(A_{j+k} = 1\)&lt;/span&gt;. Thus, the &lt;code&gt;if&lt;/code&gt; condition is
-really checking &lt;span class="math"&gt;\(A_{j} - T &amp;gt; A_{j+k} - T\)&lt;/span&gt;, which is equivalent as &lt;span class="math"&gt;\(T - A_{j} &amp;lt; T - A_{j+k}\)&lt;/span&gt;, which is one of the inequalities
-listed in the table above. Like the ascending case, if &lt;span class="math"&gt;\(T &amp;gt; A_j\)&lt;/span&gt;,
-then &lt;span class="math"&gt;\(T - A_{j+k} &amp;gt; T - A_j\)&lt;/span&gt; entails &lt;span class="math"&gt;\(T - A_{j+k} &amp;gt; A_j - T\)&lt;/span&gt;; if &lt;span class="math"&gt;\(T &amp;lt; A_j\)&lt;/span&gt;, we necessarily want to shift the subrange to left.&lt;/p&gt;
-&lt;p&gt;Thus, &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt; can be further simplified to &lt;span class="math"&gt;\(A_{j+k} - T &amp;gt; T - A_j\)&lt;/span&gt; and that leads to our final optimized
-solution.&lt;/p&gt;
+&lt;p&gt;But this code return the wrong answer for the following case: &lt;code&gt;arr = [5,4,3,2,1], x = 2, k = 4&lt;/code&gt;. The above
+solution gives &lt;code&gt;[5,4,3,2]&lt;/code&gt;, which is wrong because &lt;code&gt;[4,3,2,1]&lt;/code&gt; is the closest elements to &lt;code&gt;2&lt;/code&gt;. To see this,
+we can invoke the predicate: &lt;code&gt;5&lt;/code&gt; is 3 units away from &lt;code&gt;2&lt;/code&gt; but &lt;code&gt;1&lt;/code&gt; is only 1 unit away from &lt;code&gt;2&lt;/code&gt; (&lt;span class="math"&gt;\(|A_j - T| &amp;gt; |A_{j+k} - T|\)&lt;/span&gt;), 
+which implies we can shift the subrange to the right. More straightforward way is to simply calculate the sum of distance of
+each element: &lt;code&gt;[5,4,3,2]&lt;/code&gt; has sum &lt;code&gt;3+2+1 = 6&lt;/code&gt; while &lt;code&gt;[4,3,2,1]&lt;/code&gt; has sum &lt;code&gt;2+1+1 = 4&lt;/code&gt;.&lt;/p&gt;
 &lt;h2 id="conclusion"&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;We give one example showing the essence of the binary search: main theorem, which is a formalization of how we discard values. 
 Predicate helps us to find what to write in the &lt;code&gt;if&lt;/code&gt; statement and invariant helps us to make sure we find the correct value. 
