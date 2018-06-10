@@ -1,5 +1,309 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ze-Yuan Hu's page - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-06-02T22:30:00+08:00</updated><entry><title>Trie</title><link href="https://zhu45.org/posts/2018/Jun/02/trie/" rel="alternate"></link><published>2018-06-02T22:30:00+08:00</published><updated>2018-06-02T22:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-06-02:/posts/2018/Jun/02/trie/</id><summary type="html">&lt;p&gt;A study of trie data structure&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;p&gt;Trie is a classic data structure (&lt;a href='#idreos2018data' id='ref-idreos2018data-1'&gt;Idreos et al., 2018&lt;/a&gt;) that is widely used in key-value store (&lt;a href='#zhang2018surf' id='ref-zhang2018surf-1'&gt;Zhang et al., 2018&lt;/a&gt;; &lt;a href='#wu2015lsm' id='ref-wu2015lsm-1'&gt;Wu et al., 2015&lt;/a&gt;). In this post, we describe the basics about the data structure.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ze-Yuan Hu's page - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-06-10T01:24:00+08:00</updated><entry><title>Generalized binary search idea</title><link href="https://zhu45.org/posts/2018/Jun/10/generalized-binary-search-idea/" rel="alternate"></link><published>2018-06-10T01:24:00+08:00</published><updated>2018-06-10T01:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-06-10:/posts/2018/Jun/10/generalized-binary-search-idea/</id><summary type="html">&lt;p&gt;Binary search idea can be generalized to other problems&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#example"&gt;Example&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#conclusion"&gt;Conclusion&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In the &lt;a href="https://zhu45.org/posts/2018/Jan/12/how-to-write-binary-search-correctly/"&gt;earlier post&lt;/a&gt;, we introduce the invariant concept to enable us
+to solve the binary search problem on the very first try. In this post, we further elaborate the binary
+search idea and introduce how we can use predicate + main theorem to solve more generalized binary search problem.&lt;/p&gt;
+&lt;h2 id="example"&gt;Example&lt;/h2&gt;
+&lt;p&gt;Let's consider an example, which utilizes the generalized idea of binary search mentioned in &lt;a href="https://www.topcoder.com/community/data-science/data-science-tutorials/binary-search/"&gt;TopCoder's article&lt;/a&gt;. The problem we look at is 
+&lt;a href="https://leetcode.com/problems/find-k-closest-elements/description/"&gt;Leetcode 658. Find K Closest Elements&lt;/a&gt;: 
+Let &lt;span class="math"&gt;\(A\)&lt;/span&gt; be a sorted array of &lt;span class="math"&gt;\(N\)&lt;/span&gt; values. We want to find the index &lt;span class="math"&gt;\(j\)&lt;/span&gt; such that the elements &lt;span class="math"&gt;\(A_j,A_{j+1},\dots,A_{j+k−1}\)&lt;/span&gt; 
+have the &lt;span class="math"&gt;\(k\)&lt;/span&gt; closest values to the given target value &lt;span class="math"&gt;\(T\)&lt;/span&gt;. &lt;/p&gt;
+&lt;p&gt;The generalization of binary search is done by formalizing how we reduce the search space by half: binary search can be used
+if and only if for all &lt;span class="math"&gt;\(x\)&lt;/span&gt; in the search space &lt;span class="math"&gt;\(S\)&lt;/span&gt; (i.e., the ordered set), &lt;span class="math"&gt;\(p(x)\)&lt;/span&gt; implies &lt;span class="math"&gt;\(p(y)\)&lt;/span&gt; for all &lt;span class="math"&gt;\(y &amp;gt; x\)&lt;/span&gt; (&lt;span class="math"&gt;\(p\)&lt;/span&gt; stands
+for some predicate over &lt;span class="math"&gt;\(S\)&lt;/span&gt;). TopCoder article calls this formalization as &lt;em&gt;main theorem&lt;/em&gt;. We use this theorem to discard
+the second half of search space. For example, in the most basic binary search problem in the ascending order array, our predicate &lt;span class="math"&gt;\(p\)&lt;/span&gt; 
+is defined as: is the value at &lt;code&gt;i&lt;/code&gt; smaller than &lt;code&gt;X&lt;/code&gt;? If answer is yes, we discard the first half of the array (i.e., any values 
+with index smaller than &lt;span class="math"&gt;\(i\)&lt;/span&gt;) because the array is sorted in ascending order, any value before &lt;code&gt;A[i]&lt;/code&gt; is also smaller than
+&lt;code&gt;X&lt;/code&gt;. By the same reasoning, if the answer is no, we discard the second half. Couple of observations we can make here:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;As you may have noticed, predicate is exactly what we check in the if-statement (e.g. &lt;code&gt;X &amp;gt; A[i]&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;X &amp;lt; A[i]&lt;/code&gt;, then for any &lt;span class="math"&gt;\(y &amp;gt; i\)&lt;/span&gt;, we have &lt;code&gt;X &amp;lt; A[y]&lt;/code&gt;, which exactly matches the main theorem and that's how we can discard
+the second half of the array (i.e., search space).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now, let's consider our example. What does it mean a selected subrange is optimal (i.e., &lt;span class="math"&gt;\(k\)&lt;/span&gt; closest values to &lt;span class="math"&gt;\(T\)&lt;/span&gt;)? That means
+that we can neither move the subrange to the right (&lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt;) nor move the subrange to the left 
+(&lt;span class="math"&gt;\(|A_{j+k-1} - T| &amp;gt; |A_{j-1} - T|\)&lt;/span&gt;). In details, since the subrange includes &lt;span class="math"&gt;\(k\)&lt;/span&gt; closest values to &lt;span class="math"&gt;\(T\)&lt;/span&gt; and by moving it to right,
+we exclude &lt;span class="math"&gt;\(A_{j}\)&lt;/span&gt; and include &lt;span class="math"&gt;\(A_{j+k}\)&lt;/span&gt;. Since the selected subrange is optimal, we must have &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt;.
+Thus, we can formalize our predicate as: for a given index &lt;span class="math"&gt;\(j\)&lt;/span&gt;, does &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt; hold? Another piece of information
+we need for binary search is the invariant. From the question description we can see that the key to this question is finding
+&lt;span class="math"&gt;\(j\)&lt;/span&gt;. Thus, our invariant is: the index of the first number that is among the k closest values for the given target &lt;span class="math"&gt;\(T\)&lt;/span&gt; 
+(i.e., &lt;span class="math"&gt;\(j\)&lt;/span&gt;) is in &lt;span class="math"&gt;\([\text{left}, \text{right}]\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Now, we have to show that &lt;em&gt;main theorem&lt;/em&gt; holds given our predicate formalization. Let's discuss this point
+in details:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;When &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt; is true:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;If &lt;span class="math"&gt;\(A\)&lt;/span&gt; is sorted in ascending order, then we have three possible cases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(T &amp;lt; A_j &amp;lt; A_{j+k}\)&lt;/span&gt;. In this case, we have &lt;span class="math"&gt;\(A_{j+k} - T &amp;gt; A_j - T\)&lt;/span&gt;. Let &lt;span class="math"&gt;\(d\)&lt;/span&gt; be an integer with range
+&lt;span class="math"&gt;\(0 &amp;lt; d &amp;lt; k\)&lt;/span&gt;, then we have
+&lt;span class="math"&gt;\(A_{j+k+d} - T &amp;gt; A_{j+k} - T &amp;gt; A_{j+d} - T &amp;gt; A_{j} - T\)&lt;/span&gt;. In other words, for any index &lt;span class="math"&gt;\(i &amp;gt; j\)&lt;/span&gt;, our predicate
+holds (&lt;span class="math"&gt;\(|A_{i+k} - T| &amp;gt; |A_i - T|\)&lt;/span&gt;). Thus, we can directly discard the second half of the array. Note that
+we still want to keep &lt;span class="math"&gt;\(j\)&lt;/span&gt; because it might be the optimal &lt;span class="math"&gt;\(j\)&lt;/span&gt; we are looking for.&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(A_j &amp;lt; T &amp;lt; A_{j+k}\)&lt;/span&gt;. In this case, we have &lt;span class="math"&gt;\(A_{j+k} - T &amp;gt; T - A_j\)&lt;/span&gt;. Then, we have 
+&lt;span class="math"&gt;\(A_{j+k+d} - T &amp;gt; A_{j+k} - T &amp;gt; T - A_j &amp;gt; T - A_{j+d}\)&lt;/span&gt;. Then the predicate still holds for &lt;span class="math"&gt;\(i &amp;gt; j\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(A_j &amp;lt; A_{j+k} &amp;lt; T\)&lt;/span&gt;. This is impossible given our predicate condition.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If &lt;span class="math"&gt;\(A\)&lt;/span&gt; is sorted in descending order, we also have three possible cases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(T &amp;gt; A_j &amp;gt; A_{j+k}\)&lt;/span&gt;. In this case, we have &lt;span class="math"&gt;\(T - A_{j+k} &amp;gt; T - A_j\)&lt;/span&gt;, which leads to 
+&lt;span class="math"&gt;\(T - A_{j+k+d} &amp;gt; T - A_{j+k} &amp;gt; T - A_{j+d} &amp;gt; T - A_j\)&lt;/span&gt;. Again, our predicate holds for any index &lt;span class="math"&gt;\(i &amp;gt; j\)&lt;/span&gt; and
+we can discard the second half of the array.&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(A_j &amp;gt; T &amp;gt; A_{j+k}\)&lt;/span&gt;. In this case, we have &lt;span class="math"&gt;\(T - A_{j+k} &amp;gt; A_j - T\)&lt;/span&gt;. We have
+&lt;span class="math"&gt;\(T - A_{j+k+d} &amp;gt; T - A_{j+k} &amp;gt; A_j - T &amp;gt; A_{j+d} - T\)&lt;/span&gt;. Predicate holds.&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(A_j &amp;gt; A_{j+k} &amp;gt; T\)&lt;/span&gt;. Impossible.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;The reason we have &lt;span class="math"&gt;\(0 \le d \le k\)&lt;/span&gt; is that in the extreme case, we have &lt;span class="math"&gt;\(j = N - k\)&lt;/span&gt; (otherwise, we won't have &lt;span class="math"&gt;\(k\)&lt;/span&gt; elements)
+and it is unnecessary to have &lt;span class="math"&gt;\(d\)&lt;/span&gt; goes beyond &lt;span class="math"&gt;\(k\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;When &lt;span class="math"&gt;\(|A_{j-1} - T| &amp;gt; |A_{j+k-1} - T|\)&lt;/span&gt; is true:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;If &lt;span class="math"&gt;\(A\)&lt;/span&gt; is sorted in ascending order, then we have three possible cases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(T &amp;lt; A_{j-1} &amp;lt; A_{j+k-1}\)&lt;/span&gt;. Impossible.&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(A_{j-1} &amp;lt; T &amp;lt; A_{j+k-1}\)&lt;/span&gt;. In this case, we have &lt;span class="math"&gt;\(T - A_{j-1} &amp;gt; A_{j+k-1} - T\)&lt;/span&gt;. Then, let &lt;span class="math"&gt;\(d\)&lt;/span&gt; be an integer with
+range between 0 and &lt;span class="math"&gt;\(j-1\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(T - A_{j-1-d} &amp;gt; T - A_{j-1} &amp;gt; A_{j+k-1} - T &amp;gt; A_{j+k-1-d} - T\)&lt;/span&gt;. Thus, for any
+index &lt;span class="math"&gt;\(i &amp;lt;= j\)&lt;/span&gt;, we have &lt;span class="math"&gt;\(|A_{i-1} - T| &amp;gt; |A_{i+k-1} - T|\)&lt;/span&gt;. This suggests that we can discard first half of the array.&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(A_{j-1} &amp;lt; A_{j+k-1} &amp;lt; T\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(T - A_{j-1} &amp;gt; T - A_{j+k-1}\)&lt;/span&gt;, which implies 
+&lt;span class="math"&gt;\(T - A_{j-1-d} &amp;gt; T - A_{j-1} &amp;gt; T - A_{j+k-1-d} &amp;gt; T - A_{j+k-1}\)&lt;/span&gt;, which again the predication holds.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If &lt;span class="math"&gt;\(A\)&lt;/span&gt; is sorted in descending order, then we have three possible cases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(T &amp;gt; A_j &amp;gt; A_{j+k}\)&lt;/span&gt;. Impossible.&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(A_j &amp;gt; T &amp;gt; A_{j+k}\)&lt;/span&gt;. In this case, we have &lt;span class="math"&gt;\(A_{j-1} - T &amp;gt; T - A_{j+k-1}\)&lt;/span&gt;, which implies that 
+&lt;span class="math"&gt;\(A_{j-1-d} - T &amp;gt; A_{j-1} - T &amp;gt; T - A_{j+k-1} &amp;gt; T - A_{j+k-1-d}\)&lt;/span&gt;. Predication holds: for all index &lt;span class="math"&gt;\(i &amp;lt;= j\)&lt;/span&gt;,
+we have &lt;span class="math"&gt;\(|A_{i-1} - T| &amp;gt; |A_{i+k-1} - T|\)&lt;/span&gt;, which means we can discard first half of the array and move subrange to the right.&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(A_j &amp;gt; A_{j+k} &amp;gt; T\)&lt;/span&gt;. In this case, we have &lt;span class="math"&gt;\(A_{j-1} - T &amp;gt; A_{j+k-1} - T\)&lt;/span&gt;, which imples that
+&lt;span class="math"&gt;\(A_{j-1-d} - T &amp;gt; A_{j-1} - T &amp;gt; A_{j+k-1-d} - T &amp;gt; A_{j+k-1} - T\)&lt;/span&gt;. Predication holds.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Once we verify the predication satisifies the &lt;em&gt;main theorem&lt;/em&gt;, the only thing we left is to build the connection between the
+invariant and predication, and make sure the invariant holds during the loop execution. Let's first list out the code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;findClosestElements&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fabs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;fabs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fabs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;fabs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]))&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;begin&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;begin&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt; means we cannot move the subrange to the right to obtain the optimal subrange. We also show that
+under the condition, we can discard the second half of the array. &lt;code&gt;mid&lt;/code&gt; represents &lt;span class="math"&gt;\(j\)&lt;/span&gt; in our condition and by not moving
+subrange to right, we are saying that the optimal &lt;span class="math"&gt;\(j\)&lt;/span&gt; has to be the left of &lt;code&gt;mid&lt;/code&gt;. This implies that we can safely move
+set &lt;span class="math"&gt;\(\text{right}\)&lt;/span&gt; to &lt;code&gt;mid&lt;/code&gt; and still maintains the invariant during the loop. On the other hand, &lt;span class="math"&gt;\(|A_{j-1} - T| &amp;gt; |A_{j+k-1} - T|\)&lt;/span&gt;
+means that we cannot move the subrange to the left to obtain the optimal subrange. We also show that the inequality allows us
+to discard the first half of the array. Since for given &lt;span class="math"&gt;\(j\)&lt;/span&gt; (&lt;code&gt;mid&lt;/code&gt;), we have &lt;span class="math"&gt;\(|A_{j-1} - T| &amp;gt; |A_{j+k-1} - T|\)&lt;/span&gt;. We cannot
+move subrange (indicating by &lt;span class="math"&gt;\(j\)&lt;/span&gt; or &lt;code&gt;mid&lt;/code&gt;) to the left; we have to move to right. Thus, we set
+&lt;span class="math"&gt;\(\text{left}\)&lt;/span&gt; to &lt;code&gt;mid+1&lt;/code&gt; to narrow down the search space while maintainng the invariant unchanged.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Notice that in the code we actually use &lt;span class="math"&gt;\(|A_{j+k} - T| \ge |A_j - T|\)&lt;/span&gt; instead of &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt;. The reason
+is because whenever there is a tie, the smaller elements are always preferred. Consider &lt;code&gt;[1,2,3,4,5]&lt;/code&gt; with &lt;span class="math"&gt;\(k = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(
+T = 3\)&lt;/span&gt;. Then, both &lt;code&gt;[1,2,3,4]&lt;/code&gt; and &lt;code&gt;[2,3,4,5]&lt;/code&gt; are the closest &lt;span class="math"&gt;\(k\)&lt;/span&gt; elements to the &lt;span class="math"&gt;\(T\)&lt;/span&gt; and sum of the elements to &lt;span class="math"&gt;\(T\)&lt;/span&gt; distance
+are the same, which is a tie. In this case, we prefer &lt;code&gt;[1,2,3,4]&lt;/code&gt;. If we strictly follow the predicate, we end up with
+&lt;code&gt;[2,3,4,5]&lt;/code&gt;. Switching &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt; to &lt;span class="math"&gt;\(|A_{j+k} - T| \ge |A_j - T|\)&lt;/span&gt; still maintains the invariant in the loop
+because when &lt;span class="math"&gt;\(|A_{j+k} - T| = |A_j - T|\)&lt;/span&gt;, shifting the subrange to the right doesn't give any improvement and by set &lt;code&gt;right&lt;/code&gt;
+to mid, we still ensure that the optimal &lt;span class="math"&gt;\(j\)&lt;/span&gt; falls inside &lt;span class="math"&gt;\([\text{left}, \text{right}]\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;One thing to note that &lt;code&gt;while(left &amp;lt; right)&lt;/code&gt; means we haven't found the optimal &lt;span class="math"&gt;\(j\)&lt;/span&gt; yet, which implies that we have to
+either move the subrange to left or move the subrange to right. This provides us the further opportunity to optimize the above
+code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;findClosestElements&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fabs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;fabs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;else&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;begin&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;begin&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In the first version, we check two conditions explicitly and do nothing if both conditions are not true. However,
+as we state in the previous paragraph, since we are still in the &lt;code&gt;while&lt;/code&gt; loop, that means one of those two conditions will be true. 
+In other words, there is no such case that both conditions are false and we are still in the loop. Thus, we can get rid of 
+one of the conditions and use &lt;code&gt;else&lt;/code&gt; instead. Another way of thinking is that we do nothing if both conditions are failed
+and thus this third do-nothing case can be combined with the second &lt;code&gt;else if (fabs(x - arr[mid-1]) &amp;gt; fabs(x - arr[mid+k-1]))&lt;/code&gt; condition to form a &lt;code&gt;else&lt;/code&gt; statement.&lt;/p&gt;
+&lt;p&gt;In fact, we can even get rid of the &lt;code&gt;fabs&lt;/code&gt; and finally optimize our code into&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;findClosestElements&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;else&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mid&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;begin&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;begin&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To see why this one is correct, we have to resort back to our predicate proof. In the second optimization, we get 
+rid of &lt;span class="math"&gt;\(|A_{j-1} - T| &amp;gt; |A_{j+k-1} - T|\)&lt;/span&gt; and focus ourselves on &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt; only. Then, we
+get rid of the absolute sign and rewrite the inequalities based on the sorted order of the given array, which
+are the same inequalities from our previous predicate proof:&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Sorted Order&lt;/th&gt;
+&lt;th&gt;Inequalities&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ascending&lt;/td&gt;
+&lt;td&gt;
+&lt;div class="math"&gt;$$\begin{eqnarray*}A_{j+k} - T &amp;amp; &amp;gt; &amp;amp; A_j - T \\A_{j+k} - T &amp;amp; &amp;gt; &amp;amp; T - A_j\end{eqnarray*}$$&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;descending&lt;/td&gt;
+&lt;td&gt;
+&lt;div class="math"&gt;$$\begin{eqnarray*}T - A_{j+k} &amp;amp; &amp;gt; &amp;amp; T - A_j \\ T - A_{j+k} &amp;amp; &amp;gt; &amp;amp; A_j - T\end{eqnarray*}$$&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Let's first consider the ascending case. One can observe that the left-hand side of the inequalities are the same:
+&lt;span class="math"&gt;\(A_{j+k} - T\)&lt;/span&gt; and only right-hand side of the inequalities are different. If &lt;span class="math"&gt;\(T &amp;gt; A_j\)&lt;/span&gt;, that means
+&lt;span class="math"&gt;\(T - A_j &amp;lt; 0\)&lt;/span&gt; and thus &lt;span class="math"&gt;\(A_{j+k} - T &amp;gt; T - A_j\)&lt;/span&gt; implies &lt;span class="math"&gt;\(A_{j+k} - T &amp;gt; A_j - T\)&lt;/span&gt; 
+(a number that is greater than a positive number must be greater than a negative number) and we only need to check
+&lt;span class="math"&gt;\(A_{j+k} - T &amp;gt; T - A_j\)&lt;/span&gt; in the code. If &lt;span class="math"&gt;\(T &amp;lt; A_j\)&lt;/span&gt;, that means we should move the subrange to the left (to get
+&lt;span class="math"&gt;\(j\)&lt;/span&gt; closer to the index of &lt;span class="math"&gt;\(T\)&lt;/span&gt;), which is exactly the same thing we are going to do when &lt;span class="math"&gt;\(T &amp;gt; A_j\)&lt;/span&gt;: &lt;code&gt;right = mid&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;For the descending case, we have to realize that descending is just the reverse of the ascending. Mathematically,
+this means that &lt;span class="math"&gt;\(A_{j+k}\)&lt;/span&gt; and &lt;span class="math"&gt;\(A_{j}\)&lt;/span&gt; are swapped. For example, consider &lt;code&gt;[1,2,3,4,5]&lt;/code&gt; with &lt;span class="math"&gt;\(A_j = 1\)&lt;/span&gt; and &lt;span class="math"&gt;\(A_{j+k} = 5\)&lt;/span&gt;.
+However, for the descending &lt;code&gt;[5,4,3,2,1]&lt;/code&gt;, &lt;span class="math"&gt;\(A_j = 5\)&lt;/span&gt; and &lt;span class="math"&gt;\(A_{j+k} = 1\)&lt;/span&gt;. Thus, the &lt;code&gt;if&lt;/code&gt; condition is
+really checking &lt;span class="math"&gt;\(A_{j} - T &amp;gt; A_{j+k} - T\)&lt;/span&gt;, which is equivalent as &lt;span class="math"&gt;\(T - A_{j} &amp;lt; T - A_{j+k}\)&lt;/span&gt;, which is one of the inequalities
+listed in the table above. Like the ascending case, if &lt;span class="math"&gt;\(T &amp;gt; A_j\)&lt;/span&gt;,
+then &lt;span class="math"&gt;\(T - A_{j+k} &amp;gt; T - A_j\)&lt;/span&gt; entails &lt;span class="math"&gt;\(T - A_{j+k} &amp;gt; A_j - T\)&lt;/span&gt;; if &lt;span class="math"&gt;\(T &amp;lt; A_j\)&lt;/span&gt;, we necessarily want to shift the subrange to left.&lt;/p&gt;
+&lt;p&gt;Thus, &lt;span class="math"&gt;\(|A_{j+k} - T| &amp;gt; |A_j - T|\)&lt;/span&gt; can be further simplified to &lt;span class="math"&gt;\(A_{j+k} - T &amp;gt; T - A_j\)&lt;/span&gt; and that leads to our final optimized
+solution.&lt;/p&gt;
+&lt;h2 id="conclusion"&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;We give one example showing the essence of the binary search: main theorem, which is a formalization of how we discard values. 
+Predicate helps us to find what to write in the &lt;code&gt;if&lt;/code&gt; statement and invariant helps us to make sure we find the correct value. 
+In this post, we go through a relative formal proof of the correctness of our predicate. One thing to note that, the proof
+is in fact induction: we use &lt;span class="math"&gt;\(d\)&lt;/span&gt; to show inequalities hold for any index &lt;span class="math"&gt;\(i &amp;gt; j\)&lt;/span&gt;. A nicer but equivalent way we can do is simply use
+the induction and show &lt;span class="math"&gt;\(p(j+1)\)&lt;/span&gt; holds given &lt;span class="math"&gt;\(p(j)\)&lt;/span&gt; is correct (we actually do &lt;span class="math"&gt;\(p(j+d)\)&lt;/span&gt; holds given &lt;span class="math"&gt;\(p(j)\)&lt;/span&gt; is correct). Another point 
+we should point out that we can derive the invariant
+from predicate: we try to find the index of the first number that is among the k closest values for the given target &lt;span class="math"&gt;\(T\)&lt;/span&gt;. This is 
+the exact same number that will &lt;strong&gt;first&lt;/strong&gt; give "yes" response to our predicate.&lt;/p&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.topcoder.com/community/data-science/data-science-tutorials/binary-search/"&gt;TopCoder's post&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://cs.stackexchange.com/questions/77364/searching-a-sorted-array-to-find-the-k-closest-values-to-a-target-value-t?rq=1"&gt;Stackexchange post: Searching a sorted array to find the k closest values to a target value T&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</content><category term="algorithm"></category><category term="leetcode"></category></entry><entry><title>Trie</title><link href="https://zhu45.org/posts/2018/Jun/02/trie/" rel="alternate"></link><published>2018-06-02T22:30:00+08:00</published><updated>2018-06-02T22:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-06-02:/posts/2018/Jun/02/trie/</id><summary type="html">&lt;p&gt;A study of trie data structure&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;p&gt;Trie is a classic data structure (&lt;a href='#idreos2018data' id='ref-idreos2018data-1'&gt;Idreos et al., 2018&lt;/a&gt;) that is widely used in key-value store (&lt;a href='#zhang2018surf' id='ref-zhang2018surf-1'&gt;Zhang et al., 2018&lt;/a&gt;; &lt;a href='#wu2015lsm' id='ref-wu2015lsm-1'&gt;Wu et al., 2015&lt;/a&gt;). In this post, we describe the basics about the data structure.&lt;/p&gt;
 &lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#motivation"&gt;Motivation&lt;/a&gt;&lt;/li&gt;
@@ -199,7 +503,7 @@ In &lt;em&gt;Proceedings of the 2015 USENIX Conference on Usenix Annual Technica
 &lt;p id='zhang2018surf'&gt;Huanchen Zhang, Hyeontaek Lim, Viktor Leis, David&amp;nbsp;G Andersen, Michael Kaminsky, Kimberly Keeton, and Andrew Pavlo.
 Surf: practical range query filtering with fast succinct tries.
 In &lt;em&gt;Proceedings of the 2018 International Conference on Management of Data&lt;/em&gt;, 323–336. ACM, 2018. &lt;a class="cite-backref" href="#ref-zhang2018surf-1" title="Jump back to reference 1"&gt;↩&lt;/a&gt;&lt;/p&gt;
-</content><category term="trie"></category><category term="log-structured merge tree"></category><category term="storage"></category><category term="prefix tree"></category></entry><entry><title>"Weighted Voting for Replicated Data"</title><link href="https://zhu45.org/posts/2018/May/15/weighted-voting-for-replicated-data/" rel="alternate"></link><published>2018-05-15T12:20:00+08:00</published><updated>2018-05-15T12:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-05-15:/posts/2018/May/15/weighted-voting-for-replicated-data/</id><summary type="html">&lt;p&gt;"Weighted Voting for Replicated Data" paper reading&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+</content><category term="trie"></category><category term="log-structured merge tree"></category><category term="storage"></category><category term="prefix tree"></category><category term="trees"></category></entry><entry><title>"Weighted Voting for Replicated Data"</title><link href="https://zhu45.org/posts/2018/May/15/weighted-voting-for-replicated-data/" rel="alternate"></link><published>2018-05-15T12:20:00+08:00</published><updated>2018-05-15T12:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-05-15:/posts/2018/May/15/weighted-voting-for-replicated-data/</id><summary type="html">&lt;p&gt;"Weighted Voting for Replicated Data" paper reading&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#design-assumptions"&gt;Design Assumptions&lt;/a&gt;&lt;/li&gt;
@@ -4110,6 +4414,7 @@ __connectionless (UDP)&lt;/strong&gt;: &lt;/p&gt;
 &lt;li&gt;&lt;a href="#example-2"&gt;Example 2&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
+&lt;li&gt;&lt;a href="#conclusion"&gt;Conclusion&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
@@ -4305,6 +4610,7 @@ is &lt;span class="math"&gt;\([\text{high}, \text{high}]\)&lt;/span&gt; in this 
 if it is in the array and &lt;code&gt;-1&lt;/code&gt; otherwise. However, during the initialization of &lt;code&gt;high&lt;/code&gt;, we consider &lt;code&gt;n&lt;/code&gt; represents the case when no such number exists and at the same
 time, satisfies our invariant. Thus, before returning the result, we need to check whether &lt;code&gt;high&lt;/code&gt; within the index range of the given array to satisfy the
 postcondition constraint.&lt;/p&gt;
+&lt;h2 id="conclusion"&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;In this post, we take a look at the technique that helps us implement the binary search correctly: maintain the invariant. Also, we emphasize the importance
 of the postcondition to help us get the returen result correctly. We haven't empahsized the importance of bound function in the post but we should consider
 it as well. There are two ways to check the loop indeed terminates: one is through reasoning similar what we have done in invariant analysis 
@@ -4401,7 +4707,7 @@ out the first element has tag "yes". The two elements special case shown in the 
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</content><category term="algorithm"></category></entry><entry><title>Crowdsourcing readings</title><link href="https://zhu45.org/posts/2017/Dec/30/crowdsourcing-readings/" rel="alternate"></link><published>2017-12-30T12:30:00+08:00</published><updated>2017-12-30T12:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-12-30:/posts/2017/Dec/30/crowdsourcing-readings/</id><summary type="html">&lt;p&gt;CS 395T Human Computation / Crowdsourcing papers reading&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</content><category term="algorithm"></category><category term="leetcode"></category></entry><entry><title>Crowdsourcing readings</title><link href="https://zhu45.org/posts/2017/Dec/30/crowdsourcing-readings/" rel="alternate"></link><published>2017-12-30T12:30:00+08:00</published><updated>2017-12-30T12:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-12-30:/posts/2017/Dec/30/crowdsourcing-readings/</id><summary type="html">&lt;p&gt;CS 395T Human Computation / Crowdsourcing papers reading&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#intro"&gt;Intro&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#the-human-processing-unit-hpu"&gt;"The Human Processing Unit (HPU)"&lt;/a&gt;&lt;/li&gt;
