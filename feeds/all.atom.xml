@@ -20,9 +20,9 @@ have the &lt;span class="math"&gt;\(k\)&lt;/span&gt; closest values to the given
 if and only if for all &lt;span class="math"&gt;\(x\)&lt;/span&gt; in the search space &lt;span class="math"&gt;\(S\)&lt;/span&gt; (i.e., the ordered set), &lt;span class="math"&gt;\(p(x)\)&lt;/span&gt; implies &lt;span class="math"&gt;\(p(y)\)&lt;/span&gt; for all &lt;span class="math"&gt;\(y &amp;gt; x\)&lt;/span&gt; (&lt;span class="math"&gt;\(p\)&lt;/span&gt; stands
 for some predicate over &lt;span class="math"&gt;\(S\)&lt;/span&gt;). TopCoder article calls this formalization as &lt;em&gt;main theorem&lt;/em&gt;. We use this theorem to discard
 the second half of search space. For example, in the most basic binary search problem in the ascending order array, our predicate &lt;span class="math"&gt;\(p\)&lt;/span&gt; 
-is defined as: is the value at &lt;code&gt;i&lt;/code&gt; smaller than &lt;code&gt;X&lt;/code&gt;? If answer is yes, we discard the first half of the array (i.e., any values 
-with index smaller than &lt;span class="math"&gt;\(i\)&lt;/span&gt;) because the array is sorted in ascending order, any value before &lt;code&gt;A[i]&lt;/code&gt; is also smaller than
-&lt;code&gt;X&lt;/code&gt;. By the same reasoning, if the answer is no, we discard the second half. Couple of observations we can make here:&lt;/p&gt;
+is defined as: is the value at &lt;code&gt;i&lt;/code&gt; smaller than &lt;code&gt;X&lt;/code&gt;? If answer is yes, we discard all the values 
+with index smaller than &lt;span class="math"&gt;\(i\)&lt;/span&gt; because given the ascending order and &lt;code&gt;A[i]&lt;/code&gt; is smaller than &lt;code&gt;X&lt;/code&gt;, any value comes before &lt;code&gt;A[i]&lt;/code&gt; is also 
+smaller than &lt;code&gt;X&lt;/code&gt;. By the same reasoning, if the answer is no, we discard the second half. We make some observations here:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;As you may have noticed, predicate is exactly what we check in the if-statement (e.g. &lt;code&gt;X &amp;gt; A[i]&lt;/code&gt;).&lt;/li&gt;
 &lt;li&gt;If &lt;code&gt;X &amp;lt; A[i]&lt;/code&gt;, then for any &lt;span class="math"&gt;\(y &amp;gt; i\)&lt;/span&gt;, we have &lt;code&gt;X &amp;lt; A[y]&lt;/code&gt;, which exactly matches the main theorem and that's how we can discard
