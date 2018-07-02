@@ -1,5 +1,374 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ze-Yuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-06-10T01:24:00+08:00</updated><entry><title>Generalized binary search</title><link href="https://zhu45.org/posts/2018/Jun/10/generalized-binary-search/" rel="alternate"></link><published>2018-06-10T01:24:00+08:00</published><updated>2018-06-10T01:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-06-10:/posts/2018/Jun/10/generalized-binary-search/</id><summary type="html">&lt;p&gt;Binary search idea can be generalized to other problems&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ze-Yuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-07-01T22:00:00+08:00</updated><entry><title>Flash-based SSD Basics</title><link href="https://zhu45.org/posts/2018/Jul/01/flash-based-ssd-basics/" rel="alternate"></link><published>2018-07-01T22:00:00+08:00</published><updated>2018-07-01T22:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-07-01:/posts/2018/Jul/01/flash-based-ssd-basics/</id><summary type="html">&lt;p&gt;list out the basic concepts in SSD&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#raw-flash"&gt;Raw Flash&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#storing-a-single-bit"&gt;Storing a Single Bit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#from-bits-to-banksplanes"&gt;From Bits to Banks/Planes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#basic-flash-operations"&gt;Basic Flash Operations&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#flash-performance-and-reliability"&gt;Flash Performance and Reliability&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#from-raw-flash-to-flash-based-ssds"&gt;From Raw Flash to Flash-Based SSDs&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#the-organization-of-flash-based-ssd"&gt;The organization of Flash-based SSD&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#build-flash-translation-layer-ftl"&gt;Build Flash Translation Layer (FTL)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#flash-based-ssd-performance"&gt;Flash-based SSD performance&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#summary"&gt;Summary&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In this post, we highlight the key points from &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-ssd.pdf"&gt;Chapter 44: Flash-based SSDs from OSTEP&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Solid-state storage device (SSD) is built out of transistors (like memory and processors) but it can retain information without power. First, we introduce the physical properties of the raw flash. Then, we focus on building a persistent storage device (i.e. NAND-based flash-based SSD)based on those physical properties.&lt;/p&gt;
+&lt;p&gt;Please note that I organize the post based on my own understanding of the chapter: the organization may not reflect the actual organization of the chapter. 
+I also add a few illustrations to reflect the concepts in the chapter. Black &amp;amp; white pictures are taken from the book while the color ones are the drawings on my own.&lt;/p&gt;
+&lt;h2 id="raw-flash"&gt;Raw Flash&lt;/h2&gt;
+&lt;p&gt;In this section, we introduce the raw flash using the bottom-up approach by first introducing the basic building block: transistor (i.e. cell). Then,
+we organize those cells into flash planes, which consist of physical blocks and pages. Finally, we introduce the basic operations supported
+by the raw flash and possible performance and reliability considerations when we build a persistent storage device.&lt;/p&gt;
+&lt;h3 id="storing-a-single-bit"&gt;Storing a Single Bit&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Single-level cell (SLC) flash: a transistor (cell) stores a single bit (1 or 0)&lt;/li&gt;
+&lt;li&gt;Multi-level cell (MLC) flash: a transistor (cell) stores two bits (00, 01, 10,11)&lt;/li&gt;
+&lt;li&gt;Triple-level cell (TLC) flash: a transistor (cell) encodes 3 bits.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="from-bits-to-banksplanes"&gt;From Bits to Banks/Planes&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Flash chips are organized into &lt;strong&gt;banks&lt;/strong&gt; or &lt;strong&gt;planes&lt;/strong&gt;, which consists
+of a large number of cells. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="A flash plane" class="img-responsive" src="/images/ssd.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;A &lt;strong&gt;bank&lt;/strong&gt; (&lt;strong&gt;plane&lt;/strong&gt;) is accessed in two different sized units:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;blocks&lt;/strong&gt; (&lt;strong&gt;erase blocks&lt;/strong&gt;): 128KB or 256KB&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;pages&lt;/strong&gt;: 4KB&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="basic-flash-operations"&gt;Basic Flash Operations&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Three low-level flash chip operations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Read (a page)&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;read any page by specifying page number&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;random access&lt;/strong&gt; device: being able to access any location uniformly quickly (regardless of location on the device and the location of previous request)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Erase (a block)&lt;/strong&gt;: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Before writing to a page within a flash, the device needs to first erase the entire block the page within&lt;/li&gt;
+&lt;li&gt;Need to make sure we save the contents of the to-be-erased blocks before executing the erase&lt;/li&gt;
+&lt;li&gt;The entire block is reset and each page within is read to be programmed&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Program (a page)&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Modified the page and write the modification to flash&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="Three flash operation demonstrations" class="img-responsive" src="/images/read-erase-program.png"/&gt;&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;We use &lt;span class="math"&gt;\(\texttt{INVALID}\)&lt;/span&gt;, &lt;span class="math"&gt;\(\texttt{ERASED}\)&lt;/span&gt;, and &lt;span class="math"&gt;\(\texttt{VALID}\)&lt;/span&gt;
+to represents three states of a page. One should note that write to a page with state &lt;span class="math"&gt;\(\texttt{E}\)&lt;/span&gt; doesn't cause the entire block to be erased.
+However, to write to a page with state &lt;span class="math"&gt;\(\texttt{V}\)&lt;/span&gt;, the device requires
+the whole block to be erased.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;img alt="Raw Flash Performance" class="img-responsive" src="/images/raw-flash-performance.png"/&gt;&lt;/p&gt;
+&lt;h3 id="flash-performance-and-reliability"&gt;Flash Performance and Reliability&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;wear out&lt;/strong&gt;: when a flash block is erased and programmed, it slowly
+accures a little bit of extra charge. Over time, as that extra charge
+builds up, it becomes increasingly diffcult to differentiate between a 0
+and a 1. At the point where it becomes impossible, the block becomes unusable.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;disturbance&lt;/strong&gt;: when accessing a particular page within a flash, it
+is possible that some bits get flipped in neighboring pages; such bit
+flips are known as &lt;strong&gt;read disturbs&lt;/strong&gt; or &lt;strong&gt;program disturbs&lt;/strong&gt;, depending
+on whether the page is being read or programmed, respectively.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="from-raw-flash-to-flash-based-ssds"&gt;From Raw Flash to Flash-Based SSDs&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Goal: standard storage interface is bocked-based one, where blocks
+(sectors) of size 512 bytes can be read or written, given a block address.
+Thus, flash-based SSD is to provide that standard block interface
+atop the raw flash chips inside it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="the-organization-of-flash-based-ssd"&gt;The organization of Flash-based SSD&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;SSD consists of:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Flash chips: for persistent storage &lt;/li&gt;
+&lt;li&gt;Volatile memory (SRAM): caching, buffering data, mapping tables&lt;/li&gt;
+&lt;li&gt;Control logic (FTL)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="SSD structure" class="img-responsive" src="/images/ssd-structure.png"/&gt;&lt;/p&gt;
+&lt;h3 id="build-flash-translation-layer-ftl"&gt;Build Flash Translation Layer (FTL)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Flash Translation Layer (FTL):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Translate client reads &amp;amp; writes on logical blocks -&amp;gt; flash read, erase, program on physical blocks &amp;amp; pages&lt;/li&gt;
+&lt;li&gt;performance:&lt;ul&gt;
+&lt;li&gt;Use multiple flash chips in parallel&lt;/li&gt;
+&lt;li&gt;Reduce write amplification: the total write traffic (in bytes) issued to the flash chips by the FTL divided by the total write traffic (in bytes) issued by the client to the SSD.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;reliability:&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;wear leveling&lt;/strong&gt; (prevent wear out): spread writes across the blocks of the flash as evenly as possible, ensuring that all of the blocks of the device wear out at roughly the same time;&lt;/li&gt;
+&lt;li&gt;Prevent disturbance: program pages within an erased block &lt;em&gt;in order&lt;/em&gt;, from low page to high page&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Direct-mapped FTL:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;1-1 mapping between logic page and physical page&lt;ul&gt;
+&lt;li&gt;Read of a logical page &lt;span class="math"&gt;\(N\)&lt;/span&gt; mapped to read of a physical page &lt;span class="math"&gt;\(N\)&lt;/span&gt;
+directly&lt;/li&gt;
+&lt;li&gt;Overwrtie of a logical page &lt;span class="math"&gt;\(N\)&lt;/span&gt; leads to the write amplification:&lt;ul&gt;
+&lt;li&gt;Read in the entire block that contains physical page &lt;span class="math"&gt;\(N\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Erase the block&lt;/li&gt;
+&lt;li&gt;Program the page &lt;span class="math"&gt;\(N\)&lt;/span&gt; along with the old pages within the block&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Can lead to wear out if the user repeated update the same logical 
+page (e.g., update the same file system metadata over and over)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Log-structured FTL:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Upon a write to a logical block &lt;span class="math"&gt;\(N\)&lt;/span&gt;, the device appends the write
+to the the next free spot in the currently-being-written-to block.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Write: the SSD finds a location for the write, usually just picking
+the next free page; it then programs that page with the block's contents, and records the logical-to-physical mapping in its mapping
+table.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Read: subsequent reads use the table to translate the logical block
+address presented by the client into the physical page number required to read the data.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Advantages: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;We avoid the overwrite of the physical page (by always writing to the next free page), which can cause the expensive erase
+operation and write amplification.&lt;/li&gt;
+&lt;li&gt;FTL spreads the write across all pages and perform wear leveling
+to increase the lifetime of the device.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Disadvantages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Need to periodically perform garbage collection, which can increase write amplification and reduce performance&lt;/li&gt;
+&lt;li&gt;High cost of in-memory mapping tables (the larger the device,
+the more memory such tables need)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;crash recovery:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Since mapping table is stored in memory, we may lose it when
+device loses power. To handle this, we can store some mapping
+information in &lt;strong&gt;out-of-band (OOB)&lt;/strong&gt; area within each page and
+reconstruct the mapping table in memory.&lt;/li&gt;
+&lt;li&gt;Use logging and checking to speed up recovery.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="log-structured FTL" class="img-responsive" src="/images/log-structured-ftl.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Garbage Collection (dead-block reclamation):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Garbage: old versions of data around the drive that takes up the space&lt;ul&gt;
+&lt;li&gt;Ex: immediately follow the picture above, we write(100) with
+content "c1". The original "a1" is no longer needed, which is considered as garbage. We need to reclaim the physical page that
+"a1" takes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Garbage collection: the process of finding garbage blocks and
+reclaiming them for future use. We can find a block that contains
+one or more garbage pages, read in the live (non-garbage) pages from
+that block, write out those live pages to the log, and (finally)
+reclaim the entire block for use in writing.&lt;/li&gt;
+&lt;li&gt;Determine the dead pages: the physical block contains the logical
+block addresses it is holding. We can then determine the dead pages by comparing the logical block addresses in the mapping table with the logical block addresses in the physical block (e.g., physical block holds logical block address 2000 but 2000 inside the mapping
+table pointing to the physical page that is outside of the current
+physical block. Thus, we know the physical page that holds 2000
+inside the physical block is the dead page).&lt;/li&gt;
+&lt;li&gt;The ideal candidate for reclamation is a block that consists of
+only dead pages; in this case, the block can immediately be erased
+and used for new data, without expensive data migration.&lt;/li&gt;
+&lt;li&gt;Reduce GC costs: &lt;strong&gt;overprovision&lt;/strong&gt; the device (adding extra
+flash capacity)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Block-Based Mapping:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Instead of keeping one record per page in the mapping table, we keep
+one record per block. Doing so will reduce the size of mapping table by a factor of &lt;span class="math"&gt;\(\frac{Size_{block}}{Size_{page}}\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Read: The read of a logical block address is shown in picture below. The whole read process greatly mimics the virtual address translation. The mapping table plays a role as the page table in the virtual memory system (map virtual pages to physical frames).&lt;/li&gt;
+&lt;li&gt;Write: if the client writes to logical block 2002 with content &lt;span class="math"&gt;\(c'\)&lt;/span&gt;,
+since by the current mapping, we try to overwrite the physical page with new content, FTL has to perform erase. FTL will read in 2000, 2001, and 2003 and then write out all four
+logical blocks in a new location (e.g. physical pages 08,09,10,11 with values a, b, c', d), updating the mapping table accordingly and
+erase the original block. We can transfer the a,b,c',d back to the original block but that will involve another set of writes, which are
+expensive compared with updating the mapping table record.&lt;/li&gt;
+&lt;li&gt;Disadvantage: performance decrease for the writes smaller than
+the physical block size of the device (If the writes equal to
+the physical block size, we can erase the whole block and do write
+directly instead of saving some old data and rewrite them again
+into new location.)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="block-based read process" class="img-responsive" src="/images/block-based-mapping-ftl.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hybrid Mapping&lt;ul&gt;
+&lt;li&gt;Combine the page-level mapping (enable flexible writing) + block-level mapping (reduce mapping costs)&lt;/li&gt;
+&lt;li&gt;FTL structure is shown in the picture below.&lt;/li&gt;
+&lt;li&gt;One big challenge in the hyprid mapping FTL is the "compaction", which means we have to move the contents from
+log blocks referred by the log table into the physical blocks referred by the data table. The motivation is that
+we want to keep the size of log table small (i.e. reduce mapping costs). There are three ways
+we can perform depends on the contents of the blocks: &lt;strong&gt;switch merge&lt;/strong&gt;, &lt;strong&gt;partial merge&lt;/strong&gt;, &lt;strong&gt;full merge&lt;/strong&gt; shown
+in the picture below.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="hybrid mapping FTL" class="img-responsive" src="/images/hybrid-mapping.png"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="merge in hybrid mapping FTL" class="img-responsive" src="/images/merge-in-hybrid-mapping.png"/&gt;&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;"compaction" isn't a term used in the chapter. I use the term as a way to indicate the whole moving log block
+process greatly mimics how the compaction works in the &lt;a href="https://zhu45.org/posts/2018/Mar/30/pebblesdb-building-key-value-stores-using-fragmented-log-structured-merge-trees/"&gt;Log-structured merge (LSM) tree&lt;/a&gt;.
+Log blocks can be thought of as "memtable" in the LSM-based key-value store. In addition, when we look for a 
+particular logical block, the FTL will first consult the log table; if the logical block’s location is not found there, 
+the FTL will then consult the data table to find its location and then access the requested data. Also, we need to periodically
+scan the log table and corresponding log blocks to form blocks pointed by only one block pointer. All these behaviors
+are similar to how read and compaction work in the LSM-based key-value store.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;wear leveling&lt;ul&gt;
+&lt;li&gt;Log-structured approach + garbage collection helps with the wear leveling&lt;/li&gt;
+&lt;li&gt;Problem: sometimes a block will be filled with long-lived data that does not get overwritten; in this case, garbage collection will never reclaim the block, and thus it does not receive its fair share of the write load.&lt;/li&gt;
+&lt;li&gt;Solution: the FTL must periodically read all the live data out of such blocks and re-write it elsewhere, thus making the block available for writing again.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="flash-based-ssd-performance"&gt;Flash-based SSD performance&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;The biggest difference in performance, as compared to disk drives, is realized when performing random reads and writes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="SSD vs. HDD performance" class="img-responsive" src="/images/SSD-HDD.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Findings in the above table:&lt;ul&gt;
+&lt;li&gt;SSD random I/O outperforms HDD random I/O&lt;/li&gt;
+&lt;li&gt;SSD sequential I/O is slightly above HDD sequential I/O (i.e. HDD still in the game for the sequential I/O task)&lt;/li&gt;
+&lt;li&gt;SSD random write beat random read&lt;ul&gt;
+&lt;li&gt;log-structured design of many SSDs, which transforms random writes into sequential ones and improves performance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;HDD is still cheaper than SSD&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="summary"&gt;Summary&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Overwriting a page requires us to erase the whole block that the page resides in before we can write the page. This naturally introduces the
+write amplification as we must first move any data we care about to another location.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;When design a persistent storage device based on flash, we need to think about performance (e.g. write amplification) and reliability
+(e.g. wear out, disturbance).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Log-structured hybrid mapping FTL provides an interface that maps the I/O to logical address space to the physical blocks &amp;amp; pages on the flash chips
+while maintaining good performance and reliability.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</content><category term="ssd"></category><category term="storage"></category></entry><entry><title>Generalized binary search</title><link href="https://zhu45.org/posts/2018/Jun/10/generalized-binary-search/" rel="alternate"></link><published>2018-06-10T01:24:00+08:00</published><updated>2018-06-10T01:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-06-10:/posts/2018/Jun/10/generalized-binary-search/</id><summary type="html">&lt;p&gt;Binary search idea can be generalized to other problems&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#example"&gt;Example&lt;/a&gt;&lt;/li&gt;
@@ -86,7 +455,7 @@ and it is unnecessary to have &lt;span class="math"&gt;\(d\)&lt;/span&gt; goes b
 range between 0 and &lt;span class="math"&gt;\(j-1\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(T - A_{j-1-d} &amp;gt; T - A_{j-1} &amp;gt; A_{j+k-1} - T &amp;gt; A_{j+k-1-d} - T\)&lt;/span&gt;. Thus, for any
 index &lt;span class="math"&gt;\(i &amp;lt;= j\)&lt;/span&gt;, we have &lt;span class="math"&gt;\(|A_{i-1} - T| &amp;gt; |A_{i+k-1} - T|\)&lt;/span&gt;. This suggests that we can discard first half of the array.&lt;/li&gt;
 &lt;li&gt;&lt;span class="math"&gt;\(A_{j-1} &amp;lt; A_{j+k-1} &amp;lt; T\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(T - A_{j-1} &amp;gt; T - A_{j+k-1}\)&lt;/span&gt;, which implies 
-&lt;span class="math"&gt;\(T - A_{j-1-d} &amp;gt; T - A_{j-1} &amp;gt; T - A_{j+k-1-d} &amp;gt; T - A_{j+k-1}\)&lt;/span&gt;, which again the predication holds.&lt;/li&gt;
+&lt;span class="math"&gt;\(T - A_{j-1-d} &amp;gt; T - A_{j-1} &amp;gt; T - A_{j+k-1-d} &amp;gt; T - A_{j+k-1}\)&lt;/span&gt;, which again the predicate holds.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
@@ -94,17 +463,17 @@ index &lt;span class="math"&gt;\(i &amp;lt;= j\)&lt;/span&gt;, we have &lt;span 
 &lt;ul&gt;
 &lt;li&gt;&lt;span class="math"&gt;\(T &amp;gt; A_j &amp;gt; A_{j+k}\)&lt;/span&gt;. Impossible.&lt;/li&gt;
 &lt;li&gt;&lt;span class="math"&gt;\(A_j &amp;gt; T &amp;gt; A_{j+k}\)&lt;/span&gt;. In this case, we have &lt;span class="math"&gt;\(A_{j-1} - T &amp;gt; T - A_{j+k-1}\)&lt;/span&gt;, which implies that 
-&lt;span class="math"&gt;\(A_{j-1-d} - T &amp;gt; A_{j-1} - T &amp;gt; T - A_{j+k-1} &amp;gt; T - A_{j+k-1-d}\)&lt;/span&gt;. Predication holds: for all index &lt;span class="math"&gt;\(i &amp;lt;= j\)&lt;/span&gt;,
+&lt;span class="math"&gt;\(A_{j-1-d} - T &amp;gt; A_{j-1} - T &amp;gt; T - A_{j+k-1} &amp;gt; T - A_{j+k-1-d}\)&lt;/span&gt;. predicate holds: for all index &lt;span class="math"&gt;\(i &amp;lt;= j\)&lt;/span&gt;,
 we have &lt;span class="math"&gt;\(|A_{i-1} - T| &amp;gt; |A_{i+k-1} - T|\)&lt;/span&gt;, which means we can discard first half of the array and move subrange to the right.&lt;/li&gt;
 &lt;li&gt;&lt;span class="math"&gt;\(A_j &amp;gt; A_{j+k} &amp;gt; T\)&lt;/span&gt;. In this case, we have &lt;span class="math"&gt;\(A_{j-1} - T &amp;gt; A_{j+k-1} - T\)&lt;/span&gt;, which imples that
-&lt;span class="math"&gt;\(A_{j-1-d} - T &amp;gt; A_{j-1} - T &amp;gt; A_{j+k-1-d} - T &amp;gt; A_{j+k-1} - T\)&lt;/span&gt;. Predication holds.&lt;/li&gt;
+&lt;span class="math"&gt;\(A_{j-1-d} - T &amp;gt; A_{j-1} - T &amp;gt; A_{j+k-1-d} - T &amp;gt; A_{j+k-1} - T\)&lt;/span&gt;. predicate holds.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Once we verify the predication satisifies the &lt;em&gt;main theorem&lt;/em&gt;, the only thing we left is to build the connection between the
-invariant and predication, and make sure the invariant holds during the loop execution. Let's first list out the code:&lt;/p&gt;
+&lt;p&gt;Once we verify the predicate satisifies the &lt;em&gt;main theorem&lt;/em&gt;, the only thing we left is to build the connection between the
+invariant and predicate, and make sure the invariant holds during the loop execution. Let's first list out the code:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
 &lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;findClosestElements&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;

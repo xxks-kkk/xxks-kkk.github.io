@@ -151,7 +151,7 @@ and it is unnecessary to have <span class="math">\(d\)</span> goes beyond <span 
 range between 0 and <span class="math">\(j-1\)</span>. We have <span class="math">\(T - A_{j-1-d} &gt; T - A_{j-1} &gt; A_{j+k-1} - T &gt; A_{j+k-1-d} - T\)</span>. Thus, for any
 index <span class="math">\(i &lt;= j\)</span>, we have <span class="math">\(|A_{i-1} - T| &gt; |A_{i+k-1} - T|\)</span>. This suggests that we can discard first half of the array.</li>
 <li><span class="math">\(A_{j-1} &lt; A_{j+k-1} &lt; T\)</span>. We have <span class="math">\(T - A_{j-1} &gt; T - A_{j+k-1}\)</span>, which implies 
-<span class="math">\(T - A_{j-1-d} &gt; T - A_{j-1} &gt; T - A_{j+k-1-d} &gt; T - A_{j+k-1}\)</span>, which again the predication holds.</li>
+<span class="math">\(T - A_{j-1-d} &gt; T - A_{j-1} &gt; T - A_{j+k-1-d} &gt; T - A_{j+k-1}\)</span>, which again the predicate holds.</li>
 </ul>
 </li>
 <li>
@@ -159,17 +159,17 @@ index <span class="math">\(i &lt;= j\)</span>, we have <span class="math">\(|A_{
 <ul>
 <li><span class="math">\(T &gt; A_j &gt; A_{j+k}\)</span>. Impossible.</li>
 <li><span class="math">\(A_j &gt; T &gt; A_{j+k}\)</span>. In this case, we have <span class="math">\(A_{j-1} - T &gt; T - A_{j+k-1}\)</span>, which implies that 
-<span class="math">\(A_{j-1-d} - T &gt; A_{j-1} - T &gt; T - A_{j+k-1} &gt; T - A_{j+k-1-d}\)</span>. Predication holds: for all index <span class="math">\(i &lt;= j\)</span>,
+<span class="math">\(A_{j-1-d} - T &gt; A_{j-1} - T &gt; T - A_{j+k-1} &gt; T - A_{j+k-1-d}\)</span>. predicate holds: for all index <span class="math">\(i &lt;= j\)</span>,
 we have <span class="math">\(|A_{i-1} - T| &gt; |A_{i+k-1} - T|\)</span>, which means we can discard first half of the array and move subrange to the right.</li>
 <li><span class="math">\(A_j &gt; A_{j+k} &gt; T\)</span>. In this case, we have <span class="math">\(A_{j-1} - T &gt; A_{j+k-1} - T\)</span>, which imples that
-<span class="math">\(A_{j-1-d} - T &gt; A_{j-1} - T &gt; A_{j+k-1-d} - T &gt; A_{j+k-1} - T\)</span>. Predication holds.</li>
+<span class="math">\(A_{j-1-d} - T &gt; A_{j-1} - T &gt; A_{j+k-1-d} - T &gt; A_{j+k-1} - T\)</span>. predicate holds.</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<p>Once we verify the predication satisifies the <em>main theorem</em>, the only thing we left is to build the connection between the
-invariant and predication, and make sure the invariant holds during the loop execution. Let's first list out the code:</p>
+<p>Once we verify the predicate satisifies the <em>main theorem</em>, the only thing we left is to build the connection between the
+invariant and predicate, and make sure the invariant holds during the loop execution. Let's first list out the code:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
     <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">findClosestElements</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">arr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
