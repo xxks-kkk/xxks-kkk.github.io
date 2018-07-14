@@ -1,5 +1,295 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Ze-Yuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-07-01T22:00:00+08:00</updated><entry><title>Flash-based SSD Basics</title><link href="https://zhu45.org/posts/2018/Jul/01/flash-based-ssd-basics/" rel="alternate"></link><published>2018-07-01T22:00:00+08:00</published><updated>2018-07-01T22:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-07-01:/posts/2018/Jul/01/flash-based-ssd-basics/</id><summary type="html">&lt;p&gt;list out the basic concepts in SSD&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Ze-Yuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-07-14T22:30:00+08:00</updated><entry><title>Graph basics + Topological Sort</title><link href="https://zhu45.org/posts/2018/Jul/14/graph-basics-topological-sort/" rel="alternate"></link><published>2018-07-14T22:30:00+08:00</published><updated>2018-07-14T22:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-07-14:/posts/2018/Jul/14/graph-basics-topological-sort/</id><summary type="html">&lt;p&gt;Basic graph concepts&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#graph-basics"&gt;Graph Basics&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#definitions"&gt;Definitions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#representation"&gt;Representation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#topological-sort"&gt;Topological Sort&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#definition-and-properties"&gt;Definition and Properties&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#dfs-approach"&gt;DFS Approach&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#bfs-approach"&gt;BFS Approach&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In this post, we breifly summarize the basic concepts related to graph algorithm. Then, we study topological sort to make
+the graph concepts into practice.&lt;/p&gt;
+&lt;h2 id="graph-basics"&gt;Graph Basics&lt;/h2&gt;
+&lt;h3 id="definitions"&gt;Definitions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;A &lt;strong&gt;graph&lt;/strong&gt; &lt;span class="math"&gt;\(G = (V,E)\)&lt;/span&gt; consists of a set of &lt;strong&gt;vertices&lt;/strong&gt; &lt;span class="math"&gt;\(V\)&lt;/span&gt;, and a set of &lt;strong&gt;edges&lt;/strong&gt; &lt;span class="math"&gt;\(E\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Each edge (i.e., &lt;strong&gt;arcs&lt;/strong&gt;) is a pair &lt;span class="math"&gt;\((v,w)\)&lt;/span&gt;, where &lt;span class="math"&gt;\(v,w \in V\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Given an edge &lt;span class="math"&gt;\(e = (u,v)\)&lt;/span&gt;, the vertex &lt;span class="math"&gt;\(u\)&lt;/span&gt; is its &lt;strong&gt;source&lt;/strong&gt;, and &lt;span class="math"&gt;\(v\)&lt;/span&gt; is its &lt;strong&gt;sink&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;If the pair is ordered, then the graph is &lt;strong&gt;directed&lt;/strong&gt; (i.e., &lt;strong&gt;digraphs&lt;/strong&gt;).&lt;/li&gt;
+&lt;li&gt;Vertex &lt;span class="math"&gt;\(w\)&lt;/span&gt; is &lt;strong&gt;adjacent&lt;/strong&gt; to &lt;span class="math"&gt;\(v\)&lt;/span&gt; iff &lt;span class="math"&gt;\((v,w) \in E\)&lt;/span&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;In digraph, &lt;span class="math"&gt;\((v,w)\)&lt;/span&gt; is not the same as &lt;span class="math"&gt;\((w,v)\)&lt;/span&gt;. Thus, if &lt;span class="math"&gt;\((v,w) \in E\)&lt;/span&gt; and &lt;span class="math"&gt;\((w,v) \not\in E\)&lt;/span&gt;, &lt;span class="math"&gt;\(v\)&lt;/span&gt; is
+adjacent to &lt;span class="math"&gt;\(w\)&lt;/span&gt; but &lt;span class="math"&gt;\(w\)&lt;/span&gt; is NOT adjacent to &lt;span class="math"&gt;\(v\)&lt;/span&gt;. However, for the undirected graph, if &lt;span class="math"&gt;\((v,w) \in E\)&lt;/span&gt;, then
+&lt;span class="math"&gt;\((w,v) \in E\)&lt;/span&gt;. Thus, if &lt;span class="math"&gt;\(v\)&lt;/span&gt; is adjacent to &lt;span class="math"&gt;\(w\)&lt;/span&gt;, then &lt;span class="math"&gt;\(w\)&lt;/span&gt; is adjacent to &lt;span class="math"&gt;\(v\)&lt;/span&gt; in undirected graph.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;A &lt;strong&gt;path&lt;/strong&gt; in a graph is a sequence of vertices &lt;span class="math"&gt;\(w_1, w_2, w_3, \dots, w_N\)&lt;/span&gt; such that &lt;span class="math"&gt;\((w_i, w_{i+1}) \in E\)&lt;/span&gt; for
+&lt;span class="math"&gt;\(1 \le i &amp;lt; N\)&lt;/span&gt;. The &lt;strong&gt;length&lt;/strong&gt; of such path is the number of edges on the path, which is equal to &lt;span class="math"&gt;\(N - 1\)&lt;/span&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;We allow a path from a vertex to itself&lt;ul&gt;
+&lt;li&gt;If this path contains no edge, then the path length is 0&lt;/li&gt;
+&lt;li&gt;If the graph contains an edge &lt;span class="math"&gt;\((v,v)\)&lt;/span&gt; from a vertex to itself, then the path &lt;span class="math"&gt;\(v,v\)&lt;/span&gt; is referred to as a &lt;strong&gt;loop&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;A &lt;strong&gt;simple path&lt;/strong&gt; is a path such that all vertices are distinct, except that the first and last could be the same.&lt;/li&gt;
+&lt;li&gt;If there is a path from &lt;span class="math"&gt;\(u\)&lt;/span&gt; to &lt;span class="math"&gt;\(v\)&lt;/span&gt;, &lt;span class="math"&gt;\(v\)&lt;/span&gt; is said to be &lt;strong&gt;reachable&lt;/strong&gt; from &lt;span class="math"&gt;\(u\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;A &lt;strong&gt;cycle&lt;/strong&gt; in a graph:&lt;ul&gt;
+&lt;li&gt;For directed graph, a cycle is a path of length at least 1 such that vertices &lt;span class="math"&gt;\(w_1 = w_N\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;For undirected graph, we require edges to be distinct&lt;ul&gt;
+&lt;li&gt;reasoning: the path &lt;span class="math"&gt;\(u,v,u\)&lt;/span&gt; in an undirected graph should not be considered a cycle because &lt;span class="math"&gt;\((u,v)\)&lt;/span&gt; and &lt;span class="math"&gt;\((v,u)\)&lt;/span&gt;
+are the same edge.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;A &lt;strong&gt;directed acyclic graph (DAG)&lt;/strong&gt; is a directed graph in which there are no cycles (i.e., paths which contain one or
+more edges and which begin and end at the same vertex)&lt;ul&gt;
+&lt;li&gt;Vertices in a DAG which have no incoming edges are referred to as &lt;strong&gt;sources&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Vertices which have no outgoing edges are referred to as &lt;strong&gt;sinks&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;connected&lt;/strong&gt;:&lt;ul&gt;
+&lt;li&gt;An undirected graph is &lt;strong&gt;connected&lt;/strong&gt; if there is a path from every vertex to every other vertex.&lt;/li&gt;
+&lt;li&gt;A directed graph is &lt;strong&gt;connected&lt;/strong&gt; if it contains a directed path from &lt;span class="math"&gt;\(u\)&lt;/span&gt; to &lt;span class="math"&gt;\(v\)&lt;/span&gt; or a directed path
+from &lt;span class="math"&gt;\(v\)&lt;/span&gt; to &lt;span class="math"&gt;\(u\)&lt;/span&gt; for every pair of vertices &lt;span class="math"&gt;\(u\)&lt;/span&gt; and &lt;span class="math"&gt;\(v\)&lt;/span&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;A directed graph is &lt;strong&gt;strongly connected&lt;/strong&gt; if it contains a directed path from &lt;span class="math"&gt;\(u\)&lt;/span&gt; to &lt;span class="math"&gt;\(v\)&lt;/span&gt; and a directed
+path from &lt;span class="math"&gt;\(v\)&lt;/span&gt; to &lt;span class="math"&gt;\(u\)&lt;/span&gt; for every pair of vertices &lt;span class="math"&gt;\(u\)&lt;/span&gt; and &lt;span class="math"&gt;\(v\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;If a directed graph is not strongly connected, but the underlying graph (without direction to the arcs)
+is connected, then the graph is said to be &lt;strong&gt;weakly connected&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;For a graph &lt;span class="math"&gt;\(G\)&lt;/span&gt;, a &lt;strong&gt;connected component&lt;/strong&gt; is a maximal set of vertices &lt;span class="math"&gt;\(C\)&lt;/span&gt; such that each pair of vertices in &lt;span class="math"&gt;\(C\)&lt;/span&gt; is connected
+in &lt;span class="math"&gt;\(G\)&lt;/span&gt;. Every vertex belongs to exactly one connected component.&lt;/li&gt;
+&lt;li&gt;A &lt;strong&gt;complete graph&lt;/strong&gt; is a graph in which there is an edge between every pair of vertices.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;A tree is a special sort of graph - it is an undirected graph that is connected but has no cycles.
+Given a graph &lt;span class="math"&gt;\(G = (V, E)\)&lt;/span&gt;, if the graph &lt;span class="math"&gt;\(G' = (V, E')\)&lt;/span&gt; where &lt;span class="math"&gt;\(E' \in E\)&lt;/span&gt;, is a tree, then &lt;span class="math"&gt;\(G'\)&lt;/span&gt; is
+referred to as a spanning tree of &lt;span class="math"&gt;\(G\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Indegree&lt;/strong&gt; of a vertex &lt;span class="math"&gt;\(v\)&lt;/span&gt; is the number of edges &lt;span class="math"&gt;\((u,v)\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Outdegree&lt;/strong&gt; of a vertex &lt;span class="math"&gt;\(v\)&lt;/span&gt; is the number of edges &lt;span class="math"&gt;\((v,u)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="representation"&gt;Representation&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Adjacency matrix: use a &lt;span class="math"&gt;\(|V| \times |V|\)&lt;/span&gt; matrix indexed by vertices, with a &lt;code&gt;1&lt;/code&gt; indicating the presence of an edge (i.e.
+For each edge &lt;span class="math"&gt;\((u, v)\)&lt;/span&gt;, we set &lt;code&gt;A[u][v]&lt;/code&gt; to &lt;code&gt;true&lt;/code&gt;; otherwise the entry in the array is &lt;code&gt;false&lt;/code&gt;). If the edge has a weight 
+associated with it, then we can set &lt;code&gt;A[u][v]&lt;/code&gt; equal to the weight and use either a very large or 
+a very small weight as a sentinel to indicate nonexistent edges.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Disadvantage: we require graph to be dense: &lt;span class="math"&gt;\(|E| = \Theta(|V|^2)\)&lt;/span&gt;, which is very unlikely.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Adjacency list: For each vertex, we keep a list of all adjacent vertices. For undirected graph, each edge &lt;span class="math"&gt;\((u,v)\)&lt;/span&gt; appears in
+two lists&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Advantage: only requires &lt;span class="math"&gt;\(O(|E|+|V|)\)&lt;/span&gt; space.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Edge Lists: we represent the graph as an array of &lt;span class="math"&gt;\(|E|\)&lt;/span&gt; edges. For example, for an undirected edge connects &lt;span class="math"&gt;\(0\)&lt;/span&gt; and &lt;span class="math"&gt;\(1\)&lt;/span&gt;, we can 
+represent it as &lt;code&gt;[0,1]&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Checkout &lt;a href="https://www.khanacademy.org/computing/computer-science/algorithms/graph-representation/a/representing-graphs"&gt;Khan Academy::Computer Science::Algorithms::Representing graphs&lt;/a&gt; for a nice example.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="topological-sort"&gt;Topological Sort&lt;/h2&gt;
+&lt;h3 id="definition-and-properties"&gt;Definition and Properties&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;We have following two equivalent definitions:&lt;ul&gt;
+&lt;li&gt;Def 1: A topological sort is an ordering of vertices in a DAG such that
+if there is a path from &lt;span class="math"&gt;\(v_i\)&lt;/span&gt; to &lt;span class="math"&gt;\(v_j\)&lt;/span&gt;, then &lt;span class="math"&gt;\(v_j\)&lt;/span&gt; appears
+after &lt;span class="math"&gt;\(v_i\)&lt;/span&gt; in the ordering.&lt;/li&gt;
+&lt;li&gt;Def 2: A topological ordering of a DAG &lt;span class="math"&gt;\(G\)&lt;/span&gt; is a labeling &lt;span class="math"&gt;\(f\)&lt;/span&gt; of 
+&lt;span class="math"&gt;\(G\)&lt;/span&gt;'s nodes such that:&lt;ul&gt;
+&lt;li&gt;The &lt;span class="math"&gt;\(f(v)\)&lt;/span&gt;'s are the set &lt;span class="math"&gt;\({1,2, \dots, n}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\((u,v) \in G \implies f(u) &amp;lt; f(v)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="topological sorting example" class="img-responsive" src="/images/topological-sort-example.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Application: sequence tasks while respecting all precedence constraints.
+(e.g. course prerequisite structure can be represented as a graph. A topological ordering of these courses is any course sequence that does not violate the prerequisite requirement.)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If G has a cycle, there is no topological sort: since for two vertices &lt;span class="math"&gt;\(v\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt; on the cycle, &lt;span class="math"&gt;\(v\)&lt;/span&gt; precedes &lt;span class="math"&gt;\(w\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt; precedes &lt;span class="math"&gt;\(v\)&lt;/span&gt;. On ther other hand,
+if there is no directed cycle in the graph, we can compute topological sort in linear time (&lt;span class="math"&gt;\(O(|V|+|E|)\)&lt;/span&gt;).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Topological sorting is not necessary unique as shown in the picture above.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="dfs-approach"&gt;DFS Approach&lt;/h3&gt;
+&lt;p&gt;The basic idea of computing the topological ordering is following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Let &lt;span class="math"&gt;\(v\)&lt;/span&gt; be a sink vertex of &lt;span class="math"&gt;\(G\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;set &lt;span class="math"&gt;\(f(v) = n\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;recurse on &lt;span class="math"&gt;\(G - {v}\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There are some proofs we need to show for the correctness of the procedure:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Every directed acyclic graph has a sink vertex&lt;/p&gt;
+&lt;p&gt;Suppose the DAG doesn't have a sink vertex, that means every single vertex has at least one outgoing arc. We can start with arbitrary
+vertex and follow its outgoing arc to the next vertex. Since there is no sink vertex in our graph, we can repeatedly follow the outgoing
+arc of the vertex. Suppose there are &lt;span class="math"&gt;\(N\)&lt;/span&gt; nodes in the graph and by following edges for &lt;span class="math"&gt;\(N\)&lt;/span&gt; times, we reach the &lt;span class="math"&gt;\(N+1\)&lt;/span&gt;th vertex. Since among
+the &lt;span class="math"&gt;\(N+1\)&lt;/span&gt; nodes, there are only &lt;span class="math"&gt;\(N\)&lt;/span&gt; distinct nodes. By the pigeonhole principle, we must have visted some vertex twice. By following the
+nodes and visited some node twice, we show that the graph contains a directed cycle, which is a contradiction.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;During each recursion step, we can find a sink vertex&lt;/p&gt;
+&lt;p&gt;For a DAG, if we delete one or some of the vertices, we still have DAG (i.e., we cannot create a directed cycle). Thus,
+in each recursion step, we always have DAG. Then, by the previous observation, during each recursion step, we can find a sink vertex.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The above steps do produce topological ordering&lt;/p&gt;
+&lt;p&gt;By topological ordering, we know that all the edges have to go forward. Intutively, we always want to assign the sink vertex
+of the graph to the final position because otherwise there is going to be an outgoing arc of the node and the node that the
+outgoing arc points to will be assigned a lower position, which violates the topological ordering (i.e. edge goes backward). 
+In our procedure, when a node &lt;span class="math"&gt;\(v\)&lt;/span&gt; is assigned to position &lt;span class="math"&gt;\(i\)&lt;/span&gt;, that means we only have &lt;span class="math"&gt;\(i\)&lt;/span&gt; nodes remaining and &lt;span class="math"&gt;\(v\)&lt;/span&gt; is the sink vertex. 
+This implies that all of outgoing arcs and the corresponding nodes are deleted and assigned higher positions. So for every vertex, 
+by the time it actually gets assigned a position, it's a sink and it only has incoming arcs from the as yet unsigned vertices. 
+It's outgoing arcs all go forward to vertices that were already assigned higher positions, and got deleted previously from the graph. &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To implement the procedure above, we use the DFS:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="DFS for topological sort" class="img-responsive" src="/images/topological-dfs.png"/&gt;&lt;/p&gt;
+&lt;p&gt;There are several points we need to note here:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;We set &lt;span class="math"&gt;\(f(s) = \text{current_label}\)&lt;/span&gt; right before we about to pop the call stack. At that point, for every edge &lt;span class="math"&gt;\((s,v)\)&lt;/span&gt;, there is no such
+&lt;span class="math"&gt;\(v\)&lt;/span&gt; that we haven't explored. That means there are no outgoing edges, which indicate that &lt;span class="math"&gt;\(s\)&lt;/span&gt; is a sink and thus we can assign it a labeling.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Running time: &lt;span class="math"&gt;\(O(|E|+|V|)\)&lt;/span&gt; (we only visit each vertex in the graph once and we look at each edge once as well)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Correctness: we want to show that this DFS algorithm can correctly produce topological ordering. Topological ordering requires that for
+an edge &lt;span class="math"&gt;\((s,v)\)&lt;/span&gt;, &lt;span class="math"&gt;\(f(s) &amp;lt; f(v)\)&lt;/span&gt;. There are two possible cases for DFS: 1) &lt;span class="math"&gt;\(s\)&lt;/span&gt; get visited first 2) &lt;span class="math"&gt;\(v\)&lt;/span&gt; get visited first. For the first case,
+since there is an edge from &lt;span class="math"&gt;\(s\)&lt;/span&gt; to &lt;span class="math"&gt;\(v\)&lt;/span&gt;, DFS will recursively call on &lt;span class="math"&gt;\(v\)&lt;/span&gt;. In other words, DFS call on &lt;span class="math"&gt;\(v\)&lt;/span&gt; will finish before the DFS call on &lt;span class="math"&gt;\(s\)&lt;/span&gt;.
+Thus, &lt;span class="math"&gt;\(v\)&lt;/span&gt; will get a label larger than &lt;span class="math"&gt;\(s\)&lt;/span&gt; and the topological ordering is satisfied. For the second case, since there is no cycle in DAG, &lt;span class="math"&gt;\(s\)&lt;/span&gt; will
+not get discovered. Thus, &lt;span class="math"&gt;\(s\)&lt;/span&gt; will be visited later than &lt;span class="math"&gt;\(v\)&lt;/span&gt;. By the same reasoning as the first case, we still have the topological ordering.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="bfs-approach"&gt;BFS Approach&lt;/h3&gt;
+&lt;p&gt;Not surprisingly, we can find topological ordering of a graph using BFS as well. Instead of finding the sink vertex each time (i.e. the vertex
+with outdegree = 0), we find the source vertex (i.e. the vertex with indegree = 0) each time in BFS. The basic steps to compute the topological ordering follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Let &lt;span class="math"&gt;\(s\)&lt;/span&gt; be a source vertex of &lt;span class="math"&gt;\(G\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;set &lt;span class="math"&gt;\(f(s) = 1\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;recurse on &lt;span class="math"&gt;\(G - {s}\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We omit the proofs of the properties in BFS as the proofs will mirror with the ones for DFS. We can use the BFS to implement the procedure above:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="DFS for topological sort" class="img-responsive" src="/images/topological-bfs.png"/&gt;&lt;/p&gt;
+&lt;p&gt;There are several points we need to note here:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;In the basic version, we pick a source vertex of &lt;span class="math"&gt;\(G\)&lt;/span&gt; each time and assign the label. Inevitably, we will compute all the indegree of all nodes in
+the graph to find the source vertices. However, not all nodes' indegrees will be updated. To save this duplicate calculation, we use a queue (box).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Running time: &lt;span class="math"&gt;\(O(|E|+|V|)\)&lt;/span&gt; (We visit each edge once and for each node, we visit twice: compute the inital indegree; assign the labeling)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Correctness: this BFS will prodcue the topological ordering because for an edge &lt;span class="math"&gt;\((s,v)\)&lt;/span&gt;, we will always visit &lt;span class="math"&gt;\(s\)&lt;/span&gt; before visiting &lt;span class="math"&gt;\(v\)&lt;/span&gt;. Without
+removing &lt;span class="math"&gt;\(s\)&lt;/span&gt; first, &lt;span class="math"&gt;\(v\)&lt;/span&gt; will always have an incoming edge, which will not make &lt;span class="math"&gt;\(v\)&lt;/span&gt; a source vertex. Since we assign the labeling in the increasing order,
+&lt;span class="math"&gt;\(f(s) &amp;lt; f(v)\)&lt;/span&gt;. Thus, we produce a topological ordering.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As one can see the difference between DFS and BFS is that: for DFS, we start with the sink vertex and assign the label of the vertices in the decreasing
+order (i.e. start from &lt;span class="math"&gt;\(n\)&lt;/span&gt; and until &lt;span class="math"&gt;\(1\)&lt;/span&gt;). However, for BFS, we start with the source vertex and assign the label of the vertices in the increasing fashion
+(i.e. start from &lt;span class="math"&gt;\(1\)&lt;/span&gt; and until &lt;span class="math"&gt;\(n\)&lt;/span&gt;).&lt;/p&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;"Data Structures and Algorithm Analysis in C++, 4th Edition" by Mark A. Weiss (we use
+&lt;em&gt;MAW (cpp)&lt;/em&gt; for short in the future)&lt;/li&gt;
+&lt;li&gt;"Elements of Programming Interviews: The Insiders' Guide" by Adnan Aziz,
+Tsung-Hsien Lee, and Amit Prakash, p.342 - 346 (we use &lt;em&gt;ATA&lt;/em&gt; for short in the future)&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.coursera.org/learn/algorithms-graphs-data-structures/lecture/yeKm7/topological-sort"&gt;Topological Sort on Coursera&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</content><category term="graph"></category><category term="sorting"></category><category term="maw"></category></entry><entry><title>Flash-based SSD Basics</title><link href="https://zhu45.org/posts/2018/Jul/01/flash-based-ssd-basics/" rel="alternate"></link><published>2018-07-01T22:00:00+08:00</published><updated>2018-07-01T22:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-07-01:/posts/2018/Jul/01/flash-based-ssd-basics/</id><summary type="html">&lt;p&gt;list out the basic concepts in SSD&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#raw-flash"&gt;Raw Flash&lt;/a&gt;&lt;ul&gt;
