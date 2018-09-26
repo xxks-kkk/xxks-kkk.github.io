@@ -1,5 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-07-14T22:30:00+08:00</updated><entry><title>Graph basics + Topological Sort</title><link href="https://zhu45.org/posts/2018/Jul/14/graph-basics-topological-sort/" rel="alternate"></link><published>2018-07-14T22:30:00+08:00</published><updated>2018-07-14T22:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-07-14:/posts/2018/Jul/14/graph-basics-topological-sort/</id><summary type="html">&lt;p&gt;Basic graph concepts&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-09-26T10:00:00+08:00</updated><entry><title>Modify char in another function</title><link href="https://zhu45.org/posts/2018/Sep/26/modify-char-in-another-function/" rel="alternate"></link><published>2018-09-26T10:00:00+08:00</published><updated>2018-09-26T10:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-09-26:/posts/2018/Sep/26/modify-char-in-another-function/</id><summary type="html">&lt;html&gt;&lt;body&gt;&lt;p&gt;Almost two years ago, I write a &lt;a href="https://zhu45.org/posts/2017/Jan/08/modify-array-inside-function-in-c/"&gt;post&lt;/a&gt; on how to 
+modify an array in one function through another function in C. I did pretty detailed study through GDB there but 
+I find that the illustration is lengthy to read. In this post, I try to show the same
+concept …&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;p&gt;Almost two years ago, I write a &lt;a href="https://zhu45.org/posts/2017/Jan/08/modify-array-inside-function-in-c/"&gt;post&lt;/a&gt; on how to 
+modify an array in one function through another function in C. I did pretty detailed study through GDB there but 
+I find that the illustration is lengthy to read. In this post, I try to show the same
+concept using &lt;code&gt;char *&lt;/code&gt;. Hopefully, this time I do a better job.&lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#explanation"&gt;Explanation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;We are given the following program:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// modify this function&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;function&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// modify here&lt;/span&gt;
+    &lt;span class="n"&gt;puts&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We want to implement &lt;code&gt;function()&lt;/code&gt; such that we can print out &lt;code&gt;Hello World!&lt;/code&gt; to the screen. The result of
+the modification looks like below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// modify this function&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"Hello World!"&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// modify here&lt;/span&gt;
+    &lt;span class="n"&gt;puts&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The question we want to answer is why doing so works?&lt;/p&gt;
+&lt;h2 id="explanation"&gt;Explanation&lt;/h2&gt;
+&lt;p&gt;We acquire key data from GDB as following:&lt;/p&gt;
+&lt;table class=" table-striped table table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;GDB command&lt;/th&gt;
+&lt;th&gt;result&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;p s&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;0x7fff5fbff360 ""&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;p &amp;amp;s&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;(char **) 0x7fff5fbff340&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;p c&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;(char **) 0x7fff5fbff340&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;p *c&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;0x7fff5fbff360 ""&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;p c&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;(char **) 0x7fff5fbff340&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;p *c&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;0x100000f8e "Hello World!"&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Note that the last two commands are executed after &lt;code&gt;*c = "Hello World!";&lt;/code&gt;. The state of the variables on the stack shown below:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="state of variables on the stack" class="img-responsive" src="https://zhu45.org/images/stack.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Note that one can think about &lt;em&gt;variable as the alias for some virtual memory address&lt;/em&gt;. In other words, variable &lt;code&gt;s&lt;/code&gt; and address &lt;code&gt;0x7fff5fbff340&lt;/code&gt;
+are the same and we use variable as a shortcut to reference some address. For a given variable name, we can get its address by using &lt;code&gt;&amp;amp;&lt;/code&gt;
+(i.e., When &lt;code&gt;&amp;amp;&lt;/code&gt; used, the address of that variable is returned, instead of the variable itsef).
+In our case, &lt;code&gt;&amp;amp;s&lt;/code&gt; is &lt;code&gt;0x7fff5fbff340&lt;/code&gt;. Since &lt;code&gt;s&lt;/code&gt; itself is a pointer, which by definition, contains a memory address instead of 
+a value. In our case, the memory address in &lt;code&gt;s&lt;/code&gt; is &lt;code&gt;0x7fff5fbff360&lt;/code&gt;, which contains &lt;code&gt;""&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;We pass &lt;code&gt;&amp;amp;s&lt;/code&gt; into the function because inside the function, if we modify the content on the address &lt;code&gt;0x7fff5fbff340&lt;/code&gt; (i.e. represented by &lt;code&gt;&amp;amp;s&lt;/code&gt;),
+we can still reference &lt;code&gt;0x7fff5fbff340&lt;/code&gt; once the function exits. It's because we can still access &lt;code&gt;s&lt;/code&gt;, and &lt;code&gt;s&lt;/code&gt; and &lt;code&gt;0x7fff5fbff340&lt;/code&gt; are the same thing.
+Whatever change made to the content on &lt;code&gt;0x7fff5fbff340&lt;/code&gt; will be accessible by &lt;code&gt;s&lt;/code&gt; as well. 
+Since &lt;code&gt;s&lt;/code&gt; has type &lt;code&gt;char*&lt;/code&gt;, then naturally &lt;code&gt;&amp;amp;s&lt;/code&gt; corresponds with type &lt;code&gt;char**&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Inside the function, we modify the content on the address &lt;code&gt;0x7fff5fbff340&lt;/code&gt; by deferencing &lt;code&gt;c&lt;/code&gt; (i.e. &lt;code&gt;*c&lt;/code&gt;), which holds a copy of &lt;code&gt;0x7fff5fbff340&lt;/code&gt;. 
+After &lt;code&gt;*c = "Hello World!";&lt;/code&gt;, the content on the address &lt;code&gt;0x7fff5fbff340&lt;/code&gt; changed to &lt;code&gt;0x100000f8e&lt;/code&gt;, which contains &lt;code&gt;"Hello World!"&lt;/code&gt;. Once we are done
+with the function and back to &lt;code&gt;main&lt;/code&gt;, since &lt;code&gt;s&lt;/code&gt; is the alias to &lt;code&gt;0x7fff5fbff340&lt;/code&gt; and &lt;code&gt;0x7fff5fbff340&lt;/code&gt; contains address to &lt;code&gt;"Hello World!"&lt;/code&gt;, our task
+is accomplished.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;One thought I had when I finished this post was &lt;a href="https://stackoverflow.com/questions/52508492/why-cant-i-pass-the-pointer-instead-of-the-pointer-to-pointer-to-function"&gt;why can't I pass &lt;code&gt;s&lt;/code&gt; instead of &lt;code&gt;&amp;amp;s&lt;/code&gt;&lt;/a&gt; because if &lt;code&gt;s&lt;/code&gt; contains some address
+(say &lt;code&gt;0xab&lt;/code&gt;) and we modify the content on that address (&lt;code&gt;0xab&lt;/code&gt;) to be &lt;code&gt;"Hello World!"&lt;/code&gt;. Since &lt;code&gt;s&lt;/code&gt; contains It seems that there is another option we can use. 
+However, &lt;a href="https://stackoverflow.com/questions/52508492/why-cant-i-pass-the-pointer-instead-of-the-pointer-to-pointer-to-function"&gt;as pointed out by others&lt;/a&gt;, the problem is that &lt;code&gt;s&lt;/code&gt; is uninitialized: whatever we do with the address contained in
+&lt;code&gt;s&lt;/code&gt; is undefined behavior. Undefined behavior means there is no predictability of the program: anything can happen. Thus, even we can print out the string, we still consider doing so wrong.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Hope this short writeup helps!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</content><category term="c"></category></entry><entry><title>Graph basics + Topological Sort</title><link href="https://zhu45.org/posts/2018/Jul/14/graph-basics-topological-sort/" rel="alternate"></link><published>2018-07-14T22:30:00+08:00</published><updated>2018-07-14T22:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-07-14:/posts/2018/Jul/14/graph-basics-topological-sort/</id><summary type="html">&lt;p&gt;Basic graph concepts&lt;/p&gt;</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#graph-basics"&gt;Graph Basics&lt;/a&gt;&lt;ul&gt;
