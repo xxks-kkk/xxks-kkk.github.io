@@ -87,8 +87,8 @@ the modification looks like below:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;Note that the last two commands are executed after &lt;code&gt;*c = "Hello World!";&lt;/code&gt;. The state of the variables on the stack shown below:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="state of variables on the stack" class="img-responsive" src="https://zhu45.org/images/stack.png"/&gt;&lt;/p&gt;
-&lt;p&gt;Note that one can think about &lt;em&gt;variable as the alias for some virtual memory address&lt;/em&gt;. In other words, variable &lt;code&gt;s&lt;/code&gt; and address &lt;code&gt;0x7fff5fbff340&lt;/code&gt;
-are the same and we use variable as a shortcut to reference some address. For a given variable name, we can get its address by using &lt;code&gt;&amp;amp;&lt;/code&gt;
+&lt;p&gt;Note that one can think about &lt;em&gt;a variable in C as an alias for some virtual memory address&lt;/em&gt;. In other words, variable &lt;code&gt;s&lt;/code&gt; and address &lt;code&gt;0x7fff5fbff340&lt;/code&gt;
+are the same thing and we use variable as a shortcut to reference some address. For a given variable name, we can get its address by using &lt;code&gt;&amp;amp;&lt;/code&gt;
 (i.e., When &lt;code&gt;&amp;amp;&lt;/code&gt; used, the address of that variable is returned, instead of the variable itsef).
 In our case, &lt;code&gt;&amp;amp;s&lt;/code&gt; is &lt;code&gt;0x7fff5fbff340&lt;/code&gt;. Since &lt;code&gt;s&lt;/code&gt; itself is a pointer, which by definition, contains a memory address instead of 
 a value. In our case, the memory address in &lt;code&gt;s&lt;/code&gt; is &lt;code&gt;0x7fff5fbff360&lt;/code&gt;, which contains &lt;code&gt;""&lt;/code&gt;.&lt;/p&gt;
