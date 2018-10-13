@@ -149,11 +149,14 @@ the modification looks like below:</p>
 are the same thing and we use variable as a shortcut to reference some address. For a given variable name, we can get its address by using <code>&amp;</code>
 (i.e., When <code>&amp;</code> used, the address of that variable is returned, instead of the variable itsef).
 In our case, <code>&amp;s</code> is <code>0x7fff5fbff340</code>. Since <code>s</code> itself is a pointer, which by definition, contains a memory address instead of 
-a value. In our case, the memory address in <code>s</code> is <code>0x7fff5fbff360</code>, which contains <code>""</code>.</p>
+a value. In our case, the memory address in <code>s</code> is <code>0x7fff5fbff360</code>, which contains <code>""</code> (note that <code>""</code>
+value is undefined. It could be any value).</p>
 <p>We pass <code>&amp;s</code> into the function because inside the function, if we modify the content on the address <code>0x7fff5fbff340</code> (i.e. represented by <code>&amp;s</code>),
 we can still reference <code>0x7fff5fbff340</code> once the function exits. It's because we can still access <code>s</code>, and <code>s</code> and <code>0x7fff5fbff340</code> are the same thing.
 Whatever change made to the content on <code>0x7fff5fbff340</code> will be accessible by <code>s</code> as well. 
-Since <code>s</code> has type <code>char*</code>, then naturally <code>&amp;s</code> corresponds with type <code>char**</code>.</p>
+Since <code>s</code> has type <code>char*</code>, then naturally <code>&amp;s</code> corresponds with type <code>char**</code>. Another way of understanding
+<code>char**</code> is that we want to change the value of the passed in argument and C, by default, pass the argument
+by copying the value. Thus, we need to pass in a pointer to that value, not just the value itself.</p>
 <p>Inside the function, we modify the content on the address <code>0x7fff5fbff340</code> by deferencing <code>c</code> (i.e. <code>*c</code>), which holds a copy of <code>0x7fff5fbff340</code>. 
 After <code>*c = "Hello World!";</code>, the content on the address <code>0x7fff5fbff340</code> changed to <code>0x100000f8e</code>, which contains <code>"Hello World!"</code>. Once we are done
 with the function and back to <code>main</code>, since <code>s</code> is the alias to <code>0x7fff5fbff340</code> and <code>0x7fff5fbff340</code> contains address to <code>"Hello World!"</code>, our task

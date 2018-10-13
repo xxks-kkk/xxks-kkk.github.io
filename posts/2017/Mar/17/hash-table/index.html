@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
-        <title>    MAW: Chapter 5 Reflection
+        <title>    Hash Table
 </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -39,7 +39,7 @@
 </header>
     <div class="post">
         <header>
-            <h1 class="post-title">MAW: Chapter 5 Reflection</h1>
+            <h1 class="post-title">Hash Table</h1>
             <div class="panel">
                 <div class="panel-body">
 <footer class="post-info">
@@ -64,8 +64,7 @@
         </header>
         
         <article>
-            <html><body><p>This is the summary part of hash table and at the same time, it serves as the Chapter 5
-reflection.</p>
+            <html><body><p>This post summarizes the basic idea about hash table. It is created based on MAW Chapter 5.</p>
 <div class="section" id="reflection">
 <h2>Reflection</h2>
 <div class="section" id="motivation">
@@ -81,7 +80,7 @@ operations. The only downside compared hash tables with tree structure is the il
 <p>A hash table is an array of some fixed size. Then we use hash function to map each key
 (i.e. a key is a string with an associated value) into some number in the range <tt class="docutils literal">0</tt> to
 <tt class="docutils literal"><span class="pre">Tablesize-1</span></tt> and place it in the appropriate cell.</p>
-<img alt="" class="img-responsive" src="/images/hashtable.PNG"/>
+<img alt="hash table idea illustration" class="img-responsive" src="/images/hashtable.PNG"/>
 <p>Ideally, two distinct keys get different cells. However, this is not possible because
 there are a finite number of cells and a virtually infinite supply of keys. Thus the key
 concern for hash table data structure is how to distribute the keys evenly among the cells.
@@ -131,7 +130,7 @@ hash table collision resolution strategy.</p>
 <h4>Separate chaining</h4>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Sometimes separate chaining is also referred as "open hashing", which means that none of the objects
+<p class="last">Sometimes separate chaining is also referred as <em>"open hashing"</em>, which means that none of the objects
 are stored inside the hash table's internal array. For example, objects are stored in lists of buckets
 for hash table implementng the separate chaining.</p>
 </div>
@@ -161,7 +160,7 @@ We can use a tree to organize the elements that have the same hash value.</p>
 <h4>Open addressing</h4>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Open addressing is sometimes referred as "closed hashing", which means that every object
+<p class="last">Open addressing is sometimes referred as <em>"closed hashing"</em>, which means that every object
 is stored directly at some index in the hash table's internal array; the objects never
 live outside of the internal array.</p>
 </div>

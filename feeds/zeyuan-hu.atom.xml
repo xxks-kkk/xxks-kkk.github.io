@@ -91,11 +91,14 @@ the modification looks like below:&lt;/p&gt;
 are the same thing and we use variable as a shortcut to reference some address. For a given variable name, we can get its address by using &lt;code&gt;&amp;amp;&lt;/code&gt;
 (i.e., When &lt;code&gt;&amp;amp;&lt;/code&gt; used, the address of that variable is returned, instead of the variable itsef).
 In our case, &lt;code&gt;&amp;amp;s&lt;/code&gt; is &lt;code&gt;0x7fff5fbff340&lt;/code&gt;. Since &lt;code&gt;s&lt;/code&gt; itself is a pointer, which by definition, contains a memory address instead of 
-a value. In our case, the memory address in &lt;code&gt;s&lt;/code&gt; is &lt;code&gt;0x7fff5fbff360&lt;/code&gt;, which contains &lt;code&gt;""&lt;/code&gt;.&lt;/p&gt;
+a value. In our case, the memory address in &lt;code&gt;s&lt;/code&gt; is &lt;code&gt;0x7fff5fbff360&lt;/code&gt;, which contains &lt;code&gt;""&lt;/code&gt; (note that &lt;code&gt;""&lt;/code&gt;
+value is undefined. It could be any value).&lt;/p&gt;
 &lt;p&gt;We pass &lt;code&gt;&amp;amp;s&lt;/code&gt; into the function because inside the function, if we modify the content on the address &lt;code&gt;0x7fff5fbff340&lt;/code&gt; (i.e. represented by &lt;code&gt;&amp;amp;s&lt;/code&gt;),
 we can still reference &lt;code&gt;0x7fff5fbff340&lt;/code&gt; once the function exits. It's because we can still access &lt;code&gt;s&lt;/code&gt;, and &lt;code&gt;s&lt;/code&gt; and &lt;code&gt;0x7fff5fbff340&lt;/code&gt; are the same thing.
 Whatever change made to the content on &lt;code&gt;0x7fff5fbff340&lt;/code&gt; will be accessible by &lt;code&gt;s&lt;/code&gt; as well. 
-Since &lt;code&gt;s&lt;/code&gt; has type &lt;code&gt;char*&lt;/code&gt;, then naturally &lt;code&gt;&amp;amp;s&lt;/code&gt; corresponds with type &lt;code&gt;char**&lt;/code&gt;.&lt;/p&gt;
+Since &lt;code&gt;s&lt;/code&gt; has type &lt;code&gt;char*&lt;/code&gt;, then naturally &lt;code&gt;&amp;amp;s&lt;/code&gt; corresponds with type &lt;code&gt;char**&lt;/code&gt;. Another way of understanding
+&lt;code&gt;char**&lt;/code&gt; is that we want to change the value of the passed in argument and C, by default, pass the argument
+by copying the value. Thus, we need to pass in a pointer to that value, not just the value itself.&lt;/p&gt;
 &lt;p&gt;Inside the function, we modify the content on the address &lt;code&gt;0x7fff5fbff340&lt;/code&gt; by deferencing &lt;code&gt;c&lt;/code&gt; (i.e. &lt;code&gt;*c&lt;/code&gt;), which holds a copy of &lt;code&gt;0x7fff5fbff340&lt;/code&gt;. 
 After &lt;code&gt;*c = "Hello World!";&lt;/code&gt;, the content on the address &lt;code&gt;0x7fff5fbff340&lt;/code&gt; changed to &lt;code&gt;0x100000f8e&lt;/code&gt;, which contains &lt;code&gt;"Hello World!"&lt;/code&gt;. Once we are done
 with the function and back to &lt;code&gt;main&lt;/code&gt;, since &lt;code&gt;s&lt;/code&gt; is the alias to &lt;code&gt;0x7fff5fbff340&lt;/code&gt; and &lt;code&gt;0x7fff5fbff340&lt;/code&gt; contains address to &lt;code&gt;"Hello World!"&lt;/code&gt;, our task
@@ -12684,9 +12687,8 @@ $$&lt;/div&gt;
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</content><category term="heaps"></category><category term="proof"></category><category term="math"></category><category term="maw"></category></entry><entry><title>MAW: Chapter 5 Reflection</title><link href="https://zhu45.org/posts/2017/Mar/17/maw-chapter-5-reflection/" rel="alternate"></link><published>2017-03-17T15:56:00+08:00</published><updated>2017-03-17T15:56:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-17:/posts/2017/Mar/17/maw-chapter-5-reflection/</id><summary type="html">&lt;p class="first last"&gt;Summary of hash table for MAW Chapter 5&lt;/p&gt;
-</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;p&gt;This is the summary part of hash table and at the same time, it serves as the Chapter 5
-reflection.&lt;/p&gt;
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</content><category term="heaps"></category><category term="proof"></category><category term="math"></category><category term="maw"></category></entry><entry><title>Hash Table</title><link href="https://zhu45.org/posts/2017/Mar/17/hash-table/" rel="alternate"></link><published>2017-03-17T15:56:00+08:00</published><updated>2017-03-17T15:56:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2017-03-17:/posts/2017/Mar/17/hash-table/</id><summary type="html">&lt;p class="first last"&gt;Summary of hash table for MAW Chapter 5&lt;/p&gt;
+</summary><content type="html">&lt;html&gt;&lt;body&gt;&lt;p&gt;This post summarizes the basic idea about hash table. It is created based on MAW Chapter 5.&lt;/p&gt;
 &lt;div class="section" id="reflection"&gt;
 &lt;h2&gt;Reflection&lt;/h2&gt;
 &lt;div class="section" id="motivation"&gt;
@@ -12702,7 +12704,7 @@ operations. The only downside compared hash tables with tree structure is the il
 &lt;p&gt;A hash table is an array of some fixed size. Then we use hash function to map each key
 (i.e. a key is a string with an associated value) into some number in the range &lt;tt class="docutils literal"&gt;0&lt;/tt&gt; to
 &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;Tablesize-1&lt;/span&gt;&lt;/tt&gt; and place it in the appropriate cell.&lt;/p&gt;
-&lt;img alt="" class="img-responsive" src="/images/hashtable.PNG"/&gt;
+&lt;img alt="hash table idea illustration" class="img-responsive" src="/images/hashtable.PNG"/&gt;
 &lt;p&gt;Ideally, two distinct keys get different cells. However, this is not possible because
 there are a finite number of cells and a virtually infinite supply of keys. Thus the key
 concern for hash table data structure is how to distribute the keys evenly among the cells.
@@ -12750,6 +12752,12 @@ hash table collision resolution strategy.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="separate-chaining"&gt;
 &lt;h4&gt;Separate chaining&lt;/h4&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="first admonition-title"&gt;Note&lt;/p&gt;
+&lt;p class="last"&gt;Sometimes separate chaining is also referred as &lt;em&gt;"open hashing"&lt;/em&gt;, which means that none of the objects
+are stored inside the hash table's internal array. For example, objects are stored in lists of buckets
+for hash table implementng the separate chaining.&lt;/p&gt;
+&lt;/div&gt;
 &lt;p&gt;Separate chaining is to keep a list (chain or bucket) of all elements that hash to the same value. In other words,
 each hash table cell holds pointer to linked list of records with same hash value.
 When collision happens, we insert the hash value of the key to the corresponding linked list of
@@ -12766,9 +12774,20 @@ accessing an item = &lt;span class="math"&gt;\(O(1) + O(\lambda)\)&lt;/span&gt;.
 than 1 but close to 1 if good hashing function. Thus, the general rule for
 separate chaining hashing is to make the table size about as large as the number of
 elements expected (let &lt;span class="math"&gt;\(\lambda \approx 1\)&lt;/span&gt;).&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="first admonition-title"&gt;Note&lt;/p&gt;
+&lt;p class="last"&gt;Actually, separate chaining doesn't restrict us to use the list to chain the objects together.
+We can use a tree to organize the elements that have the same hash value.&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="open-addressing"&gt;
 &lt;h4&gt;Open addressing&lt;/h4&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="first admonition-title"&gt;Note&lt;/p&gt;
+&lt;p class="last"&gt;Open addressing is sometimes referred as &lt;em&gt;"closed hashing"&lt;/em&gt;, which means that every object
+is stored directly at some index in the hash table's internal array; the objects never
+live outside of the internal array.&lt;/p&gt;
+&lt;/div&gt;
 &lt;p&gt;One disadvantage for the separate chaining strategy is that we need to build linked list
 for each cell, whcih introduces the overhead that can waste space. Another strategy to
 resolve collision is to try other empty cells. This is called open addressing. In general,
@@ -12817,20 +12836,13 @@ Like B-tree, this structure is widely applied in the database field.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div class="section" id="left-out"&gt;
-&lt;h2&gt;Left Out&lt;/h2&gt;
-&lt;p&gt;Some material I left out when I work through this chapter majorly due to the time
-constraint:&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;5.7, 5.12, 5.13, 5.15&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
 &lt;div class="section" id="reference"&gt;
 &lt;h2&gt;Reference&lt;/h2&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;MAW Chapter 5&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf"&gt;https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf"&gt;https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Washington lecture slides: &lt;a class="reference external" href="https://courses.cs.washington.edu/courses/cse332/10sp/lectures/lecture10.pdf"&gt;CSE 332 Lecture 10&lt;/a&gt;,
+&lt;a class="reference external" href="https://courses.cs.washington.edu/courses/cse373/06sp/handouts/lecture16.pdf"&gt;CSE 373 Lecture 16&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://stackoverflow.com/questions/9124331/meaning-of-open-hashing-and-closed-hashing"&gt;SO: Meaning of Open hashing and Closed hashing&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;/body&gt;&lt;/html&gt;&lt;script type='text/javascript'&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
