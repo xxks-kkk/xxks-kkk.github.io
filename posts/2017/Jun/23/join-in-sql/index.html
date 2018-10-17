@@ -74,18 +74,14 @@ happened when I took DB course in college, and the second time was when I joined
 the federation team at IBM and learned about DB2. Unfortunately, I didn't keep
 my study notes well in the first two tries and I don't write SQL a lot during my
 day to day work. Things, again, get rusty very quickly. This time I want to do a
-better job by, at least, saving my notes in a good place. </p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Tables appeard in this post 
-are from the 
-<a href="http://db-book.com/">supplementary resources</a> of the 
-<a href="https://www.amazon.com/Database-System-Concepts-Computer-Science/dp/0073523321">Database System Concepts</a> book.</p>
-</div>
+better job by, at least, saving my notes in a good place <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">1</a></sup>. </p>
 <div class="toc">
 <ul>
-<li><a href="#tldr">TL;DR</a></li>
-<li><a href="#motivation">Motivation</a></li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#motivation">Motivation</a><ul>
+<li><a href="#cartesian-product">Cartesian product</a></li>
+</ul>
+</li>
 <li><a href="#join">join</a><ul>
 <li><a href="#sql-perspective">SQL perspective</a><ul>
 <li><a href="#inner-join">inner join</a><ul>
@@ -104,11 +100,15 @@ are from the
 <li><a href="#relational-algebra-perspective">Relational algebra perspective</a></li>
 </ul>
 </li>
-<li><a href="#a-leetcode-example">A leetcode example</a></li>
+<li><a href="#examples">Examples</a><ul>
+<li><a href="#leetcode-175">Leetcode 175</a></li>
+<li><a href="#example-two">Example Two</a></li>
+</ul>
+</li>
 <li><a href="#links-to-resources">Links to resources</a></li>
 </ul>
 </div>
-<h2 id="tldr">TL;DR</h2>
+<h2 id="summary">Summary</h2>
 <ul>
 <li>
 <p><code>natural join</code> produces a relation from two relations by considering only those pairs of tuples
@@ -127,9 +127,12 @@ the common attributes of either or both of the relations that we want to join on
 </ul>
 <h2 id="motivation">Motivation</h2>
 <p>Before we directly jump into the SQL, I want to briefly talks about the motivation
-for the <code>join</code> statement. Specifically, why do we need it?</p>
+for the <code>join</code> statement. Specifically, why do we need it? In short, <code>join</code> is used
+as a shorthand for a widely-used type of query where we want to equate two columns
+in two tables in the <code>where</code> clause (e.g., <code>T1.a = T2.a</code>).</p>
 <p>To retrieve data from multiple relations (i.e. more than one table), we can either
 use a cartesian product or join of columns of the same data type.</p>
+<h3 id="cartesian-product">Cartesian product</h3>
 <p>The cartesian product happens to the relations listed in the <code>from</code> clause of a SQL.
 The end result of cartesian product is a relation that has all attributes from
 all the relations in the <code>from</code> clause. The following iterative process shows
@@ -209,14 +212,9 @@ ID|name|dept_name|salary|ID|course_id|sec_id|semester|year
 12121|Wu|Finance|90000|12121|FIN-201|1|Spring|2010
 12121|Wu|Finance|90000|15151|MU-199|1|Spring|2010
 </pre></div>
-<p>The result relation has 180 rows, which exactly equal to <span class="math">\(12 \times 15\)</span>. Notice that
-the order of appearance of relations appeard in the <code>from</code> clause matters. If you 
-take a look at our SQL result, we get there are <span class="math">\(15\)</span> rows with "name" called 
-"Srinivasan" and then we expect another <span class="math">\(15\)</span> rows with "name" called "Wu" and so on.
-This matches the description of relational algebra perfectly.</p>
+<p>The result relation has 180 rows, which exactly equal to <span class="math">\(12 \times 15\)</span>. </p>
 <p>Quite often, we use <code>where</code> clause to restrict the combinations created by the 
-cartesian product to those that are meaningful for the desired answer. One common 
-scenario is like the following SQL</p>
+cartesian product to those that are meaningful for the desired answer. For example:</p>
 <div class="highlight"><pre><span></span><span class="k">select</span> <span class="n">name</span><span class="p">,</span> <span class="n">course</span> <span class="n">id</span>
 <span class="k">from</span> <span class="n">instructor</span><span class="p">,</span> <span class="n">teaches</span>
 <span class="k">where</span> <span class="n">instructor</span><span class="p">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">teaches</span><span class="p">.</span><span class="n">ID</span><span class="p">;</span>
@@ -224,9 +222,7 @@ scenario is like the following SQL</p>
 <p>In this query, we combine information from the <em>instructor</em> and <em>teaches</em> table
 and the matching condition requires <code>instructor.ID</code> to be equal to <code>teaches.ID</code>. 
 In fact, these are the only attributes in the two relations that have the same name. 
-In general, we may often find us writing SQLs that requires all attributes with
-matching names to be equated in the <code>where</code> clause. This case is so common that
-we use <code>join</code> to save us some effort.</p>
+<em>In general, we may often find us writing SQLs that requires all attributes with matching names to be equated in the <code>where</code> clause. This case is so common that we use <code>join</code> to save us some effort.</em></p>
 <h2 id="join">join</h2>
 <p>In this section, I'll talk about <code>join</code> from SQL perspective, and then I'll also
 present how <code>join</code> is actually defined in relational algebra.</p>
@@ -243,7 +239,7 @@ is a graphic summary for the text above</p>
    |- full outer join
 </pre></div>
 <p>In addition, there are join conditions that we can use in combination with
-the join form mentioned above. In other words, any form of join (inner, left outer,
+the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions</p>
 <table class=" table-striped table table-hover">
@@ -272,6 +268,9 @@ The table below provides a summary of join types and join conditions</p>
 </tr>
 </tbody>
 </table>
+<p>Then the SQL syntax is </p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="n">table1</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">natural</span><span class="o">&gt;</span> <span class="p">[</span><span class="n">Join</span> <span class="n">types</span><span class="p">]</span> <span class="p">[</span><span class="n">table2</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">on</span> <span class="o">|</span> <span class="n">using</span><span class="o">&gt;</span>
+</pre></div>
 <h4 id="inner-join">inner join</h4>
 <h5 id="natural-join">natural join</h5>
 <p>We start this section by considering <strong>natural join</strong>. The natural join works
@@ -279,36 +278,11 @@ on two relations and produces a relation as the result. Unlike the cartesian
 product of two relations, which concatenates each tuple of the first relation
 with every tuple of the second, natural join considers only those pairs of tuples
 with the same value on those attributes that appear in the schemas of both relations.</p>
-<div class="highlight"><pre><span></span><span class="k">select</span> <span class="n">name</span><span class="p">,</span> <span class="n">course_id</span> <span class="k">from</span> <span class="n">instructor</span> <span class="k">natural</span> <span class="k">join</span> <span class="n">teaches</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">instructor</span> <span class="k">natural</span> <span class="k">join</span> <span class="n">teaches</span><span class="p">;</span>
 </pre></div>
-<p>Consider the query above, computing <em>instructor</em> <code>natural join</code> <em>teaches</em> considers
-only those pairs of tuples where both the tuple from <em>instructor</em> and the tuple
-from <em>teaches</em> have the same value on the common attribute, "ID".</p>
-<div class="highlight"><pre><span></span>sqlite&gt; select name, course_id from instructor natural join teaches;
-name|course_id
-Srinivasan|CS-101
-Srinivasan|CS-315
-Srinivasan|CS-347
-Wu|FIN-201
-Mozart|MU-199
-Einstein|PHY-101
-El Said|HIS-351
-Katz|CS-101
-Katz|CS-319
-Crick|BIO-101
-Crick|BIO-301
-Brandt|CS-190
-Brandt|CS-190
-Brandt|CS-319
-Kim|EE-181
-</pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<ol>
-<li>The query result set is exactly the same as the
-result set given by <code>select name, course id from instructor, teaches where instructor.ID = teaches.ID;</code></li>
-</ol>
-</div>
+<p>Consider the query above, computing <code>instructor natural join teaches</code> considers
+only those pairs of tuples where both the tuple from <code>instructor</code> and the tuple
+from <code>teaches</code> have the same value on the common attribute, <code>ID</code>.</p>
 <div class="highlight"><pre><span></span>sqlite&gt; select * from instructor natural join teaches;
 ID|name|dept_name|salary|course_id|sec_id|semester|year
 10101|Srinivasan|Comp. Sci.|65000|CS-101|1|Fall|2009
@@ -327,16 +301,20 @@ ID|name|dept_name|salary|course_id|sec_id|semester|year
 83821|Brandt|Comp. Sci.|92000|CS-319|2|Spring|2010
 98345|Kim|Elec. Eng.|80000|EE-181|1|Spring|2009
 </pre></div>
-<p>From above query result we can note that</p>
+<p>Since <code>join</code> is really a shorthand of writing a type of SQL with cartesian product, we can get the same 
+result using <code>select * from instructor, teaches where instructor.ID = teaches.ID;</code>. From above query result we can see that:</p>
 <ol>
 <li>
-<p>we do not repeat those attributes that appear in the schemas of both relations;
-rather they appear only once.</p>
+<p>We do not repeat those attributes that appear in the schemas of both relations;
+rather they appear only once (e.g. only one <code>ID</code> column, not two).</p>
 </li>
 <li>
-<p>the order in which the attributes are listed: first the attributes common to the schemas
+<p>The order in which the attributes are listed: first the attributes common to the schemas
 of both relations, second those attributes unqiue to the schema of the first relation, and
 finally, those attribute unique to the schema of the second relation.</p>
+</li>
+<li>
+<p>All the columns from <code>instructor</code> table (4 columns) and <code>teaches</code> (5 columns) table show up in the final result (8 columns in total except <code>ID</code> column showing up once).</p>
 </li>
 </ol>
 <p>In addition, natural join will consider ALL the attributes that appear in the 
@@ -361,13 +339,13 @@ HIS-351|World History|History|3
 MU-199|Music Video Production|Music|3
 PHY-101|Physical Principles|Physics|4
 </pre></div>
-<p><em>instructor</em> has attributes (<code>ID|name|dept_name|salary</code>); 
-<em>teaches</em> has attributes (<code>ID|course_id|sec_id|semester|year</code>);
-<em>course</em> has attributes (<code>course_id|title|dept_name|credits</code>). The first <code>natural join</code>
-will first do cartesian product of <em>instructor</em> and <em>teaches</em> and 
-keep the tuples that have the same value on "ID". Then, the resulting relation
-will do the second <code>natural join</code> with <em>course</em> and 
-will keep the tuples that have the same value on "course_id" and "dept_name".</p>
+<p><code>instructor</code> has attributes (<code>ID|name|dept_name|salary</code>); 
+<code>teaches</code> has attributes (<code>ID|course_id|sec_id|semester|year</code>);
+<code>course</code> has attributes (<code>course_id|title|dept_name|credits</code>). The first <code>natural join</code>
+will first do cartesian product of <code>instructor</code> and <code>teaches</code> and 
+keep the tuples that have the same value on <code>ID</code>. Then, the resulting relation
+will do the second <code>natural join</code> with <code>course</code> and 
+will keep the tuples that have the same value on <code>course_id</code> and <code>dept_name</code>.</p>
 <div class="highlight"><pre><span></span>sqlite&gt; select * from instructor natural join teaches natural join course;
 ID|name|dept_name|salary|course_id|sec_id|semester|year|title|credits
 10101|Srinivasan|Comp. Sci.|65000|CS-101|1|Fall|2009|Intro. to Computer Science|4
@@ -430,7 +408,7 @@ like working exactly the same as <strong>where</strong> clause? The answer is</p
 </ol>
 <h4 id="outer-join">outer join</h4>
 <h5 id="motivation_1">Motivation</h5>
-<p>Let's consider <em>student</em> and <em>takes</em> tables look like the below</p>
+<p>Let's consider <code>student</code> and <code>takes</code> tables look like the below</p>
 <div class="highlight"><pre><span></span>sqlite&gt; select * from student;
 ID|name|dept_name|tot_cred
 00128|Zhang|Comp. Sci.|102
@@ -478,11 +456,11 @@ taken. We come up a query that looks like</p>
 <span class="k">from</span> <span class="n">student</span> <span class="k">natural</span> <span class="k">join</span> <span class="n">takes</span><span class="p">;</span>
 </pre></div>
 <p>This query actually is not right for our purpose because it will not show
-the student who takes no course. This is because his "ID" will only appear
-in <em>student</em> table not in <em>takes</em> table. If we do <code>natural join</code>, the value
-of "ID" will not equal (one is a number and the other is null), which will
+the student who takes no course. This is because his <code>ID</code> will only appear
+in <code>student</code> table not in <code>takes</code> table. If we do <code>natural join</code>, the value
+of <code>ID</code> will not equal (one is a number and the other is null), which will
 not show up in our final result set. Example in our case will be student Snow
-with "ID" 70557, who has not taken any course. </p>
+with <code>ID</code> 70557, who has not taken any course. </p>
 <div class="highlight"><pre><span></span>sqlite&gt; select * from student natural join takes;
 ID|name|dept_name|tot_cred|course_id|sec_id|semester|year|grade
 00128|Zhang|Comp. Sci.|102|CS-101|1|Fall|2009|A
@@ -508,7 +486,7 @@ ID|name|dept_name|tot_cred|course_id|sec_id|semester|year|grade
 98988|Tanaka|Biology|120|BIO-101|1|Summer|2009|A
 98988|Tanaka|Biology|120|BIO-301|1|Summer|2010|
 </pre></div>
-<p>More generallyy, some tuples in either or both of the relations being joined 
+<p>More generally, some tuples in either or both of the relations being joined 
 may be "lost" in this way. The <strong>outer join</strong> operation works in a manner similar
 to the join operations we studied above, but preserve those tuples that would be
 lost in a join, by creating tuples in the result containing null values.</p>
@@ -565,7 +543,7 @@ for outer join. Let's consider the following example</p>
 <span class="k">from</span> <span class="n">student</span> <span class="k">left</span> <span class="k">outer</span> <span class="k">join</span> <span class="n">takes</span> <span class="k">on</span> <span class="k">true</span>
 <span class="k">where</span> <span class="n">student</span><span class="p">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">takes</span><span class="p">.</span><span class="n">ID</span>
 </pre></div>
-<p>This gives the following result <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup></p>
+<p>This gives the following result <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">2</a></sup></p>
 <div class="highlight"><pre><span></span>sqlite&gt; select * from student left outer join takes where student.ID = takes.ID;
 ID|name|dept_name|tot_cred|ID|course_id|sec_id|semester|year|grade
 00128|Zhang|Comp. Sci.|102|00128|CS-101|1|Fall|2009|A
@@ -592,8 +570,8 @@ ID|name|dept_name|tot_cred|ID|course_id|sec_id|semester|year|grade
 98988|Tanaka|Biology|120|98988|BIO-301|1|Summer|2010|
 </pre></div>
 <p>Here, <code>left outer join</code> esentially returns a cartesian product of two relations.
-Since there is no tuple in <em>take</em> with ID = 70577, every time a tuple appears in the outer
-join with name = "Snow", the values for student.ID and takes.ID must be different, and
+Since there is no tuple in <code>take</code> with <code>ID = 70577</code>, every time a tuple appears in the outer
+join with name = <code>"Snow"</code>, the values for <code>student.ID</code> and <code>takes.ID</code> must be different, and
 such tuples would be eliminated by the <code>where</code> clause predicate. Thus, student
 Snow never appears in the result of the latter query.</p>
 <h3 id="relational-algebra-perspective">Relational algebra perspective</h3>
@@ -626,10 +604,11 @@ name in <span class="math">\(R\)</span> and <span class="math">\(S\)</span>) (i.
 <p>In fact, this perspective is acutally how people explain <code>join</code> to others. There
 are two excellent pages offer graphical explaination to this concept. Their links
 are attached in the "Links to resources" section.</p>
-<h2 id="a-leetcode-example">A leetcode example</h2>
+<h2 id="examples">Examples</h2>
+<h3 id="leetcode-175">Leetcode 175</h3>
 <p>Now, let's take a look at <a href="https://leetcode.com/problems/combine-two-tables/#/description">leetcode 175. Combine Two tables</a>
 for practice. </p>
-<p>The problem ask us to </p>
+<p>The problem asks us to </p>
 <blockquote>
 <p>Write a SQL query for a report that provides the following information
 (FirstName, LastName, City, State) 
@@ -657,6 +636,24 @@ they may not appear in the "Address" table. There are several queries we can wri
 <span class="k">select</span> <span class="n">FirstName</span><span class="p">,</span> <span class="n">LastName</span><span class="p">,</span> <span class="n">City</span><span class="p">,</span> <span class="k">State</span> <span class="k">from</span> <span class="n">Address</span> <span class="k">natural</span> <span class="k">right</span> <span class="k">outer</span> <span class="k">join</span> <span class="n">Person</span>
 </pre></div>
 <p>We should have no trouble to understand these queries now. </p>
+<h3 id="example-two">Example Two</h3>
+<p>Suppose we have two tables <code>t1</code> and <code>t2</code> that are created like:</p>
+<div class="highlight"><pre><span></span>create table t1 (a int, b char(1));
+create table t2 (b char(1), c char(10));
+</pre></div>
+<p>Also, <code>t1.b</code> contains 7 <code>'x'</code> and <code>t2.b</code> contains 3 <code>'x'</code>. If we do <code>select * from t1 inner join t2 on t1.b = t2.b</code>:</p>
+<blockquote>
+<p>what are the columns of the resulting queries?</p>
+</blockquote>
+<p>The result contains 4 columns: <code>a</code>, <code>b</code>, <code>b</code>, <code>c</code>. Note that one difference between <code>join ... on</code> and 
+<code>natural join</code> or <code>join ... using</code> is that <code>join ... on</code> will keep the columns with same attributes from
+two tables (e.g. <code>b</code> in this case) while the other two will only keep one column only.</p>
+<blockquote>
+<p>How many rows does the result set contain?</p>
+</blockquote>
+<p>Remember <code>join</code> is a special case of cartesian product: only keep the rows that have the same value on the
+shared attributes between two tables. In this example, since there are 7 <code>'x'</code> in <code>t1</code> and 3 <code>'x'</code> in <code>t2</code>,
+we will have 21 rows in the end.</p>
 <h2 id="links-to-resources">Links to resources</h2>
 <p>Here are some of the resources I found helpful while preparing this article:</p>
 <ul>
@@ -672,8 +669,12 @@ nice graphic explanation to this concept.</li>
 <div class="footnote">
 <hr/>
 <ol>
+<li id="fn:2">
+<p>Tables appeard in this post are from the <a href="http://db-book.com/">supplementary resources</a> of the 
+<a href="https://www.amazon.com/Database-System-Concepts-Computer-Science/dp/0073523321">Database System Concepts</a> book. <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+</li>
 <li id="fn:1">
-<p><code>on true</code> is equivalent to <code>student left outer join takes</code>. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+<p><code>on true</code> is equivalent to <code>student left outer join takes</code>. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 </ol>
 </div>

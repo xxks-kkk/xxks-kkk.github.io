@@ -60,7 +60,14 @@
         </header>
         
         <article>
-            <html><body><p>Surprisingly, even I work with the product that is written majorly in C++, I don't have to deal
+            <html><body><div class="toc">
+<ul>
+<li><a href="#virtual-methods">Virtual methods</a></li>
+<li><a href="#pure-virtual-function-abstract-base-class">Pure virtual function &amp; abstract base class</a></li>
+<li><a href="#key-terms-summary">Key terms summary</a></li>
+</ul>
+</div>
+<p>Surprisingly, even I work with the product that is written majorly in C++, I don't have to deal
 with the stuff that differentiate C++ from C. However, I'm now working on a defect that
 forces me to simplify C++ objects in order to get the root cause of the problem. That's the place
 where I have to really need to know how exactly C++ class is structured. </p>
@@ -185,16 +192,18 @@ The object can be a base-class object or an object of a derived class.
 If the function is virtual, then the decision as to which function to run is 
 delayed until run time. The version of the virtual function that is run is the 
 one defined by the type of the object to which the reference is bound or to 
-which the pointer points.On the other hand, calls to nonvirtual functions are 
-bound at compile time. Similarly, calls to any function (virtual or not) 
-on an object are also bound at compile time. 
+which the pointer points. On the other hand, calls to nonvirtual functions are 
+bound at compile time. Similarly, <em>calls to any function (virtual or not) 
+on an object are also bound at compile time</em>. 
 The type of an object is fixed and unvarying—there is nothing we can do to 
 make the dynamic type of an object differ from its static type. 
 Therefore, calls made on an object are bound at compile time to the version defined by the type of the object.</p>
-<p>Note: Virtuals are resolved at run time only if the call is made 
-through a reference or pointer. Only in these cases is it possible for 
-an object’s dynamic type to differ from its static type.</p>
 </blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Virtuals are resolved at run time only if the call is made through a <em>reference</em> or <em>pointer</em>. Only in these cases is it possible for 
+an object’s dynamic type to differ from its static type.</p>
+</div>
 <p>To see the final note of the above quote, let's take a look an example</p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
