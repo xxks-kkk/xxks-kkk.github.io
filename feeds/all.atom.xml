@@ -1287,7 +1287,7 @@ copy of the file.&lt;/p&gt;
 &lt;li&gt;Each replica (i.e., server, "Representative" in paper) gets M votes&lt;/li&gt;
 &lt;li&gt;Extra read-only copies get 0 votes (i.e., Weak Representatives)&lt;/li&gt;
 &lt;li&gt;Each file is assigned K votes&lt;/li&gt;
-&lt;li&gt;To read a file for a set of replicas, we require R + W &amp;gt; K&lt;ul&gt;
+&lt;li&gt;To read a file from a set of replicas, we require R + W &amp;gt; K&lt;ul&gt;
 &lt;li&gt;R: the number of replicas we need to read before replying to the clients&lt;/li&gt;
 &lt;li&gt;W: the number of replicas we need to write before replying to the clients&lt;/li&gt;
 &lt;li&gt;We have at least one overlapping replica between R and W&lt;ul&gt;
@@ -5983,6 +5983,17 @@ query language to replace SQL.&lt;/p&gt;
 &lt;p&gt;The fundamental operators in relational algebra need to be implemented
 in the database system in order to manipulate tuples: &lt;span class="math"&gt;\(\sigma \text{(select)}, \pi \text{(projection)}, \cup \text{(union)},
 \cap \text{(intersection)}, - \text{(difference)}, \times \text{(product)}, \bowtie \text{(join)}\)&lt;/span&gt;. &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;--- 11/14/2018 UPDATE ---&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Lock vs. Latch in database context: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Lock is a high-level primitive on a logical component of a database: a lock on a database, a lock on a table, a lock on a record&lt;/li&gt;
+&lt;li&gt;Latch is the lock from OS perspective (a low-level primitive that works on the data structure): a latch on the page table,
+  a latch on a index page&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
