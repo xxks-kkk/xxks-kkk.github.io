@@ -66,7 +66,7 @@
         </header>
         
         <article>
-            <html><body><h2 id="preface">Preface</h2>
+            <h2 id="preface">Preface</h2>
 <p>This is actually MAW 3.10. I gradually realize how dense MAW is.
 In the <a href="http://zhu45.org/posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">previous problem</a>,
 I write almost 500 lines of code. For this one, the problem is not really diffcult to solve if we implement a program 
@@ -150,24 +150,26 @@ steps has two parts, depending on whether <span class="math">\(n\)</span> (and t
 <li>
 <p>If <span class="math">\(2^a + l = 2k\)</span>, then</p>
 <p>
-</p><div class="math">$$
+<div class="math">$$
 \begin{align*}
 F(2^a + l) &amp;= 2F(2^{a-1} + l/2) - 1 &amp;&amp;\text{(by equation 1)} \\
         &amp;= 2(2l/2 + 1) - 1      &amp;&amp;\text{(by induction hypothesis)} \\
         &amp;= 2l + 1
 \end{align*}
 $$</div>
+</p>
 </li>
 <li>
 <p>If <span class="math">\(2^a + l = 2k+1\)</span>, then</p>
 <p>
-</p><div class="math">$$
+<div class="math">$$
 \begin{align*}
 F(2^a + l) &amp;= 2F(2^{a-1} + (l-1)/2) + 1 &amp;&amp;\text{(by equation 2)} \\
         &amp;= 2(2(l-1)/2 + 1) + 1      &amp;&amp;\text{(by induction hypothesis)} \\
         &amp;= 2l + 1
 \end{align*}
 $$</div>
+</p>
 </li>
 </ul>
 </li>
@@ -208,11 +210,12 @@ after the first-round.</p>
 However, there is no nice clean linear relation that we can get between <span class="math">\(F(2k)\)</span> and <span class="math">\(F(k)\)</span> 
 when <span class="math">\(n = 10\)</span>, <span class="math">\(m = 3\)</span>.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p><p>Inside <em>Concrete Mathematics: A Foundation for Computer Science</em>, after talking about the
+<p class="admonition-title">Note<p>Inside <em>Concrete Mathematics: A Foundation for Computer Science</em>, after talking about the
 solution to the Josephus problem, the author shift their focus to solve a generalized
 recurrence of \ref{eq:1} and \ref{eq:2}, which is (1.11) in the book. This has nothing to do
 with the Josephus problem and I'm guessing the reason why the author want to talk about 
 the solution to the generalized recurrence is to illustrate dynamic programming philosophy.</p>
+</p>
 </div>
 <h2 id="general-solution">General solution</h2>
 <p>The big picture here is we need to find out the relative position of the final survivor to the
@@ -404,7 +407,7 @@ zero-indexing.</p>
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script></body></html>
+</script>
         </article>
 
 <!--        <footer>

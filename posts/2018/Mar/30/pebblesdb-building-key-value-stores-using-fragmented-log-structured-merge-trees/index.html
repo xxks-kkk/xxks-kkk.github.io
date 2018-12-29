@@ -64,7 +64,7 @@
         </header>
         
         <article>
-            <html><body><div class="toc">
+            <div class="toc">
 <ul>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#background">Background</a><ul>
@@ -143,7 +143,7 @@ want to <a href="https://github.com/xxks-kkk/HyperPebblesDB">build something</a>
 <li>
 <p>Why the idea can improve write throughput intuitively:</p>
 <ul>
-<li>Write operations on LSM stores are often stalled or blocked while data is compacted (rewritten for better read performance); by drastically reducing write IO, FLSM makes compaction signicantly faster, thereby increasing write throughput.</li>
+<li>Write operations on LSM stores are often stalled or blocked while data is compacted (rewritten for better read performance); by drastically reducing write IO, FLSM makes compaction signi￿cantly faster, thereby increasing write throughput.</li>
 </ul>
 </li>
 </ul>
@@ -322,7 +322,7 @@ to sstable at a level.</p>
 <p><code>put()</code> adds data to an in-memory memtable. When the memtable gets full, it is written as a sorted sstable to Level 0. When each level reaches a certain size, it is compacted into the next level. </p>
 </li>
 <li>
-<p>Similar to LSM, updating or deleting a key involves inserting the key into the store with an updated sequence number or a deletion flag respectively. the deletion of the key does not result in deletion of the related guard; deleting a guard will involve a signicant amount of compaction work. Thus, empty guards are possible.</p>
+<p>Similar to LSM, updating or deleting a key involves inserting the key into the store with an updated sequence number or a deletion flag respectively. the deletion of the key does not result in deletion of the related guard; deleting a guard will involve a signi￿cant amount of compaction work. Thus, empty guards are possible.</p>
 </li>
 <li>
 <p>Compaction:</p>
@@ -363,7 +363,7 @@ to sstable at a level.</p>
 <ul>
 <li>A Bloom filter is a space-efficient probabilistic data structure used to test whether an element is present in a given set in constant time</li>
 <li>A bloom filter can produce false positives, but not false negatives (i.e., the key is in sstables but bloom filters say no)</li>
-<li>PebblesDB attaches a bloom filter to each sstable to eciently detect if a given key could be present in the sstable. </li>
+<li>PebblesDB attaches a bloom filter to each sstable to e￿ciently detect if a given key could be present in the sstable. </li>
 </ul>
 </li>
 </ul>
@@ -493,7 +493,7 @@ given key. </p>
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-</script></body></html>
+</script>
         </article>
 
 <!--        <footer>
