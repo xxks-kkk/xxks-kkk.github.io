@@ -203,10 +203,6 @@
 /* Name.Variable.Global */
 /* Name.Variable.Instance */
 /* Literal.Number.Integer.Long */
-* {
-  color: #030303;
-}
-
 .post-info, blockquote, .topic {
   background: #f7f7f7;
   border: 1px solid #ccc;
@@ -220,14 +216,8 @@
 }
 
 code, kbd, pre, samp {
-  font-family: "Menlo", "Monaco", "Consolas", "Courier New", monospace;
-  padding: 20px 5px 20px 20px;
-}
-
-h1.post-title {
-  line-height: 1.2em;
-  border-bottom: 1px solid #000;
-  margin-bottom: 0px;
+  font-family: "Monaco", "Courier New", serif;
+  font-size: 90%;
 }
 
 .post-info {
@@ -281,13 +271,7 @@ span.label.label-default {
   margin-right: 20px;
 }
 
-.footnote-ref {
-  border: 2px solid #C5050C;
-}
-
 body {
-  font-family: Source Sans Pro, Verdana, sans-serif;
-  font-weight: 300;
   /* @media screen and (min-width: $break-large)
   *  //background: url(pageframe-right.gif) right top repeat-y, url(pageframe-left.gif) left top repeat-y
   *  //background: url(pageframe-right.gif) right top repeat-y, url(page-frame-left-25.png) left top repeat-y
@@ -302,6 +286,7 @@ body a {
   font-weight: 400;
   text-decoration: none;
   border-bottom: 1px dotted;
+  color: blue;
 }
 body h1, body h2, body h3, body h4, body h5, body h6 {
   font-family: "Gentium Book Basic", "Georgia", serif;
@@ -359,11 +344,6 @@ body iframe {
   border-color: inherit;
 }
 
-.disclaimer {
-  text-align: center;
-  font-size: 0.8em;
-}
-
 .nav {
   list-style: none;
   padding-left: 0;
@@ -387,7 +367,7 @@ body iframe {
 .landing-container {
   width: 65%;
   margin: 2em auto 0;
-  font-family: Source Sans Pro, Verdana, sans-serif;
+  font-family: Palatino, Source Sans Pro, Verdana, sans-serif;
 }
 .landing-container li {
   font-family: "Gentium Book Basic", "Georgia", serif;
@@ -415,20 +395,19 @@ body iframe {
 }
 
 .container {
-  max-width: 56em;
-  margin: 1em auto;
-  background: #fff;
+  padding: 1em;
+  padding-top: 5ex;
+  font-family: Palatino, Source Sans Pro, Verdana, sans-serif;
+  font-size: 130%;
+  background-color: #fff;
+  max-width: 980px;
+  margin: auto;
 }
 @media screen and (min-width: 640px) {
   .container {
     padding: 50px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
   }
-}
-.container h1 {
-  line-height: 1.2em;
-  border-bottom: 1px solid #ccc;
-  margin-bottom: 0px;
 }
 @media screen and (max-width: 640px) {
   .container {
@@ -440,8 +419,9 @@ body iframe {
   margin: 3.2em 0;
 }
 .container .blog-header {
-  margin-bottom: 3em;
   position: relative;
+  border-bottom: 1px solid #333;
+  margin-bottom: 1em;
 }
 .container .blog-header h1 {
   margin-bottom: 0;
@@ -477,8 +457,16 @@ body iframe {
   font-size: 1.2em;
 }
 .container .blog-footer {
+  border-top: 1px solid #333;
+  font-style: italic;
+  padding-top: 2ex;
   margin-top: 2em;
-  text-align: center;
+  text-align: left;
+  font-size: 0.8em;
+}
+.container .blog-footer #archive {
+  float: right;
+  margin-top: -1em;
 }
 .container .post-list .post-overview {
   margin: 1em;
@@ -500,85 +488,6 @@ body iframe {
     position: relative;
   }
 }
-.container .post {
-  font-size: 16px;
-}
-@media screen and (max-width: 640px) {
-  .container .post {
-    font-size: 1em;
-  }
-}
-.container .post h1 {
-  font-size: 1.5em;
-}
-.container .post h2 {
-  font-size: 1.44em;
-}
-.container .post h3 {
-  font-size: 1.3em;
-}
-.container .post h4 {
-  font-size: 1.2em;
-}
-.container .post h5, .container .post h6 {
-  font-size: 16px;
-}
-.container .post a {
-  font-weight: 400;
-}
-.container .post img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 1.5em auto;
-}
-.container .post code, .container .post tt {
-  padding: 2px 4px;
-  font-size: 90%;
-  color: #c5050c;
-}
-.container .post .highlight {
-  font-size: 0.9em;
-  overflow-x: auto;
-}
-.container .post header {
-  margin: 2.2em 0;
-}
-.container .post header h1 {
-  font-size: 2.45em;
-}
-.container .post header p.date {
-  margin-top: -1.3em;
-}
-.container .post article {
-  line-height: 1.73333em;
-}
-.container .post footer {
-  margin: 2em 0 0 0;
-  text-align: left;
-}
-.container .admonition.note {
-  background: #E0FFE0;
-  margin-left: 10px;
-  margin-right: 72px;
-  margin-bottom: 20px;
-  margin-top: 20px;
-  padding: 4px;
-  border: 2px black solid;
-  font-size: 90%;
-  border-radius: 4px;
-}
-.container .admonition-title {
-  background: #1abc9c;
-  font-weight: bold;
-  display: block;
-  color: #fff;
-  padding: 6px 12px;
-  margin: -6px;
-  margin-bottom: 12px;
-  text-align: center;
-  border-radius: 4px;
-}
 
 .topic {
   padding: 10px 20px;
@@ -592,6 +501,74 @@ body iframe {
 
 .highlight pre {
   padding: 20px;
+}
+
+@media screen and (max-width: 640px) {
+  .post {
+    font-size: 1em;
+  }
+}
+.post h1 {
+  font-size: 1.5em;
+}
+.post h2 {
+  font-size: 1.44em;
+}
+.post h3 {
+  font-size: 1.3em;
+}
+.post h4 {
+  font-size: 1.2em;
+}
+.post h5, .post h6 {
+  font-size: 16px;
+}
+.post a {
+  font-weight: 400;
+}
+.post img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.5em auto;
+}
+.post .highlight {
+  font-size: 0.9em;
+  overflow-x: auto;
+}
+.post header {
+  margin: 2.2em 0;
+}
+.post header p.date {
+  margin-top: -1.3em;
+}
+.post footer {
+  margin: 2em 0 0 0;
+  text-align: left;
+}
+
+.admonition.note {
+  background: #E0FFE0;
+  margin-left: 10px;
+  margin-right: 72px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  padding: 4px;
+  border: 2px black solid;
+  font-size: 90%;
+  border-radius: 4px;
+}
+
+.admonition-title {
+  background: #1abc9c;
+  font-weight: bold;
+  display: block;
+  color: #fff;
+  padding: 6px 12px;
+  margin: -6px;
+  margin-bottom: 12px;
+  text-align: center;
+  border-radius: 4px;
 }
 
 /*# sourceMappingURL=cid.css.map */
