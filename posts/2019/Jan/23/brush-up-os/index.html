@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Brush up OS
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../Archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+          <div class="post-title">Brush up OS</h1></div>
+          <div class="post-date"><time datetime="2019-01-23T22:24:00+08:00">Jan 23, 2019</time></div>
+        </header>
+        
+        <article>
+            <p>This post aims to prepare myself for the upcoming <a href="http://www.cs.utexas.edu/~rossbach/380L/index.html">CS380L Advanced Operating Systems</a> offered by
+<a href="http://www.cs.utexas.edu/~rossbach/">Christopher J. Rossbach</a>. The questions are actually from his <a href="http://www.cs.utexas.edu/~rossbach/380L/hw/hw1.pdf">HW1</a> aka. "Swapping in the state from undergraduate OS".</p>
+<div class="toc">
+<ul>
+<li><a href="#brush-up">Brush up</a><ul>
+<li><a href="#definitions">Definitions</a></li>
+<li><a href="#short-answer">Short answer</a></li>
+<li><a href="#virtual-memory-addressing">Virtual memory addressing</a></li>
+<li><a href="#page-replacement">Page replacement</a></li>
+<li><a href="#multiprocessing">Multiprocessing</a></li>
+<li><a href="#achieving-fast-file-reads">Achieving fast file reads</a></li>
+<li><a href="#synchronization">Synchronization</a></li>
+<li><a href="#networking">Networking</a></li>
+<li><a href="#serving-multiple-clients">Serving multiple clients</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="brush-up">Brush up</h2>
+<h3 id="definitions">Definitions</h3>
+<p>Define the following terms:</p>
+<blockquote>
+<p>Internal and external fragmentation.  Which of them can occur in a paging system? A system with pure segmentation?</p>
+</blockquote>
+<p>Fragmentation happens when we talk about memory allocation (e.g., user requests memory through <code>malloc()</code>; OS manages physical
+memory when using segmentation to implement virtual memory). There are two types of fragmentation:</p>
+<ul>
+<li>
+<p><strong>internal fragmentation</strong>: unused memory within a unit of allocation: if an allocator hands out chunks of memory bigger than that requested,
+any unasked for (and thus unused) space in such a chunk is considered <em>internal</em> fragmentation (because the waste occurs inside the allocated unit).
+Metaphorically speaking, internal fragmentation happens when a party of three at a table for four.</p>
+</li>
+<li>
+<p><strong>external fragmentation</strong>: unused memory between units of allocation: the free space gets chopped into little pieces of different sizes and is thus
+fragmented; subsequent requests may fail because there is no single contiguous space that can satisfy the request, even though the total amount of free
+space exceeds the size of the request. Metaphorically speaking, external fragmentation happens when two fixed tables for two but a party of four.</p>
+</li>
+</ul>
+<p>In a paging system, since the free space is divided into fixed-size units (i.e., pages), no external fragmentation can happen: a page request will
+always get satisified as all page size are equal; we can simply return one of them. However, internal fragmentation can still happen. For example,
+if the page size is 4KB and we request 3KB memory, then there will be 1KB unused memory within the returned page.</p>
+<p>In a system with pure segmentation, only extenral fragmentations can happen. Since segments are variable-sized units, external fragmentation cannot be avoided. However, the system can give out exact size of requested memory (no paging exists), then there is no internal fragmentation.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-segmentation.pdf">Chapter 16</a> and <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-freespace.pdf">Chapter 17</a> offer more on segmentation, which causes fragmentation, and free-space management that handles external fragmentation issue.</p>
+</div>
+<blockquote>
+<p>Translation look-aside buffer (TLB).</p>
+</blockquote>
+<p>TLB is part of the chip's memory-management unit (MMU). It serves as a hardware cache of popular virtual-to-physical address translations
+(i.e., virtual page number to physical frame number translations)<sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">1</a></sup>.</p>
+<blockquote>
+<p>Interrupt.</p>
+</blockquote>
+<p>Interrupts are essentially requests for attention. In the same way, peripherals in a computer system can request the attention of the processor. The event that makes a microprocessor stop executing one routine to perform some other routine to service a request, is called an INTERRUPT<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">2</a></sup>. In other words, an  interrupt  is  an  electrical signal  that  causes  the  processor  to  stop  the  current  execution and  begin  to  execute  interrupt  handler  code.  Interrupts
+are asynchronous excpetions. Asynchronous here means "not related to instruction that just executed"<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">3</a></sup>.</p>
+<blockquote>
+<p>Distributed shared memory.</p>
+</blockquote>
+<p>Distributed shared memory is a memory architecture that a cluster of nodes share the same logical address space but physical
+memories are from each node in the cluster and connected via the network (i.e., a form of memory architecture where physically separated memories can be addressed as one logically shared address space) <sup id="fnref:15"><a class="footnote-ref" href="#fn:15" rel="footnote">4</a></sup></p>
+<blockquote>
+<p>Stateful  and  stateless  servers.   Also,  list  two  file  systems,  one  that is stateful and one that is stateless, and explain how having or not having state affects file service.</p>
+</blockquote>
+<p>Stateless server means the server does not keep track of anything about what is happening at each client (e.g., server does not
+maintain which client open what file on its side). Stateful server is the opposite of the stateless server. For example, 
+server keeps track of what client accesses what files so that when the server's file copy is modified (e.g., by some other clients
+who also access the same file), server can inform clients to invalidate their cache of the same file.</p>
+<p>A classic stateless file system is <a href="../../../../../posts/2018/May/01/suns-network-file-system-nfs/">NFS with NFSv2 protocol</a> (<a href="http://www.sane.nl/events/sane2000/papers/pawlowski.pdf">NFSv4 protocol</a> makes NFS become a stateful server as well). <a href="../../../../../posts/2018/May/02/the-andrew-file-system-afs/">AFS</a> is a stateful file system. </p>
+<p>Not having state makes crash recovery on the server side fast: server doesn't need to recover any client-side information 
+(thanks to stateless) and on server failure, clients can simply retry the request. However, with stateless, clients need
+to constantly contact server to validate their cache, which impose extra load to server. Furthermore, clients need to pass 
+extra information (e.g., file handle) when perform system calls, which impose extra overhead to clients. Having state complicates
+the crash recovery: server needs to initiate cache validation to the clients; clients also need to send out heartbeat message to
+server. However, with state, client doesn't need to constantly contact to validate its cache (wait for server's callback).</p>
+<blockquote>
+<p>Swapping.</p>
+</blockquote>
+<p>Since all pages cannot reside in the physical memory, to support large address space, we use part of disk (e.g., swap space) by
+swapping pages in and out between physical memory and swap space <sup id="fnref:11"><a class="footnote-ref" href="#fn:11" rel="footnote">5</a></sup>.</p>
+<blockquote>
+<p>Inverted page table.</p>
+</blockquote>
+<p>Inverted page table (along with multi-level page tables) aims to save memory space taken by the page tables. Instead of having one page table per process, we keep a single page table that has an entry for each <em>physical page</em> of the system. The entry tells us which process is using this page, and 
+which virtual page of that process maps to this physical page <sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">6</a></sup>. PowerPC uses this technique. </p>
+<!-- inverted: hash table; each entry contains <pid, corresponding virutal page number>
+64-bit linux uses inverted page table (TODO)-->
+<blockquote>
+<p>Disk sector, track, and cylinder.</p>
+</blockquote>
+<p>A disk <strong>sector</strong> refers to 512-byte block on the disk (aside note, drive manufacturers guarantee that a single 512-byte write is 
+atomic). Sectors of disk are organized as a set of concentric circles; each concentric circle of sectors is called a <strong>track</strong>
+<sup id="fnref:13"><a class="footnote-ref" href="#fn:13" rel="footnote">7</a></sup>. A <strong>cylinder</strong> is a set of tracks on different surfaces of a hard dirve that are the same distance from the center
+of the drive; it is called a cylinder because of its clear resemblance to the so-called geometrical shape <sup id="fnref:14"><a class="footnote-ref" href="#fn:14" rel="footnote">8</a></sup>.</p>
+<blockquote>
+<p>Thrashing.</p>
+</blockquote>
+<!-- Ideally, pages in the set of running processes should not be removed from the physical memory as they will have to be brought back in again. However, swaping can happens. However, if swaping happens too often and thus, most of CPU time is devoted to this activity, we run into *thrashing* situation. -->
+<p>The situation when memory demands of the set of running processes exceeds the available physical memory. System performace degrades due to the fact that system CPU time is dominated by the activity of swaping pages in and out between physical memory and swap space on disk <sup id="fnref:10"><a class="footnote-ref" href="#fn:10" rel="footnote">9</a></sup>.</p>
+<h3 id="short-answer">Short answer</h3>
+<p>Provide a short answer to each of the following questions:</p>
+<blockquote>
+<p>Give a reason why virtual memory address translation is useful even if  the  total  size  of  virtual  memory  (summed  over  all  programs) is guaranteed to be smaller than physical memory.</p>
+</blockquote>
+<p>Virtual memory address translation is useful in providing isolation (safety) across different processes: OS can make sure that one proacess cannot access part of physical memory that is owned by the other process. In addition, address translation helps OS to better manage the underlying physical memory: every process thinks address space starts at 0, which may not be true on the physical memory; for better memory management, OS may relocate the address space to some other physical address. Address translation enables OS to perform such memory management while makes the relocation be transparent to process <sup id="fnref:16"><a class="footnote-ref" href="#fn:16" rel="footnote">10</a></sup>.</p>
+<!-- same physical page can be shared across multiple processes; -->
+<blockquote>
+<p>Compare and contrast access control lists and capabilities.</p>
+</blockquote>
+<p>In an access control list model of security, the authorities are bounded to the objects being secured (e.g., file A can be r/w by user Alice). By contrast,
+in the capabilities model, the authorities are bound to objects seeking access <sup id="fnref:17"><a class="footnote-ref" href="#fn:17" rel="footnote">11</a></sup> (e.g., UNIX file descriptors are capabilities: authorities are 
+bounded to file descriptors, which reflect rights on objects like files or sockets <sup id="fnref:20"><a class="footnote-ref" href="#fn:20" rel="footnote">12</a></sup>).</p>
+<p>As one can see, with the ACL model, each object has just one list, while with the capability model, each object has a whole set of different, separable capabilities. For example, in capability model, a process has different capabilities depending on the objects it tries to access.</p>
+<p><a href="http://homepage.divms.uiowa.edu/~jones/security/notes/18.shtml">This page</a> has a nice example: file "aaa" has ACL as "Alice:R/W, Bob:R, Carol:R". File "aaa" is the object being secured. "Alice" has capabilities "aaa:R/W, bbb:R, ccc:R". "Alice" as a user is the object seeking access.</p>
+<blockquote>
+<p>The  length  of  the  time  slice  is  a  parameter  to  round  robin  CPU scheduling.  What is the main problem that occurs if this length is too long?  Too short?</p>
+</blockquote>
+<p>There are two important metrics in scheduling: <em>turnaround time</em> and <em>response time</em>. <em>turnaround time</em> of a job is
+defined as <span class="math">\(T_{completion} - T_{arrival}\)</span> (the time at which the job completes minus the time at which the job arrived in the
+system). <em>response time</em> is defined as <span class="math">\(T_{firstrun} - T_{arrival}\)</span> (the time from when the job arrives in a system to the first time it is scheduled). Round robin (RR) CPU scheduling is optimized towards
+response time. If time slice is too long, then the response time is worse. By contrast, if time
+slice is too short, the cost of context switching will dominate overall performance, which means less work is done during the time slice <sup id="fnref:18"><a class="footnote-ref" href="#fn:18" rel="footnote">13</a></sup>.</p>
+<blockquote>
+<p>List an advantage and a disadvantage to increasing the virtual memory page size.</p>
+</blockquote>
+<p>The advantages of increasing the virtual memory page size are: reduces page table size <sup id="fnref:6"><a class="footnote-ref" href="#fn:6" rel="footnote">14</a></sup>, improves TLB hit rate <sup id="fnref:7"><a class="footnote-ref" href="#fn:7" rel="footnote">15</a></sup>. The disadvantage is the 
+internal fragmentation (i.e., waste <em>within</em> each page; the waster is <em>internal</em> to the unit of allocation) <sup id="fnref2:4"><a class="footnote-ref" href="#fn:4" rel="footnote">6</a></sup>.</p>
+<!-- data block size determines largest file size (related to inode) -->
+<h3 id="virtual-memory-addressing">Virtual memory addressing</h3>
+<blockquote>
+<p>Suppose we have a machine that uses a three-level page table system.
+A 32-bit virtual address is divided into four fields of widths a, b, c, and d bits from left to right.
+The first three are indices into the three levels of page table; the fourth, d, is the offset.  Express the
+number of virtual pages available as a function of a, b, c, and d. Give one advantage and one disadvantage to multi-level page tables.</p>
+</blockquote>
+<p>Since we have a three-level page table system, then <span class="math">\(a\)</span> corresponds to Page Directory Index (PDI) 0, <span class="math">\(b\)</span> corresponds to PDI 1,
+<span class="math">\(c\)</span> corresponds to Page Table Index. Each page contains <span class="math">\(2^c\)</span> Page Table Entries (PTE). Page Directory 1 needs one entry per page
+and contains <span class="math">\(2^b\)</span> entries. Similarly, Page Directory 0 needs one entry per page, which contains one Page Directory 1 and there are
+<span class="math">\(2^a\)</span> entries. Thus, there are <span class="math">\(2^a\)</span> Page Directory 1, and each Page Directory 1 can point to <span class="math">\(2^b\)</span> pages, and each page contains
+<span class="math">\(2^c\)</span> PTEs, and each PTE corresponds to one virtual page. Therefore, there are <span class="math">\(2^{a+b+c}\)</span> virutal pages. Another way of cacluation is
+that the physical frame size is <span class="math">\(2^d\)</span>, which is equal to page size. Since the address space is 32 bit, there are <span class="math">\(\frac{2^{32}}{2^d}\)</span> virtual pages
+<sup id="fnref:8"><a class="footnote-ref" href="#fn:8" rel="footnote">16</a></sup>.</p>
+<p>The advantage of multi-level page tables is that we allow every piece of the multi-level page table fit into a page (e.g., page directory needs 
+to fit in a page as well) and reduce the space usage. The disadvantage is that additional memory accesses to look up a valid translation 
+(e.g., for 3-level page table system, we have three additional memory accesses: access Page Directory Entry 0 (PDE0), access PDE1, access PTE)<sup id="fnref:9"><a class="footnote-ref" href="#fn:9" rel="footnote">17</a></sup>.</p>
+<h3 id="page-replacement">Page replacement</h3>
+<blockquote>
+<p>Suppose a machine with 4 physical pages starts running a program (in other words, the physical pages are initially empty).  The
+program references the sequence of virtual pages as follows: A B C D E D C B A E D C B A C E
+For each of the following paging algorithms, replicate the reference pattern
+and underline each reference that causes a page fault (or make references
+that cause a page fault uppercase, and those that don’t lowercase):</p>
+<p>LRU.</p>
+</blockquote>
+<p>LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
+approximate LRU <sup id="fnref:12"><a class="footnote-ref" href="#fn:12" rel="footnote">18</a></sup> to avoid heavy overhead). The trace of the memory references with LRU policy shown below:</p>
+<table class="table  table-striped table-hover">
+<thead>
+<tr>
+<th>Access</th>
+<th>Hit/Miss</th>
+<th>Evict</th>
+<th>Resulting Cache State (LRU at front, MRU at tail)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Miss</td>
+<td></td>
+<td>A</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Miss</td>
+<td></td>
+<td>A,B</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Miss</td>
+<td></td>
+<td>A,B,C</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Miss</td>
+<td></td>
+<td>A,B,C,D</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Miss</td>
+<td>A</td>
+<td>B,C,D,E</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Hit</td>
+<td></td>
+<td>B,C,E,D</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Hit</td>
+<td></td>
+<td>B,E,D,C</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Hit</td>
+<td></td>
+<td>E,D,C,B</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Miss</td>
+<td>E</td>
+<td>D,C,B,A</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Miss</td>
+<td>D</td>
+<td>C,B,A,E</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Miss</td>
+<td>C</td>
+<td>B,A,E,D</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Miss</td>
+<td>B</td>
+<td>A,E,D,C</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Miss</td>
+<td>A</td>
+<td>E,D,C,B</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Miss</td>
+<td>E</td>
+<td>D,C,B,A</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Hit</td>
+<td></td>
+<td>D,B,A,C</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Miss</td>
+<td>D</td>
+<td>B,A,C,E</td>
+</tr>
+</tbody>
+</table>
+<p>From the table, we have A,B,C,D,E,d,c,b,A,E,D,C,B,A,c,E.</p>
+<blockquote>
+<p>FIFO.</p>
+</blockquote>
+<p>FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
+replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:</p>
+<table class="table  table-striped table-hover">
+<thead>
+<tr>
+<th>Access</th>
+<th>Hit/Miss</th>
+<th>Evict</th>
+<th>Resulting Cache State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Miss</td>
+<td></td>
+<td>A</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Miss</td>
+<td></td>
+<td>A,B</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Miss</td>
+<td></td>
+<td>A,B,C</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Miss</td>
+<td></td>
+<td>A,B,C,D</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Miss</td>
+<td>A</td>
+<td>B,C,D,E</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Hit</td>
+<td></td>
+<td>B,C,D,E</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Hit</td>
+<td></td>
+<td>B,C,D,E</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Hit</td>
+<td></td>
+<td>B,C,D,E</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Miss</td>
+<td>B</td>
+<td>C,D,E,A</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Hit</td>
+<td></td>
+<td>C,D,E,A</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Hit</td>
+<td></td>
+<td>C,D,E,A</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Hit</td>
+<td></td>
+<td>C,D,E,A</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Miss</td>
+<td>C</td>
+<td>D,E,A,B</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Hit</td>
+<td></td>
+<td>D,E,A,B</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Miss</td>
+<td>D</td>
+<td>E,A,B,C</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Hit</td>
+<td></td>
+<td>E,A,B,C</td>
+</tr>
+</tbody>
+</table>
+<p>Thus, we have A,B,C,D,E,d,c,b,A,e,d,c,B,a,C,e.</p>
+<blockquote>
+<p>Optimum.</p>
+</blockquote>
+<p>Optimal policy means we want to replace the page that will be accessed <em>furthest in the future</em> and doing so will result in
+the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:</p>
+<table class="table  table-striped table-hover">
+<thead>
+<tr>
+<th>Access</th>
+<th>Hit/Miss</th>
+<th>Evict</th>
+<th>Resulting Cache State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Miss</td>
+<td></td>
+<td>A</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Miss</td>
+<td></td>
+<td>A,B</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Miss</td>
+<td></td>
+<td>A,B,C</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Miss</td>
+<td></td>
+<td>A,B,C,D</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Miss</td>
+<td>A</td>
+<td>B,C,D,E</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Hit</td>
+<td></td>
+<td>B,C,D,E</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Hit</td>
+<td></td>
+<td>B,C,D,E</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Hit</td>
+<td></td>
+<td>B,C,D,E</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Miss</td>
+<td>B</td>
+<td>C,D,E,A</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Hit</td>
+<td></td>
+<td>C,D,E,A</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Hit</td>
+<td></td>
+<td>C,D,E,A</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Hit</td>
+<td></td>
+<td>C,D,E,A</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Miss</td>
+<td>D</td>
+<td>C,E,A,B</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Hit</td>
+<td></td>
+<td>C,E,A,B</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Hit</td>
+<td></td>
+<td>C,E,A,B</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Hit</td>
+<td></td>
+<td>C,E,A,B</td>
+</tr>
+</tbody>
+</table>
+<p>We have A,B,C,D,E,d,c,b,A,e,d,c,B,a,c,e.</p>
+<h3 id="multiprocessing">Multiprocessing</h3>
+<blockquote>
+<p>Suppose you have a large source program containing m files that you want to compile.  You have a cluster of
+n “shared-nothing” workstations, where n &gt; m, on which you may compile your files.  At best you will get an m-fold speedup compared to a single processor.  List at least three reasons as to why the actual speedup might be less than this.</p>
+</blockquote>
+<ol>
+<li>
+<p>Interconnection overhead. To perform distributed compilation, there are network communication cost and coordination cost about assigning files to different workstations, and communication across machines during the compilation (e.g., A file on one workstation may have dependencies of the files assigned to other machines. To make the file into object code file, file copies from other machines are needed).</p>
+</li>
+<li>
+<p>Computation graph may have dependency that is not parallelizable (e.g., linking).</p>
+</li>
+<li>
+<p>Resources limitation. We have a cluster of n workstations but we may not have fully-usage of the underlying resources (i.e., our jobs may be subject to cluster coordinator scheduling).</p>
+</li>
+<li>
+<p>File size are unequal. Suppose we have 5 files to compile: first 4 need 1s compilation time while the last one needs 10 minutes. Then, whether we perform distributed compilation or not doesn't make difference: the last file will make become bottleneck and we cannot get 5-fold speedup.</p>
+</li>
+</ol>
+<h3 id="achieving-fast-file-reads">Achieving fast file reads</h3>
+<blockquote>
+<p>(a) Give at least three strategies that a file system can employ to reduce the time a program spends waiting for data reads to complete.  (b) For each strategy you listed,  describe a read pattern for which the strategy  would  do  well,  and  one  for  which  the  strategy  would  do poorly</p>
+</blockquote>
+<ol>
+<li>
+<p>Use cache (e.g., buffer cache, page cache of the virtual memory) to pre-read the requested data block and several subsequent
+   data blocks at the same time on <code>open()</code>. Then, data can be read from cache in memory instead of disk to avoid expensive
+   disk I/O.</p>
+<ul>
+<li>Sequential read performs well</li>
+<li>Random read performs poorly</li>
+</ul>
+</li>
+<li>
+<p>We can compress the data when we store them at the first place. By reducing the size of file, we can reduce the amount of disk I/O done for reading the file and spend more CPU time to uncompress the data, which is naturally faster than doing disk I/O instead.</p>
+<ul>
+<li>Big read performs well</li>
+<li>Small read performs poorly</li>
+</ul>
+</li>
+<li>
+<p>We can use RAID Level 0 (i.e., striping) to spread the data block across the disks in a round-robin fashion. When we read the data, we can utilize 
+multiple disks in parallel. </p>
+<ul>
+<li>Sequential read performs well</li>
+<li>Random read performs poorly</li>
+</ul>
+</li>
+<li>
+<p>We can place file's inode close to file's data blocks so that during data read, we can reduce seek and rotational delay costs of HDD.</p>
+<ul>
+<li>Sequential read performs well</li>
+<li>Random read performs poorly</li>
+</ul>
+</li>
+<li>
+<p>Prefetching: we can try to predict what data/files the user will read next and buffer the file content into memory.</p>
+<ul>
+<li>Sequential read performs well</li>
+<li>Random read performs poorly</li>
+</ul>
+</li>
+<li>
+<p>Build index to the most visited files (i.e., direct pointer to the files) so that we don't have to traverse internal data structure of file system (i.e., similar to TLB).</p>
+<ul>
+<li>Read hot data performs well </li>
+<li>Read cold data performs poorly</li>
+</ul>
+</li>
+</ol>
+<h3 id="synchronization">Synchronization</h3>
+<blockquote>
+<p>Your OS has a set of queues, each of which is protected by a lock.  To enqueue or dequeue an item, a thread must hold the lock
+associated with the queue. You need to implement an atomic transfer routine that dequeues an item
+from one queue and enqueues it on another.  The transfer must appear to occur atomically.
+This is your first attempt:</p>
+</blockquote>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">transfer</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">queue1</span><span class="p">,</span> <span class="n">Queue</span> <span class="o">*</span><span class="n">queue2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Item</span> <span class="n">thing</span><span class="p">;</span> <span class="cm">/* the thing being transferred */</span>
+    <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Acquire</span><span class="p">();</span>
+    <span class="n">thing</span> <span class="o">=</span> <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">Dequeue</span><span class="p">();</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">thing</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Acquire</span><span class="p">();</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">thing</span><span class="p">);</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Release</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Release</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+<blockquote>
+<p>You may assume that <code>queue1</code> and <code>queue2</code> never refer to the same queue. Also, assume that you have a function <code>Queue::Address()</code>
+which takes a queue and returns, as an unsigned integer, its address.</p>
+<p>(a) Explain how  using this implementation of <code>transfer()</code> can lead to deadlock</p>
+</blockquote>
+<p>One possible scenario of deadlock using <code>transfer()</code> is illustrated below. Note that <code>queue1</code> and <code>queue2</code> in <code>transfer()</code>
+are replaced with queues that they are pointing to (time increases with the row's number):</p>
+<table class="table  table-striped table-hover">
+<thead>
+<tr>
+<th>Thread1 (<code>transfer(q1,q2)</code>)</th>
+<th>Thread2 (<code>transfer(q2,q1)</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>q1-&gt;lock.Acquire();</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>thing = q1-&gt;Dequeue();</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>if (thing != NULL)</code></td>
+<td></td>
+</tr>
+<tr>
+<td>interrupt: switch to Thread2</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>q2-&gt;lock.Acquire();</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>thing = q2-&gt;Dequeue();</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>if (thing != NULL)</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>q1-&gt;lock.Acquire(); // block &amp; wait on q1's lock</code></td>
+</tr>
+<tr>
+<td></td>
+<td>interrupt: switch to Thread1</td>
+</tr>
+<tr>
+<td><code>q2-&gt;lock.Acquire(); // block &amp; wait on q2's lock</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>(b) Write a modified  version  of <code>transfer()</code> that avoids deadlock and does the transfer atomically.</p>
+</blockquote>
+<div class="highlight"><pre><span></span><span class="n">pthread_mutex_t</span> <span class="n">m</span> <span class="o">=</span> <span class="n">PTHREAD_MUTEX_INITIALIZER</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">transfer</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">queue1</span><span class="p">,</span> <span class="n">Queue</span> <span class="o">*</span><span class="n">queue2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Item</span> <span class="n">thing</span><span class="p">;</span> <span class="cm">/* the thing being transferred */</span>
+    <span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">m</span><span class="p">);</span>
+    <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Acquire</span><span class="p">();</span>
+    <span class="n">thing</span> <span class="o">=</span> <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">Dequeue</span><span class="p">();</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">thing</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Acquire</span><span class="p">();</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">thing</span><span class="p">);</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Release</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Release</span><span class="p">();</span>
+    <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">m</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<p>Alternatively, we can do:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">transfer</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">queue1</span><span class="p">,</span> <span class="n">Queue</span> <span class="o">*</span><span class="n">queue2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Item</span> <span class="n">thing</span><span class="p">;</span> <span class="cm">/* the thing being transferred */</span>
+    <span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">m</span><span class="p">);</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">queue2</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">available</span><span class="p">())</span>
+    <span class="p">{</span>
+      <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Acquire</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Acquire</span><span class="p">();</span>
+    <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">m</span><span class="p">);</span>
+    <span class="n">thing</span> <span class="o">=</span> <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">Dequeue</span><span class="p">();</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">thing</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">thing</span><span class="p">);</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Release</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Release</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+<blockquote>
+<p>(c) If  the  transfer  does  not  need  to  be  atomic,  how  might  you  change your solution to achieve a higher degree of concurrency?  Justify why your modification increases concurrency.</p>
+</blockquote>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">transfer</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">queue1</span><span class="p">,</span> <span class="n">Queue</span> <span class="o">*</span><span class="n">queue2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Item</span> <span class="n">thing</span><span class="p">;</span> <span class="cm">/* the thing being transferred */</span>
+    <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">lock1</span><span class="p">.</span><span class="n">Acquire</span><span class="p">();</span>  <span class="cm">/* lock1 for Dequeue() */</span>
+    <span class="n">thing</span> <span class="o">=</span> <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">Dequeue</span><span class="p">();</span>
+    <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">lock1</span><span class="p">.</span><span class="n">Release</span><span class="p">();</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">thing</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">lock2</span><span class="p">.</span><span class="n">Acquire</span><span class="p">();</span> <span class="cm">/* lock2 for Enqueue() */</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">thing</span><span class="p">);</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">lock2</span><span class="p">.</span><span class="n">Release</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>It's more fine-grained than the previous approach because compared to previous approach which only one thread can touch one queue, two threads can touch
+on the same queue: one for enqueue and one for dequeue.</p>
+<p>Alternatively, we can do:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">transfer</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">queue1</span><span class="p">,</span> <span class="n">Queue</span> <span class="o">*</span><span class="n">queue2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Item</span> <span class="n">thing</span><span class="p">;</span> <span class="cm">/* the thing being transferred */</span>
+    <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Acquire</span><span class="p">();</span>
+    <span class="n">thing</span> <span class="o">=</span> <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">Dequeue</span><span class="p">();</span>
+    <span class="n">queue1</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Release</span><span class="p">();</span>    
+    <span class="k">if</span><span class="p">(</span><span class="n">thing</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Acquire</span><span class="p">();</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">thing</span><span class="p">);</span>
+        <span class="n">queue2</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">.</span><span class="n">Release</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>The length of time we hold lock is shorter (i.e., at any time, the function is holding only one lock).</p>
+<h3 id="networking">Networking</h3>
+<blockquote>
+<p>You  are  developing  a  network  protocol  for  the  reliable  delivery of fixed-sized messages over unreliable networks.  You are using a
+sequence number in each message to allow the receiver to eliminate duplicates, but you still have three design alternatives to consider.
+The design alternatives are:  (1) the sender must receive an acknowledgement for the previously sent message before it can send the next message
+in  the  sequence,  (2)  the  sender  can  transmit  up  to n unacknowledged messages, but the receiver will discard any messages that are received out
+of  sequence  (in  other  words,  it  will  only  acknowledge  a  message  if  it  is received in sequence), and (3) the sender can transmit up to
+n unacknowledged messages, and the receiver will acknowledge each on receipt, even if they arrive out of order.
+For each alternative, answer the following questions</p>
+<p>(a) Explain what state the receiver must keep around to implement each of  the  three  alternatives  (remember,  the  receiver  must  be  able  to
+detect and discard duplicates).</p>
+</blockquote>
+<ul>
+<li>For 1), we keep track of expected sequence # (or last received sequence #)</li>
+<li>For 2), we keep track of expected sequence # (or last received sequence #)</li>
+<li>For 3), we keep track of a buffer with size <span class="math">\(n\)</span> and make sure there is no duplicates by sorting them. If there is a duplicate, the ack will be sent 
+with the missing sequence # back to sender. The receiver only increments the lower bound sequence # of buffer when <span class="math">\(n\)</span> messages within the buffer satisfying the requirement (invariant: all the sequence number smaller than lower bound is well-ordered and no missing).</li>
+</ul>
+<blockquote>
+<p>(b) Suppose two machines are communicating across a bi-directional network  link  with  fixed-size  messages.   Acknowledgement  packets  are 
+also fixed-size.  One machine, the sender, is transmitting a very large file to the other machine, the receiver.  That is, the sender is transmitting 
+a large number of messages that make up this file.  Discuss briefly  how  each  alternative’s  data  bandwidth  is  expected  to  vary
+given different underlying network characteristics.</p>
+</blockquote>
+<p>If there is no loss of the packets during the transit, (3) has the highest data bandwidth as there are maximum amount of packets in the flight and receiver
+will acknowledge even the packets are out of order. By contrast, (1) has the lowest data bandwidth due to sender can only send out a packet when an ack is 
+received. If loss is seldom, (3) has highest data bandwidth. If there is loss, the more servere the loss, the more bandwidth (1) can achieve compared to others. (3) is worst in this case because (3) performs lots of useless work (send out n packets but get dropped anyway; leads to congestion).</p>
+<p>When latency is small, (3) is the most effective; (1) is the worst. When latency is large, (1) is the most effective; (2) is the worst because of possible 
+congestions and the order of packets is very likely be out-of-order, and then discarded by receiver, and sender will need to resend again.</p>
+<p>When everything is good, (2) and (3) are similar.</p>
+<!-- Latency impacts the order of packets. -->
+<!-- latency: the time taken by a packet from sender to receiver -->
+<h3 id="serving-multiple-clients">Serving multiple clients</h3>
+<blockquote>
+<p>There are two main approaches to organizing a server daemon, such as a web server: a) Create  a  new  kernel  thread  for  each  client  (for  each  web browser connection); b) Use a single process responding to all clients, usually based on the <code>select()</code> system call. Compare and contrast these two approaches.</p>
+</blockquote>
+<p>Multi-threaded architecture <sup id="fnref:19"><a class="footnote-ref" href="#fn:19" rel="footnote">19</a></sup>:</p>
+<ul>
+<li>A pool of worker threads handle incoming requests</li>
+<li>One worker thread usually corresponds to one connection</li>
+<li>A dispatcher thread blocks socket on connection and once establised, the connection is passed to a queue of connections where worker threads 
+can take connections from the queue and handle the request</li>
+<li>Queue of connections is bounded: awaiting connections to be handled is limited; extra connections will be rejected</li>
+<li>Predicatable latency and prevents total overload</li>
+<li>Can utilize multiple CPU cores (*)</li>
+<li>A synchronous, blocking I/O architecture</li>
+</ul>
+<p>Event-based architecture:</p>
+<ul>
+<li>asyncronous, non-blocking</li>
+<li>one process (thread) handles multiple connections</li>
+<li>Events are queued and will be dequeued by the event loop (single thread)</li>
+<li>Each event has corresponding event handler</li>
+<li>Usually the event is handled in a cascade of callbacks</li>
+<li>Depends on the implementation, the event can be handled in the same thread as the event loop (i.e., event loop will be blocked when handle the event)
+or a pool of threads will be used for event handler</li>
+<li>Compared to multi-threaded architecture, number of threads used is reduced (consequently, get rid of excessive context switching overhead, no thread
+stack for each connection); event-based architecture scales with increasing throughput; latency of requests increases linearly when overload</li>
+</ul>
+<p>The key difference between these two architectures is who do the scheduling: in multi-threaded architecutre, OS performs scheduling by performing context-switch of different worker threads. However, for event-based architecture, event loop thread essentially works as a scheduler: multiplexing multiple connections
+to a single flow of execution. In addition, for event-based architecture, we need to implement preemptive interrupt on event handler thread pool as well.</p>
+<p>In addition, the kernel threads approach can have easily lead to system crash due to all the work is in kernel-space. In addition, kernel thread has higher context-switch overhead compared to threads within single process of the second approach <sup id="fnref2:20"><a class="footnote-ref" href="#fn:20" rel="footnote">12</a></sup>. However, kernel threads can scale up with number of CPU cores while single process approach cannot benefit from multi-core.</p>
+<div class="footnote">
+<hr/>
+<ol>
+<li id="fn:3">
+<p>taken from OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-tlbs.pdf">Chapter 19</a> <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+</li>
+<li id="fn:1">
+<p>taken from <a href="http://web.archive.org/web/20040322145339/http://members.iweb.net.au:80/~pstorr/pcbook/book2/irq.htm">Phil Storrs PC Hardware book</a> <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
+</li>
+<li id="fn:2">
+<p><a href="https://www.cs.utexas.edu/users/ans/classes/cs439/schedule.html">Alison's CS439 Lec 02</a> and CSAPP (2nd edition) 8.1.2 <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 3 in the text">↩</a></p>
+</li>
+<li id="fn:15">
+<p>See <a href='#Protic:1996' id='ref-Protic:1996-1'>Protic et al., 1996</a> and <a href="https://en.wikipedia.org/wiki/Distributed_shared_memory">Wikipedia</a> <a class="footnote-backref" href="#fnref:15" rev="footnote" title="Jump back to footnote 4 in the text">↩</a></p>
+</li>
+<li id="fn:11">
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys.pdf">Chapter 21</a> <a class="footnote-backref" href="#fnref:11" rev="footnote" title="Jump back to footnote 5 in the text">↩</a></p>
+</li>
+<li id="fn:4">
+<p>taken from OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter 20</a>. More details found in Alison's CS439 Lec 12 "Virtual Memory: Mechanisms" <a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 6 in the text">↩</a><a class="footnote-backref" href="#fnref2:4" rev="footnote" title="Jump back to footnote 6 in the text">↩</a></p>
+</li>
+<li id="fn:13">
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-disks.pdf">Chapter 37</a> <a class="footnote-backref" href="#fnref:13" rev="footnote" title="Jump back to footnote 7 in the text">↩</a></p>
+</li>
+<li id="fn:14">
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-ffs.pdf">Figure in Chapter 41.3</a> <a class="footnote-backref" href="#fnref:14" rev="footnote" title="Jump back to footnote 8 in the text">↩</a></p>
+</li>
+<li id="fn:10">
+<p>The term is originally defined in <a href='#Denning:1968:TCP:1476589.1476705' id='ref-Denning:1968:TCP:1476589.1476705-1'>Denning, 1968</a>. But I find <a href="https://www.computer.org/csdl/mags/co/1976/10/01647183.pdf">this article's explanation</a> is more intuitive. <a class="footnote-backref" href="#fnref:10" rev="footnote" title="Jump back to footnote 9 in the text">↩</a></p>
+</li>
+<li id="fn:16">
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-mechanism.pdf">Chapter 15</a> for more details. <a class="footnote-backref" href="#fnref:16" rev="footnote" title="Jump back to footnote 10 in the text">↩</a></p>
+</li>
+<li id="fn:17">
+<p>See <a href="http://www.skyhunter.com/marcs/capabilityIntro/capacl.html">Capabilities and ACLs</a> <a class="footnote-backref" href="#fnref:17" rev="footnote" title="Jump back to footnote 11 in the text">↩</a></p>
+</li>
+<li id="fn:20">
+<p>See <a href='#shapiro1999eros' id='ref-shapiro1999eros-1'>Shapiro et al., 1999</a> and <a href='#watson2010capsicum' id='ref-watson2010capsicum-1'>Watson et al., 2010</a> <a class="footnote-backref" href="#fnref:20" rev="footnote" title="Jump back to footnote 12 in the text">↩</a><a class="footnote-backref" href="#fnref2:20" rev="footnote" title="Jump back to footnote 12 in the text">↩</a></p>
+</li>
+<li id="fn:18">
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf">Chapter 7</a>. <a class="footnote-backref" href="#fnref:18" rev="footnote" title="Jump back to footnote 13 in the text">↩</a></p>
+</li>
+<li id="fn:6">
+<p>One cacluation example can be found from OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter 20.1</a>. <a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 14 in the text">↩</a></p>
+</li>
+<li id="fn:7">
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-tlbs.pdf">Chapter 19.2 example</a>. <a class="footnote-backref" href="#fnref:7" rev="footnote" title="Jump back to footnote 15 in the text">↩</a></p>
+</li>
+<li id="fn:8">
+<p>OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter 20</a>, <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf">Chapter 18</a>, and <a href="https://www.cs.utexas.edu/~lorenzo/corsi/cs372/06F/hw/3sol.html">this page</a> may help with cacluation. <a class="footnote-backref" href="#fnref:8" rev="footnote" title="Jump back to footnote 16 in the text">↩</a></p>
+</li>
+<li id="fn:9">
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter Figure 20.6</a>. <a class="footnote-backref" href="#fnref:9" rev="footnote" title="Jump back to footnote 17 in the text">↩</a></p>
+</li>
+<li id="fn:12">
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf">Chapter 22</a> <a class="footnote-backref" href="#fnref:12" rev="footnote" title="Jump back to footnote 18 in the text">↩</a></p>
+</li>
+<li id="fn:19">
+<p>See <a href="http://berb.github.io/diploma-thesis/original/042_serverarch.html">Concurrent Programming for Scalable Web Architectures</a> <a class="footnote-backref" href="#fnref:19" rev="footnote" title="Jump back to footnote 19 in the text">↩</a></p>
+</li>
+<li id="fn:21">
+<p>See <a href="https://courses.cs.washington.edu/courses/cse451/11sp/section/kim_section4.pdf">CSE451</a> <a class="footnote-backref" href="#fnref:21" rev="footnote" title="Jump back to footnote 20 in the text">↩</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%&#64;#$&#64;#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%&#64;#$&#64;#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script><hr>
+<p id='Denning:1968:TCP:1476589.1476705'>Peter&nbsp;J. Denning.
+Thrashing: its causes and prevention.
+In <em>Proceedings of the December 9-11, 1968, Fall Joint Computer Conference, Part I</em>, AFIPS '68 (Fall, part I), 915–922. New York, NY, USA, 1968. ACM.
+URL: <a href="http://doi.acm.org.ezproxy.lib.utexas.edu/10.1145/1476589.1476705">http://doi.acm.org.ezproxy.lib.utexas.edu/10.1145/1476589.1476705</a>, <a href="https://doi.org/10.1145/1476589.1476705">doi:10.1145/1476589.1476705</a>. <a class="cite-backref" href="#ref-Denning:1968:TCP:1476589.1476705-1" title="Jump back to reference 1">↩</a></p>
+<p id='Protic:1996'>Jelica Protic, Milo Tomasevic, and Veljko Milutinovic.
+Distributed shared memory: concepts and systems.
+<em>IEEE Parallel Distrib. Technol.</em>, 4(2):63–79, June 1996.
+URL: <a href="http://dx.doi.org/10.1109/88.494605">http://dx.doi.org/10.1109/88.494605</a>, <a href="https://doi.org/10.1109/88.494605">doi:10.1109/88.494605</a>. <a class="cite-backref" href="#ref-Protic:1996-1" title="Jump back to reference 1">↩</a></p>
+<p id='shapiro1999eros'>Jonathan&nbsp;S Shapiro, Jonathan&nbsp;M Smith, and David&nbsp;J Farber.
+<em>EROS: a fast capability system</em>.
+Volume&nbsp;33.
+ACM, 1999. <a class="cite-backref" href="#ref-shapiro1999eros-1" title="Jump back to reference 1">↩</a></p>
+<p id='watson2010capsicum'>Robert&nbsp;NM Watson, Jonathan Anderson, Ben Laurie, and Kris Kennaway.
+Capsicum: practical capabilities for unix.
+In <em>USENIX Security Symposium</em>, volume&nbsp;46, 2. 2010. <a class="cite-backref" href="#ref-watson2010capsicum-1" title="Jump back to reference 1">↩</a></p>
+
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

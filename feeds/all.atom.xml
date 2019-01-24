@@ -1,5 +1,910 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2018-09-26T10:00:00+08:00</updated><entry><title>Modify char in another function</title><link href="https://zhu45.org/posts/2018/Sep/26/modify-char-in-another-function/" rel="alternate"></link><published>2018-09-26T10:00:00+08:00</published><updated>2018-09-26T10:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-09-26:/posts/2018/Sep/26/modify-char-in-another-function/</id><summary type="html">&lt;p&gt;Almost two years ago, I write a &lt;a href="https://zhu45.org/posts/2017/Jan/08/modify-array-inside-function-in-c/"&gt;post&lt;/a&gt; on how to 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-01-23T22:24:00+08:00</updated><entry><title>Brush up OS</title><link href="https://zhu45.org/posts/2019/Jan/23/brush-up-os/" rel="alternate"></link><published>2019-01-23T22:24:00+08:00</published><updated>2019-01-23T22:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-01-23:/posts/2019/Jan/23/brush-up-os/</id><summary type="html">&lt;p&gt;This post aims to prepare myself for the upcoming &lt;a href="http://www.cs.utexas.edu/~rossbach/380L/index.html"&gt;CS380L Advanced Operating Systems&lt;/a&gt; offered by
+&lt;a href="http://www.cs.utexas.edu/~rossbach/"&gt;Christopher J. Rossbach&lt;/a&gt;. The questions are actually from his &lt;a href="http://www.cs.utexas.edu/~rossbach/380L/hw/hw1.pdf"&gt;HW1&lt;/a&gt; aka. "Swapping in the state from undergraduate OS".&lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#brush-up"&gt;Brush up&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#definitions"&gt;Definitions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#short-answer"&gt;Short answer&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#virtual-memory-addressing"&gt;Virtual memory addressing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#page-replacement"&gt;Page replacement&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#multiprocessing"&gt;Multiprocessing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#achieving-fast-file-reads"&gt;Achieving fast file reads&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#synchronization"&gt;Synchronization&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#networking"&gt;Networking …&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;This post aims to prepare myself for the upcoming &lt;a href="http://www.cs.utexas.edu/~rossbach/380L/index.html"&gt;CS380L Advanced Operating Systems&lt;/a&gt; offered by
+&lt;a href="http://www.cs.utexas.edu/~rossbach/"&gt;Christopher J. Rossbach&lt;/a&gt;. The questions are actually from his &lt;a href="http://www.cs.utexas.edu/~rossbach/380L/hw/hw1.pdf"&gt;HW1&lt;/a&gt; aka. "Swapping in the state from undergraduate OS".&lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#brush-up"&gt;Brush up&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#definitions"&gt;Definitions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#short-answer"&gt;Short answer&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#virtual-memory-addressing"&gt;Virtual memory addressing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#page-replacement"&gt;Page replacement&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#multiprocessing"&gt;Multiprocessing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#achieving-fast-file-reads"&gt;Achieving fast file reads&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#synchronization"&gt;Synchronization&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#networking"&gt;Networking&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#serving-multiple-clients"&gt;Serving multiple clients&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="brush-up"&gt;Brush up&lt;/h2&gt;
+&lt;h3 id="definitions"&gt;Definitions&lt;/h3&gt;
+&lt;p&gt;Define the following terms:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Internal and external fragmentation.  Which of them can occur in a paging system? A system with pure segmentation?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Fragmentation happens when we talk about memory allocation (e.g., user requests memory through &lt;code&gt;malloc()&lt;/code&gt;; OS manages physical
+memory when using segmentation to implement virtual memory). There are two types of fragmentation:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;internal fragmentation&lt;/strong&gt;: unused memory within a unit of allocation: if an allocator hands out chunks of memory bigger than that requested,
+any unasked for (and thus unused) space in such a chunk is considered &lt;em&gt;internal&lt;/em&gt; fragmentation (because the waste occurs inside the allocated unit).
+Metaphorically speaking, internal fragmentation happens when a party of three at a table for four.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;external fragmentation&lt;/strong&gt;: unused memory between units of allocation: the free space gets chopped into little pieces of different sizes and is thus
+fragmented; subsequent requests may fail because there is no single contiguous space that can satisfy the request, even though the total amount of free
+space exceeds the size of the request. Metaphorically speaking, external fragmentation happens when two fixed tables for two but a party of four.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In a paging system, since the free space is divided into fixed-size units (i.e., pages), no external fragmentation can happen: a page request will
+always get satisified as all page size are equal; we can simply return one of them. However, internal fragmentation can still happen. For example,
+if the page size is 4KB and we request 3KB memory, then there will be 1KB unused memory within the returned page.&lt;/p&gt;
+&lt;p&gt;In a system with pure segmentation, only extenral fragmentations can happen. Since segments are variable-sized units, external fragmentation cannot be avoided. However, the system can give out exact size of requested memory (no paging exists), then there is no internal fragmentation.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-segmentation.pdf"&gt;Chapter 16&lt;/a&gt; and &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-freespace.pdf"&gt;Chapter 17&lt;/a&gt; offer more on segmentation, which causes fragmentation, and free-space management that handles external fragmentation issue.&lt;/p&gt;
+&lt;/div&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Translation look-aside buffer (TLB).&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;TLB is part of the chip's memory-management unit (MMU). It serves as a hardware cache of popular virtual-to-physical address translations
+(i.e., virtual page number to physical frame number translations)&lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Interrupt.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Interrupts are essentially requests for attention. In the same way, peripherals in a computer system can request the attention of the processor. The event that makes a microprocessor stop executing one routine to perform some other routine to service a request, is called an INTERRUPT&lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;. In other words, an  interrupt  is  an  electrical signal  that  causes  the  processor  to  stop  the  current  execution and  begin  to  execute  interrupt  handler  code.  Interrupts
+are asynchronous excpetions. Asynchronous here means "not related to instruction that just executed"&lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Distributed shared memory.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Distributed shared memory is a memory architecture that a cluster of nodes share the same logical address space but physical
+memories are from each node in the cluster and connected via the network (i.e., a form of memory architecture where physically separated memories can be addressed as one logically shared address space) &lt;sup id="fnref:15"&gt;&lt;a class="footnote-ref" href="#fn:15" rel="footnote"&gt;4&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Stateful  and  stateless  servers.   Also,  list  two  file  systems,  one  that is stateful and one that is stateless, and explain how having or not having state affects file service.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Stateless server means the server does not keep track of anything about what is happening at each client (e.g., server does not
+maintain which client open what file on its side). Stateful server is the opposite of the stateless server. For example, 
+server keeps track of what client accesses what files so that when the server's file copy is modified (e.g., by some other clients
+who also access the same file), server can inform clients to invalidate their cache of the same file.&lt;/p&gt;
+&lt;p&gt;A classic stateless file system is &lt;a href="https://zhu45.org/posts/2018/May/01/suns-network-file-system-nfs/"&gt;NFS with NFSv2 protocol&lt;/a&gt; (&lt;a href="http://www.sane.nl/events/sane2000/papers/pawlowski.pdf"&gt;NFSv4 protocol&lt;/a&gt; makes NFS become a stateful server as well). &lt;a href="https://zhu45.org/posts/2018/May/02/the-andrew-file-system-afs/"&gt;AFS&lt;/a&gt; is a stateful file system. &lt;/p&gt;
+&lt;p&gt;Not having state makes crash recovery on the server side fast: server doesn't need to recover any client-side information 
+(thanks to stateless) and on server failure, clients can simply retry the request. However, with stateless, clients need
+to constantly contact server to validate their cache, which impose extra load to server. Furthermore, clients need to pass 
+extra information (e.g., file handle) when perform system calls, which impose extra overhead to clients. Having state complicates
+the crash recovery: server needs to initiate cache validation to the clients; clients also need to send out heartbeat message to
+server. However, with state, client doesn't need to constantly contact to validate its cache (wait for server's callback).&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Swapping.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Since all pages cannot reside in the physical memory, to support large address space, we use part of disk (e.g., swap space) by
+swapping pages in and out between physical memory and swap space &lt;sup id="fnref:11"&gt;&lt;a class="footnote-ref" href="#fn:11" rel="footnote"&gt;5&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Inverted page table.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Inverted page table (along with multi-level page tables) aims to save memory space taken by the page tables. Instead of having one page table per process, we keep a single page table that has an entry for each &lt;em&gt;physical page&lt;/em&gt; of the system. The entry tells us which process is using this page, and 
+which virtual page of that process maps to this physical page &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4" rel="footnote"&gt;6&lt;/a&gt;&lt;/sup&gt;. PowerPC uses this technique. &lt;/p&gt;
+&lt;!-- inverted: hash table; each entry contains &lt;pid, corresponding virutal page number&gt;
+64-bit linux uses inverted page table (TODO)--&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Disk sector, track, and cylinder.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A disk &lt;strong&gt;sector&lt;/strong&gt; refers to 512-byte block on the disk (aside note, drive manufacturers guarantee that a single 512-byte write is 
+atomic). Sectors of disk are organized as a set of concentric circles; each concentric circle of sectors is called a &lt;strong&gt;track&lt;/strong&gt;
+&lt;sup id="fnref:13"&gt;&lt;a class="footnote-ref" href="#fn:13" rel="footnote"&gt;7&lt;/a&gt;&lt;/sup&gt;. A &lt;strong&gt;cylinder&lt;/strong&gt; is a set of tracks on different surfaces of a hard dirve that are the same distance from the center
+of the drive; it is called a cylinder because of its clear resemblance to the so-called geometrical shape &lt;sup id="fnref:14"&gt;&lt;a class="footnote-ref" href="#fn:14" rel="footnote"&gt;8&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Thrashing.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- Ideally, pages in the set of running processes should not be removed from the physical memory as they will have to be brought back in again. However, swaping can happens. However, if swaping happens too often and thus, most of CPU time is devoted to this activity, we run into *thrashing* situation. --&gt;
+&lt;p&gt;The situation when memory demands of the set of running processes exceeds the available physical memory. System performace degrades due to the fact that system CPU time is dominated by the activity of swaping pages in and out between physical memory and swap space on disk &lt;sup id="fnref:10"&gt;&lt;a class="footnote-ref" href="#fn:10" rel="footnote"&gt;9&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;h3 id="short-answer"&gt;Short answer&lt;/h3&gt;
+&lt;p&gt;Provide a short answer to each of the following questions:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Give a reason why virtual memory address translation is useful even if  the  total  size  of  virtual  memory  (summed  over  all  programs) is guaranteed to be smaller than physical memory.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Virtual memory address translation is useful in providing isolation (safety) across different processes: OS can make sure that one proacess cannot access part of physical memory that is owned by the other process. In addition, address translation helps OS to better manage the underlying physical memory: every process thinks address space starts at 0, which may not be true on the physical memory; for better memory management, OS may relocate the address space to some other physical address. Address translation enables OS to perform such memory management while makes the relocation be transparent to process &lt;sup id="fnref:16"&gt;&lt;a class="footnote-ref" href="#fn:16" rel="footnote"&gt;10&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;!-- same physical page can be shared across multiple processes; --&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Compare and contrast access control lists and capabilities.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In an access control list model of security, the authorities are bounded to the objects being secured (e.g., file A can be r/w by user Alice). By contrast,
+in the capabilities model, the authorities are bound to objects seeking access &lt;sup id="fnref:17"&gt;&lt;a class="footnote-ref" href="#fn:17" rel="footnote"&gt;11&lt;/a&gt;&lt;/sup&gt; (e.g., UNIX file descriptors are capabilities: authorities are 
+bounded to file descriptors, which reflect rights on objects like files or sockets &lt;sup id="fnref:20"&gt;&lt;a class="footnote-ref" href="#fn:20" rel="footnote"&gt;12&lt;/a&gt;&lt;/sup&gt;).&lt;/p&gt;
+&lt;p&gt;As one can see, with the ACL model, each object has just one list, while with the capability model, each object has a whole set of different, separable capabilities. For example, in capability model, a process has different capabilities depending on the objects it tries to access.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://homepage.divms.uiowa.edu/~jones/security/notes/18.shtml"&gt;This page&lt;/a&gt; has a nice example: file "aaa" has ACL as "Alice:R/W, Bob:R, Carol:R". File "aaa" is the object being secured. "Alice" has capabilities "aaa:R/W, bbb:R, ccc:R". "Alice" as a user is the object seeking access.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The  length  of  the  time  slice  is  a  parameter  to  round  robin  CPU scheduling.  What is the main problem that occurs if this length is too long?  Too short?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;There are two important metrics in scheduling: &lt;em&gt;turnaround time&lt;/em&gt; and &lt;em&gt;response time&lt;/em&gt;. &lt;em&gt;turnaround time&lt;/em&gt; of a job is
+defined as &lt;span class="math"&gt;\(T_{completion} - T_{arrival}\)&lt;/span&gt; (the time at which the job completes minus the time at which the job arrived in the
+system). &lt;em&gt;response time&lt;/em&gt; is defined as &lt;span class="math"&gt;\(T_{firstrun} - T_{arrival}\)&lt;/span&gt; (the time from when the job arrives in a system to the first time it is scheduled). Round robin (RR) CPU scheduling is optimized towards
+response time. If time slice is too long, then the response time is worse. By contrast, if time
+slice is too short, the cost of context switching will dominate overall performance, which means less work is done during the time slice &lt;sup id="fnref:18"&gt;&lt;a class="footnote-ref" href="#fn:18" rel="footnote"&gt;13&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;List an advantage and a disadvantage to increasing the virtual memory page size.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The advantages of increasing the virtual memory page size are: reduces page table size &lt;sup id="fnref:6"&gt;&lt;a class="footnote-ref" href="#fn:6" rel="footnote"&gt;14&lt;/a&gt;&lt;/sup&gt;, improves TLB hit rate &lt;sup id="fnref:7"&gt;&lt;a class="footnote-ref" href="#fn:7" rel="footnote"&gt;15&lt;/a&gt;&lt;/sup&gt;. The disadvantage is the 
+internal fragmentation (i.e., waste &lt;em&gt;within&lt;/em&gt; each page; the waster is &lt;em&gt;internal&lt;/em&gt; to the unit of allocation) &lt;sup id="fnref2:4"&gt;&lt;a class="footnote-ref" href="#fn:4" rel="footnote"&gt;6&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;!-- data block size determines largest file size (related to inode) --&gt;
+&lt;h3 id="virtual-memory-addressing"&gt;Virtual memory addressing&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Suppose we have a machine that uses a three-level page table system.
+A 32-bit virtual address is divided into four fields of widths a, b, c, and d bits from left to right.
+The first three are indices into the three levels of page table; the fourth, d, is the offset.  Express the
+number of virtual pages available as a function of a, b, c, and d. Give one advantage and one disadvantage to multi-level page tables.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Since we have a three-level page table system, then &lt;span class="math"&gt;\(a\)&lt;/span&gt; corresponds to Page Directory Index (PDI) 0, &lt;span class="math"&gt;\(b\)&lt;/span&gt; corresponds to PDI 1,
+&lt;span class="math"&gt;\(c\)&lt;/span&gt; corresponds to Page Table Index. Each page contains &lt;span class="math"&gt;\(2^c\)&lt;/span&gt; Page Table Entries (PTE). Page Directory 1 needs one entry per page
+and contains &lt;span class="math"&gt;\(2^b\)&lt;/span&gt; entries. Similarly, Page Directory 0 needs one entry per page, which contains one Page Directory 1 and there are
+&lt;span class="math"&gt;\(2^a\)&lt;/span&gt; entries. Thus, there are &lt;span class="math"&gt;\(2^a\)&lt;/span&gt; Page Directory 1, and each Page Directory 1 can point to &lt;span class="math"&gt;\(2^b\)&lt;/span&gt; pages, and each page contains
+&lt;span class="math"&gt;\(2^c\)&lt;/span&gt; PTEs, and each PTE corresponds to one virtual page. Therefore, there are &lt;span class="math"&gt;\(2^{a+b+c}\)&lt;/span&gt; virutal pages. Another way of cacluation is
+that the physical frame size is &lt;span class="math"&gt;\(2^d\)&lt;/span&gt;, which is equal to page size. Since the address space is 32 bit, there are &lt;span class="math"&gt;\(\frac{2^{32}}{2^d}\)&lt;/span&gt; virtual pages
+&lt;sup id="fnref:8"&gt;&lt;a class="footnote-ref" href="#fn:8" rel="footnote"&gt;16&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;The advantage of multi-level page tables is that we allow every piece of the multi-level page table fit into a page (e.g., page directory needs 
+to fit in a page as well) and reduce the space usage. The disadvantage is that additional memory accesses to look up a valid translation 
+(e.g., for 3-level page table system, we have three additional memory accesses: access Page Directory Entry 0 (PDE0), access PDE1, access PTE)&lt;sup id="fnref:9"&gt;&lt;a class="footnote-ref" href="#fn:9" rel="footnote"&gt;17&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;h3 id="page-replacement"&gt;Page replacement&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Suppose a machine with 4 physical pages starts running a program (in other words, the physical pages are initially empty).  The
+program references the sequence of virtual pages as follows: A B C D E D C B A E D C B A C E
+For each of the following paging algorithms, replicate the reference pattern
+and underline each reference that causes a page fault (or make references
+that cause a page fault uppercase, and those that don’t lowercase):&lt;/p&gt;
+&lt;p&gt;LRU.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
+approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12" rel="footnote"&gt;18&lt;/a&gt;&lt;/sup&gt; to avoid heavy overhead). The trace of the memory references with LRU policy shown below:&lt;/p&gt;
+&lt;table class="table  table-striped table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Access&lt;/th&gt;
+&lt;th&gt;Hit/Miss&lt;/th&gt;
+&lt;th&gt;Evict&lt;/th&gt;
+&lt;th&gt;Resulting Cache State (LRU at front, MRU at tail)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;A,B&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;A,B,C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;A,B,C,D&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;E&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;B,C,D,E&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;B,C,E,D&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;B,E,D,C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;E,D,C,B&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;E&lt;/td&gt;
+&lt;td&gt;D,C,B,A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;E&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;C,B,A,E&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;B,A,E,D&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td&gt;A,E,D,C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;E,D,C,B&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;E&lt;/td&gt;
+&lt;td&gt;D,C,B,A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;D,B,A,C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;E&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;B,A,C,E&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;From the table, we have A,B,C,D,E,d,c,b,A,E,D,C,B,A,c,E.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;FIFO.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
+replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:&lt;/p&gt;
+&lt;table class="table  table-striped table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Access&lt;/th&gt;
+&lt;th&gt;Hit/Miss&lt;/th&gt;
+&lt;th&gt;Evict&lt;/th&gt;
+&lt;th&gt;Resulting Cache State&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;A,B&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;A,B,C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;A,B,C,D&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;E&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;B,C,D,E&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;B,C,D,E&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;B,C,D,E&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;B,C,D,E&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td&gt;C,D,E,A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;E&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;C,D,E,A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;C,D,E,A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;C,D,E,A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;D,E,A,B&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;D,E,A,B&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;E,A,B,C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;E&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;E,A,B,C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Thus, we have A,B,C,D,E,d,c,b,A,e,d,c,B,a,C,e.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Optimum.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Optimal policy means we want to replace the page that will be accessed &lt;em&gt;furthest in the future&lt;/em&gt; and doing so will result in
+the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:&lt;/p&gt;
+&lt;table class="table  table-striped table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Access&lt;/th&gt;
+&lt;th&gt;Hit/Miss&lt;/th&gt;
+&lt;th&gt;Evict&lt;/th&gt;
+&lt;th&gt;Resulting Cache State&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;A,B&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;A,B,C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;A,B,C,D&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;E&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;B,C,D,E&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;B,C,D,E&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;B,C,D,E&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;B,C,D,E&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td&gt;C,D,E,A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;E&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;C,D,E,A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;C,D,E,A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;C,D,E,A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td&gt;Miss&lt;/td&gt;
+&lt;td&gt;D&lt;/td&gt;
+&lt;td&gt;C,E,A,B&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;C,E,A,B&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;C,E,A,B&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;E&lt;/td&gt;
+&lt;td&gt;Hit&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;C,E,A,B&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;We have A,B,C,D,E,d,c,b,A,e,d,c,B,a,c,e.&lt;/p&gt;
+&lt;h3 id="multiprocessing"&gt;Multiprocessing&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Suppose you have a large source program containing m files that you want to compile.  You have a cluster of
+n “shared-nothing” workstations, where n &amp;gt; m, on which you may compile your files.  At best you will get an m-fold speedup compared to a single processor.  List at least three reasons as to why the actual speedup might be less than this.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Interconnection overhead. To perform distributed compilation, there are network communication cost and coordination cost about assigning files to different workstations, and communication across machines during the compilation (e.g., A file on one workstation may have dependencies of the files assigned to other machines. To make the file into object code file, file copies from other machines are needed).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Computation graph may have dependency that is not parallelizable (e.g., linking).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Resources limitation. We have a cluster of n workstations but we may not have fully-usage of the underlying resources (i.e., our jobs may be subject to cluster coordinator scheduling).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;File size are unequal. Suppose we have 5 files to compile: first 4 need 1s compilation time while the last one needs 10 minutes. Then, whether we perform distributed compilation or not doesn't make difference: the last file will make become bottleneck and we cannot get 5-fold speedup.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="achieving-fast-file-reads"&gt;Achieving fast file reads&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;(a) Give at least three strategies that a file system can employ to reduce the time a program spends waiting for data reads to complete.  (b) For each strategy you listed,  describe a read pattern for which the strategy  would  do  well,  and  one  for  which  the  strategy  would  do poorly&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Use cache (e.g., buffer cache, page cache of the virtual memory) to pre-read the requested data block and several subsequent
+   data blocks at the same time on &lt;code&gt;open()&lt;/code&gt;. Then, data can be read from cache in memory instead of disk to avoid expensive
+   disk I/O.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Sequential read performs well&lt;/li&gt;
+&lt;li&gt;Random read performs poorly&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We can compress the data when we store them at the first place. By reducing the size of file, we can reduce the amount of disk I/O done for reading the file and spend more CPU time to uncompress the data, which is naturally faster than doing disk I/O instead.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Big read performs well&lt;/li&gt;
+&lt;li&gt;Small read performs poorly&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We can use RAID Level 0 (i.e., striping) to spread the data block across the disks in a round-robin fashion. When we read the data, we can utilize 
+multiple disks in parallel. &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Sequential read performs well&lt;/li&gt;
+&lt;li&gt;Random read performs poorly&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We can place file's inode close to file's data blocks so that during data read, we can reduce seek and rotational delay costs of HDD.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Sequential read performs well&lt;/li&gt;
+&lt;li&gt;Random read performs poorly&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Prefetching: we can try to predict what data/files the user will read next and buffer the file content into memory.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Sequential read performs well&lt;/li&gt;
+&lt;li&gt;Random read performs poorly&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Build index to the most visited files (i.e., direct pointer to the files) so that we don't have to traverse internal data structure of file system (i.e., similar to TLB).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Read hot data performs well &lt;/li&gt;
+&lt;li&gt;Read cold data performs poorly&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="synchronization"&gt;Synchronization&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Your OS has a set of queues, each of which is protected by a lock.  To enqueue or dequeue an item, a thread must hold the lock
+associated with the queue. You need to implement an atomic transfer routine that dequeues an item
+from one queue and enqueues it on another.  The transfer must appear to occur atomically.
+This is your first attempt:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;transfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Queue&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Queue&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;Item&lt;/span&gt; &lt;span class="n"&gt;thing&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* the thing being transferred */&lt;/span&gt;
+    &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Acquire&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;thing&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Dequeue&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;thing&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Acquire&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Enqueue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;thing&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Release&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Release&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+&lt;p&gt;You may assume that &lt;code&gt;queue1&lt;/code&gt; and &lt;code&gt;queue2&lt;/code&gt; never refer to the same queue. Also, assume that you have a function &lt;code&gt;Queue::Address()&lt;/code&gt;
+which takes a queue and returns, as an unsigned integer, its address.&lt;/p&gt;
+&lt;p&gt;(a) Explain how  using this implementation of &lt;code&gt;transfer()&lt;/code&gt; can lead to deadlock&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;One possible scenario of deadlock using &lt;code&gt;transfer()&lt;/code&gt; is illustrated below. Note that &lt;code&gt;queue1&lt;/code&gt; and &lt;code&gt;queue2&lt;/code&gt; in &lt;code&gt;transfer()&lt;/code&gt;
+are replaced with queues that they are pointing to (time increases with the row's number):&lt;/p&gt;
+&lt;table class="table  table-striped table-hover"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Thread1 (&lt;code&gt;transfer(q1,q2)&lt;/code&gt;)&lt;/th&gt;
+&lt;th&gt;Thread2 (&lt;code&gt;transfer(q2,q1)&lt;/code&gt;)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;q1-&amp;gt;lock.Acquire();&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;thing = q1-&amp;gt;Dequeue();&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;if (thing != NULL)&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;interrupt: switch to Thread2&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;q2-&amp;gt;lock.Acquire();&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;thing = q2-&amp;gt;Dequeue();&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;if (thing != NULL)&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;q1-&amp;gt;lock.Acquire(); // block &amp;amp; wait on q1's lock&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;interrupt: switch to Thread1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;q2-&amp;gt;lock.Acquire(); // block &amp;amp; wait on q2's lock&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;(b) Write a modified  version  of &lt;code&gt;transfer()&lt;/code&gt; that avoids deadlock and does the transfer atomically.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;pthread_mutex_t&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PTHREAD_MUTEX_INITIALIZER&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;transfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Queue&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Queue&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;Item&lt;/span&gt; &lt;span class="n"&gt;thing&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* the thing being transferred */&lt;/span&gt;
+    &lt;span class="n"&gt;pthread_mutex_lock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Acquire&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;thing&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Dequeue&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;thing&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Acquire&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Enqueue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;thing&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Release&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Release&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;pthread_mutex_unlock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Alternatively, we can do:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;transfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Queue&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Queue&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;Item&lt;/span&gt; &lt;span class="n"&gt;thing&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* the thing being transferred */&lt;/span&gt;
+    &lt;span class="n"&gt;pthread_mutex_lock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;available&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Acquire&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Acquire&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;pthread_mutex_unlock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;thing&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Dequeue&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;thing&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Enqueue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;thing&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Release&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Release&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+&lt;p&gt;(c) If  the  transfer  does  not  need  to  be  atomic,  how  might  you  change your solution to achieve a higher degree of concurrency?  Justify why your modification increases concurrency.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;transfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Queue&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Queue&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;Item&lt;/span&gt; &lt;span class="n"&gt;thing&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* the thing being transferred */&lt;/span&gt;
+    &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Acquire&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;  &lt;span class="cm"&gt;/* lock1 for Dequeue() */&lt;/span&gt;
+    &lt;span class="n"&gt;thing&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Dequeue&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Release&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; 
+    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;thing&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Acquire&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="cm"&gt;/* lock2 for Enqueue() */&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Enqueue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;thing&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Release&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It's more fine-grained than the previous approach because compared to previous approach which only one thread can touch one queue, two threads can touch
+on the same queue: one for enqueue and one for dequeue.&lt;/p&gt;
+&lt;p&gt;Alternatively, we can do:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;transfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Queue&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Queue&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;Item&lt;/span&gt; &lt;span class="n"&gt;thing&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* the thing being transferred */&lt;/span&gt;
+    &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Acquire&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;thing&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Dequeue&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;queue1&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Release&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;    
+    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;thing&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Acquire&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Enqueue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;thing&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;queue2&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Release&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The length of time we hold lock is shorter (i.e., at any time, the function is holding only one lock).&lt;/p&gt;
+&lt;h3 id="networking"&gt;Networking&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;You  are  developing  a  network  protocol  for  the  reliable  delivery of fixed-sized messages over unreliable networks.  You are using a
+sequence number in each message to allow the receiver to eliminate duplicates, but you still have three design alternatives to consider.
+The design alternatives are:  (1) the sender must receive an acknowledgement for the previously sent message before it can send the next message
+in  the  sequence,  (2)  the  sender  can  transmit  up  to n unacknowledged messages, but the receiver will discard any messages that are received out
+of  sequence  (in  other  words,  it  will  only  acknowledge  a  message  if  it  is received in sequence), and (3) the sender can transmit up to
+n unacknowledged messages, and the receiver will acknowledge each on receipt, even if they arrive out of order.
+For each alternative, answer the following questions&lt;/p&gt;
+&lt;p&gt;(a) Explain what state the receiver must keep around to implement each of  the  three  alternatives  (remember,  the  receiver  must  be  able  to
+detect and discard duplicates).&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;For 1), we keep track of expected sequence # (or last received sequence #)&lt;/li&gt;
+&lt;li&gt;For 2), we keep track of expected sequence # (or last received sequence #)&lt;/li&gt;
+&lt;li&gt;For 3), we keep track of a buffer with size &lt;span class="math"&gt;\(n\)&lt;/span&gt; and make sure there is no duplicates by sorting them. If there is a duplicate, the ack will be sent 
+with the missing sequence # back to sender. The receiver only increments the lower bound sequence # of buffer when &lt;span class="math"&gt;\(n\)&lt;/span&gt; messages within the buffer satisfying the requirement (invariant: all the sequence number smaller than lower bound is well-ordered and no missing).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;(b) Suppose two machines are communicating across a bi-directional network  link  with  fixed-size  messages.   Acknowledgement  packets  are 
+also fixed-size.  One machine, the sender, is transmitting a very large file to the other machine, the receiver.  That is, the sender is transmitting 
+a large number of messages that make up this file.  Discuss briefly  how  each  alternative’s  data  bandwidth  is  expected  to  vary
+given different underlying network characteristics.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;If there is no loss of the packets during the transit, (3) has the highest data bandwidth as there are maximum amount of packets in the flight and receiver
+will acknowledge even the packets are out of order. By contrast, (1) has the lowest data bandwidth due to sender can only send out a packet when an ack is 
+received. If loss is seldom, (3) has highest data bandwidth. If there is loss, the more servere the loss, the more bandwidth (1) can achieve compared to others. (3) is worst in this case because (3) performs lots of useless work (send out n packets but get dropped anyway; leads to congestion).&lt;/p&gt;
+&lt;p&gt;When latency is small, (3) is the most effective; (1) is the worst. When latency is large, (1) is the most effective; (2) is the worst because of possible 
+congestions and the order of packets is very likely be out-of-order, and then discarded by receiver, and sender will need to resend again.&lt;/p&gt;
+&lt;p&gt;When everything is good, (2) and (3) are similar.&lt;/p&gt;
+&lt;!-- Latency impacts the order of packets. --&gt;
+&lt;!-- latency: the time taken by a packet from sender to receiver --&gt;
+&lt;h3 id="serving-multiple-clients"&gt;Serving multiple clients&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;There are two main approaches to organizing a server daemon, such as a web server: a) Create  a  new  kernel  thread  for  each  client  (for  each  web browser connection); b) Use a single process responding to all clients, usually based on the &lt;code&gt;select()&lt;/code&gt; system call. Compare and contrast these two approaches.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Multi-threaded architecture &lt;sup id="fnref:19"&gt;&lt;a class="footnote-ref" href="#fn:19" rel="footnote"&gt;19&lt;/a&gt;&lt;/sup&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A pool of worker threads handle incoming requests&lt;/li&gt;
+&lt;li&gt;One worker thread usually corresponds to one connection&lt;/li&gt;
+&lt;li&gt;A dispatcher thread blocks socket on connection and once establised, the connection is passed to a queue of connections where worker threads 
+can take connections from the queue and handle the request&lt;/li&gt;
+&lt;li&gt;Queue of connections is bounded: awaiting connections to be handled is limited; extra connections will be rejected&lt;/li&gt;
+&lt;li&gt;Predicatable latency and prevents total overload&lt;/li&gt;
+&lt;li&gt;Can utilize multiple CPU cores (*)&lt;/li&gt;
+&lt;li&gt;A synchronous, blocking I/O architecture&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Event-based architecture:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;asyncronous, non-blocking&lt;/li&gt;
+&lt;li&gt;one process (thread) handles multiple connections&lt;/li&gt;
+&lt;li&gt;Events are queued and will be dequeued by the event loop (single thread)&lt;/li&gt;
+&lt;li&gt;Each event has corresponding event handler&lt;/li&gt;
+&lt;li&gt;Usually the event is handled in a cascade of callbacks&lt;/li&gt;
+&lt;li&gt;Depends on the implementation, the event can be handled in the same thread as the event loop (i.e., event loop will be blocked when handle the event)
+or a pool of threads will be used for event handler&lt;/li&gt;
+&lt;li&gt;Compared to multi-threaded architecture, number of threads used is reduced (consequently, get rid of excessive context switching overhead, no thread
+stack for each connection); event-based architecture scales with increasing throughput; latency of requests increases linearly when overload&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The key difference between these two architectures is who do the scheduling: in multi-threaded architecutre, OS performs scheduling by performing context-switch of different worker threads. However, for event-based architecture, event loop thread essentially works as a scheduler: multiplexing multiple connections
+to a single flow of execution. In addition, for event-based architecture, we need to implement preemptive interrupt on event handler thread pool as well.&lt;/p&gt;
+&lt;p&gt;In addition, the kernel threads approach can have easily lead to system crash due to all the work is in kernel-space. In addition, kernel thread has higher context-switch overhead compared to threads within single process of the second approach &lt;sup id="fnref2:20"&gt;&lt;a class="footnote-ref" href="#fn:20" rel="footnote"&gt;12&lt;/a&gt;&lt;/sup&gt;. However, kernel threads can scale up with number of CPU cores while single process approach cannot benefit from multi-core.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:3"&gt;
+&lt;p&gt;taken from OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-tlbs.pdf"&gt;Chapter 19&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;taken from &lt;a href="http://web.archive.org/web/20040322145339/http://members.iweb.net.au:80/~pstorr/pcbook/book2/irq.htm"&gt;Phil Storrs PC Hardware book&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;&lt;a href="https://www.cs.utexas.edu/users/ans/classes/cs439/schedule.html"&gt;Alison's CS439 Lec 02&lt;/a&gt; and CSAPP (2nd edition) 8.1.2 &lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 3 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:15"&gt;
+&lt;p&gt;See [@@Protic:1996] and &lt;a href="https://en.wikipedia.org/wiki/Distributed_shared_memory"&gt;Wikipedia&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:15" rev="footnote" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:11"&gt;
+&lt;p&gt;See OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys.pdf"&gt;Chapter 21&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:11" rev="footnote" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:4"&gt;
+&lt;p&gt;taken from OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf"&gt;Chapter 20&lt;/a&gt;. More details found in Alison's CS439 Lec 12 "Virtual Memory: Mechanisms" &lt;a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 6 in the text"&gt;↩&lt;/a&gt;&lt;a class="footnote-backref" href="#fnref2:4" rev="footnote" title="Jump back to footnote 6 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:13"&gt;
+&lt;p&gt;See OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-disks.pdf"&gt;Chapter 37&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:13" rev="footnote" title="Jump back to footnote 7 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:14"&gt;
+&lt;p&gt;See OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-ffs.pdf"&gt;Figure in Chapter 41.3&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:14" rev="footnote" title="Jump back to footnote 8 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:10"&gt;
+&lt;p&gt;The term is originally defined in [@@Denning:1968:TCP:1476589.1476705]. But I find &lt;a href="https://www.computer.org/csdl/mags/co/1976/10/01647183.pdf"&gt;this article's explanation&lt;/a&gt; is more intuitive. &lt;a class="footnote-backref" href="#fnref:10" rev="footnote" title="Jump back to footnote 9 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:16"&gt;
+&lt;p&gt;See OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-mechanism.pdf"&gt;Chapter 15&lt;/a&gt; for more details. &lt;a class="footnote-backref" href="#fnref:16" rev="footnote" title="Jump back to footnote 10 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:17"&gt;
+&lt;p&gt;See &lt;a href="http://www.skyhunter.com/marcs/capabilityIntro/capacl.html"&gt;Capabilities and ACLs&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:17" rev="footnote" title="Jump back to footnote 11 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:20"&gt;
+&lt;p&gt;See [@@shapiro1999eros] and [@@watson2010capsicum] &lt;a class="footnote-backref" href="#fnref:20" rev="footnote" title="Jump back to footnote 12 in the text"&gt;↩&lt;/a&gt;&lt;a class="footnote-backref" href="#fnref2:20" rev="footnote" title="Jump back to footnote 12 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:18"&gt;
+&lt;p&gt;See OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf"&gt;Chapter 7&lt;/a&gt;. &lt;a class="footnote-backref" href="#fnref:18" rev="footnote" title="Jump back to footnote 13 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:6"&gt;
+&lt;p&gt;One cacluation example can be found from OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf"&gt;Chapter 20.1&lt;/a&gt;. &lt;a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 14 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:7"&gt;
+&lt;p&gt;See OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-tlbs.pdf"&gt;Chapter 19.2 example&lt;/a&gt;. &lt;a class="footnote-backref" href="#fnref:7" rev="footnote" title="Jump back to footnote 15 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:8"&gt;
+&lt;p&gt;OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf"&gt;Chapter 20&lt;/a&gt;, &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf"&gt;Chapter 18&lt;/a&gt;, and &lt;a href="https://www.cs.utexas.edu/~lorenzo/corsi/cs372/06F/hw/3sol.html"&gt;this page&lt;/a&gt; may help with cacluation. &lt;a class="footnote-backref" href="#fnref:8" rev="footnote" title="Jump back to footnote 16 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:9"&gt;
+&lt;p&gt;See OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf"&gt;Chapter Figure 20.6&lt;/a&gt;. &lt;a class="footnote-backref" href="#fnref:9" rev="footnote" title="Jump back to footnote 17 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:12"&gt;
+&lt;p&gt;See OSTEP &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf"&gt;Chapter 22&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:12" rev="footnote" title="Jump back to footnote 18 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:19"&gt;
+&lt;p&gt;See &lt;a href="http://berb.github.io/diploma-thesis/original/042_serverarch.html"&gt;Concurrent Programming for Scalable Web Architectures&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:19" rev="footnote" title="Jump back to footnote 19 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:21"&gt;
+&lt;p&gt;See &lt;a href="https://courses.cs.washington.edu/courses/cse451/11sp/section/kim_section4.pdf"&gt;CSE451&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:21" rev="footnote" title="Jump back to footnote 20 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="os"></category><category term="system concepts"></category></entry><entry><title>Modify char in another function</title><link href="https://zhu45.org/posts/2018/Sep/26/modify-char-in-another-function/" rel="alternate"></link><published>2018-09-26T10:00:00+08:00</published><updated>2018-09-26T10:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-09-26:/posts/2018/Sep/26/modify-char-in-another-function/</id><summary type="html">&lt;p&gt;Almost two years ago, I write a &lt;a href="https://zhu45.org/posts/2017/Jan/08/modify-array-inside-function-in-c/"&gt;post&lt;/a&gt; on how to 
 modify an array in one function through another function in C. I did pretty detailed study through GDB there but 
 I find that the illustration is lengthy to read. In this post, I try to show the same
 concept …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Almost two years ago, I write a &lt;a href="https://zhu45.org/posts/2017/Jan/08/modify-array-inside-function-in-c/"&gt;post&lt;/a&gt; on how to 
@@ -51,7 +956,7 @@ the modification looks like below:&lt;/p&gt;
 &lt;p&gt;The question we want to answer is why doing so works?&lt;/p&gt;
 &lt;h2 id="explanation"&gt;Explanation&lt;/h2&gt;
 &lt;p&gt;We acquire key data from GDB as following:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;GDB command&lt;/th&gt;
@@ -1597,7 +2502,7 @@ blocks from different clients)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;&lt;/th&gt;
@@ -1920,7 +2825,7 @@ since data on a given server is replicate on neighboring only)&lt;/li&gt;
 &lt;p&gt;Clients talk to server using RPC:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Use RPC to forward every file system request; remote server executes each request as a local request; server
-responds back with result (Example: Figure 49.5 in Remzi's chapter)&lt;/li&gt;
+responds back with result (Example: &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/dist-nfs.pdf"&gt;OSTEP Figure 49.5&lt;/a&gt;)&lt;/li&gt;
 &lt;li&gt;Advantage: server provides a consistent view of the file system to clients&lt;/li&gt;
 &lt;li&gt;Disadvantage: performance (use cache)&lt;/li&gt;
 &lt;/ul&gt;
@@ -6172,7 +7077,7 @@ a very efficient algorithm in all cases. Path compression is not entirely compat
 to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., &lt;strong&gt;ranks&lt;/strong&gt;), but in theory union-by-rank is as efficient as union-by-size.&lt;/p&gt;
 &lt;p&gt;If we do analysis on smart union with path compression, the running time for any sequence of &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects makes &lt;span class="math"&gt;\(O(N + M\log^*N)\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; accesses.&lt;/p&gt;
 &lt;p&gt;The following table summarizes the running time for &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on a set of &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects (don't forget we need to spend &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; to initialize disjoint sets):&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -6203,7 +7108,7 @@ to recompute all the heights and in this case, heights stored for each tree beco
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;The running time for each operation for each algorithm is following:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -6404,7 +7309,7 @@ can try to label the items from &lt;span class="math"&gt;\(1 \dots n\)&lt;/span&
 solution for &lt;span class="math"&gt;\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)&lt;/span&gt;. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;) in terms of subproblems (i.e., &lt;span class="math"&gt;\(S_i\)&lt;/span&gt;)? Let's take a look at an example:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -6494,7 +7399,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The running time for this algorithm is &lt;span class="math"&gt;\(O(n*W)\)&lt;/span&gt; because of the double for loop. To understand this algorithm,
 let's take a look at an example:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -6522,7 +7427,7 @@ let's take a look at an example:&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 5\)&lt;/span&gt; and with algorithm above, we essentially fill out a table like following:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -6591,7 +7496,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now, let's take a look at &lt;span class="math"&gt;\(B[1,1]\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(i = 1, b_i = 3, w_i = 2, w = 1\)&lt;/span&gt;, and since &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, and by our
 algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(B[0,1]\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(B[1,1] = 0\)&lt;/span&gt; and the table becomes&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -6652,7 +7557,7 @@ algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, 
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;We can fill out the table like this and have&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -6779,7 +7684,7 @@ for i = 1 to n
             x[i,w] = x_i that is associated with B[i-1,w]
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Let's walk through an example to better understand the algorithm idea:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -6806,7 +7711,7 @@ for i = 1 to n
 &lt;p&gt;&lt;span class="math"&gt;\(W = 8\)&lt;/span&gt; in our example. The algorithm essentially
 tries to build fill out two tables &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; table like
 the 0-1 knapsack problem:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -6874,7 +7779,7 @@ the 0-1 knapsack problem:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;and &lt;span class="math"&gt;\(x[i,w]\)&lt;/span&gt; table to keep track of the optimal
 value of &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; for each &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt;&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -6938,7 +7843,7 @@ $$&lt;/div&gt;
 &lt;p&gt;So, we fill in &lt;span class="math"&gt;\(B[1,3] = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[1,3] = 1\)&lt;/span&gt;. We can repeatedly
 doing this for other &lt;span class="math"&gt;\(i\)&lt;/span&gt;s. We can take a look at the values
 from another perspective like the tables below:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[1,w]&lt;/th&gt;
@@ -6994,7 +7899,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[2,w]&lt;/th&gt;
@@ -7050,7 +7955,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[3,w]&lt;/th&gt;
@@ -7228,7 +8133,7 @@ In addition, this post belongs to part of future work mentioned in &lt;a href="h
 &lt;p&gt;Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Type&lt;/th&gt;
@@ -7997,7 +8902,7 @@ care about the size of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; 
 &lt;p&gt;Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
 housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
 its prediction. What we should try next?&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Method&lt;/th&gt;
@@ -8073,7 +8978,7 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$&lt;/div&gt;
 &lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;component&lt;/th&gt;
@@ -8911,7 +9816,7 @@ is a graphic summary for the text above&lt;/p&gt;
 the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Join types&lt;/th&gt;
@@ -9548,7 +10453,7 @@ $$&lt;/div&gt;
 &lt;p&gt;For example, the sequence &lt;span class="math"&gt;\(1,3,4,2,1\)&lt;/span&gt; can be considered as a sequence of 
 iterated function values with &lt;span class="math"&gt;\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
 x_3 = f(4) = 2, x_4 = f(2) = 1\)&lt;/span&gt;. Let's try another representation:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;index&lt;/th&gt;
@@ -16442,7 +17347,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;table class="table-hover  table-striped highlighttable table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table highlighttable  table-striped table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -17143,7 +18048,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;table class="table-hover  table-striped highlighttable table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table highlighttable  table-striped table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -17376,7 +18281,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;table class="table-hover  table-striped highlighttable table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table highlighttable  table-striped table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -17431,7 +18336,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;table class="table-hover  table-striped highlighttable table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table highlighttable  table-striped table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -17481,7 +18386,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;table class="table-hover  table-striped highlighttable table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table highlighttable  table-striped table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -17525,7 +18430,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;table class="table-hover  table-striped highlighttable table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table highlighttable  table-striped table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -17584,7 +18489,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;table class="table-hover  table-striped highlighttable table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table highlighttable  table-striped table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -17647,7 +18552,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;table class="table-hover  table-striped highlighttable table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table highlighttable  table-striped table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -18038,7 +18943,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class="table-hover table docutils  table-striped"&gt;
+&lt;table border="1" class="table  table-striped table-hover docutils"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;
