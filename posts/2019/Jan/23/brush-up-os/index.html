@@ -184,8 +184,12 @@ and contains <span class="math">\(2^b\)</span> entries. Similarly, Page Director
 <span class="math">\(2^c\)</span> PTEs, and each PTE corresponds to one virtual page. Therefore, there are <span class="math">\(2^{a+b+c}\)</span> virutal pages. Another way of cacluation is
 that the physical frame size is <span class="math">\(2^d\)</span>, which is equal to page size. Since the address space is 32 bit, there are <span class="math">\(\frac{2^{32}}{2^d}\)</span> virtual pages
 <sup id="fnref:8"><a class="footnote-ref" href="#fn:8" rel="footnote">16</a></sup>.</p>
-<p>The advantage of multi-level page tables is that we allow every piece of the multi-level page table fit into a page (e.g., page directory needs 
-to fit in a page as well) and reduce the space usage. The disadvantage is that additional memory accesses to look up a valid translation 
+<p>The advantages of multi-level page tables are that:</p>
+<ul>
+<li>The multi-level table only allocates page-table space in proportion to the amount of address space we are using (more compact to support sparse page table)</li>
+<li>each portion of page table fits into a page makes memory management easier: we don't have to find contiguous physical memory chunk that can contain the linear page table; we can place page-table pages whereever we want in the physical memory. </li>
+</ul>
+<p>The disadvantage is that additional memory accesses to look up a valid translation 
 (e.g., for 3-level page table system, we have three additional memory accesses: access Page Directory Entry 0 (PDE0), access PDE1, access PTE)<sup id="fnref:9"><a class="footnote-ref" href="#fn:9" rel="footnote">17</a></sup>.</p>
 <h3 id="page-replacement">Page replacement</h3>
 <blockquote>
@@ -198,7 +202,7 @@ that cause a page fault uppercase, and those that don’t lowercase):</p>
 </blockquote>
 <p>LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
 approximate LRU <sup id="fnref:12"><a class="footnote-ref" href="#fn:12" rel="footnote">18</a></sup> to avoid heavy overhead). The trace of the memory references with LRU policy shown below:</p>
-<table class=" table-striped table-hover table">
+<table class="table-hover table  table-striped">
 <thead>
 <tr>
 <th>Access</th>
@@ -312,7 +316,7 @@ approximate LRU <sup id="fnref:12"><a class="footnote-ref" href="#fn:12" rel="fo
 </blockquote>
 <p>FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:</p>
-<table class=" table-striped table-hover table">
+<table class="table-hover table  table-striped">
 <thead>
 <tr>
 <th>Access</th>
@@ -426,7 +430,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 </blockquote>
 <p>Optimal policy means we want to replace the page that will be accessed <em>furthest in the future</em> and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:</p>
-<table class=" table-striped table-hover table">
+<table class="table-hover table  table-striped">
 <thead>
 <tr>
 <th>Access</th>
@@ -632,7 +636,7 @@ which takes a queue and returns, as an unsigned integer, its address.</p>
 </blockquote>
 <p>One possible scenario of deadlock using <code>transfer()</code> is illustrated below. Note that <code>queue1</code> and <code>queue2</code> in <code>transfer()</code>
 are replaced with queues that they are pointing to (time increases with the row's number):</p>
-<table class=" table-striped table-hover table">
+<table class="table-hover table  table-striped">
 <thead>
 <tr>
 <th>Thread1 (<code>transfer(q1,q2)</code>)</th>
@@ -763,8 +767,7 @@ in  the  sequence,  (2)  the  sender  can  transmit  up  to n unacknowledged mes
 of  sequence  (in  other  words,  it  will  only  acknowledge  a  message  if  it  is received in sequence), and (3) the sender can transmit up to
 n unacknowledged messages, and the receiver will acknowledge each on receipt, even if they arrive out of order.
 For each alternative, answer the following questions</p>
-<p>(a) Explain what state the receiver must keep around to implement each of  the  three  alternatives  (remember,  the  receiver  must  be  able  to
-detect and discard duplicates).</p>
+<p>(a) Explain what state the receiver must keep around to implement each of  the  three  alternatives  (remember,  the  receiver  must  be  able  to detect and discard duplicates).</p>
 </blockquote>
 <ul>
 <li>For 1), we keep track of expected sequence # (or last received sequence #)</li>
