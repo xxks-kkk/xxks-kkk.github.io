@@ -1,8 +1,413 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-03-03T11:13:00+08:00</updated><entry><title>"The UNIX Time- Sharing System"</title><link href="https://zhu45.org/posts/2019/Mar/03/the-unix-time-sharing-system/" rel="alternate"></link><published>2019-03-03T11:13:00+08:00</published><updated>2019-03-03T11:13:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-03-03:/posts/2019/Mar/03/the-unix-time-sharing-system/</id><summary type="html">&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-03-09T13:20:00+08:00</updated><entry><title>"Exokernel: An Operating System Architecture for Application-Level Resource Management"</title><link href="https://zhu45.org/posts/2019/Mar/09/exokernel-an-operating-system-architecture-for-application-level-resource-management/" rel="alternate"></link><published>2019-03-09T13:20:00+08:00</published><updated>2019-03-09T13:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-03-09:/posts/2019/Mar/09/exokernel-an-operating-system-architecture-for-application-level-resource-management/</id><summary type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#approach"&gt;Approach&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background-extensibility"&gt;Background: extensibility&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#os-per-application"&gt;OS per application&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#microkernels"&gt;Microkernels&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#virtual-machines"&gt;Virtual machines&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#download-untrusted-code-into-kernel"&gt;Download untrusted code into kernel&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-designs"&gt;System designs&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#high-level-architecture"&gt;High-level Architecture&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#exokernel-principles"&gt;Exokernel principles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#key-mechanisms"&gt;Key Mechanisms&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#secure-bindings"&gt;Secure bindings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#visible-revocation"&gt;Visible revocation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#abort-protocol"&gt;Abort protocol&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#capabilities"&gt;Capabilities&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#others"&gt;Others&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#specific-abstractions"&gt;Specific Abstractions&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#network"&gt;Network&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#multiplexing-the-network-packet-filter"&gt;Multiplexing the network: packet filter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#application-specific-safe-handlers-ash"&gt;Application-specific safe handlers (ASH)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;How can we design an OS …&lt;/p&gt;</summary><content type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#approach"&gt;Approach&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background-extensibility"&gt;Background: extensibility&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#os-per-application"&gt;OS per application&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#microkernels"&gt;Microkernels&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#virtual-machines"&gt;Virtual machines&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#download-untrusted-code-into-kernel"&gt;Download untrusted code into kernel&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-designs"&gt;System designs&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#high-level-architecture"&gt;High-level Architecture&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#exokernel-principles"&gt;Exokernel principles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#key-mechanisms"&gt;Key Mechanisms&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#secure-bindings"&gt;Secure bindings&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#visible-revocation"&gt;Visible revocation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#abort-protocol"&gt;Abort protocol&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#capabilities"&gt;Capabilities&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#others"&gt;Others&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#specific-abstractions"&gt;Specific Abstractions&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#network"&gt;Network&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#multiplexing-the-network-packet-filter"&gt;Multiplexing the network: packet filter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#application-specific-safe-handlers-ash"&gt;Application-specific safe handlers (ASH)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;How can we design an OS such that it improves performance of standard applications while providing flexibility to enable applications to customize 
+resource management to improve performance?&lt;/p&gt;
+&lt;h2 id="approach"&gt;Approach&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;extensibility: application knows best what resource mangement it needs. Therefore, it should make decisions whenever possible (end-to-end argument)&lt;/li&gt;
+&lt;li&gt;minimalist: kernel's job is to protect resources, not to manage them ("separate protection from resource management")&lt;/li&gt;
+&lt;li&gt;challenge: identify core of the abstractions for different resources&lt;/li&gt;
+&lt;li&gt;Thin kernel, fat OS libraries&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="background-extensibility"&gt;Background: extensibility&lt;/h2&gt;
+&lt;p&gt;There are five approaches to extensibility (including Exokernel):&lt;/p&gt;
+&lt;h3 id="os-per-application"&gt;OS per application&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="os per application" class="img-responsive" src="https://zhu45.org/images/os-per-application.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Example: &lt;a href="http://www.cs.utah.edu/flux/fluke/html/"&gt;Fluke&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Idea:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hypervisor provides resource management and isolation&lt;/li&gt;
+&lt;li&gt;Additional guest-OS layers redundant and unnecessary&lt;/li&gt;
+&lt;li&gt;Collapse guest OS and application into same domain (typically compiles OS and app into the same binary)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pros:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fast (same advantage provides by &lt;a href="https://en.wikipedia.org/wiki/Unikernel"&gt;Unikernel&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cons:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Co-existence applications&lt;/li&gt;
+&lt;li&gt;Kernels are fragile and hard to modify&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="microkernels"&gt;Microkernels&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="microkernels" class="img-responsive" src="https://zhu45.org/images/microkernels.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Examples: &lt;a href="https://homes.cs.washington.edu/~levy/capabook/Chapter6.pdf"&gt;Hydra&lt;/a&gt;, &lt;a href="https://www.os-book.com/OS9/appendices-dir/b.pdf"&gt;Mach&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Idea:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Minimal OS core to manage hardware&lt;/li&gt;
+&lt;li&gt;Higher level abstractions in user space&lt;/li&gt;
+&lt;li&gt;IPC fundamental cross-domain primitive&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pros:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fault isolation&lt;/li&gt;
+&lt;li&gt;Better extensibility&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cons:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Slow (kernel crossings)&lt;/li&gt;
+&lt;li&gt;Limited extensibility (maky make it easeir for OS developer to extend, but not user)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="virtual-machines"&gt;Virtual machines&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="VM" class="img-responsive" src="https://zhu45.org/images/VM.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Examples: VM370, Disco, VMware, &lt;a href="https://www.cl.cam.ac.uk/research/srg/netos/papers/2003-xensosp.pdf"&gt;Xen&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Ideas:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Different apps need different OSes&lt;/li&gt;
+&lt;li&gt;Figure our how to run more than one OS at a time&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pros:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;low-level interface ("ideal" according to Exokernel standard)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cons:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;"emulate" machine vs. "export" resources (e.g., need to emulate "privileged" instructions)&lt;/li&gt;
+&lt;li&gt;Poor IPC (traditionally): machines isolated&lt;/li&gt;
+&lt;li&gt;Hide resource management&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="download-untrusted-code-into-kernel"&gt;Download untrusted code into kernel&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="download untrusted code into kernel" class="img-responsive" src="https://zhu45.org/images/donwload-untrusted-code-into-kernel.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Examples: &lt;a href="https://cseweb.ucsd.edu/~savage/papers/Sosp95.pdf"&gt;Spin&lt;/a&gt;, &lt;a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.47.9071&amp;amp;rep=rep1&amp;amp;type=pdf"&gt;Vino&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Ideas:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;OS provides extensibility interfaces&lt;/li&gt;
+&lt;li&gt;Apps provide extensions that execute in kernel mode&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pros:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;extension&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cons:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Still working with same OS structure&lt;/li&gt;
+&lt;li&gt;Only extensible within limits of extensbility API&lt;/li&gt;
+&lt;li&gt;New thicket of isolation and trust issues&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="system-designs"&gt;System designs&lt;/h2&gt;
+&lt;h3 id="high-level-architecture"&gt;High-level Architecture&lt;/h3&gt;
+&lt;p&gt;Like previous four types of system, exokernel is another system architecture style focusing on the system extensibility.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="exokernel" class="img-responsive" src="https://zhu45.org/images/exokernel.png"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="exokernel architecture" class="img-responsive" src="https://zhu45.org/images/exokernel-architecture.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Top level structure:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;A small monolithic kernel&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;low-level, fixed interface&lt;/li&gt;
+&lt;li&gt;Ideally hardware interface&lt;/li&gt;
+&lt;li&gt;few and simple abstractions&lt;/li&gt;
+&lt;li&gt;extension types: resource state data (page table entries), specialized resource management modules&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Libraries of untrusted resource management routines&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;VM replacement&lt;/li&gt;
+&lt;li&gt;File System&lt;/li&gt;
+&lt;li&gt;IPC&lt;/li&gt;
+&lt;li&gt;...&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Libraries are part of OS. Historically, OS was set of libraries for math, etc. However, it is not true today.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Key difference - trust: application can write over library, jump to bad address in library, etc. Thus, kernel cannot trust library.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Exokernel borrows liberally from other approaches:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Like Fluke: make it easy for each app to have custom OS&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Like virtual machine: exokernel exports virtual machine but different in&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Transparency: traditional VM wants to run unmodified OS's; exokernel VM wants to support custom OS's&lt;/li&gt;
+&lt;li&gt;Export rather than emulate resource: libOS is aware of multiplexing&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Like Vino, Spin: one mechanism for extensibility is to download untrusted code into kernel&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Philosophy&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Traditional OS = protection + abstraction&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Exokernel:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Protection = kernel (minimal mechanism) + library (resource sharing policy)&lt;/li&gt;
+&lt;li&gt;Abstraction = library&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="exokernel-principles"&gt;Exokernel principles&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Separate protection and management&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;export resources at lowest level possible with protection (e.g., disk blocks, TLB entries, etc)&lt;/li&gt;
+&lt;li&gt;resource management only at level needed for protection (e.g., allocation, revocation, sharing, tracking of ownership)&lt;/li&gt;
+&lt;li&gt;"abstraction (mechanism) is policy": the implementation of abstractions in library operating systems can be simpler and 
+  more specialized than in-kernel implementations, because library operating systems need not multiplex a resource 
+  among competing applications with widely different demands&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Expose allocation: allocations allocate resources explicitly&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;Expose names: use physical names (physical memory (cache coloring), disk arm position)&lt;/li&gt;
+&lt;li&gt;Expose revocation: let apps choose which instances of a resource to give up&lt;/li&gt;
+&lt;li&gt;Expose information: let application map in (read only) internal kernel data structures (e.g, software TLB, CPU schedule, etc)&lt;/li&gt;
+&lt;li&gt;Exterminate all operating system abstractions (end-to-end)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="key-mechanisms"&gt;Key Mechanisms&lt;/h3&gt;
+&lt;h4 id="secure-bindings"&gt;Secure bindings&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Bind at large granularity; access at small granularity (allow kernel to protect resources without understanding them)&lt;/li&gt;
+&lt;li&gt;Do access check at bind time, not access time (e.g., when loading TLB entry for a page, not when accessing page)&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Examples:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hardware: TLB&lt;/li&gt;
+&lt;li&gt;Software: Software TLB cache&lt;/li&gt;
+&lt;li&gt;Download code (e.g., packet filter): type safe language, sandboxing, interpreters, etc&lt;/li&gt;
+&lt;li&gt;Traditional file system: open file/read and write file&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Challenge: secure bindings vs. Saltzer "complete mediation"&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="visible-revocation"&gt;Visible revocation&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Transparent revocation (Traditional OS)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;OS decides how many resources to give to apps&lt;/li&gt;
+&lt;li&gt;OS chooses what to revoke and takes it&lt;/li&gt;
+&lt;li&gt;Needed for performant frequent revocation (e.g., address space identifier (ASID))&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Notify on revocation (Exokernel)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;abort protocol; repossession vector; scheduler activations&lt;/li&gt;
+&lt;li&gt;OS decides how many resources to give to apps&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;OS chooses what to revoke, takes it, and tells application (or libOS)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Call application handler when taking away page, CPU, etc&lt;/li&gt;
+&lt;li&gt;Application can react: update data structures (e.g., reduce # of threads when CPU goes away; scheduler activations) 
+  and decide what page to give up&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Reposes dirty disk block (store to "swap server")&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;ASIDs (processor addressing-context identifiers) are identified as a resource best revoked transparently because of 
+  frequent revocation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cooperative revocation (Exokernel)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;callbacks&lt;/li&gt;
+&lt;li&gt;OS decides how many resources to give to apps&lt;/li&gt;
+&lt;li&gt;OS asks application or libOS to give up a resource; libOS/app decides which instance to give up&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="abort-protocol"&gt;Abort protocol&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;When voluntary revocation fails, kernel tells application what it took away. Doing so helps library to maintain valid state 
+  specification&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="capabilities"&gt;Capabilities&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Encryption-based tokens to prove right to access&lt;/li&gt;
+&lt;li&gt;Idea is to help kernel make access-rights decision&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pros:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Simple&lt;/li&gt;
+&lt;li&gt;Generic across resources&lt;/li&gt;
+&lt;li&gt;Hierarchical: using capabilities to protect resources enables applications to grant access rights to other applications
+  without kernel intervention. Applications can also use "well-known" capabilities to share resources easily&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="others"&gt;Others&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Wakeup predicates: wake up process when arbitrary condition becomes true (checked when scheduler looking for something to run)&lt;/li&gt;
+&lt;li&gt;Buffer cache registry: bind disk blocks to memory pages (applications can share cached pages)&lt;/li&gt;
+&lt;li&gt;Block stat to order writes&lt;/li&gt;
+&lt;li&gt;UDF&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="specific-abstractions"&gt;Specific Abstractions&lt;/h3&gt;
+&lt;p&gt;Many abstractions need to be implemented in exokernel: exception handler, page protection/sharing, processor scheduling,
+fork/exec, VM replacement, network protocol, file system. Here, I only list paper's discussion related to network.&lt;/p&gt;
+&lt;h4 id="network"&gt;Network&lt;/h4&gt;
+&lt;h5 id="multiplexing-the-network-packet-filter"&gt;Multiplexing the network: packet filter&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;Idea: load a small piece of code that examines packet and decides if it is for me&lt;/li&gt;
+&lt;li&gt;Implement by downloading code into kernel: written in simple, safe language - no loops, check all mem references, etc&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Problem: what if I lie and say "yes it is for me" when it isn't?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Solution: "assume they don't lie"&lt;/li&gt;
+&lt;li&gt;Claim: could use a trusted server to load these things or could check to make sure that a new filter never overlaps with an 
+  old one [not like to solve the problem]&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id="application-specific-safe-handlers-ash"&gt;Application-specific safe handlers (ASH)&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Load handlers for application-specific messages into kernel (can reply to packet without context switch)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Example: auspex file server responds to NFS &lt;code&gt;getattr&lt;/code&gt; requests in hardware in network interface&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pros:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;direc message vectoring: ASH knows where message should land in user memory and thus, avoid copies&lt;/li&gt;
+&lt;li&gt;dynamic integrated layer processing (e.g., do checksum as data is copied into network inteface)&lt;/li&gt;
+&lt;li&gt;message initiation (fast replies)&lt;/li&gt;
+&lt;li&gt;No danger of deadlock&lt;/li&gt;
+&lt;li&gt;control initiation (active messages)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If we see Figure 2 of the paper: without ASH, exokernel just drops message in application buffer and later, when application 
+is scheduled, application handles it. Since in the paper, round robin scheduler is used, we see linear increase in ping latency.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</content><category term="papers"></category><category term="os"></category></entry><entry><title>"The UNIX Time- Sharing System"</title><link href="https://zhu45.org/posts/2019/Mar/03/the-unix-time-sharing-system/" rel="alternate"></link><published>2019-03-03T11:13:00+08:00</published><updated>2019-03-03T11:13:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-03-03:/posts/2019/Mar/03/the-unix-time-sharing-system/</id><summary type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#system-designs"&gt;System designs&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#architecture"&gt;Architecture&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#file-system"&gt;File System&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#process-management"&gt;Process Management&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -13,15 +418,18 @@
 &lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
 &lt;p&gt;How to design a interative-use system with easy use (i.e., write, test, and run programs) given the hardware constraint?&lt;/p&gt;
 &lt;h2 id="system-designs"&gt;System designs&lt;/h2&gt;
+&lt;h3 id="architecture"&gt;Architecture&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="monolithic kernel" class="img-responsive" src="https://zhu45.org/images/unix.png"/&gt;&lt;/p&gt;
 &lt;h3 id="file-system"&gt;File System&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Untyped data (byte oriented)&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Structure of files is controlled by the programs which uses them, not by …&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;div class="toc"&gt;
+&lt;li&gt;Structure of files is controlled by the programs which uses them …&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#system-designs"&gt;System designs&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#architecture"&gt;Architecture&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#file-system"&gt;File System&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#process-management"&gt;Process Management&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -32,6 +440,8 @@
 &lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
 &lt;p&gt;How to design a interative-use system with easy use (i.e., write, test, and run programs) given the hardware constraint?&lt;/p&gt;
 &lt;h2 id="system-designs"&gt;System designs&lt;/h2&gt;
+&lt;h3 id="architecture"&gt;Architecture&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="monolithic kernel" class="img-responsive" src="https://zhu45.org/images/unix.png"/&gt;&lt;/p&gt;
 &lt;h3 id="file-system"&gt;File System&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -445,7 +855,7 @@ that cause a page fault uppercase, and those that don’t lowercase):&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
 approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12" rel="footnote"&gt;18&lt;/a&gt;&lt;/sup&gt; to avoid heavy overhead). The trace of the memory references with LRU policy shown below:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -559,7 +969,7 @@ approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12
 &lt;/blockquote&gt;
 &lt;p&gt;FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -673,7 +1083,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 &lt;/blockquote&gt;
 &lt;p&gt;Optimal policy means we want to replace the page that will be accessed &lt;em&gt;furthest in the future&lt;/em&gt; and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -879,7 +1289,7 @@ which takes a queue and returns, as an unsigned integer, its address.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;One possible scenario of deadlock using &lt;code&gt;transfer()&lt;/code&gt; is illustrated below. Note that &lt;code&gt;queue1&lt;/code&gt; and &lt;code&gt;queue2&lt;/code&gt; in &lt;code&gt;transfer()&lt;/code&gt;
 are replaced with queues that they are pointing to (time increases with the row's number):&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Thread1 (&lt;code&gt;transfer(q1,q2)&lt;/code&gt;)&lt;/th&gt;
@@ -1233,7 +1643,7 @@ the modification looks like below:&lt;/p&gt;
 &lt;p&gt;The question we want to answer is why doing so works?&lt;/p&gt;
 &lt;h2 id="explanation"&gt;Explanation&lt;/h2&gt;
 &lt;p&gt;We acquire key data from GDB as following:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;GDB command&lt;/th&gt;
@@ -2779,7 +3189,7 @@ blocks from different clients)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;&lt;/th&gt;
@@ -7354,7 +7764,7 @@ a very efficient algorithm in all cases. Path compression is not entirely compat
 to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., &lt;strong&gt;ranks&lt;/strong&gt;), but in theory union-by-rank is as efficient as union-by-size.&lt;/p&gt;
 &lt;p&gt;If we do analysis on smart union with path compression, the running time for any sequence of &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects makes &lt;span class="math"&gt;\(O(N + M\log^*N)\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; accesses.&lt;/p&gt;
 &lt;p&gt;The following table summarizes the running time for &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on a set of &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects (don't forget we need to spend &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; to initialize disjoint sets):&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -7385,7 +7795,7 @@ to recompute all the heights and in this case, heights stored for each tree beco
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;The running time for each operation for each algorithm is following:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -7586,7 +7996,7 @@ can try to label the items from &lt;span class="math"&gt;\(1 \dots n\)&lt;/span&
 solution for &lt;span class="math"&gt;\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)&lt;/span&gt;. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;) in terms of subproblems (i.e., &lt;span class="math"&gt;\(S_i\)&lt;/span&gt;)? Let's take a look at an example:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -7676,7 +8086,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The running time for this algorithm is &lt;span class="math"&gt;\(O(n*W)\)&lt;/span&gt; because of the double for loop. To understand this algorithm,
 let's take a look at an example:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -7704,7 +8114,7 @@ let's take a look at an example:&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 5\)&lt;/span&gt; and with algorithm above, we essentially fill out a table like following:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -7773,7 +8183,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now, let's take a look at &lt;span class="math"&gt;\(B[1,1]\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(i = 1, b_i = 3, w_i = 2, w = 1\)&lt;/span&gt;, and since &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, and by our
 algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(B[0,1]\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(B[1,1] = 0\)&lt;/span&gt; and the table becomes&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -7834,7 +8244,7 @@ algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, 
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;We can fill out the table like this and have&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -7961,7 +8371,7 @@ for i = 1 to n
             x[i,w] = x_i that is associated with B[i-1,w]
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Let's walk through an example to better understand the algorithm idea:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -7988,7 +8398,7 @@ for i = 1 to n
 &lt;p&gt;&lt;span class="math"&gt;\(W = 8\)&lt;/span&gt; in our example. The algorithm essentially
 tries to build fill out two tables &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; table like
 the 0-1 knapsack problem:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -8056,7 +8466,7 @@ the 0-1 knapsack problem:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;and &lt;span class="math"&gt;\(x[i,w]\)&lt;/span&gt; table to keep track of the optimal
 value of &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; for each &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt;&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -8120,7 +8530,7 @@ $$&lt;/div&gt;
 &lt;p&gt;So, we fill in &lt;span class="math"&gt;\(B[1,3] = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[1,3] = 1\)&lt;/span&gt;. We can repeatedly
 doing this for other &lt;span class="math"&gt;\(i\)&lt;/span&gt;s. We can take a look at the values
 from another perspective like the tables below:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[1,w]&lt;/th&gt;
@@ -8176,7 +8586,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[2,w]&lt;/th&gt;
@@ -8232,7 +8642,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[3,w]&lt;/th&gt;
@@ -8410,7 +8820,7 @@ In addition, this post belongs to part of future work mentioned in &lt;a href="h
 &lt;p&gt;Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Type&lt;/th&gt;
@@ -9179,7 +9589,7 @@ care about the size of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; 
 &lt;p&gt;Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
 housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
 its prediction. What we should try next?&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Method&lt;/th&gt;
@@ -9255,7 +9665,7 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$&lt;/div&gt;
 &lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;component&lt;/th&gt;
@@ -10093,7 +10503,7 @@ is a graphic summary for the text above&lt;/p&gt;
 the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Join types&lt;/th&gt;
@@ -10730,7 +11140,7 @@ $$&lt;/div&gt;
 &lt;p&gt;For example, the sequence &lt;span class="math"&gt;\(1,3,4,2,1\)&lt;/span&gt; can be considered as a sequence of 
 iterated function values with &lt;span class="math"&gt;\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
 x_3 = f(4) = 2, x_4 = f(2) = 1\)&lt;/span&gt;. Let's try another representation:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;index&lt;/th&gt;
@@ -17624,7 +18034,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -18325,7 +18735,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -18558,7 +18968,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -18613,7 +19023,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -18663,7 +19073,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -18707,7 +19117,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -18766,7 +19176,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -18829,7 +19239,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19220,7 +19630,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class="table-hover table  table-striped docutils"&gt;
+&lt;table border="1" class=" table-striped docutils table table-hover"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;

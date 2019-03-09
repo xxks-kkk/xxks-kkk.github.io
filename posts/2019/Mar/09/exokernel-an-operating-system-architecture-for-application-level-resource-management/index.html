@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Exokernel: An Operating System Architecture for Application-Level Resource Management"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+          <div class="post-title">"Exokernel: An Operating System Architecture for Application-Level Resource Management"</h1></div>
+          <div class="post-date"><time datetime="2019-03-09T13:20:00+08:00">Mar 09, 2019</time></div>
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#approach">Approach</a></li>
+<li><a href="#background-extensibility">Background: extensibility</a><ul>
+<li><a href="#os-per-application">OS per application</a></li>
+<li><a href="#microkernels">Microkernels</a></li>
+<li><a href="#virtual-machines">Virtual machines</a></li>
+<li><a href="#download-untrusted-code-into-kernel">Download untrusted code into kernel</a></li>
+</ul>
+</li>
+<li><a href="#system-designs">System designs</a><ul>
+<li><a href="#high-level-architecture">High-level Architecture</a></li>
+<li><a href="#exokernel-principles">Exokernel principles</a></li>
+<li><a href="#key-mechanisms">Key Mechanisms</a><ul>
+<li><a href="#secure-bindings">Secure bindings</a></li>
+<li><a href="#visible-revocation">Visible revocation</a></li>
+<li><a href="#abort-protocol">Abort protocol</a></li>
+<li><a href="#capabilities">Capabilities</a></li>
+<li><a href="#others">Others</a></li>
+</ul>
+</li>
+<li><a href="#specific-abstractions">Specific Abstractions</a><ul>
+<li><a href="#network">Network</a><ul>
+<li><a href="#multiplexing-the-network-packet-filter">Multiplexing the network: packet filter</a></li>
+<li><a href="#application-specific-safe-handlers-ash">Application-specific safe handlers (ASH)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<p>How can we design an OS such that it improves performance of standard applications while providing flexibility to enable applications to customize 
+resource management to improve performance?</p>
+<h2 id="approach">Approach</h2>
+<ul>
+<li>extensibility: application knows best what resource mangement it needs. Therefore, it should make decisions whenever possible (end-to-end argument)</li>
+<li>minimalist: kernel's job is to protect resources, not to manage them ("separate protection from resource management")</li>
+<li>challenge: identify core of the abstractions for different resources</li>
+<li>Thin kernel, fat OS libraries</li>
+</ul>
+<h2 id="background-extensibility">Background: extensibility</h2>
+<p>There are five approaches to extensibility (including Exokernel):</p>
+<h3 id="os-per-application">OS per application</h3>
+<p><img alt="os per application" class="img-responsive" src="../../../../../images/os-per-application.png"/></p>
+<ul>
+<li>
+<p>Example: <a href="http://www.cs.utah.edu/flux/fluke/html/">Fluke</a></p>
+</li>
+<li>
+<p>Idea:</p>
+<ul>
+<li>Hypervisor provides resource management and isolation</li>
+<li>Additional guest-OS layers redundant and unnecessary</li>
+<li>Collapse guest OS and application into same domain (typically compiles OS and app into the same binary)</li>
+</ul>
+</li>
+<li>
+<p>Pros:</p>
+<ul>
+<li>Fast (same advantage provides by <a href="https://en.wikipedia.org/wiki/Unikernel">Unikernel</a>)</li>
+</ul>
+</li>
+<li>
+<p>Cons:</p>
+<ul>
+<li>Co-existence applications</li>
+<li>Kernels are fragile and hard to modify</li>
+</ul>
+</li>
+</ul>
+<h3 id="microkernels">Microkernels</h3>
+<p><img alt="microkernels" class="img-responsive" src="../../../../../images/microkernels.png"/></p>
+<ul>
+<li>
+<p>Examples: <a href="https://homes.cs.washington.edu/~levy/capabook/Chapter6.pdf">Hydra</a>, <a href="https://www.os-book.com/OS9/appendices-dir/b.pdf">Mach</a></p>
+</li>
+<li>
+<p>Idea:</p>
+<ul>
+<li>Minimal OS core to manage hardware</li>
+<li>Higher level abstractions in user space</li>
+<li>IPC fundamental cross-domain primitive</li>
+</ul>
+</li>
+<li>
+<p>Pros:</p>
+<ul>
+<li>Fault isolation</li>
+<li>Better extensibility</li>
+</ul>
+</li>
+<li>
+<p>Cons:</p>
+<ul>
+<li>Slow (kernel crossings)</li>
+<li>Limited extensibility (maky make it easeir for OS developer to extend, but not user)</li>
+</ul>
+</li>
+</ul>
+<h3 id="virtual-machines">Virtual machines</h3>
+<p><img alt="VM" class="img-responsive" src="../../../../../images/VM.png"/></p>
+<ul>
+<li>
+<p>Examples: VM370, Disco, VMware, <a href="https://www.cl.cam.ac.uk/research/srg/netos/papers/2003-xensosp.pdf">Xen</a></p>
+</li>
+<li>
+<p>Ideas:</p>
+<ul>
+<li>Different apps need different OSes</li>
+<li>Figure our how to run more than one OS at a time</li>
+</ul>
+</li>
+<li>
+<p>Pros:</p>
+<ul>
+<li>low-level interface ("ideal" according to Exokernel standard)</li>
+</ul>
+</li>
+<li>
+<p>Cons:</p>
+<ul>
+<li>"emulate" machine vs. "export" resources (e.g., need to emulate "privileged" instructions)</li>
+<li>Poor IPC (traditionally): machines isolated</li>
+<li>Hide resource management</li>
+</ul>
+</li>
+</ul>
+<h3 id="download-untrusted-code-into-kernel">Download untrusted code into kernel</h3>
+<p><img alt="download untrusted code into kernel" class="img-responsive" src="../../../../../images/donwload-untrusted-code-into-kernel.png"/></p>
+<ul>
+<li>
+<p>Examples: <a href="https://cseweb.ucsd.edu/~savage/papers/Sosp95.pdf">Spin</a>, <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.47.9071&amp;rep=rep1&amp;type=pdf">Vino</a></p>
+</li>
+<li>
+<p>Ideas:</p>
+<ul>
+<li>OS provides extensibility interfaces</li>
+<li>Apps provide extensions that execute in kernel mode</li>
+</ul>
+</li>
+<li>
+<p>Pros:</p>
+<ul>
+<li>extension</li>
+</ul>
+</li>
+<li>
+<p>Cons:</p>
+<ul>
+<li>Still working with same OS structure</li>
+<li>Only extensible within limits of extensbility API</li>
+<li>New thicket of isolation and trust issues</li>
+</ul>
+</li>
+</ul>
+<h2 id="system-designs">System designs</h2>
+<h3 id="high-level-architecture">High-level Architecture</h3>
+<p>Like previous four types of system, exokernel is another system architecture style focusing on the system extensibility.</p>
+<p><img alt="exokernel" class="img-responsive" src="../../../../../images/exokernel.png"/></p>
+<p><img alt="exokernel architecture" class="img-responsive" src="../../../../../images/exokernel-architecture.png"/></p>
+<ul>
+<li>
+<p>Top level structure:</p>
+<ul>
+<li>
+<p>A small monolithic kernel</p>
+<ul>
+<li>low-level, fixed interface</li>
+<li>Ideally hardware interface</li>
+<li>few and simple abstractions</li>
+<li>extension types: resource state data (page table entries), specialized resource management modules</li>
+</ul>
+</li>
+<li>
+<p>Libraries of untrusted resource management routines</p>
+<ul>
+<li>VM replacement</li>
+<li>File System</li>
+<li>IPC</li>
+<li>...</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Libraries are part of OS. Historically, OS was set of libraries for math, etc. However, it is not true today.</p>
+</div>
+<ul>
+<li>
+<p>Key difference - trust: application can write over library, jump to bad address in library, etc. Thus, kernel cannot trust library.</p>
+</li>
+<li>
+<p>Exokernel borrows liberally from other approaches:</p>
+<ul>
+<li>Like Fluke: make it easy for each app to have custom OS</li>
+<li>
+<p>Like virtual machine: exokernel exports virtual machine but different in</p>
+<ul>
+<li>Transparency: traditional VM wants to run unmodified OS's; exokernel VM wants to support custom OS's</li>
+<li>Export rather than emulate resource: libOS is aware of multiplexing</li>
+</ul>
+</li>
+<li>
+<p>Like Vino, Spin: one mechanism for extensibility is to download untrusted code into kernel</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Philosophy</p>
+<ul>
+<li>Traditional OS = protection + abstraction</li>
+<li>
+<p>Exokernel:</p>
+<ul>
+<li>Protection = kernel (minimal mechanism) + library (resource sharing policy)</li>
+<li>Abstraction = library</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="exokernel-principles">Exokernel principles</h3>
+<ul>
+<li>
+<p>Separate protection and management</p>
+<ul>
+<li>export resources at lowest level possible with protection (e.g., disk blocks, TLB entries, etc)</li>
+<li>resource management only at level needed for protection (e.g., allocation, revocation, sharing, tracking of ownership)</li>
+<li>"abstraction (mechanism) is policy": the implementation of abstractions in library operating systems can be simpler and 
+  more specialized than in-kernel implementations, because library operating systems need not multiplex a resource 
+  among competing applications with widely different demands</li>
+</ul>
+</li>
+<li>
+<p>Expose allocation: allocations allocate resources explicitly</p>
+</li>
+<li>Expose names: use physical names (physical memory (cache coloring), disk arm position)</li>
+<li>Expose revocation: let apps choose which instances of a resource to give up</li>
+<li>Expose information: let application map in (read only) internal kernel data structures (e.g, software TLB, CPU schedule, etc)</li>
+<li>Exterminate all operating system abstractions (end-to-end)</li>
+</ul>
+<h3 id="key-mechanisms">Key Mechanisms</h3>
+<h4 id="secure-bindings">Secure bindings</h4>
+<ul>
+<li>Bind at large granularity; access at small granularity (allow kernel to protect resources without understanding them)</li>
+<li>Do access check at bind time, not access time (e.g., when loading TLB entry for a page, not when accessing page)</li>
+<li>
+<p>Examples:</p>
+<ul>
+<li>Hardware: TLB</li>
+<li>Software: Software TLB cache</li>
+<li>Download code (e.g., packet filter): type safe language, sandboxing, interpreters, etc</li>
+<li>Traditional file system: open file/read and write file</li>
+</ul>
+</li>
+<li>
+<p>Challenge: secure bindings vs. Saltzer "complete mediation"</p>
+</li>
+</ul>
+<h4 id="visible-revocation">Visible revocation</h4>
+<ul>
+<li>
+<p>Transparent revocation (Traditional OS)</p>
+<ul>
+<li>OS decides how many resources to give to apps</li>
+<li>OS chooses what to revoke and takes it</li>
+<li>Needed for performant frequent revocation (e.g., address space identifier (ASID))</li>
+</ul>
+</li>
+<li>
+<p>Notify on revocation (Exokernel)</p>
+<ul>
+<li>abort protocol; repossession vector; scheduler activations</li>
+<li>OS decides how many resources to give to apps</li>
+<li>
+<p>OS chooses what to revoke, takes it, and tells application (or libOS)</p>
+<ul>
+<li>Call application handler when taking away page, CPU, etc</li>
+<li>Application can react: update data structures (e.g., reduce # of threads when CPU goes away; scheduler activations) 
+  and decide what page to give up</li>
+</ul>
+</li>
+<li>
+<p>Reposes dirty disk block (store to "swap server")</p>
+</li>
+<li>ASIDs (processor addressing-context identifiers) are identified as a resource best revoked transparently because of 
+  frequent revocation</li>
+</ul>
+</li>
+<li>
+<p>Cooperative revocation (Exokernel)</p>
+<ul>
+<li>callbacks</li>
+<li>OS decides how many resources to give to apps</li>
+<li>OS asks application or libOS to give up a resource; libOS/app decides which instance to give up</li>
+</ul>
+</li>
+</ul>
+<h4 id="abort-protocol">Abort protocol</h4>
+<ul>
+<li>When voluntary revocation fails, kernel tells application what it took away. Doing so helps library to maintain valid state 
+  specification</li>
+</ul>
+<h4 id="capabilities">Capabilities</h4>
+<ul>
+<li>Encryption-based tokens to prove right to access</li>
+<li>Idea is to help kernel make access-rights decision</li>
+<li>
+<p>Pros:</p>
+<ul>
+<li>Simple</li>
+<li>Generic across resources</li>
+<li>Hierarchical: using capabilities to protect resources enables applications to grant access rights to other applications
+  without kernel intervention. Applications can also use "well-known" capabilities to share resources easily</li>
+</ul>
+</li>
+</ul>
+<h4 id="others">Others</h4>
+<ul>
+<li>Wakeup predicates: wake up process when arbitrary condition becomes true (checked when scheduler looking for something to run)</li>
+<li>Buffer cache registry: bind disk blocks to memory pages (applications can share cached pages)</li>
+<li>Block stat to order writes</li>
+<li>UDF</li>
+</ul>
+<h3 id="specific-abstractions">Specific Abstractions</h3>
+<p>Many abstractions need to be implemented in exokernel: exception handler, page protection/sharing, processor scheduling,
+fork/exec, VM replacement, network protocol, file system. Here, I only list paper's discussion related to network.</p>
+<h4 id="network">Network</h4>
+<h5 id="multiplexing-the-network-packet-filter">Multiplexing the network: packet filter</h5>
+<ul>
+<li>Idea: load a small piece of code that examines packet and decides if it is for me</li>
+<li>Implement by downloading code into kernel: written in simple, safe language - no loops, check all mem references, etc</li>
+<li>
+<p>Problem: what if I lie and say "yes it is for me" when it isn't?</p>
+<ul>
+<li>Solution: "assume they don't lie"</li>
+<li>Claim: could use a trusted server to load these things or could check to make sure that a new filter never overlaps with an 
+  old one [not like to solve the problem]</li>
+</ul>
+</li>
+</ul>
+<h5 id="application-specific-safe-handlers-ash">Application-specific safe handlers (ASH)</h5>
+<ul>
+<li>
+<p>Load handlers for application-specific messages into kernel (can reply to packet without context switch)</p>
+<ul>
+<li>Example: auspex file server responds to NFS <code>getattr</code> requests in hardware in network interface</li>
+</ul>
+</li>
+<li>
+<p>Pros:</p>
+<ul>
+<li>direc message vectoring: ASH knows where message should land in user memory and thus, avoid copies</li>
+<li>dynamic integrated layer processing (e.g., do checksum as data is copied into network inteface)</li>
+<li>message initiation (fast replies)</li>
+<li>No danger of deadlock</li>
+<li>control initiation (active messages)</li>
+</ul>
+</li>
+<li>
+<p>If we see Figure 2 of the paper: without ASH, exokernel just drops message in application buffer and later, when application 
+is scheduled, application handles it. Since in the paper, round robin scheduler is used, we see linear increase in ping latency.</p>
+</li>
+</ul>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/system.html">system</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
