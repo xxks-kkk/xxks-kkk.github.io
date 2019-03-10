@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Practical, transparent operating system support for superpages"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+          <div class="post-title">"Practical, transparent operating system support for superpages"</h1></div>
+          <div class="post-date"><time datetime="2019-03-10T15:00:00+08:00">Mar 10, 2019</time></div>
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#superpage-definition-and-benefits">Superpage definition and benefits</a></li>
+<li><a href="#superpage-issues">Superpage issues</a></li>
+<li><a href="#system-designs">System Designs</a><ul>
+<li><a href="#allocation">Allocation</a></li>
+<li><a href="#incremental-promotion">Incremental Promotion</a></li>
+<li><a href="#demotions">Demotions</a></li>
+<li><a href="#fragmentation-control">Fragmentation Control</a></li>
+<li><a href="#auxiliary-data-structure-population-map">Auxiliary data structure: population map</a></li>
+</ul>
+</li>
+<li><a href="#remarks">Remarks</a></li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<p>How to design a general and transparent superpage management system to achieve high and sustained performance for real workloads
+and negligible degradation in pathological situations.</p>
+<h2 id="superpage-definition-and-benefits">Superpage definition and benefits</h2>
+<ul>
+<li>
+<p>Superpage definition:</p>
+<ul>
+<li>Memory pages of larger sizes (e.g., 8KB, 64KB, 512KB, 4MB)</li>
+<li>
+<p>The rest is the same as the normal pages:</p>
+<ul>
+<li>power of 2 size</li>
+<li>use only one TLB entry</li>
+<li>contiguous</li>
+<li>aligned (physically and virtually)</li>
+<li>uniform protection attributes</li>
+<li>one reference bit, one dirty bit</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Superpage improves TLB coverage (i.e., the amount of memory accessible through cached mappings. In other words, without incurrin misses in the TLB)</p>
+</li>
+</ul>
+<h2 id="superpage-issues">Superpage issues</h2>
+<ul>
+<li>Allocation: how/when/what size to allocate?</li>
+</ul>
+<p><img alt="superpage allocation issue" class="img-responsive" src="../../../../../images/superpage-allocation.png"/></p>
+<ul>
+<li>
+<p>Promotion (create a superpage out of a set of smaller pages)</p>
+<ul>
+<li>Wait for app to touch pages (the gray ones) may lose opportunities to increase TLB coverage</li>
+<li>Create small superpage (the first four blue ones) may waste overhead</li>
+<li>Forcibly populate pages (i.e., group all eight base pages into one superpage) may lead to internal fragmentation</li>
+</ul>
+</li>
+</ul>
+<p><img alt="superpage promotion issue" class="img-responsive" src="../../../../../images/superpage-promotion.png"/></p>
+<ul>
+<li>
+<p>Demotion (convert a superpage into smaller pages). Happens when:</p>
+<ul>
+<li>page attributes of base pages of a superpage become non-uniform (e.g., some of the base pages protection
+attributes changed and different from the rest within the superpage)</li>
+<li>during partial pageouts</li>
+</ul>
+</li>
+<li>
+<p>Fragmentation </p>
+<ul>
+<li>
+<p>Memory becomes fragmentated due to:</p>
+<ul>
+<li>use of multiple page sizes</li>
+<li>persistence of file cache pages</li>
+<li>scattered wired (non-pageable) pages</li>
+</ul>
+</li>
+<li>
+<p>Continuity: contended resource</p>
+<ul>
+<li>OS must trade off impact of contiguity restoration against superpage benefits</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="system-designs">System Designs</h2>
+<h3 id="allocation">Allocation</h3>
+<p><img alt="superpage rervation allocation" class="img-responsive" src="../../../../../images/superpage-reservation-allocation.png"/></p>
+<ul>
+<li>Determines a preferred superpage size for the region encompassing the base page whose access caused the page fault</li>
+<li>The entire set of frames (gray ones above) is tentatively reserved for potential future use as a superpage, and added to a 
+reservation list.</li>
+<li>
+<p>reservation size: </p>
+<ul>
+<li>
+<p>memory objects fixed in size (e.g., code, file): largest, aligned superpage (contains the faulting page) + doesn't overlap with existing reservations or allocated pages + no larger than object</p>
+</li>
+<li>
+<p>memory objects with dynamic size (e.g., heap): everything same as above except not restricting no larger than object</p>
+</li>
+<li>If size is not available, preempt existing reservation or resign to a smaller size</li>
+</ul>
+</li>
+<li>
+<p>preemption policy: the reservation is preempted whose most recent page allocation occured least recently, among all candidate reservations.</p>
+<ul>
+<li>
+<p>Use reservation list: </p>
+<ul>
+<li>keep track of reserved page frame extents that are not fully-populated</li>
+<li>One reservation list for each page size supported by the hardware except for the largest superpage size</li>
+<li>Reservation in each list are kept sorted by the time of their most recent page frame allocations. When the system decides to preempt a reservation of a given size, it chooses the reservation at the head of the list for that size.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="incremental-promotion">Incremental Promotion</h3>
+<ul>
+<li>
+<p>Promote only regions that are fully populated by the application</p>
+</li>
+<li>
+<p>Promotion occurs to the smallest superpage size as soon as the population count corresponds to that size. Then, when the population count reaches the enxt larger superpage size, another promotion occurs to the next size, and so on.</p>
+</li>
+</ul>
+<p><img alt="superpage incremental promotion" class="img-responsive" src="../../../../../images/superpage-incremental-promotion.png"/></p>
+<h3 id="demotions">Demotions</h3>
+<ul>
+<li>
+<p>Speculative demotions: </p>
+<ul>
+<li>One reference bit per superpage: how do we detect portions of a superpage not referenced anymore?</li>
+<li>Solution: On memory pressure, demote superpages when resetting reference bit; Re-promote (incrementally) as pages are referenced</li>
+</ul>
+</li>
+</ul>
+<p><img alt="superpage speculative demotions" class="img-responsive" src="../../../../../images/superpage-speculative-demotion.png"/></p>
+<h3 id="fragmentation-control">Fragmentation Control</h3>
+<ul>
+<li>
+<p>Low contiguity: modified page daemon</p>
+<ul>
+<li>restore contiguity: move clean, inactive pages to the free list</li>
+<li>minimize impact: prefer pages that contribute the most to contiguity; keep contents for as long as possible (even when part of a reservation: if reactivated, break reservation)</li>
+</ul>
+</li>
+<li>
+<p>Cluster wired pages</p>
+</li>
+</ul>
+<h3 id="auxiliary-data-structure-population-map">Auxiliary data structure: population map</h3>
+<ul>
+<li>
+<p>Population maps keep track of allocated base pages within each memory object.</p>
+</li>
+<li>
+<p>Purpose:</p>
+<ul>
+<li>Reserved frame lookup</li>
+<li>Overlap avoidance</li>
+<li>Promotion decisions</li>
+<li>Preemption assitance</li>
+</ul>
+</li>
+<li>
+<p>Implemented as a radix tree. Details see paper</p>
+</li>
+</ul>
+<h2 id="remarks">Remarks</h2>
+<ul>
+<li>Another well-written paper. I think it is a good candidate for a self-learning project (i.e., implementing superpage management system on JOS)</li>
+</ul>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
