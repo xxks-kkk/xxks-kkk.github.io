@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Threads and Input/Output in the Synthesis Kernel"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+          <div class="post-title">"Threads and Input/Output in the Synthesis Kernel"</h1></div>
+          <div class="post-date"><time datetime="2019-03-10T12:20:00+08:00">Mar 10, 2019</time></div>
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#system-designs">System Designs</a><ul>
+<li><a href="#dataflow-synthesis-model-of-computation">Dataflow: Synthesis Model of Computation</a></li>
+<li><a href="#fast-context-switch-procedure-chaining">Fast context switch: procedure chaining</a></li>
+<li><a href="#mechanism-to-reduce-syncrhonization-overhead">Mechanism to reduce syncrhonization overhead</a></li>
+</ul>
+</li>
+<li><a href="#remarks">Remarks</a></li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<p>Design an OS for a parallel and distributed computational environment and achieve the following three goals:</p>
+<ul>
+<li>High performance</li>
+<li>Self-tuning capability to dynamic load and configuration changes</li>
+<li>A simple, uniform and intuitive model of computation with a high-level interface</li>
+</ul>
+<h2 id="system-designs">System Designs</h2>
+<h3 id="dataflow-synthesis-model-of-computation">Dataflow: Synthesis Model of Computation</h3>
+<ul>
+<li>The threads of execution form a directed graph, in which the nodes are threads and the arcs are data flow channels</li>
+<li>Observation: Data follows a pipeline connects many OS-managed devices/resources (e.g., <code>capture | xform | filter | detect &amp;</code>)</li>
+</ul>
+<p><img alt="Dataflow example from Synthesis: FS" class="img-responsive" src="../../../../../images/dataflow-synthesis.png"/></p>
+<ul>
+<li>
+<p>Above shows a dataflow example from Synthesis: file system server. It differs from a traditional design:</p>
+<ul>
+<li>Boxes are threads/servers</li>
+<li>Boxes are connected directly with <code>jmp</code> instructions to implement scheduling</li>
+<li>Arrows (and boxes) are specialized dynamically to the application</li>
+</ul>
+</li>
+</ul>
+<h3 id="fast-context-switch-procedure-chaining">Fast context switch: procedure chaining</h3>
+<p><img alt="procedure chaining" class="img-responsive" src="../../../../../images/procedure-chaining.png"/></p>
+<ul>
+<li>
+<p>Picture above shows that the ready-to-run threads are chained in an executable circular queue. A <code>jmp</code>
+instruction in each context-switch-out procedure of the preceding thread points to the context-switch-in procedure of the 
+follow thread.</p>
+</li>
+<li>
+<p>"Executable data structures": embed code in data structures to avoid data 
+structure traversals and to specialize code for each object (e.g., put context switch code inside of thread control block)</p>
+</li>
+<li>
+<p>Context switch steps: Timer interrup vectored directly to current thread's <code>sw_out</code>; <code>sw_out</code> calls (directly) next thread's 
+<code>sw_in</code> or <code>sw_in_mmu</code>:</p>
+<ul>
+<li>interrupt vectored to <code>sw_out</code></li>
+<li><code>sw_out</code> saves registers</li>
+<li><code>sw_out</code> jumps to next <code>sw_in_mmu</code></li>
+<li><code>sw_in_mmu</code> updates MMU</li>
+<li><code>sw_in_mmu</code> updates CPU interrupt vector base</li>
+<li><code>sw_in_mmu</code> restores CPU registers (including putting user-PC into the user-PC register)</li>
+<li><code>sw_in_mmu</code> does return from exception (replacing PC with user-PC and changing mode back to user mode)</li>
+</ul>
+</li>
+</ul>
+<h3 id="mechanism-to-reduce-syncrhonization-overhead">Mechanism to reduce syncrhonization overhead</h3>
+<p>Lots of techniques used to reduce synchronization overhead</p>
+<ul>
+<li>
+<p>Code Isolation: reduce false sharing (i.e., eliminate false sharing within a single C struct) (e.g., thread table entries (TTEs) are not shared. Similar to privatization)</p>
+</li>
+<li>
+<p>Procedure Chaining: use continuations (implemented by changing the return address on the stack) to allow certain services to complete atomically (e.g., defer signal to end of interrupt handling)</p>
+</li>
+<li>
+<p>Optimistic synchronization: it is easier to break the rule and ask forgiveness than get permission. Try the operation, but before commit, check to see if no one else interfered.</p>
+</li>
+<li>
+<p>Lock-free queues that use the compare-and-swap instruction. This is not wait-free (some operations do not have bounded waiting time), it is obstruction-free (a thread, executed in isolation for a bounded number of operations will complete).</p>
+</li>
+</ul>
+<h2 id="remarks">Remarks</h2>
+<ul>
+<li>Even I cannot fully understand every bit details of the paper, I think it is the best written paper I have read so far 
+in the semester (the flow is great).</li>
+<li>Many details in the paper are omit: scheduling, interrupt handling, details of lock-free queues (SP-SC, MP-MC,etc)</li>
+<li>
+<p>Lots of cool techniques that are worth investigation in its own rights and they are "field openers"</p>
+<ul>
+<li>Code synthesis (JIT compiler, super-optimizers)</li>
+<li>Code isolation (Privatization)</li>
+<li>Procedure chaining (Continuations (lambda, events))</li>
+<li>Optimistic synchronization (lock-free data structures)</li>
+<li>Synthesis I/O (Dataflow: Scout, Click Router, SEDA, StageServer, IXP, PTask, etc)</li>
+</ul>
+</li>
+</ul>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
