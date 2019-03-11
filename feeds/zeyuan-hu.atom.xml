@@ -1,5 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-03-10T15:00:00+08:00</updated><entry><title>"Practical, transparent operating system support for superpages"</title><link href="https://zhu45.org/posts/2019/Mar/10/practical-transparent-operating-system-support-for-superpages/" rel="alternate"></link><published>2019-03-10T15:00:00+08:00</published><updated>2019-03-10T15:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-03-10:/posts/2019/Mar/10/practical-transparent-operating-system-support-for-superpages/</id><summary type="html">&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-03-11T23:13:00+08:00</updated><entry><title>"Xen and the Art of Virtualization"</title><link href="https://zhu45.org/posts/2019/Mar/11/xen-and-the-art-of-virtualization/" rel="alternate"></link><published>2019-03-11T23:13:00+08:00</published><updated>2019-03-11T23:13:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-03-11:/posts/2019/Mar/11/xen-and-the-art-of-virtualization/</id><summary type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#further-reading"&gt;Further reading&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;Provide a high performance resource-managed virtual machine monitor (VMM) that provides performance guarantees to concurrent
+execution of multiple operating systems: "hosting up to 100 virtual machine in- stances simultaneously on a modern server"&lt;/p&gt;
+&lt;h2 id="background"&gt;Background&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Big picture&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="OSes, VMs, Containers" class="img-responsive" src="https://zhu45.org/images/OSes-VMs-Containers.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two types of VMMs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="VMM types" class="img-responsive" src="https://zhu45.org/images/VMM-types.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Virtualization techniques &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1 …&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#further-reading"&gt;Further reading&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;Provide a high performance resource-managed virtual machine monitor (VMM) that provides performance guarantees to concurrent
+execution of multiple operating systems: "hosting up to 100 virtual machine in- stances simultaneously on a modern server"&lt;/p&gt;
+&lt;h2 id="background"&gt;Background&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Big picture&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="OSes, VMs, Containers" class="img-responsive" src="https://zhu45.org/images/OSes-VMs-Containers.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two types of VMMs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="VMM types" class="img-responsive" src="https://zhu45.org/images/VMM-types.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Virtualization techniques &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://en.wikipedia.org/wiki/Popek_and_Goldberg_virtualization_requirements"&gt;Fidelity&lt;/a&gt;: A program running under the VMM should exhibit a behavior essentially identical to that demonstrated when running on an equivalent machine directly.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.utdallas.edu/~zxl111930/spring2012/public/lec19-handout.pdf"&gt;Interposition&lt;/a&gt;: All guests actions go through monitor; monitor can inspect, modify, deny operations (e.g., compression, encryption, profiling, translation)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="VMM virtualization" class="img-responsive" src="https://zhu45.org/images/virtualization-techniques.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Full virtualization is slow:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;VMWare's ESX Server dynamically rewrites portions of the hosted machine code to insert traps whenever VMM intervention
+might be required. This applies to entire guest OS as all non-trapping privileged instructions must be caught and handled.&lt;/li&gt;
+&lt;li&gt;ESX Server maintains shadow page table and to maintain consistency with virtual tables, it traps every update.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="system-design"&gt;System Design&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="Xen architecture" class="img-responsive" src="https://zhu45.org/images/xen-architecture.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Paravirtualization: idealized machine, efficient to virtualize&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;More efficient than "full" virtualization&lt;/li&gt;
+&lt;li&gt;Cost: need to modify OS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;For safety: Xen exists in a 64MB section at the top of every address space, thus avoiding a TLB flush when entering and leaving 
+hypervisor&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;CPU:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;X86 supports 4 privilege levels: Without Xen, 0 for OS, and 3 for applications; Xen downgrades OS to level 1, and it runs 
+level 0&lt;/li&gt;
+&lt;li&gt;Syscall and page-fault handlers: registered to Xen; "fast handlers" most exceptions, don't invole Xen&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Paravirtualization techniques:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Run VMM at ring 0, OS at ring 1 (app stays at ring 3)&lt;/li&gt;
+&lt;li&gt;System calls vector directly to guest OS without VMM involvement. Validate handler at install time.&lt;/li&gt;
+&lt;li&gt;Page fault handler doesn't read &lt;code&gt;cr2&lt;/code&gt; to get faulting address, put it in stack frame. VMM must execute to read &lt;code&gt;cr2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Mappings validated when page tables written (same as exokernel)&lt;/li&gt;
+&lt;li&gt;Updates to page table are batched and validated in bulk. Avoiding interrupt-like updates is an important technique.&lt;/li&gt;
+&lt;li&gt;Type and reference count for each physical frame (PD, PT, LDT, GDT, RW)&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Hardware physical to machine memory mapping readable by all VMs. &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Needed by guest OS for writing page table, and useful for superpages or cache coloring.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;VMs have access to both real and virtual time.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;All devices use shared-memory asynchronus buffer-descriptor rings (a batch interface)&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Interrupts replaced with event delivery bitmap. &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Events can be held off like disabling interrupts.&lt;/li&gt;
+&lt;li&gt;Some control over notification granularity, allowing latency/bandwidth tradeoffs (e.g., notify for every packet,
+or every 16 packets)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;I/O requests have a unique ID and can be reordered&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;E.g., Guest OS and Xen can schedule the disk arm&lt;/li&gt;
+&lt;li&gt;But guest can pass a reorder barrier to prevent some reordering (e.g., for file system consistency)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;OS makes hypercalls to VMM (e.g., install page table entries)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Other important ideas:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Domains are virtual machines:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Domain 0 provides the administrative functions of the VMM (keeps complexity out of the VMM proper)&lt;/li&gt;
+&lt;li&gt;Domain 0 contains the real device drivers (domain 0 is the target of malware attacks)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Virtual network devices (VIFs) may filter packets to prevent spoofing&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Memory is paritioned across domains. A domain provides memory for I/O operations. 1 page per packet (wow).&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="further-reading"&gt;Further reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://courses.cs.vt.edu/cs5204/fall14-butt/lectures/xen.pdf"&gt;Xen and The Art of Virtualization VT slide&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.slideshare.net/susheel2658/xen-and-the-art-of-virtualization-28187840"&gt;Another slide&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://dsc.soic.indiana.edu/publications/virtualization.pdf"&gt;A write-up on understanding some fundamental virtualization techniques&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;&lt;a href="https://stackoverflow.com/questions/21462581/what-is-the-difference-between-full-para-and-hardware-assisted-virtualization"&gt;SO post on difference between Full virtualization and Paravirtualization&lt;/a&gt; &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content><category term="os"></category><category term="papers"></category></entry><entry><title>"Practical, transparent operating system support for superpages"</title><link href="https://zhu45.org/posts/2019/Mar/10/practical-transparent-operating-system-support-for-superpages/" rel="alternate"></link><published>2019-03-10T15:00:00+08:00</published><updated>2019-03-10T15:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-03-10:/posts/2019/Mar/10/practical-transparent-operating-system-support-for-superpages/</id><summary type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#superpage-definition-and-benefits"&gt;Superpage definition and benefits&lt;/a&gt;&lt;/li&gt;
@@ -17,7 +172,7 @@
 &lt;/div&gt;
 &lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
 &lt;p&gt;How to design a general and transparent superpage management system to achieve high and sustained performance for real workloads
-and negligible degradation in pathological situations.&lt;/p&gt;
+and negligible degradation in pathological situations?&lt;/p&gt;
 &lt;h2 id="superpage-definition-and-benefits"&gt;Superpage definition and …&lt;/h2&gt;</summary><content type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
@@ -36,7 +191,7 @@ and negligible degradation in pathological situations.&lt;/p&gt;
 &lt;/div&gt;
 &lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
 &lt;p&gt;How to design a general and transparent superpage management system to achieve high and sustained performance for real workloads
-and negligible degradation in pathological situations.&lt;/p&gt;
+and negligible degradation in pathological situations?&lt;/p&gt;
 &lt;h2 id="superpage-definition-and-benefits"&gt;Superpage definition and benefits&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -18381,7 +18536,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;table class="highlighttable table-hover  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable table table-hover  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19082,7 +19237,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;table class="highlighttable table-hover  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable table table-hover  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19315,7 +19470,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;table class="highlighttable table-hover  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable table table-hover  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19370,7 +19525,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;table class="highlighttable table-hover  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable table table-hover  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19420,7 +19575,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;table class="highlighttable table-hover  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable table table-hover  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19464,7 +19619,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;table class="highlighttable table-hover  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable table table-hover  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19523,7 +19678,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;table class="highlighttable table-hover  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable table table-hover  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19586,7 +19741,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;table class="highlighttable table-hover  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable table table-hover  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19977,7 +20132,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class="table table-hover  table-striped docutils"&gt;
+&lt;table border="1" class="docutils table table-hover  table-striped"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;
