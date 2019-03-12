@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Memory Resource Management in VMware ESX Server"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+          <div class="post-title">"Memory Resource Management in VMware ESX Server"</h1></div>
+          <div class="post-date"><time datetime="2019-03-11T23:24:00+08:00">Mar 11, 2019</time></div>
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#background">Background</a></li>
+<li><a href="#system-design">System Design</a><ul>
+<li><a href="#ballooning">Ballooning</a></li>
+<li><a href="#content-based-page-sharing">Content-based Page Sharing</a></li>
+<li><a href="#managing-memory-with-taxes">Managing Memory with Taxes</a></li>
+<li><a href="#others">Others</a></li>
+</ul>
+</li>
+<li><a href="#remarks">Remarks</a></li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<p>How to design a memory management system inside VMM to manage memory allocated to each guest OS (i.e., VM)? This is challenging
+as each guest OS also has its own resource manager and how to ensure performance isolation across all VMs.</p>
+<h2 id="background">Background</h2>
+<ul>
+<li>
+<p>VMWare ESX Server runs on bare hardware (compared with VMM runs on a control OS like KVM); In "control OS" approach, here is the workflow of reading a file from an application in VM:</p>
+<ul>
+<li>an application read from a file (in VM)</li>
+<li>OS translates request into a read from block device (in VM)</li>
+<li>VMM translates that to a read from a file from host OS (in VMM)</li>
+<li>host OS translates request to a read from the machine's block device (in control OS)</li>
+</ul>
+</li>
+<li>
+<p>Problems with previous memory management approach:</p>
+<ul>
+<li>VMM page replacement algorithm can pick a page important to guest OS. Causes performance anomalies.</li>
+<li>Double paging problem: If VMM pages out first, OS page out the same page will cause VMM fault in the same page from system
+paging device just to write out to the virtual paging device.</li>
+<li>Constraint: OS does not have a facility for changing amount of physical memory at runtime</li>
+</ul>
+</li>
+</ul>
+<h2 id="system-design">System Design</h2>
+<ul>
+<li>
+<p>terms:</p>
+<ul>
+<li>machine address: actual hardware memory</li>
+<li>"physical" address: software abstraction used to provide illusion of hardware memory to a virtual machine</li>
+<li>shadow page table: virtual-to-machine page mappings</li>
+<li>overcommitment: the total size configured for all running virtual machines exceeds the total amount of actual machine memory</li>
+</ul>
+</li>
+</ul>
+<h3 id="ballooning">Ballooning</h3>
+<p>Force guest OS to use its own page replacement algorithm</p>
+<p><img alt="ballooning" class="img-responsive" src="../../../../../images/ballooning.png"/></p>
+<ul>
+<li>
+<p>Download VMWare balloon module into guest OS as a pseudo-device driver or kernel service</p>
+<ul>
+<li>no external interface within the guest</li>
+<li>communicate with ESX server via a private channel</li>
+</ul>
+</li>
+<li>
+<p>If ESX wants to reclaim memory, it instructs the driver to "inflate" by allocating pinned physical pages within VM and the memory pressure in guest OS force the guest OS to free memory</p>
+</li>
+<li>
+<p>pinned physical pages used by balloon are told to ESX so that ESX can reclaim corresponding machine pages
+  (i.e., pages allocated to balloon have their entry in the <code>pmap</code> marked, can be reclaimed by VMM)</p>
+</li>
+<li>
+<p>Defalte balloon to get OS to use more memory</p>
+</li>
+<li>
+<p>If guest touches a balloon page, allocate a new page (machine page stealed from guest OS has to be returned)</p>
+</li>
+<li>
+<p>Problems:</p>
+<ul>
+<li>Might not be able to reclaim memory fast enough</li>
+<li>Guest OS might refuse memory allocation request or limit the driver's ability to allocate memory</li>
+</ul>
+</li>
+<li>
+<p>Can always resort to paging. Using randomize algorithm to avoid pathologically bad cases of paging out exactly what guest OS needs</p>
+</li>
+</ul>
+<h3 id="content-based-page-sharing">Content-based Page Sharing</h3>
+<p>Able to share a page without modification to guest OS (compared to Disco's approach)</p>
+<p><img alt="content-based page sharing" class="img-responsive" src="../../../../../images/esx-content-sharing.png"/></p>
+<ul>
+<li>Hash every page, store hashes in a hash table</li>
+<li>On collision, check if pages are identical. If they are, share copy-on-write</li>
+<li>With no collision, store hash as hint. On future collision check if hint is still valid (page content have not changed). If
+it is, share page.</li>
+</ul>
+<h3 id="managing-memory-with-taxes">Managing Memory with Taxes</h3>
+<p>The problem with proportional share allocators is that they let rich clients hoard resources. VMWare adds a tax to idle memory.</p>
+<ul>
+<li>The basic idea is to charge a client more for an idle page than for one it is actively using</li>
+<li>Tax rate specifies the maximum fraction of idle pages that may be reclaimed from a client</li>
+<li>Inflate cost of idle memory by tax rate</li>
+<li>Allow 25% idle memory to provide a buffer for a fast-growing working set increase</li>
+<li>Only need percentage of idle memory: measure by random sampling</li>
+</ul>
+<h3 id="others">Others</h3>
+<ul>
+<li>
+<p>Actions to reclaim memory when percentage of free memory hits certain level:</p>
+<ul>
+<li>high (6%): no reclamation</li>
+<li>soft (4%): balloon, page when nencessary (share before swap)</li>
+<li>hard (2%): page</li>
+<li>low (1%): suspend VM</li>
+</ul>
+</li>
+<li>
+<p>I/O Page remapping:</p>
+<ul>
+<li>overcommitment may lead to problem that guest OS may address machine page that doesn't exist (e.g., DMA on 32-bit access pages above 4GB boundary ("high" memory))</li>
+<li>fix: keep track of "hotness" of pages in high memory and when the I/O refernce count of such pages exceed certain threshold,
+they are remapped to low memory. May remap low memory pages to high memory pages to get more space for "hotness" remapping</li>
+</ul>
+</li>
+</ul>
+<h2 id="remarks">Remarks</h2>
+<ul>
+<li>Another well-written paper. Each technique is explained very clearly. Its writing style is quite unique as well: evaluation
+is divided and associated with relvant technique introduced. I personally like this style better as it gives me some break between
+each major point.</li>
+</ul>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
