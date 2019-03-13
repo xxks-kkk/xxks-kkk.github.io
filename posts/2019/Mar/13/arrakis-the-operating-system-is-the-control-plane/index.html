@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Arrakis: The Operating System is the Control Plane"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+        <header>
+          <div class="post-title">"Arrakis: The Operating System is the Control Plane"</h1></div>
+          <div class="post-date"><time datetime="2019-03-13T17:20:00+08:00">Mar 13, 2019</time></div>
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#background">Background</a></li>
+<li><a href="#system-design">System Design</a></li>
+<li><a href="#remarks">Remarks</a></li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<p>How can we design an OS such that most I/O operations do not kernel mediation?</p>
+<h2 id="background">Background</h2>
+<ul>
+<li>The authors make a classic efficiency argument: servers usually perform conceptually simple operations, but in practice
+this results in too much operating system overhead.</li>
+</ul>
+<h2 id="system-design">System Design</h2>
+<ul>
+<li>
+<p>The new secret sauce is that hardware device virtualization allows user-level programs to get efficient access to I/O
+without compromising protection.</p>
+</li>
+<li>
+<p>I/O centric design:</p>
+<ul>
+<li>Bypass kernel</li>
+<li>Abstractions: user-space device access</li>
+<li>Single-Root I/O Virtualization (SR-IOV) is the hardware secret sauce. It allows software to setup flexible hardware
+multiplexing. </li>
+</ul>
+</li>
+<li>
+<p>Kernel functionality re-divide in Arrakis:</p>
+</li>
+</ul>
+<p><img alt="arrakis kernel functionality" class="img-responsive" src="../../../../../images/arrakis-kernel-functionality.png"/></p>
+<ul>
+<li>Architecture:</li>
+</ul>
+<p><img alt="arrakis architecture" class="img-responsive" src="../../../../../images/arrakis-architecture-01.png"/></p>
+<p><img alt="arrakis architecture 02" class="img-responsive" src="../../../../../images/arrakis-architecture-02.png"/></p>
+<ul>
+<li>
+<p>Hardware Model:</p>
+<ul>
+<li>NICs (Multiplexing, Protection, Scheduling)</li>
+<li>
+<p>Storage</p>
+<ul>
+<li>VSIC (Virtual Storage Interface Controller): each with queues, etc</li>
+<li>VSA (Virtual Storage Areas): mapped to physical devices; associated with VSICs; VSA &amp; VSIC: many-to-many mapping</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Control Plane Interface:</p>
+<ul>
+<li>VIC (Virtual Interface Card): Apps can create/delete VICs, associate them to doorbells</li>
+<li>doorbells associated with events on VICs</li>
+<li>filter creation (e.g., <code>create_filter(rx,*,tcp.port == 80)</code>)</li>
+<li>
+<p>Features:</p>
+<ul>
+<li>Access control: enforced by filters; infrequentily invoked (during setup, etc)</li>
+<li>Resource limiting: send commands to hardware I/O schedulers</li>
+<li>Naming: VFS in kernel; actual storage implemented in apps</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Network Data Interface:</p>
+<ul>
+<li>Apps send/receive directly through sets of queues</li>
+<li>Filters applied for multiplexing</li>
+<li>Doorbell used for asynchronous notification (e.g., packet arrival)</li>
+<li>Both native (w/ zero-copy) and POSIX are implemented</li>
+</ul>
+</li>
+<li>
+<p>Storage Data Interface:</p>
+<ul>
+<li>VSA supports read, write, flush</li>
+<li>
+<p>persistent data structure (log, queue)</p>
+<ul>
+<li>operations immediately persistent on disk</li>
+<li>eliminate marshaling (layout in memory = in disk)</li>
+<li>data structure specific caching &amp; early allocation</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="remarks">Remarks</h2>
+<ul>
+<li>
+<p>This paper exploits the wide variety of hardware. Some of them do not even exist or are quite limited (e.g., VSIC support). 
+Personally, I'm not a huge fun of this type of research as the main goal seems to be "let's delegate OS work to the hardware".
+But, it indeed lays out a vision that what OS can be if hardware is powerful enough and the applications on top of OS are not
+quite complex and do not need much kernel involvement (e.g., scheduling).</p>
+</li>
+<li>
+<p>The presentation of motivation through rigorous measurement (Table 1 and Table 2) is something I really enjoy. In addition, the detailed analysis of the overhead involving kernel (Background section) has much useful information to further study for myself.</p>
+</li>
+<li>
+<p>Pros: much better raw performance (for I/O intensive Data Center apps)</p>
+<ul>
+<li>Redis: up to 9x throughput and 81% speedup</li>
+<li>Memcached: scales up to 3x throughput</li>
+</ul>
+</li>
+<li>
+<p>Cons:</p>
+<ul>
+<li>Some features require hardware functionality that is not yet available</li>
+<li>require modification of applications</li>
+<li>not clear about storage abstractions</li>
+<li>not easy to track behaviors inside the hardware</li>
+</ul>
+</li>
+</ul>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
