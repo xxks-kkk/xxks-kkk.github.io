@@ -1,5 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-03-13T20:20:00+08:00</updated><entry><title>"Rethinking the Library OS from the Top Down"</title><link href="https://zhu45.org/posts/2019/Mar/13/rethinking-the-library-os-from-the-top-down/" rel="alternate"></link><published>2019-03-13T20:20:00+08:00</published><updated>2019-03-13T20:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-03-13:/posts/2019/Mar/13/rethinking-the-library-os-from-the-top-down/</id><summary type="html">&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-03-13T21:20:00+08:00</updated><entry><title>"Jitsu: Just-In-Time Summoning of Unikernels"</title><link href="https://zhu45.org/posts/2019/Mar/13/jitsu-just-in-time-summoning-of-unikernels/" rel="alternate"></link><published>2019-03-13T21:20:00+08:00</published><updated>2019-03-13T21:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-03-13:/posts/2019/Mar/13/jitsu-just-in-time-summoning-of-unikernels/</id><summary type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;How to build a system that is able to securely manage multi-tenant networked applications on embedded infrastructure?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Goals:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;High density/scalability&lt;/li&gt;
+&lt;li&gt;Fast boot&lt;/li&gt;
+&lt;li&gt;Lightweight&lt;/li&gt;
+&lt;li&gt;VM-level isolation&lt;/li&gt;
+&lt;li&gt;"Embedded cloud"&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="background"&gt;Background&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;OS are traditionally designed to run on a wide range of hardware, and support a variety …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;How to build a system that is able to securely manage multi-tenant networked applications on embedded infrastructure?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Goals:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;High density/scalability&lt;/li&gt;
+&lt;li&gt;Fast boot&lt;/li&gt;
+&lt;li&gt;Lightweight&lt;/li&gt;
+&lt;li&gt;VM-level isolation&lt;/li&gt;
+&lt;li&gt;"Embedded cloud"&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="background"&gt;Background&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;OS are traditionally designed to run on a wide range of hardware, and support a variety of applications. But no longer true!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hypervisors in the cloud provides virtual hardware abstractions&lt;/li&gt;
+&lt;li&gt;Many modern applications are single purpose microservices&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Container:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Think of as a lightweight VM&lt;/li&gt;
+&lt;li&gt;Separate process space, network interface&lt;/li&gt;
+&lt;li&gt;Setuid/root access possible&lt;/li&gt;
+&lt;li&gt;Share kernel with host (thus, no I/O emulation, VM overheads)&lt;/li&gt;
+&lt;li&gt;chroot, cgroups&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pros:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Achieves much of VM charter&lt;/li&gt;
+&lt;li&gt;Separation of concerns: Dev (inside container), Ops (outside)&lt;/li&gt;
+&lt;li&gt;Lightweight, good deployment unit&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cons:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Limited compatibility&lt;/li&gt;
+&lt;li&gt;Limited isolation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Container vs. VM:&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="container vs. VM" class="img-responsive" src="https://zhu45.org/images/container-vm.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Problem with layers in existing solution:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Complex configuration management&lt;/li&gt;
+&lt;li&gt;Duplication leads to inefficiency&lt;/li&gt;
+&lt;li&gt;Image size leads to long boot time&lt;/li&gt;
+&lt;li&gt;All the layer leads to large attack surface&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="container-drawbridge" class="img-responsive" src="https://zhu45.org/images/container-drawbridge.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Unikernels&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Pros:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Lightweight (fast, IoT-amenable)&lt;/li&gt;
+&lt;li&gt;High consolidation ratios&lt;/li&gt;
+&lt;li&gt;Small attack surface&lt;/li&gt;
+&lt;li&gt;Type safety (safety in general)&lt;/li&gt;
+&lt;li&gt;Minimize multi-RM pathologies&lt;/li&gt;
+&lt;li&gt;Small binaries (host in git)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cons:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Increased pressure on (cloud) scheduler&lt;/li&gt;
+&lt;li&gt;Threading&lt;/li&gt;
+&lt;li&gt;Cross-domain communication&lt;/li&gt;
+&lt;li&gt;Compatibility&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Mirage Unikernel:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;OS is a collection of modules (libs) with types (API)&lt;/li&gt;
+&lt;li&gt;Written in OCaml&lt;/li&gt;
+&lt;li&gt;Compact enough to boot/respond to network traffic in real-time&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="system-design"&gt;System Design&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Jitsu: Unikernels on demand&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Capture system dependencies in code/compile them away&lt;/li&gt;
+&lt;li&gt;Swap system libraries to target different platforms&lt;/li&gt;
+&lt;li&gt;Dev/Test on UNIX, deploy specializes to Xen&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="unikernels" class="img-responsive" src="https://zhu45.org/images/unikernel-jitsu.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Jitsu Architecture:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="jitsu-architecture" class="img-responsive" src="https://zhu45.org/images/jitsu-architecture.png"/&gt;&lt;/p&gt;</content><category term="os"></category><category term="papers"></category></entry><entry><title>"Rethinking the Library OS from the Top Down"</title><link href="https://zhu45.org/posts/2019/Mar/13/rethinking-the-library-os-from-the-top-down/" rel="alternate"></link><published>2019-03-13T20:20:00+08:00</published><updated>2019-03-13T20:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-03-13:/posts/2019/Mar/13/rethinking-the-library-os-from-the-top-down/</id><summary type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
@@ -1775,7 +1921,7 @@ that cause a page fault uppercase, and those that don’t lowercase):&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
 approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12" rel="footnote"&gt;18&lt;/a&gt;&lt;/sup&gt; to avoid heavy overhead). The trace of the memory references with LRU policy shown below:&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -1889,7 +2035,7 @@ approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12
 &lt;/blockquote&gt;
 &lt;p&gt;FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -2003,7 +2149,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 &lt;/blockquote&gt;
 &lt;p&gt;Optimal policy means we want to replace the page that will be accessed &lt;em&gt;furthest in the future&lt;/em&gt; and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -2209,7 +2355,7 @@ which takes a queue and returns, as an unsigned integer, its address.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;One possible scenario of deadlock using &lt;code&gt;transfer()&lt;/code&gt; is illustrated below. Note that &lt;code&gt;queue1&lt;/code&gt; and &lt;code&gt;queue2&lt;/code&gt; in &lt;code&gt;transfer()&lt;/code&gt;
 are replaced with queues that they are pointing to (time increases with the row's number):&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Thread1 (&lt;code&gt;transfer(q1,q2)&lt;/code&gt;)&lt;/th&gt;
@@ -2563,7 +2709,7 @@ the modification looks like below:&lt;/p&gt;
 &lt;p&gt;The question we want to answer is why doing so works?&lt;/p&gt;
 &lt;h2 id="explanation"&gt;Explanation&lt;/h2&gt;
 &lt;p&gt;We acquire key data from GDB as following:&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;GDB command&lt;/th&gt;
@@ -4109,7 +4255,7 @@ blocks from different clients)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;&lt;/th&gt;
@@ -8684,7 +8830,7 @@ a very efficient algorithm in all cases. Path compression is not entirely compat
 to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., &lt;strong&gt;ranks&lt;/strong&gt;), but in theory union-by-rank is as efficient as union-by-size.&lt;/p&gt;
 &lt;p&gt;If we do analysis on smart union with path compression, the running time for any sequence of &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects makes &lt;span class="math"&gt;\(O(N + M\log^*N)\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; accesses.&lt;/p&gt;
 &lt;p&gt;The following table summarizes the running time for &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on a set of &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects (don't forget we need to spend &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; to initialize disjoint sets):&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -8715,7 +8861,7 @@ to recompute all the heights and in this case, heights stored for each tree beco
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;The running time for each operation for each algorithm is following:&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -8916,7 +9062,7 @@ can try to label the items from &lt;span class="math"&gt;\(1 \dots n\)&lt;/span&
 solution for &lt;span class="math"&gt;\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)&lt;/span&gt;. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;) in terms of subproblems (i.e., &lt;span class="math"&gt;\(S_i\)&lt;/span&gt;)? Let's take a look at an example:&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -9006,7 +9152,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The running time for this algorithm is &lt;span class="math"&gt;\(O(n*W)\)&lt;/span&gt; because of the double for loop. To understand this algorithm,
 let's take a look at an example:&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -9034,7 +9180,7 @@ let's take a look at an example:&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 5\)&lt;/span&gt; and with algorithm above, we essentially fill out a table like following:&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -9103,7 +9249,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now, let's take a look at &lt;span class="math"&gt;\(B[1,1]\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(i = 1, b_i = 3, w_i = 2, w = 1\)&lt;/span&gt;, and since &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, and by our
 algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(B[0,1]\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(B[1,1] = 0\)&lt;/span&gt; and the table becomes&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -9164,7 +9310,7 @@ algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, 
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;We can fill out the table like this and have&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -9291,7 +9437,7 @@ for i = 1 to n
             x[i,w] = x_i that is associated with B[i-1,w]
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Let's walk through an example to better understand the algorithm idea:&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -9318,7 +9464,7 @@ for i = 1 to n
 &lt;p&gt;&lt;span class="math"&gt;\(W = 8\)&lt;/span&gt; in our example. The algorithm essentially
 tries to build fill out two tables &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; table like
 the 0-1 knapsack problem:&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -9386,7 +9532,7 @@ the 0-1 knapsack problem:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;and &lt;span class="math"&gt;\(x[i,w]\)&lt;/span&gt; table to keep track of the optimal
 value of &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; for each &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt;&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -9450,7 +9596,7 @@ $$&lt;/div&gt;
 &lt;p&gt;So, we fill in &lt;span class="math"&gt;\(B[1,3] = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[1,3] = 1\)&lt;/span&gt;. We can repeatedly
 doing this for other &lt;span class="math"&gt;\(i\)&lt;/span&gt;s. We can take a look at the values
 from another perspective like the tables below:&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[1,w]&lt;/th&gt;
@@ -9506,7 +9652,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[2,w]&lt;/th&gt;
@@ -9562,7 +9708,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[3,w]&lt;/th&gt;
@@ -9740,7 +9886,7 @@ In addition, this post belongs to part of future work mentioned in &lt;a href="h
 &lt;p&gt;Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Type&lt;/th&gt;
@@ -10509,7 +10655,7 @@ care about the size of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; 
 &lt;p&gt;Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
 housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
 its prediction. What we should try next?&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Method&lt;/th&gt;
@@ -10585,7 +10731,7 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$&lt;/div&gt;
 &lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;component&lt;/th&gt;
@@ -11423,7 +11569,7 @@ is a graphic summary for the text above&lt;/p&gt;
 the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Join types&lt;/th&gt;
@@ -12060,7 +12206,7 @@ $$&lt;/div&gt;
 &lt;p&gt;For example, the sequence &lt;span class="math"&gt;\(1,3,4,2,1\)&lt;/span&gt; can be considered as a sequence of 
 iterated function values with &lt;span class="math"&gt;\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
 x_3 = f(4) = 2, x_4 = f(2) = 1\)&lt;/span&gt;. Let's try another representation:&lt;/p&gt;
-&lt;table class=" table-striped table-hover table"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;index&lt;/th&gt;
@@ -18954,7 +19100,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;table class="highlighttable  table-striped table-hover table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19655,7 +19801,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;table class="highlighttable  table-striped table-hover table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19888,7 +20034,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;table class="highlighttable  table-striped table-hover table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19943,7 +20089,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;table class="highlighttable  table-striped table-hover table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19993,7 +20139,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;table class="highlighttable  table-striped table-hover table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20037,7 +20183,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;table class="highlighttable  table-striped table-hover table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20096,7 +20242,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;table class="highlighttable  table-striped table-hover table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20159,7 +20305,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;table class="highlighttable  table-striped table-hover table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20550,7 +20696,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class=" table-striped table-hover docutils table"&gt;
+&lt;table border="1" class=" table-striped table docutils table-hover"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;
