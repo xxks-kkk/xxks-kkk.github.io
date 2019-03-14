@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
-        <title>    "Arrakis: The Operating System is the Control Plane"
+        <title>    "Rethinking the Library OS from the Top Down"
 </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,8 +37,8 @@
 </header>
     <div class="post">
         <header>
-          <div class="post-title">"Arrakis: The Operating System is the Control Plane"</h1></div>
-          <div class="post-date"><time datetime="2019-03-13T17:20:00+08:00">Mar 13, 2019</time></div>
+          <div class="post-title">"Rethinking the Library OS from the Top Down"</h1></div>
+          <div class="post-date"><time datetime="2019-03-13T20:20:00+08:00">Mar 13, 2019</time></div>
         </header>
         
         <article>
@@ -47,120 +47,118 @@
 <li><a href="#problem">Problem</a></li>
 <li><a href="#background">Background</a></li>
 <li><a href="#system-design">System Design</a></li>
-<li><a href="#remarks">Remarks</a></li>
 </ul>
 </div>
 <h2 id="problem">Problem</h2>
-<p>How can we design an OS for I/O intensive applications such that most I/O operations do not need kernel mediation?</p>
+<p>How can we refactor a commerical OS to follow libOS architecture and achieve a better performance than VMM approach?</p>
 <h2 id="background">Background</h2>
 <ul>
-<li>The authors make a classic efficiency argument: servers usually perform conceptually simple operations, but in practice
-this results in too much operating system overhead.</li>
+<li>Three categories of services in OS implementations:</li>
 </ul>
+<p><img alt="three categories of services" class="img-responsive" src="../../../../../images/drawbridge-three-services.png"/></p>
+<ul>
+<li>Why does a guest OS need a kernel? Because the host interface is virtual hardware</li>
+</ul>
+<p><img alt="typical VMM" class="img-responsive" src="../../../../../images/drawbridge-question.png"/></p>
 <h2 id="system-design">System Design</h2>
 <ul>
 <li>
-<p>The new secret sauce is that hardware device virtualization allows user-level programs to get efficient access to I/O
-without compromising protection.</p>
-</li>
-<li>
-<p>I/O centric design:</p>
+<p>Goals:</p>
 <ul>
-<li>Bypass kernel</li>
-<li>Abstractions: user-space device access</li>
-<li>Single-Root I/O Virtualization (SR-IOV) is the hardware secret sauce. It allows software to setup flexible hardware
-multiplexing. </li>
+<li>Compatibility: Runs applications you use</li>
+<li>Lightweight: &lt;1% of Windows library code</li>
+<li>Performance: 10x to 20x lower overheads than a VM</li>
+<li>Security: Secure isolation comparable to VM</li>
+<li>Mobility: Migrate running applications</li>
+<li>Generality: Independent evolution of host OS</li>
+<li>Manageability: Smaller "servicing" area</li>
 </ul>
 </li>
 <li>
-<p>Kernel functionality re-divide in Arrakis:</p>
-</li>
-</ul>
-<p><img alt="arrakis kernel functionality" class="img-responsive" src="../../../../../images/arrakis-kernel-functionality.png"/></p>
+<p>Hypothesis: it's possible to design a software ABI with the same properties as hardware ABI:</p>
 <ul>
-<li>Architecture:</li>
-</ul>
-<p><img alt="arrakis architecture" class="img-responsive" src="../../../../../images/arrakis-architecture-01.png"/></p>
-<p><img alt="arrakis architecture 02" class="img-responsive" src="../../../../../images/arrakis-architecture-02.png"/></p>
-<ul>
+<li>Clearly specified, clean separation of concerns (No undocumented dependencies)</li>
 <li>
-<p>Hardware Model:</p>
+<p>Minimally stateful:</p>
 <ul>
-<li>NICs (Multiplexing, Protection, Scheduling)</li>
-<li>
-<p>Storage</p>
-<ul>
-<li>VSIC (Virtual Storage Interface Controller): each with queues, etc</li>
-<li>VSA (Virtual Storage Areas): mapped to physical devices; associated with VSICs; VSA &amp; VSIC: many-to-many mapping</li>
+<li>Registers, etc. are visible to guest OS/application</li>
+<li>State can be programmatically recreated</li>
+<li>Analogous to a stateless network protocol</li>
 </ul>
 </li>
 </ul>
 </li>
 <li>
-<p>Control Plane Interface:</p>
+<p>Guest/Host ABI:</p>
 <ul>
-<li>VIC (Virtual Interface Card): Apps can create/delete VICs, associate them to doorbells</li>
-<li>doorbells associated with events on VICs</li>
-<li>filter creation (e.g., <code>create_filter(rx,*,tcp.port == 80)</code>)</li>
-<li>
-<p>Features:</p>
-<ul>
-<li>Access control: enforced by filters; infrequentily invoked (during setup, etc)</li>
-<li>Resource limiting: send commands to hardware I/O schedulers</li>
-<li>Naming: VFS in kernel; actual storage implemented in apps</li>
-</ul>
-</li>
+<li>Private virtual memory</li>
+<li>Threads, synchronization</li>
+<li>I/O streams</li>
+<li>Thread/process exit</li>
+<li>Time, random bits, handle reference management, checkpoint/restore</li>
 </ul>
 </li>
 <li>
-<p>Network Data Interface:</p>
+<p>Refactoring the Desktop:</p>
 <ul>
-<li>Apps send/receive directly through sets of queues</li>
-<li>Filters applied for multiplexing</li>
-<li>Doorbell used for asynchronous notification (e.g., packet arrival)</li>
-<li>Both native (w/ zero-copy) and POSIX are implemented</li>
-</ul>
-</li>
+<li>Host OS manages hardware</li>
+<li>Application services in library</li>
 <li>
-<p>Storage Data Interface:</p>
+<p>Desktop manager</p>
 <ul>
-<li>VSA supports read, write, flush</li>
-<li>
-<p>persistent data structure (log, queue)</p>
-<ul>
-<li>operations immediately persistent on disk</li>
-<li>eliminate marshaling (layout in memory = in disk)</li>
-<li>data structure specific caching &amp; early allocation</li>
+<li>Trusted host process</li>
+<li>Remote Desktop protocol</li>
+<li>Stateless</li>
+<li>Shell can be remote</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<h2 id="remarks">Remarks</h2>
+<p><img alt="refactoring the desktop" class="img-responsive" src="../../../../../images/drawbridge-refactor-desktop.png"/></p>
+<ul>
+<li>Drawbridge Architecture:</li>
+</ul>
+<p><img alt="Drawbridge Architecture" class="img-responsive" src="../../../../../images/drawbridge-architecture.png"/></p>
+<p><img alt="Drawbridge Architecture 02" class="img-responsive" src="../../../../../images/drawbridge-architecture-02.png"/></p>
 <ul>
 <li>
-<p>This paper exploits the wide variety of hardware. Some of them do not even exist or are quite limited (e.g., VSIC support). 
-Personally, I'm not a huge fun of this type of research as the main goal seems to be "let's delegate OS work to the hardware".
-But, it indeed lays out a vision that what OS can be if hardware is powerful enough and the applications on top of OS are not
-quite complex and do not need much kernel involvement (e.g., scheduling).</p>
-</li>
-<li>
-<p>The presentation of motivation through rigorous measurement (Table 1 and Table 2) is something I really enjoy. In addition, the detailed analysis of the overhead involving kernel (Background section) has much useful information to further study for myself.</p>
-</li>
-<li>
-<p>Pros: much better raw performance (for I/O intensive Data Center apps)</p>
+<p>Limitations:</p>
 <ul>
-<li>Redis: up to 9x throughput and 81% speedup</li>
-<li>Memcached: scales up to 3x throughput</li>
+<li>
+<p>Incomplete port of windows API</p>
+<ul>
+<li>Printer support</li>
+<li>Accelerated graphics</li>
 </ul>
 </li>
 <li>
-<p>Cons:</p>
+<p>Support for multi-process applications (e.g., Outlook with Word as an editor, sharing state through windows subsystem)</p>
+</li>
+<li>
+<p>Administrative tools will not work by design</p>
 <ul>
-<li>Some features require hardware functionality that is not yet available</li>
-<li>require modification of applications</li>
-<li>not clear about storage abstractions</li>
-<li>not easy to track behaviors inside the hardware</li>
+<li>Need more low-level system access</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>End results:</p>
+<ul>
+<li>Refactored Windows 7 as a Library OS (80MB)</li>
+<li>
+<p>Functional benefits of VMs:</p>
+<ul>
+<li>Robust to changes in host system software</li>
+<li>Security isolation</li>
+<li>Migration</li>
+</ul>
+</li>
+<li>
+<p>Drastically better scalability</p>
+</li>
+<li>Run rich desktop applications</li>
 </ul>
 </li>
 </ul>
