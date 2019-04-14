@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Scheduler Activations: Effective Kernel Support for the User-Level Management of Parallelism"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">"Scheduler Activations: Effective Kernel Support for the User-Level Management of Parallelism"</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2019-04-13T12:20:00+08:00"> Apr 13, 2019</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/os.html">os</a>
+        /
+	<a href="../../../../../tag/papers.html">papers</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">"Scheduler Activations: Effective Kernel Support for the User-Level Management of Parallelism"</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2019-04-13T12:20:00+08:00">Apr 13, 2019</time></div> -->
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#background">Background</a><ul>
+<li><a href="#theme-for-supporting-concurrent-and-parallel-programming">Theme for supporting concurrent and parallel programming</a></li>
+<li><a href="#heavyweight-process-model">"Heavyweight" Process Model</a></li>
+<li><a href="#lightweight-user-level-threads">"Lightweight" User-level Threads</a></li>
+<li><a href="#kernel-threads">Kernel Threads</a></li>
+<li><a href="#user-level-threads-multiplexed-on-kernel-threads">User-level threads multiplexed on kernel threads</a></li>
+</ul>
+</li>
+<li><a href="#system-design">System Design</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<ul>
+<li>
+<p>User-level library</p>
+<ul>
+<li>Management in application's address space</li>
+<li>High performance and very flexible</li>
+<li>Lack functionality</li>
+</ul>
+</li>
+<li>
+<p>Operating system kernel</p>
+<ul>
+<li>Poor performance (compared with user-level threads)</li>
+<li>Poor flexibility</li>
+<li>High functionality</li>
+</ul>
+</li>
+</ul>
+<p>How to design a parallelism mechanism (e.g., kernel interface + use-level thread package) that 
+combines the functionality of kernel threads with the performance and flexibility of user-level threads?</p>
+<h2 id="background">Background</h2>
+<h3 id="theme-for-supporting-concurrent-and-parallel-programming">Theme for supporting concurrent and parallel programming</h3>
+<ul>
+<li>Conform to application semantics</li>
+<li>Respect priorities of applications</li>
+<li>No unnecessary blocking</li>
+<li>Fast context switch</li>
+<li>High processor utilization</li>
+</ul>
+<h3 id="heavyweight-process-model">"Heavyweight" Process Model</h3>
+<p><img alt="process model" class="img-responsive" src="../../../../../images/process-model.png"/></p>
+<ul>
+<li>
+<p>Pros:</p>
+<ul>
+<li>Simple, uni-threaded model</li>
+<li>Security provided by address space boundaries</li>
+</ul>
+</li>
+<li>
+<p>Cons:</p>
+<ul>
+<li>High cost for context switch</li>
+<li>Coarse granualarity limits degree of concurrency</li>
+</ul>
+</li>
+</ul>
+<h3 id="lightweight-user-level-threads">"Lightweight" User-level Threads</h3>
+<p><img alt="user-level thread" class="img-responsive" src="../../../../../images/user-level-thread.png"/></p>
+<ul>
+<li>
+<p>Pros:</p>
+<ul>
+<li>Thread semantics defined by application: different applications can be linked with different user-level thread libraries</li>
+<li>Fast context switch time: within an order of magnitude of procedure call time</li>
+<li>No kernel intervention (i.e., high performance)</li>
+<li>Supports customized scheduling algorithms (i.e., flexible)</li>
+</ul>
+</li>
+<li>
+<p>Cons:</p>
+<ul>
+<li>Unnecessary blocking: A blocking system call, I/O, page faults, and multiprogramming block all threads (i.e., lack of functionality)</li>
+<li>System scheduler unaware of user thread priorities</li>
+<li>Processor under-utilization (i.e., Hard to run as many threads as CPUs) because: Don't know how many CPUs; Don't know when a thread blocks</li>
+</ul>
+</li>
+</ul>
+<h3 id="kernel-threads">Kernel Threads</h3>
+<p><img alt="kernel thread" class="img-responsive" src="../../../../../images/kernel-thread.png"/></p>
+<ul>
+<li>
+<p>Pros:</p>
+<ul>
+<li>
+<p>No system integration problems (system calls can be blocking calls) (i.e., high functionality)</p>
+<ul>
+<li>Handle blocking system calls/page faults well</li>
+</ul>
+</li>
+<li>
+<p>Threads are seen and scheduled only by the kernel</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Cons:</p>
+<ul>
+<li>Adds many user/kernel crossings (i.e., low performance) (e.g., thread switch, create, exit, lock, signal, wait, ...)<ul>
+<li>Typically 10x-30x slower than user threads</li>
+</ul>
+</li>
+<li>Every thread-related call traps: etra kernel trap and copy and check of all parameters on all thread operations</li>
+<li>Single, general purpose scheduling algorithm (i.e., lack of flexibility)</li>
+<li>Thread semantics defined by system</li>
+<li>Context switch time better than process switch time by an order of magnitude, but an order of magnitude worse than user-level threads</li>
+<li>System scheduler unaware of user thread state (e.g., in critical section) leading to blocking and lower processor utilization</li>
+</ul>
+</li>
+</ul>
+<h3 id="user-level-threads-multiplexed-on-kernel-threads">User-level threads multiplexed on kernel threads</h3>
+<ul>
+<li>Question: Can we accomplish system integration by implementing user-level threads on top of kernel threads?</li>
+<li>
+<p>No:</p>
+<ul>
+<li>Different apps have different needs (thread priorities, etc)</li>
+<li>Insufficient visibility between the kernel and user thread library<ul>
+<li>Kernel doesn't know best thread to run</li>
+<li>Kernel doesn't know about user-level locks, priority inversion (preempt while in critical section): too much info changing too quickly to notify kernel</li>
+<li>kernel events (preemption, I/O) invisible to user library (user thread blocks, then kernel thread serving it also blocks)</li>
+</ul>
+</li>
+<li>Kernel threads are scheduled obliviously w.r.t user-level thread library</li>
+<li>Hard to keep same number of kthreads as CPUs<ul>
+<li>Neither kernel nor user knows how many runnable threads</li>
+<li>User doesn't even know number of CPUs available</li>
+</ul>
+</li>
+<li>Can have deadlock</li>
+</ul>
+</li>
+</ul>
+<h2 id="system-design">System Design</h2>
+<ul>
+<li>
+<p>Key problem: </p>
+<ul>
+<li>Application has knowledge of the user-level thread state but has little knowledge of or influence over critical kernel-level events (this is by design to achieve the virtual machine abstraction)</li>
+<li>Kernel has inadequate knowledge of user-level thread state to make optimal scheduling decisions<ul>
+<li>Kernel may de-scehdule a thread at a bad time (e.g., while holding a lock)</li>
+<li>Application may need more or less computing</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Solution:</p>
+<ul>
+<li>A mechanism that facilitates exchange of information between user-level and kernel-level mechanisms</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A general system design problem: communicating information and control across layer boundaries while preserving the inherent
+advantages of layering, abstraction, and virtualization.</p>
+</div>
+<ul>
+<li>What is a SA?<ul>
+<li>Execution context for running user-level threads</li>
+<li>Notifies the user-level thread system of kernel event</li>
+<li>Provides space for the kernel to save processor context</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A scheduler activation is the execution context for vectoring control from the kernel to the address space on a kernel event. The address space thread scheduler uses this context to handle the event, e.g., to modify user-level thread data structures, to execute user-level threads, and to make requests of the kernel. </p>
+</div>
+<ul>
+<li>Scheduler Activations (SA) structure</li>
+</ul>
+<p><img alt="scheduler activation" class="img-responsive" src="../../../../../images/scheduler-activation.png"/></p>
+<ul>
+<li>
+<p>SA basics</p>
+<ul>
+<li>Multi-threaded programs given an address space (as usual)</li>
+<li>Facilitate flow of key information between user space and kernel space</li>
+<li>Kernel explicitly "vectors" kernel events to the user-level thread via SA</li>
+<li>Extended kernel interface for processor allocation-related events<ul>
+<li>User-level thread library notifies the kernel about events</li>
+<li>Kernel uses the SA itself to do the same</li>
+</ul>
+</li>
+<li>SA has two execution stacks<ul>
+<li>The kernel stack - used by the user-level thread when running in the kernel mode (e.g., system call)</li>
+<li>The user stack - used by the user-level thread scheduler</li>
+</ul>
+</li>
+<li>Each user-level thread is given a separate stack so that the thread scheduler can resume running if a user-level thread blocks</li>
+<li>The kernel-level SA communicates with the user-level library by upcalls</li>
+<li>When must kernel call into user-space? (Table II)<ul>
+<li>New processor available</li>
+<li>Processor had been preempted</li>
+<li>Thread has blocked</li>
+<li>Thread has unblocked</li>
+</ul>
+</li>
+<li>When must user call into kernel? (Table III)<ul>
+<li>Need more CPUs</li>
+<li>CPU is idle</li>
+<li>Preempt thread another CPU (for higher priority thread)</li>
+<li>Return unused SA for recycling (after user-level thread system has extracted necessary state)</li>
+</ul>
+</li>
+<li>SA role: there is one running SA for each processor assigned to the user process</li>
+</ul>
+</li>
+</ul>
+<p><img alt="SA role" class="img-responsive" src="../../../../../images/scheduler-activation-role.png"/></p>
+<ul>
+<li>
+<p>SA lifecycle</p>
+<ul>
+<li>
+<p>On program start:</p>
+<ul>
+<li>New SA is created, assigned a processor and "upcalled" (fixed entry point)</li>
+<li>User-level thread scheduler initializes and runs on this SA</li>
+</ul>
+</li>
+<li>
+<p>Kernel uses SA to notify the user-level about important events: preemption, I/O, page faults</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Avoiding effects of blocking</p>
+</li>
+</ul>
+<p><img alt="SA blocking" class="img-responsive" src="../../../../../images/scheduler-activation-blocking.png"/></p>
+<ul>
+<li>Resume blocked thread</li>
+</ul>
+<p><img alt="SA blocked resume" class="img-responsive" src="../../../../../images/sa-blocked-resume.png"/></p>
+<ul>
+<li>I/O request/completion</li>
+</ul>
+<p><img alt="SA io" class="img-responsive" src="../../../../../images/SA-io.png"/></p>
+<ul>
+<li>
+<p>Responsibility division between kernel and application address space:</p>
+<ul>
+<li>Processor allocation (the allocation of processors to address space) is done by the kernel.</li>
+<li>Thread scheduling (the assignment of an address space's threads to its processors) is done by each address space.</li>
+<li>The kernel notifies the address space thread scheduler of every event affecting the address space.</li>
+<li>The address space notifies the kernel of the subset of user-level events that can affect processor allocation decisions.</li>
+</ul>
+</li>
+<li>
+<p>SA vs. kernel threads key differences</p>
+<ul>
+<li>Preempted threads never resumed by the kernel directly (rather, indirectly through an SA)</li>
+<li>A traditional kernel:<ul>
+<li>Directly resumes the kernel thread</li>
+<li>Does NOT notify the user-thread about preemption</li>
+<li>Does NOT notify the user-thread about resumption</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Critical section</p>
+<ul>
+<li>
+<p>Problem: threads preempted while holding a lock, which can lead to deadlock</p>
+<ul>
+<li>User-level thread holds lock on the program's ready list</li>
+<li>Gets preempted</li>
+<li>Thread scheduler tries put that thread in the ready list on SA upcall</li>
+</ul>
+</li>
+<li>
+<p>Use recovery (recover when it does)</p>
+<ul>
+<li>Thread scheduler checks to see if the thread was executing in a critical section</li>
+<li>If so, the thread is continued temporarily via a user-level context switch. When the continued thread exits the critical section, it relinquishes control back to the original upcall, again via a user-level context switch.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Others</p>
+<ul>
+<li>Page faults must be handled carefully: the kernel must notify the program of a page fault only when the page fault is serviced</li>
+<li>User-level thread after blocking might still execute in kernel (e.g., I/O completing): the kernel notifies the user-level only after the user thread is in a "safe" point</li>
+<li>Every SA needs a processor to do the up-call on: at time T3 of I/O image, when I/O completes, kernel must notify the user-level thread of the event via SA, and this notification requires a processor</li>
+<li>Application free to build any concurrency model on SAs</li>
+</ul>
+</li>
+</ul>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="http://www.scs.stanford.edu/06au-cs240/notes/l4d2.txt">Stanford 240 notes</a></li>
+<li><a href="https://www.cs.ucr.edu/~heng/teaching/cs202-sp18/lec7.pdf">UC Riverside slides</a></li>
+<li><a href="http://courses.cs.vt.edu/cs5204/fall09-kafura/Presentations/Scheduler-Activations.pdf">Virginia Tech slides</a></li>
+<li><a href="http://www.cs.utexas.edu/~rossbach/380L/lectures/14-Scheduler-Activations.pdf">UT380L slides</a></li>
+</ul>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

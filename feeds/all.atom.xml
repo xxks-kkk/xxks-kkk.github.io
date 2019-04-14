@@ -1,5 +1,338 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-03-13T21:20:00+08:00</updated><entry><title>"Jitsu: Just-In-Time Summoning of Unikernels"</title><link href="https://zhu45.org/posts/2019/Mar/13/jitsu-just-in-time-summoning-of-unikernels/" rel="alternate"></link><published>2019-03-13T21:20:00+08:00</published><updated>2019-03-13T21:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-03-13:/posts/2019/Mar/13/jitsu-just-in-time-summoning-of-unikernels/</id><summary type="html">&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-04-13T12:20:00+08:00</updated><entry><title>"Scheduler Activations: Effective Kernel Support for the User-Level Management of Parallelism"</title><link href="https://zhu45.org/posts/2019/Apr/13/scheduler-activations-effective-kernel-support-for-the-user-level-management-of-parallelism/" rel="alternate"></link><published>2019-04-13T12:20:00+08:00</published><updated>2019-04-13T12:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-04-13:/posts/2019/Apr/13/scheduler-activations-effective-kernel-support-for-the-user-level-management-of-parallelism/</id><summary type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#theme-for-supporting-concurrent-and-parallel-programming"&gt;Theme for supporting concurrent and parallel programming&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#heavyweight-process-model"&gt;"Heavyweight" Process Model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#lightweight-user-level-threads"&gt;"Lightweight" User-level Threads&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#kernel-threads"&gt;Kernel Threads&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#user-level-threads-multiplexed-on-kernel-threads"&gt;User-level threads multiplexed on kernel threads&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;User-level library&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Management in application's address space&lt;/li&gt;
+&lt;li&gt;High performance and very flexible&lt;/li&gt;
+&lt;li&gt;Lack functionality&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Operating system kernel&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Poor performance (compared with user-level threads …&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#theme-for-supporting-concurrent-and-parallel-programming"&gt;Theme for supporting concurrent and parallel programming&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#heavyweight-process-model"&gt;"Heavyweight" Process Model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#lightweight-user-level-threads"&gt;"Lightweight" User-level Threads&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#kernel-threads"&gt;Kernel Threads&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#user-level-threads-multiplexed-on-kernel-threads"&gt;User-level threads multiplexed on kernel threads&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;User-level library&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Management in application's address space&lt;/li&gt;
+&lt;li&gt;High performance and very flexible&lt;/li&gt;
+&lt;li&gt;Lack functionality&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Operating system kernel&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Poor performance (compared with user-level threads)&lt;/li&gt;
+&lt;li&gt;Poor flexibility&lt;/li&gt;
+&lt;li&gt;High functionality&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;How to design a parallelism mechanism (e.g., kernel interface + use-level thread package) that 
+combines the functionality of kernel threads with the performance and flexibility of user-level threads?&lt;/p&gt;
+&lt;h2 id="background"&gt;Background&lt;/h2&gt;
+&lt;h3 id="theme-for-supporting-concurrent-and-parallel-programming"&gt;Theme for supporting concurrent and parallel programming&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Conform to application semantics&lt;/li&gt;
+&lt;li&gt;Respect priorities of applications&lt;/li&gt;
+&lt;li&gt;No unnecessary blocking&lt;/li&gt;
+&lt;li&gt;Fast context switch&lt;/li&gt;
+&lt;li&gt;High processor utilization&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="heavyweight-process-model"&gt;"Heavyweight" Process Model&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="process model" class="img-responsive" src="https://zhu45.org/images/process-model.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Pros:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Simple, uni-threaded model&lt;/li&gt;
+&lt;li&gt;Security provided by address space boundaries&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cons:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;High cost for context switch&lt;/li&gt;
+&lt;li&gt;Coarse granualarity limits degree of concurrency&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="lightweight-user-level-threads"&gt;"Lightweight" User-level Threads&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="user-level thread" class="img-responsive" src="https://zhu45.org/images/user-level-thread.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Pros:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Thread semantics defined by application: different applications can be linked with different user-level thread libraries&lt;/li&gt;
+&lt;li&gt;Fast context switch time: within an order of magnitude of procedure call time&lt;/li&gt;
+&lt;li&gt;No kernel intervention (i.e., high performance)&lt;/li&gt;
+&lt;li&gt;Supports customized scheduling algorithms (i.e., flexible)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cons:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Unnecessary blocking: A blocking system call, I/O, page faults, and multiprogramming block all threads (i.e., lack of functionality)&lt;/li&gt;
+&lt;li&gt;System scheduler unaware of user thread priorities&lt;/li&gt;
+&lt;li&gt;Processor under-utilization (i.e., Hard to run as many threads as CPUs) because: Don't know how many CPUs; Don't know when a thread blocks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="kernel-threads"&gt;Kernel Threads&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="kernel thread" class="img-responsive" src="https://zhu45.org/images/kernel-thread.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Pros:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;No system integration problems (system calls can be blocking calls) (i.e., high functionality)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Handle blocking system calls/page faults well&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Threads are seen and scheduled only by the kernel&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cons:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Adds many user/kernel crossings (i.e., low performance) (e.g., thread switch, create, exit, lock, signal, wait, ...)&lt;ul&gt;
+&lt;li&gt;Typically 10x-30x slower than user threads&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Every thread-related call traps: etra kernel trap and copy and check of all parameters on all thread operations&lt;/li&gt;
+&lt;li&gt;Single, general purpose scheduling algorithm (i.e., lack of flexibility)&lt;/li&gt;
+&lt;li&gt;Thread semantics defined by system&lt;/li&gt;
+&lt;li&gt;Context switch time better than process switch time by an order of magnitude, but an order of magnitude worse than user-level threads&lt;/li&gt;
+&lt;li&gt;System scheduler unaware of user thread state (e.g., in critical section) leading to blocking and lower processor utilization&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="user-level-threads-multiplexed-on-kernel-threads"&gt;User-level threads multiplexed on kernel threads&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Question: Can we accomplish system integration by implementing user-level threads on top of kernel threads?&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;No:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Different apps have different needs (thread priorities, etc)&lt;/li&gt;
+&lt;li&gt;Insufficient visibility between the kernel and user thread library&lt;ul&gt;
+&lt;li&gt;Kernel doesn't know best thread to run&lt;/li&gt;
+&lt;li&gt;Kernel doesn't know about user-level locks, priority inversion (preempt while in critical section): too much info changing too quickly to notify kernel&lt;/li&gt;
+&lt;li&gt;kernel events (preemption, I/O) invisible to user library (user thread blocks, then kernel thread serving it also blocks)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Kernel threads are scheduled obliviously w.r.t user-level thread library&lt;/li&gt;
+&lt;li&gt;Hard to keep same number of kthreads as CPUs&lt;ul&gt;
+&lt;li&gt;Neither kernel nor user knows how many runnable threads&lt;/li&gt;
+&lt;li&gt;User doesn't even know number of CPUs available&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Can have deadlock&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="system-design"&gt;System Design&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Key problem: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Application has knowledge of the user-level thread state but has little knowledge of or influence over critical kernel-level events (this is by design to achieve the virtual machine abstraction)&lt;/li&gt;
+&lt;li&gt;Kernel has inadequate knowledge of user-level thread state to make optimal scheduling decisions&lt;ul&gt;
+&lt;li&gt;Kernel may de-scehdule a thread at a bad time (e.g., while holding a lock)&lt;/li&gt;
+&lt;li&gt;Application may need more or less computing&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Solution:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A mechanism that facilitates exchange of information between user-level and kernel-level mechanisms&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;A general system design problem: communicating information and control across layer boundaries while preserving the inherent
+advantages of layering, abstraction, and virtualization.&lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;What is a SA?&lt;ul&gt;
+&lt;li&gt;Execution context for running user-level threads&lt;/li&gt;
+&lt;li&gt;Notifies the user-level thread system of kernel event&lt;/li&gt;
+&lt;li&gt;Provides space for the kernel to save processor context&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;A scheduler activation is the execution context for vectoring control from the kernel to the address space on a kernel event. The address space thread scheduler uses this context to handle the event, e.g., to modify user-level thread data structures, to execute user-level threads, and to make requests of the kernel. &lt;/p&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;Scheduler Activations (SA) structure&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="scheduler activation" class="img-responsive" src="https://zhu45.org/images/scheduler-activation.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;SA basics&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Multi-threaded programs given an address space (as usual)&lt;/li&gt;
+&lt;li&gt;Facilitate flow of key information between user space and kernel space&lt;/li&gt;
+&lt;li&gt;Kernel explicitly "vectors" kernel events to the user-level thread via SA&lt;/li&gt;
+&lt;li&gt;Extended kernel interface for processor allocation-related events&lt;ul&gt;
+&lt;li&gt;User-level thread library notifies the kernel about events&lt;/li&gt;
+&lt;li&gt;Kernel uses the SA itself to do the same&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;SA has two execution stacks&lt;ul&gt;
+&lt;li&gt;The kernel stack - used by the user-level thread when running in the kernel mode (e.g., system call)&lt;/li&gt;
+&lt;li&gt;The user stack - used by the user-level thread scheduler&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Each user-level thread is given a separate stack so that the thread scheduler can resume running if a user-level thread blocks&lt;/li&gt;
+&lt;li&gt;The kernel-level SA communicates with the user-level library by upcalls&lt;/li&gt;
+&lt;li&gt;When must kernel call into user-space? (Table II)&lt;ul&gt;
+&lt;li&gt;New processor available&lt;/li&gt;
+&lt;li&gt;Processor had been preempted&lt;/li&gt;
+&lt;li&gt;Thread has blocked&lt;/li&gt;
+&lt;li&gt;Thread has unblocked&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;When must user call into kernel? (Table III)&lt;ul&gt;
+&lt;li&gt;Need more CPUs&lt;/li&gt;
+&lt;li&gt;CPU is idle&lt;/li&gt;
+&lt;li&gt;Preempt thread another CPU (for higher priority thread)&lt;/li&gt;
+&lt;li&gt;Return unused SA for recycling (after user-level thread system has extracted necessary state)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;SA role: there is one running SA for each processor assigned to the user process&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="SA role" class="img-responsive" src="https://zhu45.org/images/scheduler-activation-role.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;SA lifecycle&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;On program start:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;New SA is created, assigned a processor and "upcalled" (fixed entry point)&lt;/li&gt;
+&lt;li&gt;User-level thread scheduler initializes and runs on this SA&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Kernel uses SA to notify the user-level about important events: preemption, I/O, page faults&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Avoiding effects of blocking&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="SA blocking" class="img-responsive" src="https://zhu45.org/images/scheduler-activation-blocking.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Resume blocked thread&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="SA blocked resume" class="img-responsive" src="https://zhu45.org/images/sa-blocked-resume.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;I/O request/completion&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="SA io" class="img-responsive" src="https://zhu45.org/images/SA-io.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Responsibility division between kernel and application address space:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Processor allocation (the allocation of processors to address space) is done by the kernel.&lt;/li&gt;
+&lt;li&gt;Thread scheduling (the assignment of an address space's threads to its processors) is done by each address space.&lt;/li&gt;
+&lt;li&gt;The kernel notifies the address space thread scheduler of every event affecting the address space.&lt;/li&gt;
+&lt;li&gt;The address space notifies the kernel of the subset of user-level events that can affect processor allocation decisions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;SA vs. kernel threads key differences&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Preempted threads never resumed by the kernel directly (rather, indirectly through an SA)&lt;/li&gt;
+&lt;li&gt;A traditional kernel:&lt;ul&gt;
+&lt;li&gt;Directly resumes the kernel thread&lt;/li&gt;
+&lt;li&gt;Does NOT notify the user-thread about preemption&lt;/li&gt;
+&lt;li&gt;Does NOT notify the user-thread about resumption&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Critical section&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Problem: threads preempted while holding a lock, which can lead to deadlock&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;User-level thread holds lock on the program's ready list&lt;/li&gt;
+&lt;li&gt;Gets preempted&lt;/li&gt;
+&lt;li&gt;Thread scheduler tries put that thread in the ready list on SA upcall&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Use recovery (recover when it does)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Thread scheduler checks to see if the thread was executing in a critical section&lt;/li&gt;
+&lt;li&gt;If so, the thread is continued temporarily via a user-level context switch. When the continued thread exits the critical section, it relinquishes control back to the original upcall, again via a user-level context switch.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Others&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Page faults must be handled carefully: the kernel must notify the program of a page fault only when the page fault is serviced&lt;/li&gt;
+&lt;li&gt;User-level thread after blocking might still execute in kernel (e.g., I/O completing): the kernel notifies the user-level only after the user thread is in a "safe" point&lt;/li&gt;
+&lt;li&gt;Every SA needs a processor to do the up-call on: at time T3 of I/O image, when I/O completes, kernel must notify the user-level thread of the event via SA, and this notification requires a processor&lt;/li&gt;
+&lt;li&gt;Application free to build any concurrency model on SAs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://www.scs.stanford.edu/06au-cs240/notes/l4d2.txt"&gt;Stanford 240 notes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.cs.ucr.edu/~heng/teaching/cs202-sp18/lec7.pdf"&gt;UC Riverside slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://courses.cs.vt.edu/cs5204/fall09-kafura/Presentations/Scheduler-Activations.pdf"&gt;Virginia Tech slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.cs.utexas.edu/~rossbach/380L/lectures/14-Scheduler-Activations.pdf"&gt;UT380L slides&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><category term="os"></category><category term="papers"></category></entry><entry><title>"Jitsu: Just-In-Time Summoning of Unikernels"</title><link href="https://zhu45.org/posts/2019/Mar/13/jitsu-just-in-time-summoning-of-unikernels/" rel="alternate"></link><published>2019-03-13T21:20:00+08:00</published><updated>2019-03-13T21:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-03-13:/posts/2019/Mar/13/jitsu-just-in-time-summoning-of-unikernels/</id><summary type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
@@ -19100,7 +19433,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped table-hover table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -19801,7 +20134,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped table-hover table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20034,7 +20367,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped table-hover table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20089,7 +20422,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped table-hover table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20139,7 +20472,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped table-hover table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20183,7 +20516,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped table-hover table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20242,7 +20575,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped table-hover table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20305,7 +20638,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped table-hover table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20696,7 +21029,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class=" table-striped table docutils table-hover"&gt;
+&lt;table border="1" class="docutils  table-striped table table-hover"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;
