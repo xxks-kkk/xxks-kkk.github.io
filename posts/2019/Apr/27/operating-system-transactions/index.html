@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Operating System Transactions"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">"Operating System Transactions"</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2019-04-27T12:20:00+08:00"> Apr 27, 2019</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/os.html">os</a>
+        /
+	<a href="../../../../../tag/papers.html">papers</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">"Operating System Transactions"</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2019-04-27T12:20:00+08:00">Apr 27, 2019</time></div> -->
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#background">Background</a></li>
+<li><a href="#system-design">System Design</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#system-transactions">System transactions</a></li>
+<li><a href="#txos">TxOS</a><ul>
+<li><a href="#design">Design</a></li>
+<li><a href="#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<p>How to implement transaction with ACID guarantee in OS to provide concurrency control?</p>
+<h2 id="background">Background</h2>
+<ul>
+<li>
+<p>Problems that can be solved by using transactions:</p>
+<ul>
+<li>Security vulnerbilities in the file system that are caused by time-of-check-to-time-of-use (TOCTTOU) race conditions</li>
+<li>Unsuccessful software installation is hard to roll back without disturbing concurrent, independent updates to the file system</li>
+<li>Consistency problem in managing local user accounts</li>
+<li>Have to use a database for concurrency management and crash consistency, which lead to more complex application code and system administration</li>
+</ul>
+</li>
+</ul>
+<h2 id="system-design">System Design</h2>
+<h3 id="overview">Overview</h3>
+<ul>
+<li>System transactions allow programmers to group accesses to system resources into logical units that are executed with ACID guarantee</li>
+<li>Use <code>sys_xbegin()</code> and <code>sys_xend()</code> to wrap around code regions with consistency constraints</li>
+<li>Use <code>sys_xabort()</code> to abort in-progress transaction</li>
+<li>Access and modify to system resources are kept isolated until commit time</li>
+</ul>
+<p><img alt="TxOS API" class="img-responsive" src="../../../../../images/txos-api.png"/></p>
+<h3 id="system-transactions">System transactions</h3>
+<ul>
+<li>System transactions provide ACID semantics for updates to OS resources (e.g., files, pipes, and signals)</li>
+<li>OS is responsible for ensuring that transactional &amp; non-transactional access to system state are correctly serialized and contention is arbitrated fairly</li>
+<li>
+<p>To ensure isolation, kernel enforces the invariant that a kernel object may only have one writer at a time (except containers)</p>
+<ul>
+<li>Concurrent system transactions that modify the same kernel object cannot commit (i.e., one of them has to abort)</li>
+<li>Non-transactional updates to objects read or written by an active system transaction are also forbidden</li>
+</ul>
+</li>
+<li>
+<p>Durability is optional (for performance concern)</p>
+</li>
+<li>Provides strong isolation: OS serializes system transactions and non-transactional system calls</li>
+<li>OS always chooses the same transaction to restart when hit the conflict that involves the same transactions (to prevent livelock)</li>
+<li>ACID is guaranteed for system state, not application state</li>
+<li>Communication outside of a trasnaction violates isolation and thus not supported (e.g., IPC between a thread executing a system transaction and a non-transactional thread)</li>
+<li>Communication among threads within the same transaction is unrestricted</li>
+</ul>
+<h3 id="txos">TxOS</h3>
+<h4 id="design">Design</h4>
+<ul>
+<li>
+<p>High-level overview:</p>
+<ul>
+<li>Application updates usually go to OS buffer first; copy-on-write these buffers for transactions to support isolation</li>
+<li>Transactional updates to kernel data structures are supported through object-based software transactional memory systems</li>
+<li>Isolation mechanism is optimistic: assume conflicts are rare</li>
+</ul>
+</li>
+<li>
+<p>Interoperability and fairness</p>
+<ul>
+<li>TxOS prvoides strong isolation inside the kernel by requiring all system calls to follow the same locking discipline and transactions need to anonotate accessed kernel objects (all threads, whether transactional or not, need to check for conflict on 1st time access)</li>
+<li>Scheduler can maintain fairness between non-transactional and transactional threads b/c conflict is detected before threads entering a critical region and suspension of non-transactional thread is possible</li>
+</ul>
+</li>
+<li>
+<p>Managing transactional state</p>
+<ul>
+<li>Lazy version management: transactions operate on private copies of a data structure (vs. eager version management: in-place data update + undo log)</li>
+<li>TxOS holds lock only to make a private copy of the data structure (enforcing global ordering of kernel locks avoid deadlock)</li>
+<li>Commit latency is challenge for lazy version management: TxOS minimizes this overhead by splitting objects, tunning a <code>memcpy</code> of the entire object into a pointer copy</li>
+</ul>
+</li>
+<li>
+<p>TxOS provides transaction to system states; User-level transactional memory (TM) system provides transaction to application states (integrate together to provide a complete transactional programming model)</p>
+</li>
+</ul>
+<h4 id="implementation">Implementation</h4>
+<ul>
+<li>
+<p>Versioning data:</p>
+<ul>
+<li>TxOS maintains multiple versions of kernel data structures to isolate the system calls effect until transactions commit and easy abort</li>
+<li>
+<p>Split objects into header and data so that TxOS maintains the invariant: single writer to any object (i.e., concurrent writes must be on disjoint objects) (see Figure 2 below)</p>
+<ul>
+<li>Object header contains a pointer to object's data; transactions commit changes to an object by replacing this pointer in the header to a modified copy of data object</li>
+<li>Header itself is never replaced by a transaction (eliminates the need to update pointers in other objects)</li>
+<li>
+<p>Pros:</p>
+<ul>
+<li>No need to recursively update pointers in other objects</li>
+<li>Avoid restarting active transactions tiggered by the kernel garbage collection thread</li>
+<li>Ensure that transactional code always has a speculative object</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>TxOS decomposes an object into multiple data payloads when it houses data that can be accessed disjointly</p>
+</li>
+<li>
+<p>No copies are made for kernel objects that are read-only in transactions</p>
+<ul>
+<li>Writer creates a new object copy when transactional reader reference count is non-zero and install it as new stable version</li>
+<li>Old copy is collected via read-copy update (RCU)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img alt="TxOS Object Splitting" class="img-responsive" src="../../../../../images/txos-split.png"/></p>
+<ul>
+<li>
+<p>Conflict detection and resolution</p>
+<ul>
+<li><code>tx_data</code> object (part of transaction-supported kernel objects) contains a pointer to a transactional writer list and a pointer to a transactional reader list (non-null indicates there is an active treansactional writer/reader)</li>
+<li>Use locks and test on the transactional writers and readers fileds to detect transactional and asymmetric (conflict involve transaction and non-transaction threads) conflicts</li>
+<li>Selects the process with the higher scheduling priority as the winnder of a conflict (if priority equal, older transaction wins)</li>
+<li>Non-transactional thread is preempted when asymmetric conflict is detected and rescheduled when the conflicting transaction is commited</li>
+<li>Table 3 shows the transactional list state that minimizes the conflicts involving updating linked list data structure</li>
+</ul>
+</li>
+</ul>
+<p><img alt="TxOS transactional list state" class="img-responsive" src="../../../../../images/txos-list.png"/></p>
+<ul>
+<li>
+<p>Managing transaction state</p>
+<ul>
+<li>Use transaction objects to store metadata and statistics for a transaction; let kernel thread's control block pointing to it</li>
+<li>Transaction status (<code>status</code>) is checked and updated atomically</li>
+<li>
+<p>Abort is invoked when conflict is detected during transactional system call:</p>
+<ul>
+<li>Transaction stores register state on the stack at the beginning of the current system call</li>
+<li>On abort, register state is restored and execution is jumped back to the top of kernel stack</li>
+</ul>
+</li>
+<li>
+<p>Need to keep track of deferred operations (done until the commit time) (e.g., free memory, deliver signals, file system monitoring events)</p>
+</li>
+<li>A workset maintains references to all kernel objects that transaction has made a copy of</li>
+</ul>
+</li>
+</ul>
+<p><img alt="TxOS transaction object" class="img-responsive" src="../../../../../images/txos-state.png"/> </p>
+<ul>
+<li>
+<p>Commit protocol</p>
+<ol>
+<li>Transaction acquires locks for all items in its workset</li>
+<li>TxOS iterates over the objects in workset twice: 1) acquire the blocking locks 2) acquire non-blocking locks</li>
+<li>Transaction checks the <code>status</code> and see if it can commit</li>
+<li>Transaction copies its updates to the statble objects</li>
+<li>Release spinlocks</li>
+<li>Perform deferred operations</li>
+<li>Release mutex</li>
+</ol>
+</li>
+</ul>
+<p><img alt="TxOS commit protocol" class="img-responsive" src="../../../../../images/txos-commit-protocol.png"/></p>
+<ul>
+<li>
+<p>Abort protocol</p>
+<ol>
+<li>Release any kernel locks</li>
+<li>Iterate workset and locks each objects to remove any references to itself from the object's transactional state and then unlocks the object</li>
+<li>Transaction frees its shadow objects and decrements the reference count on their stable counterparts</li>
+<li>Release any resources used in transaction (e.g., memory allocation)</li>
+</ol>
+</li>
+<li>
+<p>User-level transactions, multi-process transactions, and signal delivery can be checked in paper</p>
+</li>
+</ul>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
