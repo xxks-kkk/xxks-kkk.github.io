@@ -115,7 +115,7 @@
 <li>
 <p>Durability is optional (for performance concern)</p>
 </li>
-<li>Provides strong isolation: OS serializes system transactions and non-transactional system calls</li>
+<li>Provides strong isolation: serialization of transactional and non-transactional updates to the same resources</li>
 <li>OS always chooses the same transaction to restart when hit the conflict that involves the same transactions (to prevent livelock)</li>
 <li>ACID is guaranteed for system state, not application state</li>
 <li>Communication outside of a trasnaction violates isolation and thus not supported (e.g., IPC between a thread executing a system transaction and a non-transactional thread)</li>
@@ -227,7 +227,7 @@
 <li>Transaction acquires locks for all items in its workset</li>
 <li>TxOS iterates over the objects in workset twice: 1) acquire the blocking locks 2) acquire non-blocking locks</li>
 <li>Transaction checks the <code>status</code> and see if it can commit</li>
-<li>Transaction copies its updates to the statble objects</li>
+<li>Transaction copies its updates to the stable objects</li>
 <li>Release spinlocks</li>
 <li>Perform deferred operations</li>
 <li>Release mutex</li>
@@ -246,7 +246,22 @@
 </ol>
 </li>
 <li>
-<p>User-level transactions, multi-process transactions, and signal delivery can be checked in paper</p>
+<p>User-level transactions</p>
+<ul>
+<li>
+<p>Commit protocol</p>
+<ol>
+<li>The user prepares a Transaction</li>
+<li>The user requests that the system commit the transaction through <code>sys_xend()</code></li>
+<li>System commits or aborts</li>
+<li>System communicates the result to user as <code>sys_xend()</code> return code</li>
+<li>User commits or aborts accordingly</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p>multi-process transactions, and signal delivery can be checked in paper</p>
 </li>
 </ul>
         </article>
