@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">"Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing"</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2019-05-06T20:24:00+08:00"> May 06, 2019</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/papers.html">papers</a>
+        /
+	<a href="../../../../../tag/distributed-systems.html">distributed systems</a>
+        /
+	<a href="../../../../../tag/os.html">os</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">"Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing"</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2019-05-06T20:24:00+08:00">May 06, 2019</time></div> -->
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#system-design">System Design</a><ul>
+<li><a href="#goal">Goal</a></li>
+<li><a href="#resilient-distributed-datasets-rdd">Resilient Distributed Datasets (RDD)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<p>How to design a system that support in-memory computation (with real-time interaction support) in large cluster efficiently with fault-tolerance?</p>
+<ul>
+<li>Prior systems are lack of abstraction for leveraging distributed memory (intermediate computing result reuse is problem: has to save and then read through storage system)</li>
+<li>Prior systems on data reuse do not have abstraction for general use (i.e., limited computatin pattern supported) and do not support real-time interaction (e.g., load data sets into memory and query them interactively)</li>
+</ul>
+<h2 id="system-design">System Design</h2>
+<h3 id="goal">Goal</h3>
+<ul>
+<li>Provide distribued memory abstractions for clusters to support apps with working sets</li>
+<li>
+<p>Retain the attactive properties of MapReduce:</p>
+<ul>
+<li>Fault tolerance (for crashes &amp; stragglers)</li>
+<li>Data locality</li>
+<li>Scalability</li>
+</ul>
+</li>
+</ul>
+<h3 id="resilient-distributed-datasets-rdd">Resilient Distributed Datasets (RDD)</h3>
+<ul>
+<li>Generality conjecture: Spark's data flow + RDDs unifies many proposed cluster programming models (MapReduce, Dryad, SQL, Pregel (BSP), HaLoop (iterative MR), Continuous Bulk Processing)</li>
+<li>
+<p>An RDD is a read-only, partitioned, logical collection of records</p>
+<ul>
+<li>Need not be materialized, but rather contains information to rebuild a dataset from stable storage</li>
+</ul>
+</li>
+<li>
+<p>Coarse-grained transformations (e.g., map, filter, join)</p>
+<ul>
+<li>efficiently fault-tolerant: logging the transformations used to build a dataset (its lineage) rather than the actual data</li>
+<li>vs. actions: operations that return a value to the application or export data to a storage system (e.g., count, collect, save)</li>
+</ul>
+</li>
+<li>
+<p>Created through transformations on 1) data in storage 2) other RDDs</p>
+</li>
+<li>User can specify which RDD to reuse and how to store it</li>
+<li>User can partition RDD across machines on a key</li>
+<li>vs. distributed shared memory (DSM)</li>
+</ul>
+<p><img alt="RDD vs. DSM" class="img-responsive" src="../../../../../images/rdd-dsm.png"/></p>
+<ul>
+<li>Can use persist method to indicate which RDDs the user want to reuse in future operations and specify persistence priority (e.g., which in-memory data should store to disk first) and persistence strategy (e.g., store RDD on disk instead of memory; replication)</li>
+<li>Target application: iterative algorithms and iterative data mining tools</li>
+<li>Limitation: not suitable for applications that make asynchronous fine-grained updates to shared state (e.g., storage system for a web app or an incremental web crawler)</li>
+<li>
+<p>Representing RDD by exposing information:</p>
+<ul>
+<li>parititions of datasets</li>
+<li>dependencies on parent RDDs (narrow vs. wide) (see figure below)</li>
+<li>partition-based function for computing the dataset</li>
+<li>metadata on partitioning shceme and data placement</li>
+</ul>
+</li>
+</ul>
+<p><img alt="narrow vs. wide dependencies" class="img-responsive" src="../../../../../images/narrow-wide.png"/></p>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

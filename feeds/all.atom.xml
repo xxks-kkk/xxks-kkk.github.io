@@ -1,5 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-04-27T12:20:00+08:00</updated><entry><title>"Operating System Transactions"</title><link href="https://zhu45.org/posts/2019/Apr/27/operating-system-transactions/" rel="alternate"></link><published>2019-04-27T12:20:00+08:00</published><updated>2019-04-27T12:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-04-27:/posts/2019/Apr/27/operating-system-transactions/</id><summary type="html">&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-05-06T20:24:00+08:00</updated><entry><title>"Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing"</title><link href="https://zhu45.org/posts/2019/May/06/resilient-distributed-datasets-a-fault-tolerant-abstraction-for-in-memory-cluster-computing/" rel="alternate"></link><published>2019-05-06T20:24:00+08:00</published><updated>2019-05-06T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-05-06:/posts/2019/May/06/resilient-distributed-datasets-a-fault-tolerant-abstraction-for-in-memory-cluster-computing/</id><summary type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#goal"&gt;Goal&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#resilient-distributed-datasets-rdd"&gt;Resilient Distributed Datasets (RDD)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;How to design a system that support in-memory computation (with real-time interaction support) in large cluster efficiently with fault-tolerance?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Prior systems are lack of abstraction for leveraging distributed memory (intermediate computing result reuse is problem: has to save and then read …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#goal"&gt;Goal&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#resilient-distributed-datasets-rdd"&gt;Resilient Distributed Datasets (RDD)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;How to design a system that support in-memory computation (with real-time interaction support) in large cluster efficiently with fault-tolerance?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Prior systems are lack of abstraction for leveraging distributed memory (intermediate computing result reuse is problem: has to save and then read through storage system)&lt;/li&gt;
+&lt;li&gt;Prior systems on data reuse do not have abstraction for general use (i.e., limited computatin pattern supported) and do not support real-time interaction (e.g., load data sets into memory and query them interactively)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="system-design"&gt;System Design&lt;/h2&gt;
+&lt;h3 id="goal"&gt;Goal&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Provide distribued memory abstractions for clusters to support apps with working sets&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Retain the attactive properties of MapReduce:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fault tolerance (for crashes &amp;amp; stragglers)&lt;/li&gt;
+&lt;li&gt;Data locality&lt;/li&gt;
+&lt;li&gt;Scalability&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="resilient-distributed-datasets-rdd"&gt;Resilient Distributed Datasets (RDD)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Generality conjecture: Spark's data flow + RDDs unifies many proposed cluster programming models (MapReduce, Dryad, SQL, Pregel (BSP), HaLoop (iterative MR), Continuous Bulk Processing)&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;An RDD is a read-only, partitioned, logical collection of records&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Need not be materialized, but rather contains information to rebuild a dataset from stable storage&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Coarse-grained transformations (e.g., map, filter, join)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;efficiently fault-tolerant: logging the transformations used to build a dataset (its lineage) rather than the actual data&lt;/li&gt;
+&lt;li&gt;vs. actions: operations that return a value to the application or export data to a storage system (e.g., count, collect, save)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Created through transformations on 1) data in storage 2) other RDDs&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;User can specify which RDD to reuse and how to store it&lt;/li&gt;
+&lt;li&gt;User can partition RDD across machines on a key&lt;/li&gt;
+&lt;li&gt;vs. distributed shared memory (DSM)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="RDD vs. DSM" class="img-responsive" src="https://zhu45.org/images/rdd-dsm.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Can use persist method to indicate which RDDs the user want to reuse in future operations and specify persistence priority (e.g., which in-memory data should store to disk first) and persistence strategy (e.g., store RDD on disk instead of memory; replication)&lt;/li&gt;
+&lt;li&gt;Target application: iterative algorithms and iterative data mining tools&lt;/li&gt;
+&lt;li&gt;Limitation: not suitable for applications that make asynchronous fine-grained updates to shared state (e.g., storage system for a web app or an incremental web crawler)&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Representing RDD by exposing information:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;parititions of datasets&lt;/li&gt;
+&lt;li&gt;dependencies on parent RDDs (narrow vs. wide) (see figure below)&lt;/li&gt;
+&lt;li&gt;partition-based function for computing the dataset&lt;/li&gt;
+&lt;li&gt;metadata on partitioning shceme and data placement&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="narrow vs. wide dependencies" class="img-responsive" src="https://zhu45.org/images/narrow-wide.png"/&gt;&lt;/p&gt;</content><category term="papers"></category><category term="distributed systems"></category><category term="os"></category></entry><entry><title>"Operating System Transactions"</title><link href="https://zhu45.org/posts/2019/Apr/27/operating-system-transactions/" rel="alternate"></link><published>2019-04-27T12:20:00+08:00</published><updated>2019-04-27T12:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-04-27:/posts/2019/Apr/27/operating-system-transactions/</id><summary type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
@@ -2157,7 +2237,7 @@ as an entry in exactly one other, which is its parent)&lt;/li&gt;
 &lt;p&gt;Filter programs (e.g., &lt;code&gt;ls | pr -2 | opr&lt;/code&gt;) do not know the name of input or output files&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;"Handle with access rights” (that is a capability, which is an abstraction that makes protected sharing easier)&lt;/p&gt;
+&lt;p&gt;"Handle with access rights” (that is a capability, which is an abstraction that makes protected sharing easier); it is a capability because the right can be transferred to other processes that want to access the file&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
@@ -19658,7 +19738,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20359,7 +20439,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20592,7 +20672,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20647,7 +20727,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20697,7 +20777,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20741,7 +20821,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20800,7 +20880,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20863,7 +20943,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21254,7 +21334,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class="docutils table-hover table  table-striped"&gt;
+&lt;table border="1" class="table-hover docutils table  table-striped"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;
