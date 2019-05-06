@@ -79,7 +79,232 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="narrow vs. wide dependencies" class="img-responsive" src="https://zhu45.org/images/narrow-wide.png"/&gt;&lt;/p&gt;</content><category term="papers"></category><category term="distributed systems"></category><category term="os"></category></entry><entry><title>"Operating System Transactions"</title><link href="https://zhu45.org/posts/2019/Apr/27/operating-system-transactions/" rel="alternate"></link><published>2019-04-27T12:20:00+08:00</published><updated>2019-04-27T12:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-04-27:/posts/2019/Apr/27/operating-system-transactions/</id><summary type="html">&lt;div class="toc"&gt;
+&lt;p&gt;&lt;img alt="narrow vs. wide dependencies" class="img-responsive" src="https://zhu45.org/images/narrow-wide.png"/&gt;&lt;/p&gt;</content><category term="papers"></category><category term="distributed systems"></category><category term="os"></category></entry><entry><title>"Dandelion: a Compiler and Runtime for Heterogeneous Systems"</title><link href="https://zhu45.org/posts/2019/May/06/dandelion-a-compiler-and-runtime-for-heterogeneous-systems/" rel="alternate"></link><published>2019-05-06T10:00:00+08:00</published><updated>2019-05-06T10:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-05-06:/posts/2019/May/06/dandelion-a-compiler-and-runtime-for-heterogeneous-systems/</id><summary type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#overview"&gt;Overview&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#architecture"&gt;Architecture&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#dandelion-compilers"&gt;Dandelion Compilers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#dandelion-runtime"&gt;Dandelion Runtime&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;How to design a system that provides programmability for heterogeneous distributed systems?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Challenges are&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Heterogeneous: different programming models, architecture expertise&lt;/li&gt;
+&lt;li&gt;Distributed resources: data movement, scheduling&lt;/li&gt;
+&lt;li&gt;Concurrency: synchronization, consistency&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="system-design"&gt;System Design&lt;/h2&gt;
+&lt;h3 id="overview"&gt;Overview&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Goals: make it simple for programmers to write high …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#overview"&gt;Overview&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#architecture"&gt;Architecture&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#dandelion-compilers"&gt;Dandelion Compilers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#dandelion-runtime"&gt;Dandelion Runtime&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;How to design a system that provides programmability for heterogeneous distributed systems?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Challenges are&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Heterogeneous: different programming models, architecture expertise&lt;/li&gt;
+&lt;li&gt;Distributed resources: data movement, scheduling&lt;/li&gt;
+&lt;li&gt;Concurrency: synchronization, consistency&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="system-design"&gt;System Design&lt;/h2&gt;
+&lt;h3 id="overview"&gt;Overview&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Goals: make it simple for programmers to write high performance applications for hetergeneous system on a small cluster with GPUs and leverage its available resources&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Single programming interface for clusters with CPUs, GPUs, FPGAs, etc&lt;/li&gt;
+&lt;li&gt;"Single machine" programming model: programmer writes sequential code&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Runtime: take sequential program and do the following whenever possible&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Parallize computation&lt;/li&gt;
+&lt;li&gt;Partition data&lt;/li&gt;
+&lt;li&gt;Runs on all available resources&lt;/li&gt;
+&lt;li&gt;Maps computation to best architecture&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Workflow&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Given User program &amp;amp; partitioned data files as input&lt;/li&gt;
+&lt;li&gt;Compile to a mix of CPU and GPU code and run on the cluster (Dandelion role)&lt;/li&gt;
+&lt;li&gt;Output result as partitioned data files&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Challenges&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Simple programming model&lt;/li&gt;
+&lt;li&gt;Integerate multiple runtime efficiently to enable high performance&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Dandelion innovation by levels&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Programming languages&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Adopt language integration approach (LINQ): extends with Dandelion specific operators&lt;/li&gt;
+&lt;li&gt;Constraints: UDF must be side-effect free; execute .NET function with dynamic memory allocation on CPUs only&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Compilers&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Automatically compiles a data-parallel program to run on distributed heterogeneous systems&lt;/li&gt;
+&lt;li&gt;Translation of .NET byte-code to multiple backends (e.g., GPU, FPGA)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Distributed and parallel runtime&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Treat hetergeneous system as the composition of a collection dataflow engines&lt;/li&gt;
+&lt;li&gt;Three dataflow engines: cluster, mult-core CPU, and GPU (e.g., use PTask)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="architecture"&gt;Architecture&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="Dandelion Architecture" class="img-responsive" src="https://zhu45.org/images/dandelion-arch.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Two main components&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Dandelion compiler generates the execution plans and the worker code to be run on the CPUs and GPUs of cluster machines&lt;/li&gt;
+&lt;li&gt;Dandelion runtime uses the execution plans to manage the computation on the cluster (e.g., scheduling, distribution)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="dandelion-compilers"&gt;Dandelion Compilers&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Dandelion compiler generates CUDA code, and three levels of dataflow graphs to orchestrate the execution&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Relies on a library of generic primitives (GPU primitive library) to construct execution plans&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;GPU primitive library: for GPU dataflow graph&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;primitives include low level building blocks (e.g., parallel scan and hash tables), high-level primitives for relational operators (e.g., groupby and join)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Compiling C# to GPU code&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Translation performed at .NET byte-code level&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Map C# types to CUDA structs&lt;/li&gt;
+&lt;li&gt;Translate C# methods into CUDA kernel functions&lt;/li&gt;
+&lt;li&gt;Generate C# code for CPU-GPU serialization/transfer&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Main constraint: dynamic memory allocation&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Convert to stack allocation if object size can be inferred&lt;/li&gt;
+&lt;li&gt;Fail parallelization, fallback to host otherwise&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Use Common Compiler Infrastructure (CGI) framework for the intermediate AST&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="dandelion-runtime"&gt;Dandelion Runtime&lt;/h4&gt;
+&lt;p&gt;&lt;img alt="Dandelion dataflow graph" class="img-responsive" src="https://zhu45.org/images/dandelion-dataflow.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Dataflow graphs&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Vertex: a fragment of the computation&lt;/li&gt;
+&lt;li&gt;Edge: communication channels&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Three levels: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;cluster level (what machine to compute what): cluster execution engine assigns vertices to available machines and distributes code and graphs, orchestrating the computation&lt;/li&gt;
+&lt;li&gt;machine level (how the computation is done on each machine): executes its own dataflow graph, managing input/output and execution threads&lt;/li&gt;
+&lt;li&gt;GPU level (use PTask as GPU dataflow engine)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Three dataflow graphs (shown above) form the Dandelion runtime, and the composition
+of those graphs forms the global dataflow graph for the entire computation&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cluster dataflow engine ("Moxie")&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Allows the entire computation to stay in memory when the aggregate cluster memory is sufficient (assume work on a small cluster with powerful machines with GPUs)&lt;/li&gt;
+&lt;li&gt;Holds intermediate data in memory and can checkpoint them to disk (like Spark)&lt;/li&gt;
+&lt;li&gt;Aggressively caches in-memory datasets (including intermediate data)&lt;/li&gt;
+&lt;li&gt;Uses async. checkpoints to support coarse-grained fault tolerance&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Machine dataflow engine&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Vertex: a unit of computation can be executed on CPU or GPU&lt;/li&gt;
+&lt;li&gt;For CPU: parallelize the computation on multi-core&lt;/li&gt;
+&lt;li&gt;For GPU: dispatch computation to GPU dataflow engine&lt;/li&gt;
+&lt;li&gt;Async channels are created to transfer data between the CPU and GPU memory spacs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;GPU dataflow engine&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Use PTask execution engine&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a token model dataflow system&lt;/li&gt;
+&lt;li&gt;tasks: computation or nodes in the graph&lt;/li&gt;
+&lt;li&gt;ports: inputs and outputs of the tasks&lt;/li&gt;
+&lt;li&gt;Channels: connects ports&lt;/li&gt;
+&lt;li&gt;datablocks: deseralized data into chunks that are moved through channels&lt;/li&gt;
+&lt;li&gt;Computation are done by pushing and pulling datablocks to and from channels (Future)&lt;/li&gt;
+&lt;li&gt;A task is ready for execution when all of its input ports have available datablocks and all of its output ports have capacity&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</content><category term="papers"></category><category term="os"></category></entry><entry><title>"Operating System Transactions"</title><link href="https://zhu45.org/posts/2019/Apr/27/operating-system-transactions/" rel="alternate"></link><published>2019-04-27T12:20:00+08:00</published><updated>2019-04-27T12:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-04-27:/posts/2019/Apr/27/operating-system-transactions/</id><summary type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
@@ -2559,7 +2784,7 @@ that cause a page fault uppercase, and those that don’t lowercase):&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
 approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12" rel="footnote"&gt;18&lt;/a&gt;&lt;/sup&gt; to avoid heavy overhead). The trace of the memory references with LRU policy shown below:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -2673,7 +2898,7 @@ approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12
 &lt;/blockquote&gt;
 &lt;p&gt;FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -2787,7 +3012,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 &lt;/blockquote&gt;
 &lt;p&gt;Optimal policy means we want to replace the page that will be accessed &lt;em&gt;furthest in the future&lt;/em&gt; and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -2993,7 +3218,7 @@ which takes a queue and returns, as an unsigned integer, its address.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;One possible scenario of deadlock using &lt;code&gt;transfer()&lt;/code&gt; is illustrated below. Note that &lt;code&gt;queue1&lt;/code&gt; and &lt;code&gt;queue2&lt;/code&gt; in &lt;code&gt;transfer()&lt;/code&gt;
 are replaced with queues that they are pointing to (time increases with the row's number):&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Thread1 (&lt;code&gt;transfer(q1,q2)&lt;/code&gt;)&lt;/th&gt;
@@ -3347,7 +3572,7 @@ the modification looks like below:&lt;/p&gt;
 &lt;p&gt;The question we want to answer is why doing so works?&lt;/p&gt;
 &lt;h2 id="explanation"&gt;Explanation&lt;/h2&gt;
 &lt;p&gt;We acquire key data from GDB as following:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;GDB command&lt;/th&gt;
@@ -4893,7 +5118,7 @@ blocks from different clients)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;&lt;/th&gt;
@@ -9468,7 +9693,7 @@ a very efficient algorithm in all cases. Path compression is not entirely compat
 to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., &lt;strong&gt;ranks&lt;/strong&gt;), but in theory union-by-rank is as efficient as union-by-size.&lt;/p&gt;
 &lt;p&gt;If we do analysis on smart union with path compression, the running time for any sequence of &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects makes &lt;span class="math"&gt;\(O(N + M\log^*N)\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; accesses.&lt;/p&gt;
 &lt;p&gt;The following table summarizes the running time for &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on a set of &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects (don't forget we need to spend &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; to initialize disjoint sets):&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -9499,7 +9724,7 @@ to recompute all the heights and in this case, heights stored for each tree beco
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;The running time for each operation for each algorithm is following:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -9700,7 +9925,7 @@ can try to label the items from &lt;span class="math"&gt;\(1 \dots n\)&lt;/span&
 solution for &lt;span class="math"&gt;\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)&lt;/span&gt;. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;) in terms of subproblems (i.e., &lt;span class="math"&gt;\(S_i\)&lt;/span&gt;)? Let's take a look at an example:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -9790,7 +10015,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The running time for this algorithm is &lt;span class="math"&gt;\(O(n*W)\)&lt;/span&gt; because of the double for loop. To understand this algorithm,
 let's take a look at an example:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -9818,7 +10043,7 @@ let's take a look at an example:&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 5\)&lt;/span&gt; and with algorithm above, we essentially fill out a table like following:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -9887,7 +10112,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now, let's take a look at &lt;span class="math"&gt;\(B[1,1]\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(i = 1, b_i = 3, w_i = 2, w = 1\)&lt;/span&gt;, and since &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, and by our
 algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(B[0,1]\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(B[1,1] = 0\)&lt;/span&gt; and the table becomes&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -9948,7 +10173,7 @@ algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, 
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;We can fill out the table like this and have&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10075,7 +10300,7 @@ for i = 1 to n
             x[i,w] = x_i that is associated with B[i-1,w]
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Let's walk through an example to better understand the algorithm idea:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -10102,7 +10327,7 @@ for i = 1 to n
 &lt;p&gt;&lt;span class="math"&gt;\(W = 8\)&lt;/span&gt; in our example. The algorithm essentially
 tries to build fill out two tables &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; table like
 the 0-1 knapsack problem:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10170,7 +10395,7 @@ the 0-1 knapsack problem:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;and &lt;span class="math"&gt;\(x[i,w]\)&lt;/span&gt; table to keep track of the optimal
 value of &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; for each &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt;&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10234,7 +10459,7 @@ $$&lt;/div&gt;
 &lt;p&gt;So, we fill in &lt;span class="math"&gt;\(B[1,3] = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[1,3] = 1\)&lt;/span&gt;. We can repeatedly
 doing this for other &lt;span class="math"&gt;\(i\)&lt;/span&gt;s. We can take a look at the values
 from another perspective like the tables below:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[1,w]&lt;/th&gt;
@@ -10290,7 +10515,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[2,w]&lt;/th&gt;
@@ -10346,7 +10571,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[3,w]&lt;/th&gt;
@@ -10524,7 +10749,7 @@ In addition, this post belongs to part of future work mentioned in &lt;a href="h
 &lt;p&gt;Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Type&lt;/th&gt;
@@ -11293,7 +11518,7 @@ care about the size of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; 
 &lt;p&gt;Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
 housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
 its prediction. What we should try next?&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Method&lt;/th&gt;
@@ -11369,7 +11594,7 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$&lt;/div&gt;
 &lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;component&lt;/th&gt;
@@ -12207,7 +12432,7 @@ is a graphic summary for the text above&lt;/p&gt;
 the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Join types&lt;/th&gt;
@@ -12844,7 +13069,7 @@ $$&lt;/div&gt;
 &lt;p&gt;For example, the sequence &lt;span class="math"&gt;\(1,3,4,2,1\)&lt;/span&gt; can be considered as a sequence of 
 iterated function values with &lt;span class="math"&gt;\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
 x_3 = f(4) = 2, x_4 = f(2) = 1\)&lt;/span&gt;. Let's try another representation:&lt;/p&gt;
-&lt;table class="table-hover table  table-striped"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;index&lt;/th&gt;
@@ -19738,7 +19963,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20439,7 +20664,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20672,7 +20897,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20727,7 +20952,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20777,7 +21002,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20821,7 +21046,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20880,7 +21105,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20943,7 +21168,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;table class="table-hover highlighttable table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21334,7 +21559,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class="table-hover docutils table  table-striped"&gt;
+&lt;table border="1" class=" table-striped docutils table table-hover"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;

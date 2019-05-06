@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Dandelion: a Compiler and Runtime for Heterogeneous Systems"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">"Dandelion: a Compiler and Runtime for Heterogeneous Systems"</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2019-05-06T10:00:00+08:00"> May 06, 2019</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/papers.html">papers</a>
+        /
+	<a href="../../../../../tag/os.html">os</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">"Dandelion: a Compiler and Runtime for Heterogeneous Systems"</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2019-05-06T10:00:00+08:00">May 06, 2019</time></div> -->
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#system-design">System Design</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#architecture">Architecture</a><ul>
+<li><a href="#dandelion-compilers">Dandelion Compilers</a></li>
+<li><a href="#dandelion-runtime">Dandelion Runtime</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<p>How to design a system that provides programmability for heterogeneous distributed systems?</p>
+<ul>
+<li>
+<p>Challenges are</p>
+<ul>
+<li>Heterogeneous: different programming models, architecture expertise</li>
+<li>Distributed resources: data movement, scheduling</li>
+<li>Concurrency: synchronization, consistency</li>
+</ul>
+</li>
+</ul>
+<h2 id="system-design">System Design</h2>
+<h3 id="overview">Overview</h3>
+<ul>
+<li>
+<p>Goals: make it simple for programmers to write high performance applications for hetergeneous system on a small cluster with GPUs and leverage its available resources</p>
+<ul>
+<li>Single programming interface for clusters with CPUs, GPUs, FPGAs, etc</li>
+<li>"Single machine" programming model: programmer writes sequential code</li>
+<li>
+<p>Runtime: take sequential program and do the following whenever possible</p>
+<ul>
+<li>Parallize computation</li>
+<li>Partition data</li>
+<li>Runs on all available resources</li>
+<li>Maps computation to best architecture</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Workflow</p>
+<ol>
+<li>Given User program &amp; partitioned data files as input</li>
+<li>Compile to a mix of CPU and GPU code and run on the cluster (Dandelion role)</li>
+<li>Output result as partitioned data files</li>
+</ol>
+</li>
+<li>
+<p>Challenges</p>
+<ul>
+<li>Simple programming model</li>
+<li>Integerate multiple runtime efficiently to enable high performance</li>
+</ul>
+</li>
+<li>
+<p>Dandelion innovation by levels</p>
+<ul>
+<li>
+<p>Programming languages</p>
+<ul>
+<li>Adopt language integration approach (LINQ): extends with Dandelion specific operators</li>
+<li>Constraints: UDF must be side-effect free; execute .NET function with dynamic memory allocation on CPUs only</li>
+</ul>
+</li>
+<li>
+<p>Compilers</p>
+<ul>
+<li>Automatically compiles a data-parallel program to run on distributed heterogeneous systems</li>
+<li>Translation of .NET byte-code to multiple backends (e.g., GPU, FPGA)</li>
+</ul>
+</li>
+<li>
+<p>Distributed and parallel runtime</p>
+<ul>
+<li>Treat hetergeneous system as the composition of a collection dataflow engines</li>
+<li>Three dataflow engines: cluster, mult-core CPU, and GPU (e.g., use PTask)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="architecture">Architecture</h3>
+<p><img alt="Dandelion Architecture" class="img-responsive" src="../../../../../images/dandelion-arch.png"/></p>
+<ul>
+<li>
+<p>Two main components</p>
+<ul>
+<li>Dandelion compiler generates the execution plans and the worker code to be run on the CPUs and GPUs of cluster machines</li>
+<li>Dandelion runtime uses the execution plans to manage the computation on the cluster (e.g., scheduling, distribution)</li>
+</ul>
+</li>
+</ul>
+<h4 id="dandelion-compilers">Dandelion Compilers</h4>
+<ul>
+<li>
+<p>Dandelion compiler generates CUDA code, and three levels of dataflow graphs to orchestrate the execution</p>
+</li>
+<li>
+<p>Relies on a library of generic primitives (GPU primitive library) to construct execution plans</p>
+<ul>
+<li>
+<p>GPU primitive library: for GPU dataflow graph</p>
+<ul>
+<li>primitives include low level building blocks (e.g., parallel scan and hash tables), high-level primitives for relational operators (e.g., groupby and join)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Compiling C# to GPU code</p>
+<ul>
+<li>
+<p>Translation performed at .NET byte-code level</p>
+<ul>
+<li>Map C# types to CUDA structs</li>
+<li>Translate C# methods into CUDA kernel functions</li>
+<li>Generate C# code for CPU-GPU serialization/transfer</li>
+</ul>
+</li>
+<li>
+<p>Main constraint: dynamic memory allocation</p>
+<ul>
+<li>Convert to stack allocation if object size can be inferred</li>
+<li>Fail parallelization, fallback to host otherwise</li>
+</ul>
+</li>
+<li>
+<p>Use Common Compiler Infrastructure (CGI) framework for the intermediate AST</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="dandelion-runtime">Dandelion Runtime</h4>
+<p><img alt="Dandelion dataflow graph" class="img-responsive" src="../../../../../images/dandelion-dataflow.png"/></p>
+<ul>
+<li>
+<p>Dataflow graphs</p>
+<ul>
+<li>Vertex: a fragment of the computation</li>
+<li>Edge: communication channels</li>
+<li>
+<p>Three levels: </p>
+<ul>
+<li>cluster level (what machine to compute what): cluster execution engine assigns vertices to available machines and distributes code and graphs, orchestrating the computation</li>
+<li>machine level (how the computation is done on each machine): executes its own dataflow graph, managing input/output and execution threads</li>
+<li>GPU level (use PTask as GPU dataflow engine)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Three dataflow graphs (shown above) form the Dandelion runtime, and the composition
+of those graphs forms the global dataflow graph for the entire computation</p>
+</li>
+<li>
+<p>Cluster dataflow engine ("Moxie")</p>
+<ul>
+<li>Allows the entire computation to stay in memory when the aggregate cluster memory is sufficient (assume work on a small cluster with powerful machines with GPUs)</li>
+<li>Holds intermediate data in memory and can checkpoint them to disk (like Spark)</li>
+<li>Aggressively caches in-memory datasets (including intermediate data)</li>
+<li>Uses async. checkpoints to support coarse-grained fault tolerance</li>
+</ul>
+</li>
+<li>
+<p>Machine dataflow engine</p>
+<ul>
+<li>Vertex: a unit of computation can be executed on CPU or GPU</li>
+<li>For CPU: parallelize the computation on multi-core</li>
+<li>For GPU: dispatch computation to GPU dataflow engine</li>
+<li>Async channels are created to transfer data between the CPU and GPU memory spacs</li>
+</ul>
+</li>
+<li>
+<p>GPU dataflow engine</p>
+<ul>
+<li>
+<p>Use PTask execution engine</p>
+<ul>
+<li>a token model dataflow system</li>
+<li>tasks: computation or nodes in the graph</li>
+<li>ports: inputs and outputs of the tasks</li>
+<li>Channels: connects ports</li>
+<li>datablocks: deseralized data into chunks that are moved through channels</li>
+<li>Computation are done by pushing and pulling datablocks to and from channels (Future)</li>
+<li>A task is ready for execution when all of its input ports have available datablocks and all of its output ports have capacity</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
