@@ -79,7 +79,165 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="narrow vs. wide dependencies" class="img-responsive" src="https://zhu45.org/images/narrow-wide.png"/&gt;&lt;/p&gt;</content><category term="papers"></category><category term="distributed systems"></category><category term="os"></category></entry><entry><title>"Dandelion: a Compiler and Runtime for Heterogeneous Systems"</title><link href="https://zhu45.org/posts/2019/May/06/dandelion-a-compiler-and-runtime-for-heterogeneous-systems/" rel="alternate"></link><published>2019-05-06T10:00:00+08:00</published><updated>2019-05-06T10:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-05-06:/posts/2019/May/06/dandelion-a-compiler-and-runtime-for-heterogeneous-systems/</id><summary type="html">&lt;div class="toc"&gt;
+&lt;p&gt;&lt;img alt="narrow vs. wide dependencies" class="img-responsive" src="https://zhu45.org/images/narrow-wide.png"/&gt;&lt;/p&gt;</content><category term="papers"></category><category term="distributed systems"></category><category term="os"></category></entry><entry><title>"GPUfs: Integrating a File System with GPUs"</title><link href="https://zhu45.org/posts/2019/May/06/gpufs-integrating-a-file-system-with-gpus/" rel="alternate"></link><published>2019-05-06T12:20:00+08:00</published><updated>2019-05-06T12:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-05-06:/posts/2019/May/06/gpufs-integrating-a-file-system-with-gpus/</id><summary type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;GPU data access needs explicit management by each individual GPU program. How can we provide an illusion similar to VM to physical pages such that
+all the data access can be done automatically (i.e., without stating that how data should be fetched from host …&lt;/p&gt;</summary><content type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;GPU data access needs explicit management by each individual GPU program. How can we provide an illusion similar to VM to physical pages such that
+all the data access can be done automatically (i.e., without stating that how data should be fetched from host storage explicitly)? Clearly, FS is a good abstraction
+but how can we adapt such interface to GPU application needs while maintaining good performance?&lt;/p&gt;
+&lt;h2 id="background"&gt;Background&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Motivation&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;GPUs have no direct access to files on the host OS file system; developers manage data movement explicitly between CPU main memory and GPU local memory&lt;/li&gt;
+&lt;li&gt;Offloading computations to GPU (common application) under GPU-as-coprocessor programming model introduces overhead due to the GPU kernel start/termination&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="Offloading computation to GPU overhead" class="img-responsive" src="https://zhu45.org/images/co-processor.png"/&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;About GPU&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;GPUs are multicore processors&lt;/li&gt;
+&lt;li&gt;Each core called multiprocessor (MP), features a wide SIMD vector unit, which a hardware scheduler multiplexes between multiple execution contexts&lt;/li&gt;
+&lt;li&gt;Thread: a GPU's basic sequential unit of execution (higher execution units: warps, threadblock, kernel)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="GPU execution hierarchy" class="img-responsive" src="https://zhu45.org/images/gpu-execution.png"/&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="system-design"&gt;System Design&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Application point of view&lt;/p&gt;
+&lt;p&gt;&lt;img alt="GPUfs: application point of view" class="img-responsive" src="https://zhu45.org/images/gpufs-app-view.png"/&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Architecture:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="GPUfs architecture" class="img-responsive" src="https://zhu45.org/images/gpufs-arch.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;GPU programs can access the host's file system via a GPUfs library linked into the application's GPU code&lt;/li&gt;
+&lt;li&gt;GPUfs library works with the host OS on the CPU to coordinate the file system's namespace and data&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Design principles:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Data parallelism&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;All application threads in a warp must invoke the same GPUfs call, with the same arguments, at the same point in application code&lt;/li&gt;
+&lt;li&gt;Minimize per-open file state (e.g., remove seek pointers)&lt;/li&gt;
+&lt;li&gt;Separate &lt;code&gt;sync&lt;/code&gt; from &lt;code&gt;close&lt;/code&gt; (i.e., &lt;code&gt;close&lt;/code&gt; call will not trigger &lt;code&gt;sync&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Constrain &lt;code&gt;mmap&lt;/code&gt; semantics to avoid the need for complex memory management on critical data parallel paths&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Access locality&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Implements a weak consistency model similar to the private workspace model in AFS (i.e., sync-to-open semantics)&lt;/li&gt;
+&lt;li&gt;Local file modifications propagate to main CPU memory only when the application explicitly &lt;code&gt;sync&lt;/code&gt; the file with storage. &lt;/li&gt;
+&lt;li&gt;Modification is visible to other GPUs during re-open the file&lt;/li&gt;
+&lt;li&gt;Allow concurrent non-overlapping writes to the same file (i.e., undefined results for overlapping writes)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;API design highlights&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Open: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;All GPUfs threads opening the same file obtain a single shared file descriptor (increments reference counts on file descriptor)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Read and write: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;File descriptors have no seek pointers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Close and sync:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;glcose&lt;/code&gt; does not propage locally writen data back to the CPU, or to other GPUs, until the application explicitly synchronize file data by calling &lt;code&gt;sync&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;File mapping:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;No guarantee to map the entire requested file region&lt;/li&gt;
+&lt;li&gt;No guarantee on mapping at a particular address (&lt;code&gt;MMAP_FIXED&lt;/code&gt; unsupport)&lt;/li&gt;
+&lt;li&gt;No guarantee returns the requested permission (ask read may return read/write)&lt;/li&gt;
+&lt;li&gt;Benefits: allow GPUfs to give the application pointers directly into GPU-local buffer cache pages, residing the same address space as the application's GPU code&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Implementation&lt;/p&gt;
+&lt;p&gt;&lt;img alt="GPUfs software layers" class="img-responsive" src="https://zhu45.org/images/gpufs-software-layer.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Top layer:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Runs in the context of the application's GPU kernels and maintains its data structures in GPU memory&lt;/li&gt;
+&lt;li&gt;Implements the GPUfs API, tracks open file state, and implements buffer cache and paging&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Communication layer:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Manages GPU-CPU communications&lt;/li&gt;
+&lt;li&gt;Data structures shared between the GPU and CPU are stored in write-shared CPU memory accessible to both devices&lt;/li&gt;
+&lt;li&gt;Implements a GPU-CPU RPC infrastructure (need hardware support: GPU-CPU memory fences; GPU cahce bypass)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Consistency layer:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;OS kernel module running on the host CPU, which manages consistency between the host OS's CPU buffer cache and the GPU buffer caches&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="gread implementation" class="img-responsive" src="https://zhu45.org/images/gread.png"/&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;On-demand data transfer&lt;/p&gt;
+&lt;p&gt;&lt;img alt="on-demand data transfer" class="img-responsive" src="https://zhu45.org/images/gpufs-on-demand.png"/&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pros&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Simple CPU code&lt;/li&gt;
+&lt;li&gt;Handle data that is greater than GPU memory&lt;/li&gt;
+&lt;li&gt;Enable long-running kernels&lt;/li&gt;
+&lt;li&gt;Pay-as-you-go performance&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cons&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Memory overhead&lt;/li&gt;
+&lt;li&gt;Register pressure&lt;/li&gt;
+&lt;li&gt;Idiosyncratic API&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</content><category term="os"></category><category term="papers"></category></entry><entry><title>"Dandelion: a Compiler and Runtime for Heterogeneous Systems"</title><link href="https://zhu45.org/posts/2019/May/06/dandelion-a-compiler-and-runtime-for-heterogeneous-systems/" rel="alternate"></link><published>2019-05-06T10:00:00+08:00</published><updated>2019-05-06T10:00:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-05-06:/posts/2019/May/06/dandelion-a-compiler-and-runtime-for-heterogeneous-systems/</id><summary type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;ul&gt;
@@ -2784,7 +2942,7 @@ that cause a page fault uppercase, and those that don’t lowercase):&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
 approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12" rel="footnote"&gt;18&lt;/a&gt;&lt;/sup&gt; to avoid heavy overhead). The trace of the memory references with LRU policy shown below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -2898,7 +3056,7 @@ approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12
 &lt;/blockquote&gt;
 &lt;p&gt;FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -3012,7 +3170,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 &lt;/blockquote&gt;
 &lt;p&gt;Optimal policy means we want to replace the page that will be accessed &lt;em&gt;furthest in the future&lt;/em&gt; and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -3218,7 +3376,7 @@ which takes a queue and returns, as an unsigned integer, its address.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;One possible scenario of deadlock using &lt;code&gt;transfer()&lt;/code&gt; is illustrated below. Note that &lt;code&gt;queue1&lt;/code&gt; and &lt;code&gt;queue2&lt;/code&gt; in &lt;code&gt;transfer()&lt;/code&gt;
 are replaced with queues that they are pointing to (time increases with the row's number):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Thread1 (&lt;code&gt;transfer(q1,q2)&lt;/code&gt;)&lt;/th&gt;
@@ -3572,7 +3730,7 @@ the modification looks like below:&lt;/p&gt;
 &lt;p&gt;The question we want to answer is why doing so works?&lt;/p&gt;
 &lt;h2 id="explanation"&gt;Explanation&lt;/h2&gt;
 &lt;p&gt;We acquire key data from GDB as following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;GDB command&lt;/th&gt;
@@ -5118,7 +5276,7 @@ blocks from different clients)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;&lt;/th&gt;
@@ -9693,7 +9851,7 @@ a very efficient algorithm in all cases. Path compression is not entirely compat
 to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., &lt;strong&gt;ranks&lt;/strong&gt;), but in theory union-by-rank is as efficient as union-by-size.&lt;/p&gt;
 &lt;p&gt;If we do analysis on smart union with path compression, the running time for any sequence of &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects makes &lt;span class="math"&gt;\(O(N + M\log^*N)\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; accesses.&lt;/p&gt;
 &lt;p&gt;The following table summarizes the running time for &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on a set of &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects (don't forget we need to spend &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; to initialize disjoint sets):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -9724,7 +9882,7 @@ to recompute all the heights and in this case, heights stored for each tree beco
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;The running time for each operation for each algorithm is following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -9925,7 +10083,7 @@ can try to label the items from &lt;span class="math"&gt;\(1 \dots n\)&lt;/span&
 solution for &lt;span class="math"&gt;\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)&lt;/span&gt;. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;) in terms of subproblems (i.e., &lt;span class="math"&gt;\(S_i\)&lt;/span&gt;)? Let's take a look at an example:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -10015,7 +10173,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The running time for this algorithm is &lt;span class="math"&gt;\(O(n*W)\)&lt;/span&gt; because of the double for loop. To understand this algorithm,
 let's take a look at an example:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -10043,7 +10201,7 @@ let's take a look at an example:&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 5\)&lt;/span&gt; and with algorithm above, we essentially fill out a table like following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10112,7 +10270,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now, let's take a look at &lt;span class="math"&gt;\(B[1,1]\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(i = 1, b_i = 3, w_i = 2, w = 1\)&lt;/span&gt;, and since &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, and by our
 algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(B[0,1]\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(B[1,1] = 0\)&lt;/span&gt; and the table becomes&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10173,7 +10331,7 @@ algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, 
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;We can fill out the table like this and have&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10300,7 +10458,7 @@ for i = 1 to n
             x[i,w] = x_i that is associated with B[i-1,w]
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Let's walk through an example to better understand the algorithm idea:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -10327,7 +10485,7 @@ for i = 1 to n
 &lt;p&gt;&lt;span class="math"&gt;\(W = 8\)&lt;/span&gt; in our example. The algorithm essentially
 tries to build fill out two tables &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; table like
 the 0-1 knapsack problem:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10395,7 +10553,7 @@ the 0-1 knapsack problem:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;and &lt;span class="math"&gt;\(x[i,w]\)&lt;/span&gt; table to keep track of the optimal
 value of &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; for each &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt;&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10459,7 +10617,7 @@ $$&lt;/div&gt;
 &lt;p&gt;So, we fill in &lt;span class="math"&gt;\(B[1,3] = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[1,3] = 1\)&lt;/span&gt;. We can repeatedly
 doing this for other &lt;span class="math"&gt;\(i\)&lt;/span&gt;s. We can take a look at the values
 from another perspective like the tables below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[1,w]&lt;/th&gt;
@@ -10515,7 +10673,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[2,w]&lt;/th&gt;
@@ -10571,7 +10729,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[3,w]&lt;/th&gt;
@@ -10749,7 +10907,7 @@ In addition, this post belongs to part of future work mentioned in &lt;a href="h
 &lt;p&gt;Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Type&lt;/th&gt;
@@ -11518,7 +11676,7 @@ care about the size of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; 
 &lt;p&gt;Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
 housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
 its prediction. What we should try next?&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Method&lt;/th&gt;
@@ -11594,7 +11752,7 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$&lt;/div&gt;
 &lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;component&lt;/th&gt;
@@ -12432,7 +12590,7 @@ is a graphic summary for the text above&lt;/p&gt;
 the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Join types&lt;/th&gt;
@@ -13069,7 +13227,7 @@ $$&lt;/div&gt;
 &lt;p&gt;For example, the sequence &lt;span class="math"&gt;\(1,3,4,2,1\)&lt;/span&gt; can be considered as a sequence of 
 iterated function values with &lt;span class="math"&gt;\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
 x_3 = f(4) = 2, x_4 = f(2) = 1\)&lt;/span&gt;. Let's try another representation:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;index&lt;/th&gt;
@@ -19963,7 +20121,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20664,7 +20822,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20897,7 +21055,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20952,7 +21110,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21002,7 +21160,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21046,7 +21204,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21105,7 +21263,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21168,7 +21326,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21559,7 +21717,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class=" table-striped docutils table table-hover"&gt;
+&lt;table border="1" class="table-hover  table-striped table docutils"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;
