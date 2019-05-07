@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Mnemosyne: Lightweight Persistent Memory"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">"Mnemosyne: Lightweight Persistent Memory"</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2019-05-07T12:20:00+08:00"> May 07, 2019</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/os.html">os</a>
+        /
+	<a href="../../../../../tag/papers.html">papers</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">"Mnemosyne: Lightweight Persistent Memory"</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2019-05-07T12:20:00+08:00">May 07, 2019</time></div> -->
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#background">Background</a></li>
+<li><a href="#system-design">System Design</a></li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<p>How can we design programming interface for persistent memory (i.e., storage-class memory)?</p>
+<h2 id="background">Background</h2>
+<ul>
+<li>Storage-class memory (SCM) provides interface of memory (load and store instructions) but the persistence of disks</li>
+</ul>
+<h2 id="system-design">System Design</h2>
+<ul>
+<li>
+<p>Expose SCM as a persistent memory abstraction to provide direct access to the durability of SCM technologies</p>
+</li>
+<li>
+<p>Goals</p>
+<ol>
+<li>User-mode access to persistence: simple for a programmer to declare data as persistent</li>
+<li>Consistent updates: support consistent modifications of data structures</li>
+<li>Conventional hardware: compatible with existing commodity processors</li>
+</ol>
+</li>
+<li>
+<p>Design assumptions</p>
+<ul>
+<li>
+<p>Assumptions about SCM</p>
+<ul>
+<li>Support an atomic write of at least 64 bits</li>
+<li>Possible to stall execution until a write has made it all the way to SCM (similar to <code>fsync</code> in FS)</li>
+</ul>
+</li>
+<li>
+<p>Failure models</p>
+<ul>
+<li>Data resident in SCM survives</li>
+<li>In-flight memory operations may fail</li>
+<li>Automic updates either complete or do not modify memory</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Persistent regions </p>
+<ul>
+<li>Achieve 1st goal: User-mode access to persistence</li>
+<li>A segment of memory that is created and virtualized by the kernel but can be accessed directly from user mode</li>
+<li>
+<p>Virtualize regions by</p>
+<ul>
+<li>Recording the virtual-physical mapping of persistent regions in SCM</li>
+<li>
+<p>Swapping SCM pages to backing files that it allocates when creating a region</p>
+<ul>
+<li>Prevent memory leaks</li>
+</ul>
+</li>
+<li>
+<p>Requires persistent pointer to receive memory </p>
+</li>
+<li>Virtualizes persistent memory by swapping to files (leak does not reduce availability of persistent memory to other programs)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Consistent updates</p>
+<ul>
+<li>Primary mechanism to ensure consistency: ordering writes </li>
+<li>
+<p>Four methods</p>
+<ul>
+<li>Single variable update (atomically writing to a single variable)</li>
+<li>Append updates (log)</li>
+<li>Shadow updates (copy-on-write)</li>
+<li>In-place updates (in-place updates B-tree)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Persistent Primitives</p>
+<ul>
+<li>Achieve 2nd goal: Consistent updates</li>
+<li>
+<p>Low-level operations that enable programmers to implement four consistency methods</p>
+</li>
+<li>
+<p>hardware primitives for persistent write and ordering write (Single variable update)</p>
+</li>
+<li>Log facility (append-only updates)</li>
+<li>Persistent heap for allocating small blocks of memory (shadow updates)</li>
+</ul>
+</li>
+<li>
+<p>Durable memory transactions</p>
+<ul>
+<li>Achieve 2nd goal: Consistent updates</li>
+<li>Support in-place updates</li>
+<li>Use compiler to convert C/C++ code into transactions to ensure atomicity, durability, and isolation (=&gt; transactions allow concurrent update to different data structures)</li>
+</ul>
+</li>
+<li>
+<p>Hardware Primitives</p>
+<ul>
+<li>Achieve 3rd goal: Conventional hardware</li>
+<li>
+<p>Use three hardware primitives from processors</p>
+<ul>
+<li>write-through stores: write data directly to memory rather than to the cache</li>
+<li>fences: prevent subsequent writes from completing before preceding writes</li>
+<li>flushes: writes a cahce line out to memory</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Architecture</p>
+</li>
+</ul>
+<p><img alt="mnemosyne architecture" class="img-responsive" src="../../../../../images/mnemosyne-arch.png"/></p>
+<ul>
+<li>
+<p>Implementation highlights</p>
+<ul>
+<li>Use tornbit in raw word log (RAWL) to use only one fence to solve "torn write" problem (compares with two fence &amp; checksum approach, better performance)</li>
+</ul>
+</li>
+</ul>
+<p><img alt="tornbit RAWL solution" class="img-responsive" src="../../../../../images/tornbit.png"/> </p>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

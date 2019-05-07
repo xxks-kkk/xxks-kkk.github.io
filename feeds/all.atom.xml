@@ -1,5 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-05-06T20:24:00+08:00</updated><entry><title>"Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing"</title><link href="https://zhu45.org/posts/2019/May/06/resilient-distributed-datasets-a-fault-tolerant-abstraction-for-in-memory-cluster-computing/" rel="alternate"></link><published>2019-05-06T20:24:00+08:00</published><updated>2019-05-06T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-05-06:/posts/2019/May/06/resilient-distributed-datasets-a-fault-tolerant-abstraction-for-in-memory-cluster-computing/</id><summary type="html">&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-05-07T12:20:00+08:00</updated><entry><title>"Mnemosyne: Lightweight Persistent Memory"</title><link href="https://zhu45.org/posts/2019/May/07/mnemosyne-lightweight-persistent-memory/" rel="alternate"></link><published>2019-05-07T12:20:00+08:00</published><updated>2019-05-07T12:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-05-07:/posts/2019/May/07/mnemosyne-lightweight-persistent-memory/</id><summary type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;How can we design programming interface for persistent memory (i.e., storage-class memory)?&lt;/p&gt;
+&lt;h2 id="background"&gt;Background&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Storage-class memory (SCM) provides interface of memory (load and store instructions) but the persistence of disks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="system-design"&gt;System Design&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Expose SCM as a persistent memory abstraction to provide direct access to the …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="problem"&gt;Problem&lt;/h2&gt;
+&lt;p&gt;How can we design programming interface for persistent memory (i.e., storage-class memory)?&lt;/p&gt;
+&lt;h2 id="background"&gt;Background&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Storage-class memory (SCM) provides interface of memory (load and store instructions) but the persistence of disks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="system-design"&gt;System Design&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Expose SCM as a persistent memory abstraction to provide direct access to the durability of SCM technologies&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Goals&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;User-mode access to persistence: simple for a programmer to declare data as persistent&lt;/li&gt;
+&lt;li&gt;Consistent updates: support consistent modifications of data structures&lt;/li&gt;
+&lt;li&gt;Conventional hardware: compatible with existing commodity processors&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Design assumptions&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Assumptions about SCM&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Support an atomic write of at least 64 bits&lt;/li&gt;
+&lt;li&gt;Possible to stall execution until a write has made it all the way to SCM (similar to &lt;code&gt;fsync&lt;/code&gt; in FS)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Failure models&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Data resident in SCM survives&lt;/li&gt;
+&lt;li&gt;In-flight memory operations may fail&lt;/li&gt;
+&lt;li&gt;Automic updates either complete or do not modify memory&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Persistent regions &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Achieve 1st goal: User-mode access to persistence&lt;/li&gt;
+&lt;li&gt;A segment of memory that is created and virtualized by the kernel but can be accessed directly from user mode&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Virtualize regions by&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Recording the virtual-physical mapping of persistent regions in SCM&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Swapping SCM pages to backing files that it allocates when creating a region&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Prevent memory leaks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Requires persistent pointer to receive memory &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;Virtualizes persistent memory by swapping to files (leak does not reduce availability of persistent memory to other programs)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Consistent updates&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Primary mechanism to ensure consistency: ordering writes &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Four methods&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Single variable update (atomically writing to a single variable)&lt;/li&gt;
+&lt;li&gt;Append updates (log)&lt;/li&gt;
+&lt;li&gt;Shadow updates (copy-on-write)&lt;/li&gt;
+&lt;li&gt;In-place updates (in-place updates B-tree)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Persistent Primitives&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Achieve 2nd goal: Consistent updates&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Low-level operations that enable programmers to implement four consistency methods&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;hardware primitives for persistent write and ordering write (Single variable update)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;Log facility (append-only updates)&lt;/li&gt;
+&lt;li&gt;Persistent heap for allocating small blocks of memory (shadow updates)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Durable memory transactions&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Achieve 2nd goal: Consistent updates&lt;/li&gt;
+&lt;li&gt;Support in-place updates&lt;/li&gt;
+&lt;li&gt;Use compiler to convert C/C++ code into transactions to ensure atomicity, durability, and isolation (=&amp;gt; transactions allow concurrent update to different data structures)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Hardware Primitives&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Achieve 3rd goal: Conventional hardware&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Use three hardware primitives from processors&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;write-through stores: write data directly to memory rather than to the cache&lt;/li&gt;
+&lt;li&gt;fences: prevent subsequent writes from completing before preceding writes&lt;/li&gt;
+&lt;li&gt;flushes: writes a cahce line out to memory&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Architecture&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="mnemosyne architecture" class="img-responsive" src="https://zhu45.org/images/mnemosyne-arch.png"/&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Implementation highlights&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use tornbit in raw word log (RAWL) to use only one fence to solve "torn write" problem (compares with two fence &amp;amp; checksum approach, better performance)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="tornbit RAWL solution" class="img-responsive" src="https://zhu45.org/images/tornbit.png"/&gt; &lt;/p&gt;</content><category term="os"></category><category term="papers"></category></entry><entry><title>"Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing"</title><link href="https://zhu45.org/posts/2019/May/06/resilient-distributed-datasets-a-fault-tolerant-abstraction-for-in-memory-cluster-computing/" rel="alternate"></link><published>2019-05-06T20:24:00+08:00</published><updated>2019-05-06T20:24:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-05-06:/posts/2019/May/06/resilient-distributed-datasets-a-fault-tolerant-abstraction-for-in-memory-cluster-computing/</id><summary type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#system-design"&gt;System Design&lt;/a&gt;&lt;ul&gt;
@@ -224,7 +373,7 @@ but how can we adapt such interface to GPU application needs while maintaining g
 &lt;p&gt;Pros&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Simple CPU code&lt;/li&gt;
-&lt;li&gt;Handle data that is greater than GPU memory&lt;/li&gt;
+&lt;li&gt;Handle data that is greater than GPU memory (use buffer cache)&lt;/li&gt;
 &lt;li&gt;Enable long-running kernels&lt;/li&gt;
 &lt;li&gt;Pay-as-you-go performance&lt;/li&gt;
 &lt;/ul&gt;
@@ -20121,7 +20270,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -20822,7 +20971,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21055,7 +21204,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21110,7 +21259,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21160,7 +21309,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21204,7 +21353,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21263,7 +21412,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21326,7 +21475,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table-hover table  table-striped highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21717,7 +21866,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class="table-hover  table-striped table docutils"&gt;
+&lt;table border="1" class="table-hover docutils  table-striped table"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;
