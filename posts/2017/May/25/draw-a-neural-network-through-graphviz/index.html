@@ -76,7 +76,7 @@ mentioned, can be a "finicky beast". So, I decide to share some tips I learned a
 Graphviz.</p>
 <p>Specifically, in this post, I'll demonstrate how we can draw the Neural Network shown in the 
 <a href="../../../../../posts/2017/May/23/andrew-ngs-ml-week-04-05/">last post</a> and use this as an example
-to show some tricks in Graphviz to tweak the layout <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>. Let's get started!</p>
+to show some tricks in Graphviz to tweak the layout <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. Let's get started!</p>
 <h2 id="draw-a-neural-network">Draw a neural network</h2>
 <p>If you do a quick search regarding "graphviz neural network example", you'll highly
 likely see the below picture:</p>
@@ -87,7 +87,7 @@ code for this picture can be obtained <a href="https://gist.github.com/thigm85/5
 I want to clearly label all the nodes in all layers and make distinction among feature
 input, bias term, hidden units, and output units. So, I decide to draw one on my own.</p>
 <p>Here is the <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/nn3.dot">code</a>
-that generates the picture below <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>. Let me briefly
+that generates the picture below <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>. Let me briefly
 highlights some key points in the code:</p>
 <p><img alt="" class="img-responsive" src="../../../../../images/nn2.png"/></p>
 <div class="highlight"><pre><span></span><span class="n">rankdir</span> <span class="o">=</span> <span class="n">LR</span><span class="p">;</span>
@@ -115,7 +115,7 @@ node property will apply to three nodes: <code>x0</code>, <code>a02</code>, <cod
 is specified in <a href="http://www.graphviz.org/doc/info/shapes.html#html">HTML-like</a> and this is 
 how we write subscript and superscript in Graphviz.</li>
 <li><code>{...}</code> specifies the scope of the node property. This code chunk as a whole shows
-how we can specify several nodes at the once with the same node property <sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>.</li>
+how we can specify several nodes at the once with the same node property <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>.</li>
 </ol>
 <div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="n">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span>
@@ -196,7 +196,7 @@ rank belong to some subgraph whose rank attribute is "source" or "min". Analogou
 for rank="max" and rank="sink". (Note: the minimum rank is topmost or leftmost, and the maximum 
 rank is bottommost or rightmost.)</p>
 </blockquote>
-<p>Let's demonstrate this description with a simple example <sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">4</a></sup>:</p>
+<p>Let's demonstrate this description with a simple example <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>:</p>
 <div class="highlight"><pre><span></span><span class="n">digraph</span> <span class="n">G</span>
 <span class="p">{</span>
   <span class="p">{</span><span class="n">rank</span><span class="o">=</span><span class="n">source</span><span class="p">;</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">;}</span>
@@ -222,20 +222,20 @@ with <code>c-&gt;d</code> at the top and <code>a-&gt;b</code> at the bottom:</p>
 <li id="fn:1">
 <p>Of course, Graphviz is not the only tool that can produce beautiful pictures. 
 <a href="http://www.texample.net/">TikZ</a> is another popular tool. You can check out 
-<a href="http://www.texample.net/tikz/examples/neural-network/">its NN example</a> for comparison. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+<a href="http://www.texample.net/tikz/examples/neural-network/">its NN example</a> for comparison. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:2">
 <p>Technically, the code used to generate the blog NN picture is 
 <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/nn2.dot">this one</a>
-but the code I explained above is much more concise. <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
+but the code I explained above is much more concise. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 <li id="fn:3">
 <p>Check out 
 <a href="https://stackoverflow.com/questions/28853898/groups-of-nodes-with-the-same-attributes-in-graphviz-file">this SO post</a>
-for more examples on grouping nodes with the same attributes. <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">↩</a></p>
+for more examples on grouping nodes with the same attributes. <a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">↩</a></p>
 </li>
 <li id="fn:4">
-<p>The example is adapted from <a href="https://stackoverflow.com/questions/6149834/rank-attribute-is-confusing-to-me">this SO post</a>. <a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text">↩</a></p>
+<p>The example is adapted from <a href="https://stackoverflow.com/questions/6149834/rank-attribute-is-confusing-to-me">this SO post</a>. <a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">↩</a></p>
 </li>
 </ol>
 </div>

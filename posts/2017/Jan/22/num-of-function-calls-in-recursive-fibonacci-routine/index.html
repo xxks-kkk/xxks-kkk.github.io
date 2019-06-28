@@ -81,29 +81,29 @@
 </pre></div>
 <p>Let's first do an empirical experimentation. By running <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/numCalls/numCalls.c">our test program numCalls</a>
 and we can get the following output:</p>
-<div class="highlight"><pre><span></span>    i               Fib(i)          numCalls
-    i = 0           1               1
-    i = 1           1               1
-    i = 2           2               3
-    i = 3           3               5
-    i = 4           5               9
-    i = 5           8               15
-    i = 6           13              25
-    i = 7           21              41
-    i = 8           34              67
-    i = 9           55              109
-    i = 10          89              177
-    i = 11          144             287
-    i = 12          233             465
-    i = 13          377             753
-    i = 14          610             1219
-    i = 15          987             1973
-    i = 16          1597            3193
-    i = 17          2584            5167
-    i = 18          4181            8361
-    i = 19          6765            13529
-    ... snip ...
-    i = 50          20365011074     40730022147
+<div class="highlight"><pre><span></span>    <span class="n">i</span>               <span class="n">Fib</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>          <span class="n">numCalls</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>           <span class="mi">1</span>               <span class="mi">1</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>           <span class="mi">1</span>               <span class="mi">1</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>           <span class="mi">2</span>               <span class="mi">3</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">3</span>           <span class="mi">3</span>               <span class="mi">5</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">4</span>           <span class="mi">5</span>               <span class="mi">9</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">5</span>           <span class="mi">8</span>               <span class="mi">15</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">6</span>           <span class="mi">13</span>              <span class="mi">25</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">7</span>           <span class="mi">21</span>              <span class="mi">41</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">8</span>           <span class="mi">34</span>              <span class="mi">67</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">9</span>           <span class="mi">55</span>              <span class="mi">109</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">10</span>          <span class="mi">89</span>              <span class="mi">177</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">11</span>          <span class="mi">144</span>             <span class="mi">287</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">12</span>          <span class="mi">233</span>             <span class="mi">465</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">13</span>          <span class="mi">377</span>             <span class="mi">753</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">14</span>          <span class="mi">610</span>             <span class="mi">1219</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">15</span>          <span class="mi">987</span>             <span class="mi">1973</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">16</span>          <span class="mi">1597</span>            <span class="mi">3193</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">17</span>          <span class="mi">2584</span>            <span class="mi">5167</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">18</span>          <span class="mi">4181</span>            <span class="mi">8361</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">19</span>          <span class="mi">6765</span>            <span class="mi">13529</span>
+    <span class="p">...</span> <span class="n">snip</span> <span class="p">...</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">50</span>          <span class="mi">20365011074</span>     <span class="mi">40730022147</span>
 </pre></div>
 <p>We know that the Fibonacci numbers are defined by the following recurrence relation:</p>
 <div class="math">$$
@@ -162,8 +162,8 @@ stack size              <span class="o">(</span>kbytes, -s<span class="o">)</spa
 <p>As you can see, the default stack size is <code>10 MB</code>. Let's see how large space our <code>Fib</code>
 is going to use on stack: as of <code>gcc 4.6</code>, there is an option <code>-fstack-usage</code> to allow
 us check the function max amount of stack use. <a href="https://gcc.gnu.org/onlinedocs/gnat_ugn/Static-Stack-Usage-Analysis.html&gt;">Read more info here</a>.</p>
-<div class="highlight"><pre><span></span>numCalls.c:17:1:Fib     48      static
-numCalls.c:27:1:main    64      static
+<div class="highlight"><pre><span></span><span class="n">numCalls</span><span class="p">.</span><span class="k">c</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="n">Fib</span>     <span class="mi">48</span>      <span class="k">static</span>
+<span class="n">numCalls</span><span class="p">.</span><span class="k">c</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="n">main</span>    <span class="mi">64</span>      <span class="k">static</span>
 </pre></div>
 <p>As you can see, <code>Fib</code> only uses <code>48 bytes</code> and it's quite unlikely to drain out our stack space. 
 But, of course, the runing time is another thing. I mean it's going to be very slow to get the output
