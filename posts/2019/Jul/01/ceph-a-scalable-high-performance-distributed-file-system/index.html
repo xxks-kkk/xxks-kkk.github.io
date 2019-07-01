@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Ceph: A Scalable, High-Performance Distributed File System"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">"Ceph: A Scalable, High-Performance Distributed File System"</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2019-07-01T16:20:00+08:00"> Jul 01, 2019</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/os.html">os</a>
+        /
+	<a href="../../../../../tag/papers.html">papers</a>
+        /
+	<a href="../../../../../tag/storage.html">storage</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">"Ceph: A Scalable, High-Performance Distributed File System"</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2019-07-01T16:20:00+08:00">Jul 01, 2019</time></div> -->
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#problem">Problem</a></li>
+<li><a href="#background">Background</a></li>
+<li><a href="#system-design">System Design</a></li>
+<li><a href="#additional-reading">Additional Reading</a></li>
+</ul>
+</div>
+<h2 id="problem">Problem</h2>
+<p>How can we design a distributed file system that:</p>
+<ul>
+<li>are scalable (e.g., supports hundreds of petabytes and beyond; extreme workload case)</li>
+<li>flexible to adjust to different workloads</li>
+</ul>
+<p>while maintaining good performance?</p>
+<h2 id="background">Background</h2>
+<ul>
+<li>
+<p>Object-based storage (an abstraction layer between application and hard disks)</p>
+<ul>
+<li>Instead of hard disks, use intelligent object storage devices (OSD) (= CPU + network interface + local cache with an underlying disk or RAID)</li>
+<li>OSDs allows clients to read or write byte ranges to much larger (variably sized) named objects (no block-level inteface)</li>
+<li>Distribute low-level block allocation decisions to device themselves</li>
+</ul>
+</li>
+<li>
+<p>Traditional architecture</p>
+<ul>
+<li>Contact metadata server (MDS) for metadata ops + contact OSDS to perform file I/O</li>
+<li>Problems:<ul>
+<li>Single MDS is bottleneck </li>
+<li>Traditional FS interface becomes legacy: allocation list, inode tables</li>
+<li>OSDs can do more than just storing data</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="system-design">System Design</h2>
+<ul>
+<li>
+<p>Design assumptions</p>
+<ul>
+<li>Large systems are built incrementally</li>
+<li>Node failures are normal</li>
+<li>Quality and character of workloads are shifting over time</li>
+</ul>
+</li>
+<li>
+<p>High-level design</p>
+<ul>
+<li>Replace MDS with MDS cluster with dynamic metadata workload distribution</li>
+<li>Replace file allocation tables with data distribution function (e.g., CRUSH)</li>
+<li>Use OSDs for management of object replication, cluster expansion, failure detection, and recovery besides just data storage</li>
+</ul>
+</li>
+<li>
+<p>Architecture</p>
+<p><img alt="Ceph Architecture" class="img-responsive" src="../../../../../images/ceph-architecture.png"/></p>
+<ul>
+<li>Three components:<ul>
+<li>Client</li>
+<li>MDS cluster: manages namespace (file names and directories); coordinate security, consistency, and coherence</li>
+<li>OSDs cluster: stores data + metadata</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Client</p>
+<ul>
+<li>Runs on each host executing application code</li>
+<li>Expose a file system interface to applications</li>
+<li>Can be linked directly by application or mounted as a FUSE-based file system</li>
+<li>File I/O:<ul>
+<li>client sends a request to MDS on file open; MDS returns file info + striping strategy (i.e., how th e file is mapped into a sequence of objects) + capability (i.e., permitted operations by clients)</li>
+</ul>
+</li>
+<li>Synchronization:<ul>
+<li>Client I/O for the same file access has to be synchronized (i.e., blocked until acked by OSDs)</li>
+<li>For performance-focus scenaro, allow application to relax consistency by providing POSIX I/O interface extensions</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>POSIX semantics require: 1. reads reflect any data previously written 2. writes are atomic (i.e., the result of overlapping, concurrent writes will reflect a particular order of occurrence)</p>
+</div>
+<ul>
+<li>Namespace operations:<ul>
+<li>Read operations (<code>readdir</code>, <code>stat</code>) and updates (<code>unlink</code>, <code>chmod</code>) are synchronized by MDS</li>
+<li>Optimize common metadata access pattern (<code>readdir</code> followed by <code>stat</code>) (trade coherence for performance)</li>
+<li>Offer POSIX interface extension (<code>statlite</code>) for application that don't need coherent behavior</li>
+<li>Extend existing interface for performance (<code>stat</code> example)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Metadata management</p>
+<ul>
+<li>No file allocation metadata: object names = file inum + stripe number</li>
+<li>Objects distributed to OSDs using CRUSH</li>
+<li>Metadata storage<ul>
+<li>Use journals for MSDs to stream updated metadata to the OSD cluster and for MDS failure recovery</li>
+<li>Inodes are embedded within directories, allowing the MDS to prefetch entire directories with a single OSD read request</li>
+<li>Use anchor table to keep the rare inode with multiple hard links globally addressable by inum (avoid large but sparse inode table)</li>
+</ul>
+</li>
+<li>Dynamic Subtree Partitioning<ul>
+<li>Adjustable to dynamic workloads (vs. static subtree paritioning) and maintain metadata locality and opportunities for metadata prefetching and storage (vs. hash)</li>
+<li>How it works:<ul>
+<li>Each MDS measures the popularity of metadata within the directory hierarchy using counters with an exponential time decay</li>
+<li>Any operation increments the counter on the affected inode and all if its ancestors up to the root directory</li>
+<li>MDS load values (i.e., counters) are periodically compared, and appropriately-sized subtrees of the directory hierarchy are migrated to maintain load balancing</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Traffic control<ul>
+<li>The contents of heavily read directories (e.g., many opens) are selectively replicated across multiple nodes</li>
+<li>Directories that are particularly large or experiencing a heavy write workload (e.g., many file creations) have their contents hashed by file name across the cluster</li>
+<li>Clients can contact MDS server directly for rare metadata and are provided different MDS node for accessing popular metadata</li>
+</ul>
+</li>
+</ul>
+<p><img alt="Dynamic Subtree Partitioning" class="img-responsive" src="../../../../../images/dynamic-subtree-partitioning.png"/></p>
+</li>
+<li>
+<p>Distributed object storage</p>
+<ul>
+<li>Logically as a single logical object store and namespace: Reliable Autonomic Distributed Object Store (RADOS)</li>
+<li>Data distribution with CRUSH<ul>
+<li>Distributes new data randomly; migrates a random subsample of existing data to new devices; uniformly redistributes data from removed devices</li>
+<li>How it works:<ul>
+<li>Ceph maps objects into placement groups (PGs) using a simple hash function, with an adjustable bit mask to control the number of PGs</li>
+<li>PGs are assigned to OSDs using CRUSH (Controlled Replication Under Scalable Hashing): a pseudo-random data distribution function that efficiently maps each PG to an ordered list of OSDs upon which to 
+  store object replicas<ul>
+<li>To locate any object, CRUSH requires only the placement group and an OSD cluster map: a compact, hierarchical description of the devices comprising the storage cluster</li>
+<li>Cluster map incorporates clusters physical or logical composition and potential sources of failure</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Replication<ul>
+<li>Using a variant of primary-copy replication</li>
+<li>How it works:<ul>
+<li>Data is replicated in terms of PGs, each of which is mapped to an ordered list of <span class="math">\(n\)</span> OSDs (for <span class="math">\(n\)</span>-way replication)</li>
+<li>Clients send all writes to the first non-failed OSD in an object's PG (the <em>primary</em>), which assigns a new version number for the object and PG and forwards the write to any additional <em>replica</em> OSDs</li>
+<li>After each replica has applied the update and responded to the primary, the primary applies the update locally and the write is acknowledged to the client</li>
+<li>Reads are directed at the primary</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Data safety</p>
+<ul>
+<li>Two requirements:<ol>
+<li>Low-latency updates (updates should be visible to other clients asap)</li>
+<li>Data is safely replicated after writes</li>
+</ol>
+</li>
+<li>How it works:<ul>
+<li>The primary forwards the update to replicas, and replies with an <em>ack</em> after it is applied to all OSDs' in-memory buffer caches, allowing synchronous POSIX calls on the client to return (satisfy requirement 1)</li>
+<li>A final <em>commit</em> is sent when data is safely committed to disk (satisfy requirement 2)</li>
+</ul>
+</li>
+</ul>
+<p><img alt="Data Safety Mechanism in Ceph" class="img-responsive" src="../../../../../images/data-safety-ceph.png"/></p>
+</li>
+<li>
+<p>Failure detection</p>
+<ul>
+<li>Each OSD monitors those peers with which it shares PGs (existing replication traffic as liveness signal); an explicit ping is sent if an OSD has not heard from a peer recently</li>
+<li>An unresponsive OSD will have its responsbility (update serialization, replication) temporarily pass to the next OSD in each of its PGs</li>
+<li>OSD that cannot be recovered will be out of data distribution and another OSD joins to re-replicate its contents</li>
+<li>A small cluster of monitors collects failure reports and filters transient or systemic problems centrally (to ensure correct and availability of cluster map)</li>
+</ul>
+</li>
+<li>
+<p>Recovery and cluster updates</p>
+<ul>
+<li>OSDs maintain a version number for each object and a log of recent changes for each PG</li>
+<li>On cluster updates, OSD checks local PGs and adjust itself to the new PG groups</li>
+<li>Version number is used to determine the latest PG version number</li>
+<li>Log is used to determine the correct PG contents</li>
+<li>Once OSD has the correct PG membership, each OSD independently updates its data by contacting peers</li>
+</ul>
+<p><img alt="PGs distributed to OSDs" class="img-responsive" src="../../../../../images/pg-crush.png"/></p>
+</li>
+<li>
+<p>Object storage with EBOFS</p>
+<ul>
+<li>OSD manages its local object storage with EBOFS (Extent and B-tree based Object File System)</li>
+<li>Why new file system (instead of using ext3)?<ul>
+<li>POSIX interface donesn't support atomic data and metadata update transactions</li>
+<li>High latency for journaling and synchronous writes</li>
+</ul>
+</li>
+<li>EBOFS <ul>
+<li>User-space file system </li>
+<li>Update serialization (for synchronization) is different from on-disk commits (for safety)</li>
+<li>Supports atomic transactions (writes and attribute updates on multiple objects)</li>
+<li>update function returns when in-memory cache updated with async callbacks on commit</li>
+<li>Use B-tree to locate objects, manage block allocation, and index collections (PGs)</li>
+<li>Use extents (instead of block list) for block allocation  (for metadata compact)</li>
+<li>Free block extents are binned by size and sorted by location for locality and avoid fragmentation</li>
+<li>Metadata (execpt blokc allocation info) is in-memory</li>
+<li>Use copy-on-write</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="additional-reading">Additional Reading</h2>
+<ul>
+<li><a href="http://muratbuffalo.blogspot.com/2011/03/ceph-scalable-high-performance.html">Paper review by Murat</a></li>
+</ul>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
