@@ -101,7 +101,7 @@ which solves the same subproblem over and over again. It is different from divid
 paradigm in the sense that divide-and-conquer divides the problem into independent subproblems
 and solve them individually, and then combine them to form the final solution. There is
 no re-use of a solution to one subproblem in order to solve another subproblem, like dynamic programming.
-From this perspective, dynamic programm is more like recursion + re-use <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</p>
+From this perspective, dynamic programm is more like recursion + re-use <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>.</p>
 <p>The general steps to use dynamic programming paradigm is that:</p>
 <ol>
 <li>Define the subproblems</li>
@@ -123,7 +123,7 @@ can try to label the items from <span class="math">\(1 \dots n\)</span>, and the
 solution for <span class="math">\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)</span>. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., <span class="math">\(S_n\)</span>) in terms of subproblems (i.e., <span class="math">\(S_i\)</span>)? Let's take a look at an example:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Item</th>
@@ -197,23 +197,23 @@ the solution to <span class="math">\(B[i-1, w]\)</span> and <span class="math">\
 dynamic programming.</p>
 </div>
 <p>The algorithm is below:</p>
-<div class="highlight"><pre><span></span><span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">0</span> <span class="nv">to</span> <span class="nv">W</span> 
-    <span class="nv">B</span>[<span class="mi">0</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span> 
-    <span class="nv">B</span>[<span class="nv">i</span>,<span class="mi">0</span>] <span class="o">=</span> <span class="mi">0</span> 
-<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span>
-    <span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">W</span>
-        <span class="k">if</span> <span class="nv">w_i</span> <span class="o">&lt;=</span><span class="nv">w</span>  <span class="o">//</span><span class="nv">item</span> <span class="nv">i</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">part</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">solution</span> 
-            <span class="k">if</span> <span class="nv">b_i</span> <span class="o">+</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span><span class="o">-</span><span class="nv">w_i</span> ] <span class="o">&gt;</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>]
-                <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">b_i</span> <span class="o">+</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>, <span class="nv">w</span><span class="o">-</span><span class="nv">w_i</span>]
-            <span class="k">else</span>
-                <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>]
-        <span class="k">else</span> 
-            <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>] <span class="o">//</span> <span class="nv">w_i</span> <span class="o">&gt;</span> <span class="nv">w</span>
+<div class="highlight"><pre><span></span>for w = 0 to W 
+    B[0,w] = 0
+for i = 1 to n 
+    B[i,0] = 0 
+for i = 1 to n
+    for w = 1 to W
+        if w_i &lt;=w  //item i can be part of the solution 
+            if b_i + B[i-1,w-w_i ] &gt; B[i-1,w]
+                B[i,w] = b_i + B[i-1, w-w_i]
+            else
+                B[i,w] = B[i-1,w]
+        else 
+            B[i,w] = B[i-1,w] // w_i &gt; w
 </pre></div>
 <p>The running time for this algorithm is <span class="math">\(O(n*W)\)</span> because of the double for loop. To understand this algorithm,
 let's take a look at an example:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Item</th>
@@ -241,7 +241,7 @@ let's take a look at an example:</p>
 </tbody>
 </table>
 <p>Suppose <span class="math">\(W = 5\)</span> and with algorithm above, we essentially fill out a table like following:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>i \ w</th>
@@ -303,14 +303,14 @@ let's take a look at an example:</p>
 </table>
 <p>Each cell in the above table represents <span class="math">\(B[i,w]\)</span> and the table looks like above after we executing 
 the first two for loops</p>
-<div class="highlight"><pre><span></span><span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">0</span> <span class="nv">to</span> <span class="nv">W</span> 
-    <span class="nv">B</span>[<span class="mi">0</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span> 
-    <span class="nv">B</span>[<span class="nv">i</span>,<span class="mi">0</span>] <span class="o">=</span> <span class="mi">0</span> 
+<div class="highlight"><pre><span></span>for w = 0 to W 
+    B[0,w] = 0
+for i = 1 to n 
+    B[i,0] = 0 
 </pre></div>
 <p>Now, let's take a look at <span class="math">\(B[1,1]\)</span>. We have <span class="math">\(i = 1, b_i = 3, w_i = 2, w = 1\)</span>, and since <span class="math">\(w_i &gt; w\)</span>, and by our
 algorithm, we have <span class="math">\(B[i,w] = B[i-1,w]\)</span>, which is <span class="math">\(B[0,1]\)</span>. Thus, <span class="math">\(B[1,1] = 0\)</span> and the table becomes</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>i \ w</th>
@@ -371,7 +371,7 @@ algorithm, we have <span class="math">\(B[i,w] = B[i-1,w]\)</span>, which is <sp
 </tbody>
 </table>
 <p>We can fill out the table like this and have</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>i \ w</th>
@@ -434,14 +434,14 @@ algorithm, we have <span class="math">\(B[i,w] = B[i-1,w]\)</span>, which is <sp
 <p>Now, we have the maximum benefit value given the capacity of the knapsack, which is <span class="math">\(B[4,5] = 7\)</span>. 
 The next question is to find out what items we should put inside the knapsack in order to have
 this maximum benefit (i.e., <span class="math">\(7\)</span>). The algorithm is below:</p>
-<div class="highlight"><pre><span></span><span class="nv">Let</span> <span class="nv">i</span> <span class="o">=</span> <span class="nv">n</span> <span class="nv">and</span> <span class="nv">k</span> <span class="o">=</span> <span class="nv">W</span>
-<span class="k">while</span> <span class="nv">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="nv">and</span> <span class="nv">k</span> <span class="o">&gt;</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">k</span>] <span class="o">!=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">k</span>], <span class="k">then</span>
-        <span class="nv">mark</span> <span class="nv">the</span> <span class="nv">ith</span> <span class="nv">item</span> <span class="nv">as</span> <span class="nv">in</span> <span class="nv">the</span> <span class="nv">knapsack</span>
-        <span class="nv">i</span> <span class="o">=</span> <span class="nv">i</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="nv">k</span> <span class="o">=</span> <span class="nv">k</span> <span class="o">-</span> <span class="nv">w_i</span>
-    <span class="k">else</span>
-        <span class="nv">i</span> <span class="o">=</span> <span class="nv">i</span> <span class="o">-</span> <span class="mi">1</span>
+<div class="highlight"><pre><span></span>Let i = n and k = W
+while i &gt; 0 and k &gt; 0
+    if B[i,k] != B[i-1,k], then
+        mark the ith item as in the knapsack
+        i = i - 1
+        k = k - w_i
+    else
+        i = i - 1
 </pre></div>
 <p>Let's first take a look a few examples on how this algorithm runs and then we will
 see the intuition behind this algorithm. In our example, we start with
@@ -481,24 +481,24 @@ because we can include multiple of item <span class="math">\(i\)</span>. But, we
 to <span class="math">\(x_i\)</span>. In addition, <span class="math">\(w/w_i\)</span> may not be an integer. So, we <span class="math">\(x_i\)</span> should be in the range 
 <span class="math">\(0 \le x_i \le \lfloor w/w_i \rfloor\)</span>, where the notation <span class="math">\(\lfloor x \rfloor\)</span> is, for any given <span class="math">\(x\)</span>, 
 defined as the greatest integer less than or equal to <span class="math">\(x\)</span>. The algorithm is shown below:</p>
-<div class="highlight"><pre><span></span><span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">0</span> <span class="nv">to</span> <span class="nv">W</span>
-    <span class="nv">B</span>[<span class="mi">0</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span>
-    <span class="nv">B</span>[<span class="nv">i</span>,<span class="mi">0</span>] <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span>
-    <span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">W</span>
-        <span class="k">if</span> <span class="nv">w_i</span> <span class="o">&lt;=</span> <span class="nv">w</span>
-            <span class="nv">cands_B</span> <span class="o">=</span> <span class="nv">a</span> <span class="nv">list</span> <span class="nv">of</span> <span class="ss">(</span><span class="nv">w</span><span class="o">/</span><span class="nv">x_i</span><span class="o">+</span><span class="mi">1</span><span class="ss">)</span> <span class="nv">items</span> <span class="o">//</span> <span class="nv">hold</span> <span class="nv">the</span> <span class="nv">possible</span> <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="nv">value</span> <span class="k">for</span> <span class="nv">each</span> <span class="nv">x_i</span>
-            <span class="k">for</span> <span class="nv">x_i</span> <span class="o">=</span> <span class="mi">0</span> <span class="nv">to</span> <span class="nv">w</span><span class="o">/</span><span class="nv">x_i</span>
-                <span class="nv">cands_B</span>[<span class="nv">x_i</span>] <span class="o">=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>, <span class="nv">w</span> <span class="o">-</span> <span class="nv">w_i</span> <span class="o">*</span> <span class="nv">x_i</span>] <span class="o">+</span> <span class="nv">b_i</span> <span class="o">*</span> <span class="nv">x_i</span>
-                <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">max</span><span class="ss">(</span><span class="nv">cands_B</span><span class="ss">)</span>
-                <span class="nv">x</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">x_i</span> <span class="nv">that</span> <span class="nv">is</span> <span class="nv">associated</span> <span class="nv">with</span> <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>]
-        <span class="k">else</span>
-            <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>]
-            <span class="nv">x</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">x_i</span> <span class="nv">that</span> <span class="nv">is</span> <span class="nv">associated</span> <span class="nv">with</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>]
+<div class="highlight"><pre><span></span>for w = 0 to W
+    B[0,w] = 0
+for i = 1 to n
+    B[i,0] = 0
+for i = 1 to n
+    for w = 1 to W
+        if w_i &lt;= w
+            cands_B = a list of (w/x_i+1) items // hold the possible B[i,w] value for each x_i
+            for x_i = 0 to w/x_i
+                cands_B[x_i] = B[i-1, w - w_i * x_i] + b_i * x_i
+                B[i,w] = max(cands_B)
+                x[i,w] = x_i that is associated with B[i,w]
+        else
+            B[i,w] = B[i-1,w]
+            x[i,w] = x_i that is associated with B[i-1,w]
 </pre></div>
 <p>Let's walk through an example to better understand the algorithm idea:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Item</th>
@@ -525,7 +525,7 @@ defined as the greatest integer less than or equal to <span class="math">\(x\)</
 <p><span class="math">\(W = 8\)</span> in our example. The algorithm essentially
 tries to build fill out two tables <span class="math">\(B[i,w]\)</span> table like
 the 0-1 knapsack problem:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>i \ w</th>
@@ -593,7 +593,7 @@ the 0-1 knapsack problem:</p>
 </table>
 <p>and <span class="math">\(x[i,w]\)</span> table to keep track of the optimal
 value of <span class="math">\(x_i\)</span> for each <span class="math">\(i\)</span> and <span class="math">\(w\)</span></p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>i \ w</th>
@@ -657,7 +657,7 @@ $$</div>
 <p>So, we fill in <span class="math">\(B[1,3] = 4\)</span> and <span class="math">\(x[1,3] = 1\)</span>. We can repeatedly
 doing this for other <span class="math">\(i\)</span>s. We can take a look at the values
 from another perspective like the tables below:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>B[1,w]</th>
@@ -713,7 +713,7 @@ from another perspective like the tables below:</p>
 </tr>
 </tbody>
 </table>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>B[2,w]</th>
@@ -769,7 +769,7 @@ from another perspective like the tables below:</p>
 </tr>
 </tbody>
 </table>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>B[3,w]</th>
@@ -859,7 +859,7 @@ from <em>dynamic programming</em> approach.</p>
 <hr/>
 <ol>
 <li id="fn:1">
-<p>See <a href="https://stackoverflow.com/questions/13538459/difference-between-divide-and-conquer-algo-and-dynamic-programming">Difference between Divide and Conquer Algo and Dynamic Programming SO post</a> <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
+<p>See <a href="https://stackoverflow.com/questions/13538459/difference-between-divide-and-conquer-algo-and-dynamic-programming">Difference between Divide and Conquer Algo and Dynamic Programming SO post</a> <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 </ol>
 </div>

@@ -125,9 +125,9 @@ F(2k+1) = 2F(k) + 1, \text{ for } k &gt;= 1\label{eq:2}
 $$</div>
 <p>So now our goal is to solve the recurrence equations \ref{eq:1} and \ref{eq:2} given <span class="math">\(F(1) = 1\)</span> to find a closed form. Let's do
 this by building a table of small values:</p>
-<div class="highlight"><pre><span></span><span class="o">|</span> <span class="n">n</span>    <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">2</span>   <span class="mi">3</span> <span class="o">|</span> <span class="mi">4</span>   <span class="mi">5</span>   <span class="mi">6</span>   <span class="mi">7</span> <span class="o">|</span> <span class="mi">8</span>   <span class="mi">9</span>   <span class="mi">10</span>   <span class="mi">11</span>   <span class="mi">12</span>   <span class="mi">13</span>   <span class="mi">14</span>   <span class="mi">15</span> <span class="o">|</span> <span class="mi">16</span> <span class="o">|</span>
-<span class="o">|</span><span class="c1">------|---|-------|---------------|-------------------------------------|----|</span>
-<span class="o">|</span> <span class="n">F</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">1</span>   <span class="mi">3</span> <span class="o">|</span> <span class="mi">1</span>   <span class="mi">3</span>   <span class="mi">5</span>   <span class="mi">7</span> <span class="o">|</span> <span class="mi">1</span>   <span class="mi">3</span>   <span class="mi">5</span>    <span class="mi">7</span>    <span class="mi">9</span>    <span class="mi">11</span>   <span class="mi">13</span>   <span class="mi">15</span> <span class="o">|</span> <span class="mi">1</span>  <span class="o">|</span>
+<div class="highlight"><pre><span></span>| n    | 1 | 2   3 | 4   5   6   7 | 8   9   10   11   12   13   14   15 | 16 |
+|------|---|-------|---------------|-------------------------------------|----|
+| F(n) | 1 | 1   3 | 1   3   5   7 | 1   3   5    7    9    11   13   15 | 1  |
 </pre></div>
 <p>We can group the columns by powers of <span class="math">\(2\)</span> (marked by vertical lines in the table); Inside each group,
 <span class="math">\(F(n)\)</span> is always <span class="math">\(1\)</span> at the beginning and then it increases by <span class="math">\(2\)</span> until the next group, which is 
@@ -187,24 +187,24 @@ out formally. Let <span class="math">\(n = (b_ab_{a-1}..b_1b_0)_2\)</span>, then
 reason we can derive the nice recurrence equations \ref{eq:1} and \ref{eq:2} is because our observation. Let's present our
 observation is a different way. <span class="math">\(F(2k)\)</span> denotes the old numbering before the first-round. <span class="math">\(F(k)\)</span> denotes the new numbering 
 after the first-round.</p>
-<div class="highlight"><pre><span></span>      <span class="n">m</span> <span class="o">=</span> <span class="mi">2</span>               <span class="n">m</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="o">+</span><span class="c1">-------+------+    +-------+------+</span>
-<span class="o">|</span> <span class="n">F</span><span class="p">(</span><span class="mi">2</span><span class="n">k</span><span class="p">)</span> <span class="o">|</span> <span class="n">F</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">|</span>    <span class="o">|</span> <span class="n">F</span><span class="p">(</span><span class="mi">2</span><span class="n">k</span><span class="p">)</span> <span class="o">|</span> <span class="n">F</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">|</span>
-<span class="o">+</span><span class="c1">-------+------+    +-------+------+</span>
-<span class="o">|</span> <span class="mi">1</span>     <span class="o">|</span> <span class="mi">1</span>    <span class="o">|</span>    <span class="o">|</span> <span class="mi">1</span>     <span class="o">|</span> <span class="mi">1</span>    <span class="o">|</span>
-<span class="o">+</span><span class="c1">-------+------+    +-------+------+</span>
-<span class="o">|</span> <span class="mi">3</span>     <span class="o">|</span> <span class="mi">2</span>    <span class="o">|</span>    <span class="o">|</span> <span class="mi">2</span>     <span class="o">|</span> <span class="mi">2</span>    <span class="o">|</span>
-<span class="o">+</span><span class="c1">-------+------+    +-------+------+</span>
-<span class="o">|</span> <span class="mi">5</span>     <span class="o">|</span> <span class="mi">3</span>    <span class="o">|</span>    <span class="o">|</span> <span class="mi">4</span>     <span class="o">|</span> <span class="mi">3</span>    <span class="o">|</span>
-<span class="o">+</span><span class="c1">-------+------+    +-------+------+</span>
-<span class="o">|</span> <span class="mi">7</span>     <span class="o">|</span> <span class="mi">4</span>    <span class="o">|</span>    <span class="o">|</span> <span class="mi">5</span>     <span class="o">|</span> <span class="mi">4</span>    <span class="o">|</span>
-<span class="o">+</span><span class="c1">-------+------+    +-------+------+</span>
-<span class="o">|</span> <span class="mi">9</span>     <span class="o">|</span> <span class="mi">5</span>    <span class="o">|</span>    <span class="o">|</span> <span class="mi">7</span>     <span class="o">|</span> <span class="mi">5</span>    <span class="o">|</span>
-<span class="o">+</span><span class="c1">-------+------+    +-------+------+</span>
-                    <span class="o">|</span> <span class="mi">8</span>     <span class="o">|</span> <span class="mi">6</span>    <span class="o">|</span>
-                    <span class="o">+</span><span class="c1">-------+------+</span>
-                    <span class="o">|</span> <span class="mi">10</span>    <span class="o">|</span> <span class="mi">7</span>    <span class="o">|</span>
-                    <span class="o">+</span><span class="c1">-------+------+</span>
+<div class="highlight"><pre><span></span>      m = 2               m = 3
++-------+------+    +-------+------+
+| F(2k) | F(k) |    | F(2k) | F(k) |
++-------+------+    +-------+------+
+| 1     | 1    |    | 1     | 1    |
++-------+------+    +-------+------+
+| 3     | 2    |    | 2     | 2    |
++-------+------+    +-------+------+
+| 5     | 3    |    | 4     | 3    |
++-------+------+    +-------+------+
+| 7     | 4    |    | 5     | 4    |
++-------+------+    +-------+------+
+| 9     | 5    |    | 7     | 5    |
++-------+------+    +-------+------+
+                    | 8     | 6    |
+                    +-------+------+
+                    | 10    | 7    |
+                    +-------+------+
 </pre></div>
 <p>By looking at the table on the left, we can easily see that <span class="math">\(F(2k) = 2F(k) - 1\)</span>. 
 However, there is no nice clean linear relation that we can get between <span class="math">\(F(2k)\)</span> and <span class="math">\(F(k)\)</span> 
@@ -227,47 +227,47 @@ In terms of the solution, there is a difference when we start with the first per
 <p>The key insight is the following: the result of <span class="math">\(J(n,m)\)</span> is best NOT thought of as the <em>number</em> that is the 
 Josephus survivor, but rather as the <em>index</em> of the number that is the Josephus survivor. </p>
 <p>Let's first take a look an example when <span class="math">\(n = 6\)</span> and <span class="math">\(m = 2\)</span>.</p>
-<div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">.</span><span class="mi">1</span>
+<div class="highlight"><pre><span></span>fig.1
 
-  <span class="mi">1</span> <span class="mi">2</span>      <span class="mi">1</span> <span class="n">X</span>      <span class="mi">1</span> <span class="n">X</span>      <span class="mi">1</span> <span class="n">X</span>      <span class="mi">1</span> <span class="n">X</span>      <span class="n">X</span> <span class="n">X</span>
- <span class="mi">6</span>   <span class="mi">3</span> <span class="o">-&gt;</span> <span class="mi">6</span>   <span class="mi">3</span> <span class="o">-&gt;</span> <span class="mi">6</span>   <span class="mi">3</span> <span class="o">-&gt;</span> <span class="n">X</span>   <span class="mi">3</span> <span class="o">-&gt;</span> <span class="n">X</span>   <span class="n">X</span> <span class="o">-&gt;</span> <span class="n">X</span>   <span class="n">X</span>
-  <span class="mi">5</span> <span class="mi">4</span>      <span class="mi">5</span> <span class="mi">4</span>      <span class="mi">5</span> <span class="n">X</span>      <span class="mi">5</span> <span class="n">X</span>      <span class="mi">5</span> <span class="n">X</span>      <span class="mi">5</span> <span class="n">X</span>
+  1 2      1 X      1 X      1 X      1 X      X X
+ 6   3 -&gt; 6   3 -&gt; 6   3 -&gt; X   3 -&gt; X   X -&gt; X   X
+  5 4      5 4      5 X      5 X      5 X      5 X
 
-<span class="n">fig</span><span class="p">.</span><span class="mi">2</span>
+fig.2
 
-<span class="o">|</span> <span class="k">index</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">2</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span> <span class="o">|</span>
-<span class="o">|</span><span class="c1">-------|---|---|---|---|---|---|</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">2</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span>
+| index | 1 | 2 | 3 | 4 | 5 | 6 |
+|-------|---|---|---|---|---|---|
+| n = 6 | 1 | 2 | 3 | 4 | 5 | 6 | J(6,2) = 5
+| n = 5 | 3 | 4 | 5 | 6 | 1 | 3 | J(5,2) = 3
+| n = 4 | 5 | 6 | 1 | 3 | 5 | 6 | J(4,2) = 1
+| n = 3 | 1 | 3 | 5 | 1 | 3 | 5 | J(3,2) = 3
+| n = 2 | 5 | 1 | 5 | 1 | 5 | 1 | J(2,2) = 1
+| n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 1
 
-<span class="n">fig</span><span class="p">.</span><span class="mi">3</span>
+fig.3
 
-<span class="o">|</span> <span class="k">index</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">2</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span> <span class="o">|</span>
-<span class="o">|</span><span class="c1">-------|---|---|---|---|---|---|</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="n">X</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="k">mod</span> <span class="mi">6</span> <span class="o">+</span> <span class="mi">1</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="n">X</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">mod</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">1</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="n">X</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="n">X</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="k">mod</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="n">X</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="n">X</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">mod</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="n">X</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="n">X</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="n">X</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">mod</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span>
+| index | 1 | 2 | 3 | 4 | 5 | 6 |
+|-------|---|---|---|---|---|---|
+| n = 6 | 1 | X | 3 | 4 | 5 | 6 | J(6,2) = 5 = (2-1 + 3) mod 6 + 1
+| n = 5 | 3 | X | 5 | 6 | 1 | 3 | J(5,2) = 3 = (2-1 + 1) mod 5 + 1
+| n = 4 | 5 | X | 1 | 3 | 5 | X | J(4,2) = 1 = (2-1 + 3) mod 4 + 1
+| n = 3 | 1 | X | 5 | 1 | X | 5 | J(3,2) = 3 = (2-1 + 1) mod 3 + 1
+| n = 2 | 5 | X | 5 | X | 5 | X | J(2,2) = 1 = (2-1 + 1) mod 2 + 1
+| n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 1
 </pre></div>
 <p>By looking at fig.1, we know that <span class="math">\(J(6,2) = 5\)</span>. Now, if we take a look at fig.2, the row with <span class="math">\(n = 5% shows that $J(5,2) = 3\)</span>. By the insight,
 <span class="math">\(3\)</span> here means the <em>index</em> not the <em>number</em>. So, our final survivor is <span class="math">\(5\)</span>, which is positioned on <span class="math">\(3\)</span> in this row.</p>
 <p>Let's generalize the example a little bit. Suppose we want to know <span class="math">\(J(n,2)\)</span>. You can imagine 
 we have <span class="math">\(n\)</span> people lined up like this: </p>
-<div class="highlight"><pre><span></span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="p">...</span> <span class="n">n</span>
+<div class="highlight"><pre><span></span>1 2 3 4 5 ... n
 </pre></div>
 <p>The first thing that happens is that person <span class="math">\(2\)</span> get eliminated, as shown here:</p>
-<div class="highlight"><pre><span></span><span class="mi">1</span> <span class="n">X</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="p">...</span> <span class="n">n</span>
+<div class="highlight"><pre><span></span>1 X 3 4 5 ... n
 </pre></div>
 <p>Now, we are left with a subproblem of the following form: there are <span class="math">\(n - 1\)</span> people remaining, every other
 person is going to be eliminated, and the first person who will start to pass potato is person <span class="math">\(3\)</span>. In other 
 words, the subproblem <span class="math">\(J(n-1, 2)\)</span> now looks like:</p>
-<div class="highlight"><pre><span></span><span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="p">...</span> <span class="n">n</span> <span class="mi">1</span>
+<div class="highlight"><pre><span></span>3 4 5 ... n 1
 </pre></div>
 <p><span class="math">\(J(n-1, 2)\)</span> will be the <em>index</em> of who survives in a line of <span class="math">\(n - 1\)</span> of people. Given that we have the <em>index</em>
 of the person who will survive, and we also know who the starting person is, we can determine which person 
@@ -294,10 +294,10 @@ back one to get the one-indexed position, wrapped around. That looks like:</p>
 the right number of positions we have to take <span class="math">\(J(n-1,2) - 1\)</span> steps forward. The second <span class="math">\(-1\)</span> comes from the fact that we're using one-indexing rather than
 zero-indexing.</p>
 <p>Now, we're finally ready to generalize the solution to arbitrary <span class="math">\(m\)</span>, not just <span class="math">\(m = 2\)</span>. After person <span class="math">\(m\)</span> get eliminated, we have an array like this:</p>
-<div class="highlight"><pre><span></span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="p">...</span> <span class="n">m</span><span class="o">-</span><span class="mi">1</span> <span class="n">X</span> <span class="n">m</span><span class="o">+</span><span class="mi">1</span> <span class="p">...</span> <span class="n">n</span>
+<div class="highlight"><pre><span></span>1 2 3 ... m-1 X m+1 ... n
 </pre></div>
 <p>We now essentailly need to solve a subproblem where person <span class="math">\(m+1\)</span> comes first:</p>
-<div class="highlight"><pre><span></span><span class="n">m</span><span class="o">+</span><span class="mi">1</span> <span class="n">m</span><span class="o">+</span><span class="mi">2</span> <span class="p">...</span> <span class="n">n</span> <span class="mi">1</span> <span class="mi">2</span> <span class="p">...</span> <span class="n">m</span><span class="o">-</span><span class="mi">1</span>
+<div class="highlight"><pre><span></span>m+1 m+2 ... n 1 2 ... m-1
 </pre></div>
 <p>So we compute <span class="math">\(J(n-1, m)\)</span> to get the one-indexed survivor of a ring of <span class="math">\(n-1\)</span> people, then shift forward by that many steps:</p>
 <div class="math">$$(m+1 + J(n-1, m) - 1)$$</div>
@@ -310,20 +310,20 @@ zero-indexing.</p>
 <p>Notice that <span class="math">\(J(1,m) = 1\)</span>, which indicates that we're one-indexed.</p>
 <h3 id="starting-from-0">Starting from 0</h3>
 <p>Since we are not in zero-indexed. Our <span class="math">\(J(6,2)\)</span> example looks like the following:</p>
-<div class="highlight"><pre><span></span><span class="o">|</span> <span class="k">index</span> <span class="o">|</span> <span class="mi">0</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">2</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span>
-<span class="o">|</span><span class="c1">-------|---|---|---|---|---|---|</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">2</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">)</span> <span class="k">mod</span> <span class="mi">6</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">)</span> <span class="k">mod</span> <span class="mi">5</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">)</span> <span class="k">mod</span> <span class="mi">4</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">)</span> <span class="k">mod</span> <span class="mi">3</span>
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">)</span> <span class="k">mod</span> <span class="mi">2</span> 
-<span class="o">|</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="n">J</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span>
+<div class="highlight"><pre><span></span>| index | 0 | 1 | 2 | 3 | 4 | 5 |
+|-------|---|---|---|---|---|---|
+| n = 6 | 1 | 2 | 3 | 4 | 5 | 6 | J(6,2) = 4 = (2 + 2 ) mod 6
+| n = 5 | 3 | 4 | 5 | 6 | 1 | 3 | J(5,2) = 2 = (0 + 2 ) mod 5
+| n = 4 | 5 | 6 | 1 | 3 | 5 | 6 | J(4,2) = 0 = (2 + 2 ) mod 4
+| n = 3 | 1 | 3 | 5 | 1 | 3 | 5 | J(3,2) = 2 = (0 + 2 ) mod 3
+| n = 2 | 5 | 1 | 5 | 1 | 5 | 1 | J(2,2) = 0 = (0 + 2 ) mod 2 
+| n = 1 | 5 | 5 | 5 | 5 | 5 | 5 | J(1,2) = 0
 </pre></div>
 <p>Let's apply the same logic from the one-indexed case. After person <span class="math">\(m-1\)</span> get eliminated, we have an array like this:</p>
-<div class="highlight"><pre><span></span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="p">...</span> <span class="n">m</span><span class="o">-</span><span class="mi">2</span> <span class="n">X</span> <span class="n">m</span> <span class="p">...</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span>
+<div class="highlight"><pre><span></span>0 1 2 ... m-2 X m ... n-1
 </pre></div>
 <p>We now essentailly need to solve a subproblem where person <span class="math">\(m\)</span> comes first:</p>
-<div class="highlight"><pre><span></span><span class="n">m</span> <span class="n">m</span><span class="o">+</span><span class="mi">1</span> <span class="p">...</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="p">...</span> <span class="n">m</span><span class="o">-</span><span class="mi">2</span>
+<div class="highlight"><pre><span></span>m m+1 ... n-1 0 1 2 ... m-2
 </pre></div>
 <p>So, we compute <span class="math">\(J(n-1,m)\)</span> to give us the zero-indexed survivor of a ring of <span class="math">\(n-1\)</span> people and we shfit forward by that many steps:</p>
 <div class="math">$$(m + J(n-1,m))$$</div>
