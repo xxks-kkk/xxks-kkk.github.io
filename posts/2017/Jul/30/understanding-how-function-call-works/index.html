@@ -92,7 +92,7 @@ In addition, this post belongs to part of future work mentioned in <a href="../.
 <p>Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):</p>
-<table class="table-hover  table-striped table">
+<table class="table  table-striped table-hover">
 <thead>
 <tr>
 <th>Type</th>
@@ -130,7 +130,7 @@ The following table is adapted from CSAPP (2nd edition):</p>
 <td>Memory</td>
 <td><span class="math">\(Imm(E_b, E_i, s)\)</span></td>
 <td><span class="math">\(M[Imm+R[E_b]+(R[E_i]\cdot s)]\)</span></td>
-<td>Scaled indexed addressing <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup></td>
+<td>Scaled indexed addressing <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup></td>
 </tr>
 </tbody>
 </table>
@@ -238,11 +238,11 @@ you want to save before calling a function, you need to save them
 by pushing them on the stack before pushing the function's parameters.</p>
 </div>
 <p>So, at the time the function starts, the stack looks like this:</p>
-<div class="highlight"><pre><span></span>Argument N
+<div class="highlight"><pre><span></span><span class="nv">Argument</span> <span class="nv">N</span>
 ...
-Argument 2
-Argument 1
-Return address &lt;--- (%esp)
+<span class="nv">Argument</span> <span class="mi">2</span>
+<span class="nv">Argument</span> <span class="mi">1</span>
+<span class="k">Return</span> <span class="nv">address</span> <span class="o">&lt;---</span> <span class="ss">(</span><span class="o">%</span><span class="nv">esp</span><span class="ss">)</span>
 </pre></div>
 <p>As noted previously, the stack pointer holds the address, which contains return address as its value.</p>
 <h4 id="writing-a-function">Writing a function</h4>
@@ -269,12 +269,12 @@ able to access the function parameters that are pushed earlier onto the stack by
 as fixed indexes from the base pointer. We cannot use stack pointer directly for accessing
 parameters because the stack pointer can move while the function is executing. </p>
 <p>At this point, the stack looks like this:</p>
-<div class="highlight"><pre><span></span>Argument N     &lt;--- N*4+4(%ebp)
+<div class="highlight"><pre><span></span><span class="nv">Argument</span> <span class="nv">N</span>     <span class="o">&lt;---</span> <span class="nv">N</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="mi">4</span><span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
 ... 
-Argument 2     &lt;--- 16 (%ebp)
-Argument 1     &lt;--- 12(%ebp)
-Return address &lt;--- 4(%ebp)
-Old %ebp       &lt;--- (%esp) and (%ebp)
+<span class="nv">Argument</span> <span class="mi">2</span>     <span class="o">&lt;---</span> <span class="mi">16</span> <span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
+<span class="nv">Argument</span> <span class="mi">1</span>     <span class="o">&lt;---</span> <span class="mi">12</span><span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
+<span class="k">Return</span> <span class="nv">address</span> <span class="o">&lt;---</span> <span class="mi">4</span><span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
+<span class="nv">Old</span> <span class="o">%</span><span class="nv">ebp</span>       <span class="o">&lt;---</span> <span class="ss">(</span><span class="o">%</span><span class="nv">esp</span><span class="ss">)</span> <span class="nv">and</span> <span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
 </pre></div>
 <h5 id="using-the-stack-frame">Using the stack frame</h5>
 <p>Once we have performed the fix setup, we can now use the stack frame to:</p>
@@ -519,7 +519,7 @@ investigate how the things changed for the 64-bit world.</li>
 <li id="fn:1">
 <p>For scaled indexed addressing, it actually includes both base pointer addressing mode 
 (i.e. <code>movl 4(%eax), %ebx</code>) and indexed addressing mode 
-(i.e., <code>movl string_start(, %ecx, 1), %eax</code>). <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+(i.e., <code>movl string_start(, %ecx, 1), %eax</code>). <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 </ol>
 </div>
