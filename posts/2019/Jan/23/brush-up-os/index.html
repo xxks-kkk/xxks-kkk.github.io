@@ -112,17 +112,17 @@ if the page size is 4KB and we request 3KB memory, then there will be 1KB unused
 <p>Translation look-aside buffer (TLB).</p>
 </blockquote>
 <p>TLB is part of the chip's memory-management unit (MMU). It serves as a hardware cache of popular virtual-to-physical address translations
-(i.e., virtual page number to physical frame number translations)<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">1</a></sup>.</p>
+(i.e., virtual page number to physical frame number translations)<sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">1</a></sup>.</p>
 <blockquote>
 <p>Interrupt.</p>
 </blockquote>
-<p>Interrupts are essentially requests for attention. In the same way, peripherals in a computer system can request the attention of the processor. The event that makes a microprocessor stop executing one routine to perform some other routine to service a request, is called an INTERRUPT<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup>. In other words, an  interrupt  is  an  electrical signal  that  causes  the  processor  to  stop  the  current  execution and  begin  to  execute  interrupt  handler  code.  Interrupts
-are asynchronous excpetions. Asynchronous here means "not related to instruction that just executed"<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">3</a></sup>.</p>
+<p>Interrupts are essentially requests for attention. In the same way, peripherals in a computer system can request the attention of the processor. The event that makes a microprocessor stop executing one routine to perform some other routine to service a request, is called an INTERRUPT<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">2</a></sup>. In other words, an  interrupt  is  an  electrical signal  that  causes  the  processor  to  stop  the  current  execution and  begin  to  execute  interrupt  handler  code.  Interrupts
+are asynchronous excpetions. Asynchronous here means "not related to instruction that just executed"<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">3</a></sup>.</p>
 <blockquote>
 <p>Distributed shared memory.</p>
 </blockquote>
 <p>Distributed shared memory is a memory architecture that a cluster of nodes share the same logical address space but physical
-memories are from each node in the cluster and connected via the network (i.e., a form of memory architecture where physically separated memories can be addressed as one logically shared address space) <sup id="fnref:15"><a class="footnote-ref" href="#fn:15">4</a></sup></p>
+memories are from each node in the cluster and connected via the network (i.e., a form of memory architecture where physically separated memories can be addressed as one logically shared address space) <sup id="fnref:15"><a class="footnote-ref" href="#fn:15" rel="footnote">4</a></sup></p>
 <blockquote>
 <p>Stateful  and  stateless  servers.   Also,  list  two  file  systems,  one  that is stateful and one that is stateless, and explain how having or not having state affects file service.</p>
 </blockquote>
@@ -141,12 +141,12 @@ server. However, with state, client doesn't need to constantly contact to valida
 <p>Swapping.</p>
 </blockquote>
 <p>Since all pages cannot reside in the physical memory, to support large address space, we use part of disk (e.g., swap space) by
-swapping pages in and out between physical memory and swap space <sup id="fnref:11"><a class="footnote-ref" href="#fn:11">5</a></sup>.</p>
+swapping pages in and out between physical memory and swap space <sup id="fnref:11"><a class="footnote-ref" href="#fn:11" rel="footnote">5</a></sup>.</p>
 <blockquote>
 <p>Inverted page table.</p>
 </blockquote>
 <p>Inverted page table (along with multi-level page tables) aims to save memory space taken by the page tables. Instead of having one page table per process, we keep a single page table that has an entry for each <em>physical page</em> of the system. The entry tells us which process is using this page, and 
-which virtual page of that process maps to this physical page <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">6</a></sup>. PowerPC uses this technique. </p>
+which virtual page of that process maps to this physical page <sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">6</a></sup>. PowerPC uses this technique. </p>
 <!-- inverted: hash table; each entry contains <pid, corresponding virutal page number>
 64-bit linux uses inverted page table (TODO)-->
 <blockquote>
@@ -154,26 +154,26 @@ which virtual page of that process maps to this physical page <sup id="fnref:4">
 </blockquote>
 <p>A disk <strong>sector</strong> refers to 512-byte block on the disk (aside note, drive manufacturers guarantee that a single 512-byte write is 
 atomic). Sectors of disk are organized as a set of concentric circles; each concentric circle of sectors is called a <strong>track</strong>
-<sup id="fnref:13"><a class="footnote-ref" href="#fn:13">7</a></sup>. A <strong>cylinder</strong> is a set of tracks on different surfaces of a hard dirve that are the same distance from the center
-of the drive; it is called a cylinder because of its clear resemblance to the so-called geometrical shape <sup id="fnref:14"><a class="footnote-ref" href="#fn:14">8</a></sup>.</p>
+<sup id="fnref:13"><a class="footnote-ref" href="#fn:13" rel="footnote">7</a></sup>. A <strong>cylinder</strong> is a set of tracks on different surfaces of a hard dirve that are the same distance from the center
+of the drive; it is called a cylinder because of its clear resemblance to the so-called geometrical shape <sup id="fnref:14"><a class="footnote-ref" href="#fn:14" rel="footnote">8</a></sup>.</p>
 <blockquote>
 <p>Thrashing.</p>
 </blockquote>
 <!-- Ideally, pages in the set of running processes should not be removed from the physical memory as they will have to be brought back in again. However, swaping can happens. However, if swaping happens too often and thus, most of CPU time is devoted to this activity, we run into *thrashing* situation. -->
-<p>The situation when memory demands of the set of running processes exceeds the available physical memory. System performace degrades due to the fact that system CPU time is dominated by the activity of swaping pages in and out between physical memory and swap space on disk <sup id="fnref:10"><a class="footnote-ref" href="#fn:10">9</a></sup>.</p>
+<p>The situation when memory demands of the set of running processes exceeds the available physical memory. System performace degrades due to the fact that system CPU time is dominated by the activity of swaping pages in and out between physical memory and swap space on disk <sup id="fnref:10"><a class="footnote-ref" href="#fn:10" rel="footnote">9</a></sup>.</p>
 <h3 id="short-answer">Short answer</h3>
 <p>Provide a short answer to each of the following questions:</p>
 <blockquote>
 <p>Give a reason why virtual memory address translation is useful even if  the  total  size  of  virtual  memory  (summed  over  all  programs) is guaranteed to be smaller than physical memory.</p>
 </blockquote>
-<p>Virtual memory address translation is useful in providing isolation (safety) across different processes: OS can make sure that one proacess cannot access part of physical memory that is owned by the other process. In addition, address translation helps OS to better manage the underlying physical memory: every process thinks address space starts at 0, which may not be true on the physical memory; for better memory management, OS may relocate the address space to some other physical address. Address translation enables OS to perform such memory management while makes the relocation be transparent to process <sup id="fnref:16"><a class="footnote-ref" href="#fn:16">10</a></sup>.</p>
+<p>Virtual memory address translation is useful in providing isolation (safety) across different processes: OS can make sure that one proacess cannot access part of physical memory that is owned by the other process. In addition, address translation helps OS to better manage the underlying physical memory: every process thinks address space starts at 0, which may not be true on the physical memory; for better memory management, OS may relocate the address space to some other physical address. Address translation enables OS to perform such memory management while makes the relocation be transparent to process <sup id="fnref:16"><a class="footnote-ref" href="#fn:16" rel="footnote">10</a></sup>.</p>
 <!-- same physical page can be shared across multiple processes; -->
 <blockquote>
 <p>Compare and contrast access control lists and capabilities.</p>
 </blockquote>
 <p>In an access control list model of security, the authorities are bounded to the objects being secured (e.g., file A can be r/w by user Alice). By contrast,
-in the capabilities model, the authorities are bound to objects seeking access <sup id="fnref:17"><a class="footnote-ref" href="#fn:17">11</a></sup> (e.g., UNIX file descriptors are capabilities: authorities are 
-bounded to file descriptors, which reflect rights on objects like files or sockets <sup id="fnref:20"><a class="footnote-ref" href="#fn:20">12</a></sup>).</p>
+in the capabilities model, the authorities are bound to objects seeking access <sup id="fnref:17"><a class="footnote-ref" href="#fn:17" rel="footnote">11</a></sup> (e.g., UNIX file descriptors are capabilities: authorities are 
+bounded to file descriptors, which reflect rights on objects like files or sockets <sup id="fnref:20"><a class="footnote-ref" href="#fn:20" rel="footnote">12</a></sup>).</p>
 <p>As one can see, with the ACL model, each object has just one list, while with the capability model, each object has a whole set of different, separable capabilities. For example, in capability model, a process has different capabilities depending on the objects it tries to access.</p>
 <p><a href="http://homepage.divms.uiowa.edu/~jones/security/notes/18.shtml">This page</a> has a nice example: file "aaa" has ACL as "Alice:R/W, Bob:R, Carol:R". File "aaa" is the object being secured. "Alice" has capabilities "aaa:R/W, bbb:R, ccc:R". "Alice" as a user is the object seeking access.</p>
 <blockquote>
@@ -183,12 +183,12 @@ bounded to file descriptors, which reflect rights on objects like files or socke
 defined as <span class="math">\(T_{completion} - T_{arrival}\)</span> (the time at which the job completes minus the time at which the job arrived in the
 system). <em>response time</em> is defined as <span class="math">\(T_{firstrun} - T_{arrival}\)</span> (the time from when the job arrives in a system to the first time it is scheduled). Round robin (RR) CPU scheduling is optimized towards
 response time. If time slice is too long, then the response time is worse. By contrast, if time
-slice is too short, the cost of context switching will dominate overall performance, which means less work is done during the time slice <sup id="fnref:18"><a class="footnote-ref" href="#fn:18">13</a></sup>.</p>
+slice is too short, the cost of context switching will dominate overall performance, which means less work is done during the time slice <sup id="fnref:18"><a class="footnote-ref" href="#fn:18" rel="footnote">13</a></sup>.</p>
 <blockquote>
 <p>List an advantage and a disadvantage to increasing the virtual memory page size.</p>
 </blockquote>
-<p>The advantages of increasing the virtual memory page size are: reduces page table size <sup id="fnref:6"><a class="footnote-ref" href="#fn:6">14</a></sup>, improves TLB hit rate <sup id="fnref:7"><a class="footnote-ref" href="#fn:7">15</a></sup>. The disadvantage is the 
-internal fragmentation (i.e., waste <em>within</em> each page; the waster is <em>internal</em> to the unit of allocation) <sup id="fnref2:4"><a class="footnote-ref" href="#fn:4">6</a></sup>.</p>
+<p>The advantages of increasing the virtual memory page size are: reduces page table size <sup id="fnref:6"><a class="footnote-ref" href="#fn:6" rel="footnote">14</a></sup>, improves TLB hit rate <sup id="fnref:7"><a class="footnote-ref" href="#fn:7" rel="footnote">15</a></sup>. The disadvantage is the 
+internal fragmentation (i.e., waste <em>within</em> each page; the waster is <em>internal</em> to the unit of allocation) <sup id="fnref2:4"><a class="footnote-ref" href="#fn:4" rel="footnote">6</a></sup>.</p>
 <!-- data block size determines largest file size (related to inode) -->
 <h3 id="virtual-memory-addressing">Virtual memory addressing</h3>
 <blockquote>
@@ -203,14 +203,14 @@ and contains <span class="math">\(2^b\)</span> entries. Similarly, Page Director
 <span class="math">\(2^a\)</span> entries. Thus, there are <span class="math">\(2^a\)</span> Page Directory 1, and each Page Directory 1 can point to <span class="math">\(2^b\)</span> pages, and each page contains
 <span class="math">\(2^c\)</span> PTEs, and each PTE corresponds to one virtual page. Therefore, there are <span class="math">\(2^{a+b+c}\)</span> virutal pages. Another way of cacluation is
 that the physical frame size is <span class="math">\(2^d\)</span>, which is equal to page size. Since the address space is 32 bit, there are <span class="math">\(\frac{2^{32}}{2^d}\)</span> virtual pages
-<sup id="fnref:8"><a class="footnote-ref" href="#fn:8">16</a></sup>.</p>
+<sup id="fnref:8"><a class="footnote-ref" href="#fn:8" rel="footnote">16</a></sup>.</p>
 <p>The advantages of multi-level page tables are that:</p>
 <ul>
 <li>The multi-level table only allocates page-table space in proportion to the amount of address space we are using (more compact to support sparse page table)</li>
 <li>each portion of page table fits into a page makes memory management easier: we don't have to find contiguous physical memory chunk that can contain the linear page table; we can place page-table pages whereever we want in the physical memory. </li>
 </ul>
 <p>The disadvantage is that additional memory accesses to look up a valid translation 
-(e.g., for 3-level page table system, we have three additional memory accesses: access Page Directory Entry 0 (PDE0), access PDE1, access PTE)<sup id="fnref:9"><a class="footnote-ref" href="#fn:9">17</a></sup>.</p>
+(e.g., for 3-level page table system, we have three additional memory accesses: access Page Directory Entry 0 (PDE0), access PDE1, access PTE)<sup id="fnref:9"><a class="footnote-ref" href="#fn:9" rel="footnote">17</a></sup>.</p>
 <h3 id="page-replacement">Page replacement</h3>
 <blockquote>
 <p>Suppose a machine with 4 physical pages starts running a program (in other words, the physical pages are initially empty).  The
@@ -221,8 +221,8 @@ that cause a page fault uppercase, and those that don’t lowercase):</p>
 <p>LRU.</p>
 </blockquote>
 <p>LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
-approximate LRU <sup id="fnref:12"><a class="footnote-ref" href="#fn:12">18</a></sup> to avoid heavy overhead). The trace of the memory references with LRU policy shown below:</p>
-<table class="table-hover table  table-striped">
+approximate LRU <sup id="fnref:12"><a class="footnote-ref" href="#fn:12" rel="footnote">18</a></sup> to avoid heavy overhead). The trace of the memory references with LRU policy shown below:</p>
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Access</th>
@@ -336,7 +336,7 @@ approximate LRU <sup id="fnref:12"><a class="footnote-ref" href="#fn:12">18</a><
 </blockquote>
 <p>FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Access</th>
@@ -450,7 +450,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 </blockquote>
 <p>Optimal policy means we want to replace the page that will be accessed <em>furthest in the future</em> and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Access</th>
@@ -656,7 +656,7 @@ which takes a queue and returns, as an unsigned integer, its address.</p>
 </blockquote>
 <p>One possible scenario of deadlock using <code>transfer()</code> is illustrated below. Note that <code>queue1</code> and <code>queue2</code> in <code>transfer()</code>
 are replaced with queues that they are pointing to (time increases with the row's number):</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Thread1 (<code>transfer(q1,q2)</code>)</th>
@@ -813,7 +813,7 @@ congestions and the order of packets is very likely be out-of-order, and then di
 <blockquote>
 <p>There are two main approaches to organizing a server daemon, such as a web server: a) Create  a  new  kernel  thread  for  each  client  (for  each  web browser connection); b) Use a single process responding to all clients, usually based on the <code>select()</code> system call. Compare and contrast these two approaches.</p>
 </blockquote>
-<p>Multi-threaded architecture <sup id="fnref:19"><a class="footnote-ref" href="#fn:19">19</a></sup>:</p>
+<p>Multi-threaded architecture <sup id="fnref:19"><a class="footnote-ref" href="#fn:19" rel="footnote">19</a></sup>:</p>
 <ul>
 <li>A pool of worker threads handle incoming requests</li>
 <li>One worker thread usually corresponds to one connection</li>
@@ -838,69 +838,69 @@ stack for each connection); event-based architecture scales with increasing thro
 </ul>
 <p>The key difference between these two architectures is who do the scheduling: in multi-threaded architecutre, OS performs scheduling by performing context-switch of different worker threads. However, for event-based architecture, event loop thread essentially works as a scheduler: multiplexing multiple connections
 to a single flow of execution. In addition, for event-based architecture, we need to implement preemptive interrupt on event handler thread pool as well.</p>
-<p>In addition, the kernel threads approach can have easily lead to system crash due to all the work is in kernel-space. In addition, kernel thread has higher context-switch overhead compared to threads within single process of the second approach <sup id="fnref2:20"><a class="footnote-ref" href="#fn:20">12</a></sup>. However, kernel threads can scale up with number of CPU cores while single process approach cannot benefit from multi-core.</p>
+<p>In addition, the kernel threads approach can have easily lead to system crash due to all the work is in kernel-space. In addition, kernel thread has higher context-switch overhead compared to threads within single process of the second approach <sup id="fnref2:20"><a class="footnote-ref" href="#fn:20" rel="footnote">12</a></sup>. However, kernel threads can scale up with number of CPU cores while single process approach cannot benefit from multi-core.</p>
 <div class="footnote">
 <hr/>
 <ol>
 <li id="fn:3">
-<p>taken from OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-tlbs.pdf">Chapter 19</a> <a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 1 in the text">↩</a></p>
+<p>taken from OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-tlbs.pdf">Chapter 19</a> <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:1">
-<p>taken from <a href="http://web.archive.org/web/20040322145339/http://members.iweb.net.au:80/~pstorr/pcbook/book2/irq.htm">Phil Storrs PC Hardware book</a> <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 2 in the text">↩</a></p>
+<p>taken from <a href="http://web.archive.org/web/20040322145339/http://members.iweb.net.au:80/~pstorr/pcbook/book2/irq.htm">Phil Storrs PC Hardware book</a> <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 <li id="fn:2">
-<p><a href="https://www.cs.utexas.edu/users/ans/classes/cs439/schedule.html">Alison's CS439 Lec 02</a> and CSAPP (2nd edition) 8.1.2 <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 3 in the text">↩</a></p>
+<p><a href="https://www.cs.utexas.edu/users/ans/classes/cs439/schedule.html">Alison's CS439 Lec 02</a> and CSAPP (2nd edition) 8.1.2 <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 3 in the text">↩</a></p>
 </li>
 <li id="fn:15">
-<p>See <a href='#Protic:1996' id='ref-Protic:1996-1'>Protic et al., 1996</a> and <a href="https://en.wikipedia.org/wiki/Distributed_shared_memory">Wikipedia</a> <a class="footnote-backref" href="#fnref:15" title="Jump back to footnote 4 in the text">↩</a></p>
+<p>See <a href='#Protic:1996' id='ref-Protic:1996-1'>Protic et al., 1996</a> and <a href="https://en.wikipedia.org/wiki/Distributed_shared_memory">Wikipedia</a> <a class="footnote-backref" href="#fnref:15" rev="footnote" title="Jump back to footnote 4 in the text">↩</a></p>
 </li>
 <li id="fn:11">
-<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys.pdf">Chapter 21</a> <a class="footnote-backref" href="#fnref:11" title="Jump back to footnote 5 in the text">↩</a></p>
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys.pdf">Chapter 21</a> <a class="footnote-backref" href="#fnref:11" rev="footnote" title="Jump back to footnote 5 in the text">↩</a></p>
 </li>
 <li id="fn:4">
-<p>taken from OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter 20</a>. More details found in Alison's CS439 Lec 12 "Virtual Memory: Mechanisms" <a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 6 in the text">↩</a><a class="footnote-backref" href="#fnref2:4" title="Jump back to footnote 6 in the text">↩</a></p>
+<p>taken from OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter 20</a>. More details found in Alison's CS439 Lec 12 "Virtual Memory: Mechanisms" <a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 6 in the text">↩</a><a class="footnote-backref" href="#fnref2:4" rev="footnote" title="Jump back to footnote 6 in the text">↩</a></p>
 </li>
 <li id="fn:13">
-<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-disks.pdf">Chapter 37</a> <a class="footnote-backref" href="#fnref:13" title="Jump back to footnote 7 in the text">↩</a></p>
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-disks.pdf">Chapter 37</a> <a class="footnote-backref" href="#fnref:13" rev="footnote" title="Jump back to footnote 7 in the text">↩</a></p>
 </li>
 <li id="fn:14">
-<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-ffs.pdf">Figure in Chapter 41.3</a> <a class="footnote-backref" href="#fnref:14" title="Jump back to footnote 8 in the text">↩</a></p>
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-ffs.pdf">Figure in Chapter 41.3</a> <a class="footnote-backref" href="#fnref:14" rev="footnote" title="Jump back to footnote 8 in the text">↩</a></p>
 </li>
 <li id="fn:10">
-<p>The term is originally defined in <a href='#Denning:1968:TCP:1476589.1476705' id='ref-Denning:1968:TCP:1476589.1476705-1'>Denning, 1968</a>. But I find <a href="https://www.computer.org/csdl/mags/co/1976/10/01647183.pdf">this article's explanation</a> is more intuitive. <a class="footnote-backref" href="#fnref:10" title="Jump back to footnote 9 in the text">↩</a></p>
+<p>The term is originally defined in <a href='#Denning:1968:TCP:1476589.1476705' id='ref-Denning:1968:TCP:1476589.1476705-1'>Denning, 1968</a>. But I find <a href="https://www.computer.org/csdl/mags/co/1976/10/01647183.pdf">this article's explanation</a> is more intuitive. <a class="footnote-backref" href="#fnref:10" rev="footnote" title="Jump back to footnote 9 in the text">↩</a></p>
 </li>
 <li id="fn:16">
-<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-mechanism.pdf">Chapter 15</a> for more details. <a class="footnote-backref" href="#fnref:16" title="Jump back to footnote 10 in the text">↩</a></p>
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-mechanism.pdf">Chapter 15</a> for more details. <a class="footnote-backref" href="#fnref:16" rev="footnote" title="Jump back to footnote 10 in the text">↩</a></p>
 </li>
 <li id="fn:17">
-<p>See <a href="http://www.skyhunter.com/marcs/capabilityIntro/capacl.html">Capabilities and ACLs</a> <a class="footnote-backref" href="#fnref:17" title="Jump back to footnote 11 in the text">↩</a></p>
+<p>See <a href="http://www.skyhunter.com/marcs/capabilityIntro/capacl.html">Capabilities and ACLs</a> <a class="footnote-backref" href="#fnref:17" rev="footnote" title="Jump back to footnote 11 in the text">↩</a></p>
 </li>
 <li id="fn:20">
-<p>See <a href='#shapiro1999eros' id='ref-shapiro1999eros-1'>Shapiro et al., 1999</a> and <a href='#watson2010capsicum' id='ref-watson2010capsicum-1'>Watson et al., 2010</a> <a class="footnote-backref" href="#fnref:20" title="Jump back to footnote 12 in the text">↩</a><a class="footnote-backref" href="#fnref2:20" title="Jump back to footnote 12 in the text">↩</a></p>
+<p>See <a href='#shapiro1999eros' id='ref-shapiro1999eros-1'>Shapiro et al., 1999</a> and <a href='#watson2010capsicum' id='ref-watson2010capsicum-1'>Watson et al., 2010</a> <a class="footnote-backref" href="#fnref:20" rev="footnote" title="Jump back to footnote 12 in the text">↩</a><a class="footnote-backref" href="#fnref2:20" rev="footnote" title="Jump back to footnote 12 in the text">↩</a></p>
 </li>
 <li id="fn:18">
-<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf">Chapter 7</a>. <a class="footnote-backref" href="#fnref:18" title="Jump back to footnote 13 in the text">↩</a></p>
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf">Chapter 7</a>. <a class="footnote-backref" href="#fnref:18" rev="footnote" title="Jump back to footnote 13 in the text">↩</a></p>
 </li>
 <li id="fn:6">
-<p>One cacluation example can be found from OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter 20.1</a>. <a class="footnote-backref" href="#fnref:6" title="Jump back to footnote 14 in the text">↩</a></p>
+<p>One cacluation example can be found from OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter 20.1</a>. <a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 14 in the text">↩</a></p>
 </li>
 <li id="fn:7">
-<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-tlbs.pdf">Chapter 19.2 example</a>. <a class="footnote-backref" href="#fnref:7" title="Jump back to footnote 15 in the text">↩</a></p>
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-tlbs.pdf">Chapter 19.2 example</a>. <a class="footnote-backref" href="#fnref:7" rev="footnote" title="Jump back to footnote 15 in the text">↩</a></p>
 </li>
 <li id="fn:8">
-<p>OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter 20</a>, <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf">Chapter 18</a>, and <a href="https://www.cs.utexas.edu/~lorenzo/corsi/cs372/06F/hw/3sol.html">this page</a> may help with cacluation. <a class="footnote-backref" href="#fnref:8" title="Jump back to footnote 16 in the text">↩</a></p>
+<p>OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter 20</a>, <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf">Chapter 18</a>, and <a href="https://www.cs.utexas.edu/~lorenzo/corsi/cs372/06F/hw/3sol.html">this page</a> may help with cacluation. <a class="footnote-backref" href="#fnref:8" rev="footnote" title="Jump back to footnote 16 in the text">↩</a></p>
 </li>
 <li id="fn:9">
-<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter Figure 20.6</a>. <a class="footnote-backref" href="#fnref:9" title="Jump back to footnote 17 in the text">↩</a></p>
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter Figure 20.6</a>. <a class="footnote-backref" href="#fnref:9" rev="footnote" title="Jump back to footnote 17 in the text">↩</a></p>
 </li>
 <li id="fn:12">
-<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf">Chapter 22</a> <a class="footnote-backref" href="#fnref:12" title="Jump back to footnote 18 in the text">↩</a></p>
+<p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf">Chapter 22</a> <a class="footnote-backref" href="#fnref:12" rev="footnote" title="Jump back to footnote 18 in the text">↩</a></p>
 </li>
 <li id="fn:19">
-<p>See <a href="http://berb.github.io/diploma-thesis/original/042_serverarch.html">Concurrent Programming for Scalable Web Architectures</a> <a class="footnote-backref" href="#fnref:19" title="Jump back to footnote 19 in the text">↩</a></p>
+<p>See <a href="http://berb.github.io/diploma-thesis/original/042_serverarch.html">Concurrent Programming for Scalable Web Architectures</a> <a class="footnote-backref" href="#fnref:19" rev="footnote" title="Jump back to footnote 19 in the text">↩</a></p>
 </li>
 <li id="fn:21">
-<p>See <a href="https://courses.cs.washington.edu/courses/cse451/11sp/section/kim_section4.pdf">CSE451</a> <a class="footnote-backref" href="#fnref:21" title="Jump back to footnote 20 in the text">↩</a></p>
+<p>See <a href="https://courses.cs.washington.edu/courses/cse451/11sp/section/kim_section4.pdf">CSE451</a> <a class="footnote-backref" href="#fnref:21" rev="footnote" title="Jump back to footnote 20 in the text">↩</a></p>
 </li>
 </ol>
 </div>
