@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Secure Connection with MariaDB: A Conceptual Approach
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">Secure Connection with MariaDB: A Conceptual Approach</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2019-09-14T23:20:00+08:00"> Sep 14, 2019</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/security.html">security</a>
+        /
+	<a href="../../../../../tag/mariadb.html">MariaDB</a>
+        /
+	<a href="../../../../../tag/tls.html">TLS</a>
+        /
+	<a href="../../../../../tag/ssl.html">SSL</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">Secure Connection with MariaDB: A Conceptual Approach</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2019-09-14T23:20:00+08:00">Sep 14, 2019</time></div> -->
+        </header>
+        
+        <article>
+            <p>In this post, I discuss how we can <a href="https://www.cyberciti.biz/faq/how-to-setup-mariadb-ssl-and-secure-connections-from-clients/">have a secure connection with MariaDB</a> by first understanding the computer science fundamentals behind the steps. Once we have built the concept model, the steps linked above are self-explanatory. In addition, this post applies the same concept to understand SSL ccertificate.</p>
+<h2 id="concepts">Concepts</h2>
+<p>The key concept behind secure connection is <a href="https://en.wikipedia.org/wiki/Certificate_authority#Overview">certificate</a>, which relies on <a href="https://en.wikipedia.org/wiki/Digital_signature">digital signature</a>. The following picture shows the key idea of digital signature:</p>
+<p><img alt="digital signature" class="img-responsive" src="../../../../../images/digital_signature.png"/></p>
+<p>Suppose PayPal wants to ask the personal information from the end user. To allow user verify that PayPal indeed sends the message and such message (e.g., "Please enter your personal info") is not modified, PayPal will use his private key to sign the message and distribute his public key to the end user. If the user can decode that message with PayPal's public key, then end user can confirm two pieces of information:</p>
+<ul>
+<li>The sender is PayPal assuming the public key at hand truly belongs to PayPal (Authentication)</li>
+<li>The message is not modified in transit (Integrity)</li>
+</ul>
+<p>Now, let's examine further on Authentication. In the above scheme, the end user obtains public key from PayPal in order to decode the message that PayPal sends. This can be problematic: how do we know the public key the end user obtained is truly sent by PayPal? In other words, if a server owned by malicious attacker sends the public key to the user as if the server itself owned by PayPal, then the end user personal information will be in danager: of course the end user can use the public key from the malicious server to verify the authenticity and integrity of the message sent by malicious server; then the personal information sent by the user will be on the malicious server instead of on server owned by PayPal.</p>
+<p>To patch the loophole mentioned above, we rely on a trusted third party to help user to verify the publick key is truly owned by the claimed party (e.g., public key we obtained from "PayPal" is truly owned by PayPal). Such trusted third party is called <a href="https://en.wikipedia.org/wiki/Certificate_authority">Certificate Authority (CA)</a>. CA verifies the ownership of a public key by issuing digital certificates, which essentially a digital signature signed by CA on a specific message sent by the public key owner. The following picture demonstrates this concept:</p>
+<p><img alt="CA digital signature" class="img-responsive" src="../../../../../images/ca_digitial_certificates.png"/></p>
+<p>The most commonly seen example of digital certificate is the TLS/SSL server certificate, which is a certificate that server needs to present to the client
+during initial connection setup when establishing a secure connection required by <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security">TLS/SSL Protocol</a>. The following picture shows the digital certificates used by this site, which is certified by COMODO (<a href="https://en.wikipedia.org/wiki/Certificate_authority#Providers">one of CA providers</a>) and issued to Cloudflare, the domain name server provider:</p>
+<p><img alt="digital certificates shown by zhu45.org" class="img-responsive" src="../../../../../images/digitial_certificates_homepage.png"/></p>
+<p>A special message sent by the public key owner (e.g., PayPal) to obtain CA digital certificate is called <a href="https://en.wikipedia.org/wiki/Certificate_signing_request">Certificate Signing Request (CSR)</a>. For example, to create a private key (e.g., <code>server-key.pem</code>) along with CSR  (e.g., <code>server-req.pem</code>) on Mac, one can do:</p>
+<div class="highlight"><pre><span></span>$ openssl req -newkey rsa:2048 -days <span class="m">365000</span> -nodes -keyout server-key.pem -out server-req.pem
+Generating a <span class="m">2048</span> bit RSA private key
+..............+++
+.......................................+++
+writing new private key to <span class="s1">'server-key.pem'</span>
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter <span class="s1">'.'</span>, the field will be left blank.
+-----
+Country Name <span class="o">(</span><span class="m">2</span> letter code<span class="o">)</span> <span class="o">[]</span>:
+State or Province Name <span class="o">(</span>full name<span class="o">)</span> <span class="o">[]</span>:
+Locality Name <span class="o">(</span>eg, city<span class="o">)</span> <span class="o">[]</span>:
+Organization Name <span class="o">(</span>eg, company<span class="o">)</span> <span class="o">[]</span>:
+Organizational Unit Name <span class="o">(</span>eg, section<span class="o">)</span> <span class="o">[]</span>:
+Common Name <span class="o">(</span>eg, fully qualified host name<span class="o">)</span> <span class="o">[]</span>: Zeyuan<span class="s1">'s laptop</span>
+<span class="s1">Email Address []:</span>
+
+<span class="s1">Please enter the following '</span>extra<span class="err">'</span> attributes
+to be sent with your certificate request
+A challenge password <span class="o">[]</span>:
+</pre></div>
+<p>At this stage, avid reader like you might notice that there can still exist potential loophole: how do we know the public key the user obtained from "CA" is truly owned by CA? Here, CA makes an exaception here: CA issues its own CA digital certificate by signing on its own using its own private key (such digital certificate owned by CA is called <a href="https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc778623(v=ws.10)?redirectedfrom=MSDN">CA certificate</a>). Then we rely on regulation and industry auditing to ensure CA providers can play as a trusted third party.</p>
+<p>One concept needs to clarify is that CA is not resources controlled by serveral public providers: large organizations usually have their own CAs as part of their own <a href="https://en.wikipedia.org/wiki/Public_key_infrastructure">public key infrastructure</a>. For example, if a company decides to build their own private cloud, they may have their own CAs to help with internal network traffic encryption. To show a concrete example, we can generate our own CA certificate like below:</p>
+<div class="highlight"><pre><span></span># Generate CA private key
+$ openssl genrsa 2048 &gt; ca-key.pem
+Generating RSA private key, 2048 bit long modulus
+........................+++
+........................................................................................................................+++
+e is 65537 (0x10001)
+
+# Self-signed CA certificate
+$ openssl req -new -x509 -nodes -days 365000 -key ca-key.pem -out ca-cert.pem
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) []:
+State or Province Name (full name) []:
+Locality Name (eg, city) []:
+Organization Name (eg, company) []:
+Organizational Unit Name (eg, section) []:
+Common Name (eg, fully qualified host name) []:Zeyuan's laptop
+Email Address []:
+</pre></div>
+<p>Normally, in an organization setting (e.g., build an internal private cloud), several concepts emerge with CA certificate: <a href="https://en.wikipedia.org/wiki/Root_certificate">root certificate</a>, <a href="https://en.wikipedia.org/wiki/Public_key_certificate#Types_of_certificate">intermediate certificate</a>, and <a href="https://en.wikipedia.org/wiki/Chain_of_trust">chain of trust</a>. The following picture demonstrates this concept:</p>
+<p><img alt="chain of trust" class="img-responsive" src="../../../../../images/chain_of_trust.png"/></p>
+<p>As one can see in the picture, root CA certificate is issued by root CA itself, and such certificate is called "root certificate". The reason for such naming reflects such CA is the root in the tree structure, which means a point of ultimate trust for a CA hierarchy. The CA in the middle of the picture holds "intermediate certificate", which is a certificate signed by another intermediate CA or a root CA and intermediate CA can sign CSR as if it is root CA. Requester (e.g., PayPal)'s certificate obtained via this way is secure because each CA in the CA hierarchy is validated by its ancestor, which can be traced back all the way to the root CA. Thus, requester's certificate can be treated as if it is directly obtained from root CA, the ultimate trusted party.</p>
+<p>Take building private cloud as an example, one usage scenario of CA hierarchy is to eastablish secure connection between API server and database server. The following picture shows such organization:</p>
+<p><img alt="CA usage example" class="img-responsive" src="../../../../../images/ca_usage_example.png"/></p>
+<p>There are two things need to note in the picture: one is the dot line between CA and API server, which indicates they are optional. TLS/SSL protocol does not enforce the client (e.g., API server) to present certificate (i.e., one-way TLS). However, if the database is configured to enable two-way TLS (<a href="https://mariadb.com/kb/en/library/securing-connections-for-client-and-server/#enabling-one-way-tls-for-mariadb-clients">MariaDB</a>), then it is necessary for client to obtain certificate as well. The second is authentication and encryption is a separation of concern: for one-way TLS, we only care about encryption of API access to database and we can choose different method to perform authentication (e.g., user and password).</p>
+<h2 id="examples">Examples</h2>
+<h3 id="secure-connection-with-mariadb">Secure Connection with MariaDB</h3>
+<p>Now, with the concept model we build so far, we can easily understand <a href="https://www.cyberciti.biz/faq/how-to-setup-mariadb-ssl-and-secure-connections-from-clients/">the listed step about setup secure connection with MariaDB</a>, which have both CA and MariaDB sit on the same server and use two-way TLS for both authentication and encryption of database access.</p>
+<h3 id="ssl-certificate">SSL Certificate</h3>
+<p>For security connection, web server needs to obtain SSL certificate by sending CSR to CA. In addition, the web server usually also installs intermediate certificate to establishes the credibility of SSL Certificate by tying it to CA’s root certificate. The following picture shows why this works:</p>
+<p><img alt="SSL certificate example" class="img-responsive" src="../../../../../images/ssl_cert.png"/></p>
+<p>With intermediate CA's public key, client can assume the web server's public key and information is verified by the intermediate CA. With root CA's private key, client can assume the intermediate CA is verified by the root CA and thus, client knows the web server's public key and information is verified by root CA and by chain of trust, web server's SSL certificate can be trusted.</p>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

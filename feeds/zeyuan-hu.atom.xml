@@ -1,5 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-07-01T16:20:00+08:00</updated><entry><title>"Ceph: A Scalable, High-Performance Distributed File System"</title><link href="https://zhu45.org/posts/2019/Jul/01/ceph-a-scalable-high-performance-distributed-file-system/" rel="alternate"></link><published>2019-07-01T16:20:00+08:00</published><updated>2019-07-01T16:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-07-01:/posts/2019/Jul/01/ceph-a-scalable-high-performance-distributed-file-system/</id><summary type="html">&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-09-14T23:20:00+08:00</updated><entry><title>Secure Connection with MariaDB: A Conceptual Approach</title><link href="https://zhu45.org/posts/2019/Sep/14/secure-connection-with-mariadb-a-conceptual-approach/" rel="alternate"></link><published>2019-09-14T23:20:00+08:00</published><updated>2019-09-14T23:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-09-14:/posts/2019/Sep/14/secure-connection-with-mariadb-a-conceptual-approach/</id><summary type="html">&lt;p&gt;In this post, I discuss how we can &lt;a href="https://www.cyberciti.biz/faq/how-to-setup-mariadb-ssl-and-secure-connections-from-clients/"&gt;have a secure connection with MariaDB&lt;/a&gt; by first understanding the computer science fundamentals behind the steps. Once we have built the concept model, the steps linked above are self-explanatory. In addition, this post applies the same concept to understand SSL ccertificate.&lt;/p&gt;
+&lt;h2 id="concepts"&gt;Concepts …&lt;/h2&gt;</summary><content type="html">&lt;p&gt;In this post, I discuss how we can &lt;a href="https://www.cyberciti.biz/faq/how-to-setup-mariadb-ssl-and-secure-connections-from-clients/"&gt;have a secure connection with MariaDB&lt;/a&gt; by first understanding the computer science fundamentals behind the steps. Once we have built the concept model, the steps linked above are self-explanatory. In addition, this post applies the same concept to understand SSL ccertificate.&lt;/p&gt;
+&lt;h2 id="concepts"&gt;Concepts&lt;/h2&gt;
+&lt;p&gt;The key concept behind secure connection is &lt;a href="https://en.wikipedia.org/wiki/Certificate_authority#Overview"&gt;certificate&lt;/a&gt;, which relies on &lt;a href="https://en.wikipedia.org/wiki/Digital_signature"&gt;digital signature&lt;/a&gt;. The following picture shows the key idea of digital signature:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="digital signature" class="img-responsive" src="https://zhu45.org/images/digital_signature.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Suppose PayPal wants to ask the personal information from the end user. To allow user verify that PayPal indeed sends the message and such message (e.g., "Please enter your personal info") is not modified, PayPal will use his private key to sign the message and distribute his public key to the end user. If the user can decode that message with PayPal's public key, then end user can confirm two pieces of information:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The sender is PayPal assuming the public key at hand truly belongs to PayPal (Authentication)&lt;/li&gt;
+&lt;li&gt;The message is not modified in transit (Integrity)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now, let's examine further on Authentication. In the above scheme, the end user obtains public key from PayPal in order to decode the message that PayPal sends. This can be problematic: how do we know the public key the end user obtained is truly sent by PayPal? In other words, if a server owned by malicious attacker sends the public key to the user as if the server itself owned by PayPal, then the end user personal information will be in danager: of course the end user can use the public key from the malicious server to verify the authenticity and integrity of the message sent by malicious server; then the personal information sent by the user will be on the malicious server instead of on server owned by PayPal.&lt;/p&gt;
+&lt;p&gt;To patch the loophole mentioned above, we rely on a trusted third party to help user to verify the publick key is truly owned by the claimed party (e.g., public key we obtained from "PayPal" is truly owned by PayPal). Such trusted third party is called &lt;a href="https://en.wikipedia.org/wiki/Certificate_authority"&gt;Certificate Authority (CA)&lt;/a&gt;. CA verifies the ownership of a public key by issuing digital certificates, which essentially a digital signature signed by CA on a specific message sent by the public key owner. The following picture demonstrates this concept:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="CA digital signature" class="img-responsive" src="https://zhu45.org/images/ca_digitial_certificates.png"/&gt;&lt;/p&gt;
+&lt;p&gt;The most commonly seen example of digital certificate is the TLS/SSL server certificate, which is a certificate that server needs to present to the client
+during initial connection setup when establishing a secure connection required by &lt;a href="https://en.wikipedia.org/wiki/Transport_Layer_Security"&gt;TLS/SSL Protocol&lt;/a&gt;. The following picture shows the digital certificates used by this site, which is certified by COMODO (&lt;a href="https://en.wikipedia.org/wiki/Certificate_authority#Providers"&gt;one of CA providers&lt;/a&gt;) and issued to Cloudflare, the domain name server provider:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="digital certificates shown by zhu45.org" class="img-responsive" src="https://zhu45.org/images/digitial_certificates_homepage.png"/&gt;&lt;/p&gt;
+&lt;p&gt;A special message sent by the public key owner (e.g., PayPal) to obtain CA digital certificate is called &lt;a href="https://en.wikipedia.org/wiki/Certificate_signing_request"&gt;Certificate Signing Request (CSR)&lt;/a&gt;. For example, to create a private key (e.g., &lt;code&gt;server-key.pem&lt;/code&gt;) along with CSR  (e.g., &lt;code&gt;server-req.pem&lt;/code&gt;) on Mac, one can do:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ openssl req -newkey rsa:2048 -days &lt;span class="m"&gt;365000&lt;/span&gt; -nodes -keyout server-key.pem -out server-req.pem
+Generating a &lt;span class="m"&gt;2048&lt;/span&gt; bit RSA private key
+..............+++
+.......................................+++
+writing new private key to &lt;span class="s1"&gt;'server-key.pem'&lt;/span&gt;
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter &lt;span class="s1"&gt;'.'&lt;/span&gt;, the field will be left blank.
+-----
+Country Name &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt; letter code&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;[]&lt;/span&gt;:
+State or Province Name &lt;span class="o"&gt;(&lt;/span&gt;full name&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;[]&lt;/span&gt;:
+Locality Name &lt;span class="o"&gt;(&lt;/span&gt;eg, city&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;[]&lt;/span&gt;:
+Organization Name &lt;span class="o"&gt;(&lt;/span&gt;eg, company&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;[]&lt;/span&gt;:
+Organizational Unit Name &lt;span class="o"&gt;(&lt;/span&gt;eg, section&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;[]&lt;/span&gt;:
+Common Name &lt;span class="o"&gt;(&lt;/span&gt;eg, fully qualified host name&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;[]&lt;/span&gt;: Zeyuan&lt;span class="s1"&gt;'s laptop&lt;/span&gt;
+&lt;span class="s1"&gt;Email Address []:&lt;/span&gt;
+
+&lt;span class="s1"&gt;Please enter the following '&lt;/span&gt;extra&lt;span class="err"&gt;'&lt;/span&gt; attributes
+to be sent with your certificate request
+A challenge password &lt;span class="o"&gt;[]&lt;/span&gt;:
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;At this stage, avid reader like you might notice that there can still exist potential loophole: how do we know the public key the user obtained from "CA" is truly owned by CA? Here, CA makes an exaception here: CA issues its own CA digital certificate by signing on its own using its own private key (such digital certificate owned by CA is called &lt;a href="https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc778623(v=ws.10)?redirectedfrom=MSDN"&gt;CA certificate&lt;/a&gt;). Then we rely on regulation and industry auditing to ensure CA providers can play as a trusted third party.&lt;/p&gt;
+&lt;p&gt;One concept needs to clarify is that CA is not resources controlled by serveral public providers: large organizations usually have their own CAs as part of their own &lt;a href="https://en.wikipedia.org/wiki/Public_key_infrastructure"&gt;public key infrastructure&lt;/a&gt;. For example, if a company decides to build their own private cloud, they may have their own CAs to help with internal network traffic encryption. To show a concrete example, we can generate our own CA certificate like below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Generate CA private key
+$ openssl genrsa 2048 &amp;gt; ca-key.pem
+Generating RSA private key, 2048 bit long modulus
+........................+++
+........................................................................................................................+++
+e is 65537 (0x10001)
+
+# Self-signed CA certificate
+$ openssl req -new -x509 -nodes -days 365000 -key ca-key.pem -out ca-cert.pem
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) []:
+State or Province Name (full name) []:
+Locality Name (eg, city) []:
+Organization Name (eg, company) []:
+Organizational Unit Name (eg, section) []:
+Common Name (eg, fully qualified host name) []:Zeyuan's laptop
+Email Address []:
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Normally, in an organization setting (e.g., build an internal private cloud), several concepts emerge with CA certificate: &lt;a href="https://en.wikipedia.org/wiki/Root_certificate"&gt;root certificate&lt;/a&gt;, &lt;a href="https://en.wikipedia.org/wiki/Public_key_certificate#Types_of_certificate"&gt;intermediate certificate&lt;/a&gt;, and &lt;a href="https://en.wikipedia.org/wiki/Chain_of_trust"&gt;chain of trust&lt;/a&gt;. The following picture demonstrates this concept:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="chain of trust" class="img-responsive" src="https://zhu45.org/images/chain_of_trust.png"/&gt;&lt;/p&gt;
+&lt;p&gt;As one can see in the picture, root CA certificate is issued by root CA itself, and such certificate is called "root certificate". The reason for such naming reflects such CA is the root in the tree structure, which means a point of ultimate trust for a CA hierarchy. The CA in the middle of the picture holds "intermediate certificate", which is a certificate signed by another intermediate CA or a root CA and intermediate CA can sign CSR as if it is root CA. Requester (e.g., PayPal)'s certificate obtained via this way is secure because each CA in the CA hierarchy is validated by its ancestor, which can be traced back all the way to the root CA. Thus, requester's certificate can be treated as if it is directly obtained from root CA, the ultimate trusted party.&lt;/p&gt;
+&lt;p&gt;Take building private cloud as an example, one usage scenario of CA hierarchy is to eastablish secure connection between API server and database server. The following picture shows such organization:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="CA usage example" class="img-responsive" src="https://zhu45.org/images/ca_usage_example.png"/&gt;&lt;/p&gt;
+&lt;p&gt;There are two things need to note in the picture: one is the dot line between CA and API server, which indicates they are optional. TLS/SSL protocol does not enforce the client (e.g., API server) to present certificate (i.e., one-way TLS). However, if the database is configured to enable two-way TLS (&lt;a href="https://mariadb.com/kb/en/library/securing-connections-for-client-and-server/#enabling-one-way-tls-for-mariadb-clients"&gt;MariaDB&lt;/a&gt;), then it is necessary for client to obtain certificate as well. The second is authentication and encryption is a separation of concern: for one-way TLS, we only care about encryption of API access to database and we can choose different method to perform authentication (e.g., user and password).&lt;/p&gt;
+&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;h3 id="secure-connection-with-mariadb"&gt;Secure Connection with MariaDB&lt;/h3&gt;
+&lt;p&gt;Now, with the concept model we build so far, we can easily understand &lt;a href="https://www.cyberciti.biz/faq/how-to-setup-mariadb-ssl-and-secure-connections-from-clients/"&gt;the listed step about setup secure connection with MariaDB&lt;/a&gt;, which have both CA and MariaDB sit on the same server and use two-way TLS for both authentication and encryption of database access.&lt;/p&gt;
+&lt;h3 id="ssl-certificate"&gt;SSL Certificate&lt;/h3&gt;
+&lt;p&gt;For security connection, web server needs to obtain SSL certificate by sending CSR to CA. In addition, the web server usually also installs intermediate certificate to establishes the credibility of SSL Certificate by tying it to CA’s root certificate. The following picture shows why this works:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="SSL certificate example" class="img-responsive" src="https://zhu45.org/images/ssl_cert.png"/&gt;&lt;/p&gt;
+&lt;p&gt;With intermediate CA's public key, client can assume the web server's public key and information is verified by the intermediate CA. With root CA's private key, client can assume the intermediate CA is verified by the root CA and thus, client knows the web server's public key and information is verified by root CA and by chain of trust, web server's SSL certificate can be trusted.&lt;/p&gt;</content><category term="security"></category><category term="MariaDB"></category><category term="TLS"></category><category term="SSL"></category></entry><entry><title>"Ceph: A Scalable, High-Performance Distributed File System"</title><link href="https://zhu45.org/posts/2019/Jul/01/ceph-a-scalable-high-performance-distributed-file-system/" rel="alternate"></link><published>2019-07-01T16:20:00+08:00</published><updated>2019-07-01T16:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-07-01:/posts/2019/Jul/01/ceph-a-scalable-high-performance-distributed-file-system/</id><summary type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#problem"&gt;Problem&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
@@ -3386,7 +3466,7 @@ that cause a page fault uppercase, and those that don’t lowercase):&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
 approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12" rel="footnote"&gt;18&lt;/a&gt;&lt;/sup&gt; to avoid heavy overhead). The trace of the memory references with LRU policy shown below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -3500,7 +3580,7 @@ approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12
 &lt;/blockquote&gt;
 &lt;p&gt;FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -3614,7 +3694,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 &lt;/blockquote&gt;
 &lt;p&gt;Optimal policy means we want to replace the page that will be accessed &lt;em&gt;furthest in the future&lt;/em&gt; and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -3820,7 +3900,7 @@ which takes a queue and returns, as an unsigned integer, its address.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;One possible scenario of deadlock using &lt;code&gt;transfer()&lt;/code&gt; is illustrated below. Note that &lt;code&gt;queue1&lt;/code&gt; and &lt;code&gt;queue2&lt;/code&gt; in &lt;code&gt;transfer()&lt;/code&gt;
 are replaced with queues that they are pointing to (time increases with the row's number):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Thread1 (&lt;code&gt;transfer(q1,q2)&lt;/code&gt;)&lt;/th&gt;
@@ -4174,7 +4254,7 @@ the modification looks like below:&lt;/p&gt;
 &lt;p&gt;The question we want to answer is why doing so works?&lt;/p&gt;
 &lt;h2 id="explanation"&gt;Explanation&lt;/h2&gt;
 &lt;p&gt;We acquire key data from GDB as following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;GDB command&lt;/th&gt;
@@ -5724,7 +5804,7 @@ blocks from different clients)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;&lt;/th&gt;
@@ -10299,7 +10379,7 @@ a very efficient algorithm in all cases. Path compression is not entirely compat
 to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., &lt;strong&gt;ranks&lt;/strong&gt;), but in theory union-by-rank is as efficient as union-by-size.&lt;/p&gt;
 &lt;p&gt;If we do analysis on smart union with path compression, the running time for any sequence of &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects makes &lt;span class="math"&gt;\(O(N + M\log^*N)\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; accesses.&lt;/p&gt;
 &lt;p&gt;The following table summarizes the running time for &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on a set of &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects (don't forget we need to spend &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; to initialize disjoint sets):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -10330,7 +10410,7 @@ to recompute all the heights and in this case, heights stored for each tree beco
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;The running time for each operation for each algorithm is following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -10531,7 +10611,7 @@ can try to label the items from &lt;span class="math"&gt;\(1 \dots n\)&lt;/span&
 solution for &lt;span class="math"&gt;\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)&lt;/span&gt;. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;) in terms of subproblems (i.e., &lt;span class="math"&gt;\(S_i\)&lt;/span&gt;)? Let's take a look at an example:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -10621,7 +10701,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The running time for this algorithm is &lt;span class="math"&gt;\(O(n*W)\)&lt;/span&gt; because of the double for loop. To understand this algorithm,
 let's take a look at an example:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -10649,7 +10729,7 @@ let's take a look at an example:&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 5\)&lt;/span&gt; and with algorithm above, we essentially fill out a table like following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10718,7 +10798,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now, let's take a look at &lt;span class="math"&gt;\(B[1,1]\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(i = 1, b_i = 3, w_i = 2, w = 1\)&lt;/span&gt;, and since &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, and by our
 algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(B[0,1]\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(B[1,1] = 0\)&lt;/span&gt; and the table becomes&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10779,7 +10859,7 @@ algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, 
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;We can fill out the table like this and have&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10906,7 +10986,7 @@ for i = 1 to n
             x[i,w] = x_i that is associated with B[i-1,w]
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Let's walk through an example to better understand the algorithm idea:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -10933,7 +11013,7 @@ for i = 1 to n
 &lt;p&gt;&lt;span class="math"&gt;\(W = 8\)&lt;/span&gt; in our example. The algorithm essentially
 tries to build fill out two tables &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; table like
 the 0-1 knapsack problem:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -11001,7 +11081,7 @@ the 0-1 knapsack problem:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;and &lt;span class="math"&gt;\(x[i,w]\)&lt;/span&gt; table to keep track of the optimal
 value of &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; for each &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt;&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -11065,7 +11145,7 @@ $$&lt;/div&gt;
 &lt;p&gt;So, we fill in &lt;span class="math"&gt;\(B[1,3] = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[1,3] = 1\)&lt;/span&gt;. We can repeatedly
 doing this for other &lt;span class="math"&gt;\(i\)&lt;/span&gt;s. We can take a look at the values
 from another perspective like the tables below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[1,w]&lt;/th&gt;
@@ -11121,7 +11201,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[2,w]&lt;/th&gt;
@@ -11177,7 +11257,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[3,w]&lt;/th&gt;
@@ -11355,7 +11435,7 @@ In addition, this post belongs to part of future work mentioned in &lt;a href="h
 &lt;p&gt;Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Type&lt;/th&gt;
@@ -12124,7 +12204,7 @@ care about the size of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; 
 &lt;p&gt;Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
 housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
 its prediction. What we should try next?&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Method&lt;/th&gt;
@@ -12200,7 +12280,7 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$&lt;/div&gt;
 &lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;component&lt;/th&gt;
@@ -13038,7 +13118,7 @@ is a graphic summary for the text above&lt;/p&gt;
 the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Join types&lt;/th&gt;
@@ -13675,7 +13755,7 @@ $$&lt;/div&gt;
 &lt;p&gt;For example, the sequence &lt;span class="math"&gt;\(1,3,4,2,1\)&lt;/span&gt; can be considered as a sequence of 
 iterated function values with &lt;span class="math"&gt;\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
 x_3 = f(4) = 2, x_4 = f(2) = 1\)&lt;/span&gt;. Let's try another representation:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;index&lt;/th&gt;
@@ -20569,7 +20649,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21270,7 +21350,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21503,7 +21583,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21558,7 +21638,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21608,7 +21688,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21652,7 +21732,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21711,7 +21791,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21774,7 +21854,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -22165,7 +22245,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class=" table-striped table table-hover docutils"&gt;
+&lt;table border="1" class="table-hover  table-striped table docutils"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;
