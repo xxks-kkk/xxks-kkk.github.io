@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Semaphore
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../projects.html" style="padding: 10px">PROJECTS</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">Semaphore</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2019-10-20T17:10:00+08:00"> Oct 20, 2019</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/cpp.html">cpp</a>
+        /
+	<a href="../../../../../tag/golang.html">golang</a>
+        /
+	<a href="../../../../../tag/concurrency.html">concurrency</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">Semaphore</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2019-10-20T17:10:00+08:00">Oct 20, 2019</time></div> -->
+        </header>
+        
+        <article>
+            <p>Concurrency is a big topic that I'm planning to write about more for the upcoming days. In this post, I'll cover
+the concept "semaphore", a very important concept when we talk about synchronization. I'll walk through concept,
+and offer an implementation of semaphore in C++ with a working example. 
+Lastly, I'll apply <a href="https://tour.golang.org/concurrency/2">golang's channel concept</a> to help us understand semaphore better.</p>
+<div class="toc">
+<ul>
+<li><a href="#why-semaphore">Why Semaphore?</a></li>
+<li><a href="#concept-and-implementation">Concept and Implementation</a></li>
+<li><a href="#example">Example</a></li>
+<li><a href="#glimpse-from-golang">Glimpse from Golang</a></li>
+<li><a href="#summary">Summary</a></li>
+</ul>
+</div>
+<h2 id="why-semaphore">Why Semaphore?</h2>
+<p>Lock (e.g., mutex), condition variable, and semaphore are three tightly-coupled concepts that everyone will learn about
+in their undergraduate OS course. <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf">Some textbook</a> presents those concepts
+in the ordering shown above and talks about the missions that each concurrency primitive can achieve. In practice, however, I always find it is challenging to make choice when multiple options present for handling a specific usage scenario. The following
+is some rules of thumb I like to use when work with those concepts in practice:</p>
+<ul>
+<li>
+<p>Semaphore replaces "everything": I can use semaphore to work both as lock to protect shared data across multiple threads (i.e., threads can access data but only one at a time) and as condition variable <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> to order the events (e.g., ordering the access of shared data; ordering the execution of threads).</p>
+</li>
+<li>
+<p>Mutex is just a easeir tool to use under lock scenario. In other words, we can use semaphore as the lock but implements semaphoreitself requires more LOC than mutex (i.e., if we only need lock, use mutex).</p>
+</li>
+<li>
+<p>Use condition variable and mutex to implement semaphore and use semaphore as the abstraction for the rest of code. Certainly, one can say using condition variable + mutex for threads ordering but essentially, he is using semaphore (by constructing it with condition variable + mutex first) without explicitly stating it.</p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>I find how we understand those three concepts implicitly ill shaped by C, which is the default language used in undergraduate OS course. For example, C POSIX has a nice "<a href="https://pubs.opengroup.org/onlinepubs/7908799/xsh/semaphore.h.html">semaphore.h</a>" inteface that allows user to use semaphore <a href="http://www.csc.villanova.edu/~mdamian/threads/posixsem.html">directly</a>. Such existence of interface makes one to direct use <code>semaphore.h</code> for using semaphore and <a href="https://pubs.opengroup.org/onlinepubs/7908799/xsh/pthread.h.html">pthread.h</a> for condition variable and mutex. The consequence of such usage is that one can easily think that if they are using condition variable + mutex, they are using condition variable instead of semaphore on conceptual level. This is wrong! What they are really doing is to first construct semaphore using condition variable + mutex and then using semaphore to achieve the desired goal. The only difference between their usage and using semaphore directly is the lack of semaphore as an object abstraction. From this angle, I think C++ with LLVM compiler on Mac does a much matter job by <a href="https://stackoverflow.com/questions/27736618/why-are-sem-init-sem-getvalue-sem-destroy-deprecated-on-mac-os-x-and-w">deprecating POSIX semaphore.h C library</a>. This forces me to use standard <a href="https://en.cppreference.com/w/cpp/thread/mutex">mutex</a> and <a href="https://en.cppreference.com/w/cpp/thread/condition_variable">condition variable</a> to implement semaphore first before using it (also makes the code much more portable), which helps me to discover this sublte relationship among three concepts that is masked out in OS and C world. However, I'm not stating that all the condition variable + mutex usage will be equivalent to semaphore but semaphore can achieve the same purpose as condition variable with cleaner encapsulation.</p>
+</div>
+<p>Hopefully, by now, I can convince you why we need semaphore: it is such a indispensable tool in the pocket when we want to deal with commonly-seen concurrency situation: used as the lock to protect shared variable; used as ordering mechanism to facilitate threads execution order and concurrent event ordering.</p>
+<h2 id="concept-and-implementation">Concept and Implementation</h2>
+<p>Before we jump into semaphore, let's revisit mutex and condition variable concepts first because we will leverage those two concepts in our C++ implementation. Mutex is used to allow many threads to acess the same variable but only do so one at a time. It is a
+useful tool to avoid data race: a situation where two threads acess the same variable concurrently and at least one of the access is a write (e.g., Alice deposits $200 into bank with initial balance is 0; Bob deposits $100 to the same account and the final balance can be $200 <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>). Whenever a thread wants to modify a shared variable, it needs to acquire mutex first and release the mutex after the modification. Condition variable is used to put one thread to sleep until the condition the thread is waiting for comes true. A condition variable is an explicit queue that threads can put themselves on when some state of execution (i.e., some condition) is not as desired (by <strong>waiting</strong> on the condition); some other thread, when it changes said state, can then wake one (or more) of those waiting threads and thus allow them to continue (by <strong>signaling</strong> on the condition).</p>
+<p>A semaphore is an object with an integer value that we can manipulate with an increment-value method (let's denote such method as <code>post()</code>) and a decrement-value method (let's denote such method as <code>wait()</code>). Then, the semantics of semaphore is defined by
+the functionality of <code>post()</code> and <code>wait()</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the following, when we talk about the value of semaphore, we really mean the integer value contained inside semaphore.</p>
+</div>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">post</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// increment the semaphore value by one</span>
+  <span class="c1">// if there are one or more threads waiting on the semaphore, wake one</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">wait</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// decrement the semaphore value by one</span>
+  <span class="c1">// wait if the resulting semaphore value is negative</span>
+<span class="p">}</span>
+</pre></div>
+<p>Now, let's implement semaphore in C++ with the semantics stated above.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Semaphore</span>
+<span class="p">{</span>
+<span class="k">private</span><span class="o">:</span>
+  <span class="kt">size_t</span> <span class="n">avail</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">m</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">condition_variable</span> <span class="n">cv</span><span class="p">;</span>
+
+<span class="k">public</span><span class="o">:</span>
+  <span class="c1">// only one thread can call this; by default, we construct a binary semaphore</span>
+  <span class="k">explicit</span> <span class="n">Semaphore</span><span class="p">(</span><span class="kt">int</span> <span class="n">avail_</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">:</span> <span class="n">avail</span><span class="p">(</span><span class="n">avail_</span><span class="p">)</span> <span class="p">{}</span>
+
+  <span class="kt">void</span> <span class="n">wait</span><span class="p">()</span>
+  <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lk</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+    <span class="n">cv</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lk</span><span class="p">,</span> <span class="p">[</span><span class="k">this</span><span class="p">]</span> <span class="p">{</span> <span class="k">return</span> <span class="n">avail</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="p">});</span>
+    <span class="n">avail</span><span class="o">--</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">post</span><span class="p">()</span>
+  <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lk</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+    <span class="n">avail</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">cv</span><span class="p">.</span><span class="n">notify_one</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="kt">size_t</span> <span class="n">available</span><span class="p">()</span> <span class="k">const</span>
+  <span class="p">{</span>
+    <span class="k">return</span> <span class="n">avail</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+<p>Since we modify the integer value of semaphore (<code>avail</code>) that can be updated by multiple threads concurrently, 
+we need to use mutex (<code>m</code>) to ensure only one thread doing the update. 
+In addition, since threads need to wake up or wait depending on situation, we need to use condition variable (<code>cv</code>).
+The implementation itself follows some standard practice when working with condition variable.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Here, we describes the procedure in C++ context; but steps generally applied in other languages. Also, the standard practice
+normally done by the thread. However, since the thread simply calls <code>post()</code> and <code>wait()</code>, the practice is now presented in
+the <code>post()</code> and <code>wait()</code> implementation.</p>
+</div>
+<p>For thread calling <code>post()</code> (i.e., the thread that intends to modify the value of semaphore), <code>post()</code> has to:</p>
+<ol>
+<li>acquire a <a href="https://en.cppreference.com/w/cpp/thread/mutex">std::mutex</a> (usually via <a href="https://en.cppreference.com/w/cpp/thread/lock_guard">std::lock_guard</a>)</li>
+<li>perform the modification while the lock is held (e.g., <code>avail++</code>)</li>
+<li>execute <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/notify_one">notify_one</a> or <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/notify_all">notify_all</a> on the <a href="https://en.cppreference.com/w/cpp/thread/condition_variable">std::condition_variable</a> <sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">3</a></sup></li>
+</ol>
+<p>For thread calling <code>wait()</code> (e.g., any threads that intends to wait on the condition variable in semaphore), <code>wait()</code> has to:</p>
+<ol>
+<li>acquire a <a href="https://en.cppreference.com/w/cpp/thread/unique_lock">std::unique_lock<std::mutex></std::mutex></a> on the same mutex as used to protect the shared variable</li>
+<li>execute <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait">wait</a>, <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait_for">wait_for</a>, or <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait_until">wait_until</a>. The wait operations atomically release the mutex and suspend the execution of the thread.</li>
+<li>when the condition variable is notified, a timeout expires, or a <a href="https://en.wikipedia.org/wiki/Spurious_wakeup">spurious wakeup</a> occurs, the thread is awakened, and the mutex is atomically reacquired. The thread should then check the condition and resume waiting if the wake up was spurious <sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">4</a></sup>. </li>
+</ol>
+<p>One might probably notice, there is no explicitly unlock or using <code>while</code> to check for the wait condition (<code>avail &gt; 0</code>) inside the implementation. Actually, those operations happen but are hidden by the C++ library implementation:</p>
+<ul>
+<li>
+<p>We acquire mutex lock via <a href="http://www.cplusplus.com/reference/mutex/unique_lock/">std::unique_lock</a> and since <code>std::unqiue_lock</code> guarantees an unlocked
+status on <code>mutex</code> on destruction and <code>std::unqiue_lock</code> destructor will be automatically invoked when the <code>wait()</code> or <code>post()</code> exits, <code>mutex</code> will be unlocked on function exit.</p>
+</li>
+<li>
+<p><a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait">std::condition_variable::wait</a> has the function signature <code>template&lt; class Predicate &gt; void wait( std::unique_lock&lt;std::mutex&gt;&amp; lock, Predicate pred );</code> (e.g., <code>cv.wait()</code>) and inside the function, it does </p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">pred</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">wait</span><span class="p">(</span><span class="n">lock</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<p>Thus, <code>cv.wait(lk, [this] { return avail &gt; 0; });</code> can be expanded as </p>
+<div class="highlight"><pre><span></span><span class="k">while</span> <span class="p">(</span><span class="n">avail</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">wait</span><span class="p">(</span><span class="n">lk</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<p>An intuitve read of <code>cv.wait(lk, [this] { return avail &gt; 0; });</code> is the thread will wait until <code>avail &gt; 0</code>, the condition contained in the lambda function argument. This can probably saves some brain power to do the expansion shown above. </p>
+<p>To make the implementation easier to understand, I borrow the reference implementation in C from <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf">OSTEP</a>. Hopefully, it will make the C++ implementation clearer:</p>
+<div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">__Zem_t</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">value</span><span class="p">;</span>
+  <span class="n">pthread_cond_t</span> <span class="n">cond</span><span class="p">;</span>
+  <span class="n">pthread_mutex_t</span> <span class="n">lock</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">Zem_t</span><span class="p">;</span>
+
+<span class="c1">// only one thread can call this</span>
+<span class="kt">void</span> <span class="nf">Zem_init</span><span class="p">(</span><span class="n">Zem_t</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
+  <span class="n">Cond_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">cond</span><span class="p">);</span>
+  <span class="n">Mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">Zem_wait</span><span class="p">(</span><span class="n">Zem_t</span><span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">Cond_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">cond</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="o">--</span><span class="p">;</span>
+  <span class="n">Mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">Zem_post</span><span class="p">(</span><span class="n">Zem_t</span><span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
+  <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="o">++</span><span class="p">;</span>
+  <span class="n">Cond_signal</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">cond</span><span class="p">);</span>
+  <span class="n">Mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+<h2 id="example">Example</h2>
+<p>As one can probably see, semaphore doesn't offer much freedom when come to how much we can customize it. The only thing that can be set by the user
+is the initial integer value of the semaphore (e.g., <code>avail</code>). In fact, that's the beauty of the semaphore: we can achieve various purposes with semaphore by initalizing it with different values. For exmaple, we can intialize the semaphore with value <code>1</code> to make the semaphore work like a lock (such semaphore is called <strong>binary semaphore</strong>):</p>
+<div class="highlight"><pre><span></span><span class="n">Semaphore</span> <span class="nf">lk</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="kt">int</span> <span class="n">balance</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="c1">// some function called by multiple threads on modifying balance</span>
+<span class="kt">void</span> <span class="nf">func</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">lk</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span>
+  <span class="n">balance</span> <span class="o">+=</span> <span class="mi">100</span><span class="p">;</span>
+  <span class="n">lk</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+<p>We can also set semaphore value properly to order the threads execution. Consider the <a href="https://leetcode.com/problems/print-in-order/">Leetcode Problem: 1114. Print In Order</a> where we pass the same object <code>Foo</code> into three threads and let them calling appropriate print methods to print "first", "second", and "third" in such ordering without restricting which thread is assigned to print which word. For detailed example, see the problem description. The following implementation shows how we can use semaphore implementation shown above to achieve such ordering purpose: always print "first", "second", and "third" in order:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Foo</span>
+<span class="p">{</span>
+  <span class="n">Semaphore</span> <span class="n">firstJobDone</span><span class="p">;</span>
+  <span class="n">Semaphore</span> <span class="n">secondJobDone</span><span class="p">;</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">Foo</span><span class="p">()</span><span class="o">:</span> <span class="n">firstJobDone</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">secondJobDone</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{}</span>
+
+  <span class="kt">void</span> <span class="n">first</span><span class="p">(</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span> <span class="n">printFirst</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">printFirst</span><span class="p">();</span>
+    <span class="n">firstJobDone</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">second</span><span class="p">(</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span> <span class="n">printSecond</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">firstJobDone</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span>
+    <span class="n">printSecond</span><span class="p">();</span>
+    <span class="n">secondJobDone</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">third</span><span class="p">(</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span> <span class="n">printThird</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">secondJobDone</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span>
+    <span class="n">printThird</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+<p>Both <code>firstJobDone</code> and <code>secondJobDone</code> have semaphore value of <code>0</code> when the <code>Foo</code> class is constructed. 
+Both <code>second()</code> and <code>third()</code> will call <code>wait()</code> method on respective semaphore; unless <code>post()</code> is called before <code>wait()</code>, 
+the value of semaphore will be 0, which will put threads calling <code>second()</code> and <code>third()</code> pause waiting on respective semaphore. Since <code>first()</code> doesn't call <code>wait()</code> initially, <code>first()</code> will be executed first. Then, <code>firstJobDone.post()</code> will be called, which will bring <code>fristJobDone</code> semaphore value to 1 and wake up the thread that wait on the semaphore: in this case, it's the thread calling <code>second()</code>. Since <code>secondJobDone</code> semaphore value is still 0, thread calling <code>third()</code> will continue to pause until thread with <code>second()</code> done the work and increment the semaphore value. The complete implementation with test can be seen <a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/1114-PrintInOrder/printInOrder.cc">here</a>. Note that semaphore implementation used is abstracted in <a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/cppinclude/mysemaphore.h">mysemaphore.h</a> with implementation <a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/cppinclude/mysemaphore.cc">here</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Probably one may have noticed that the semantics of semaphore implementation has been slightly different than the
+semantics of <code>wait()</code> and <code>post()</code> we defined above with the pseudo code comment. In fact, semaphore intially has
+the invariant that: the value of the semaphore, when negative, is equal to the number of waiting threads <sup id="fnref:5"><a class="footnote-ref" href="#fn:5" rel="footnote">5</a></sup>. We use
+invariant in the semantics definition instead of the actual implementation is to help remember semaphore functionality.
+We certainly can modify the implementation to make it follow the invariant: we switch type of <code>avail</code> from <code>size_t</code>
+to <code>int</code> and change the wait condition from <code>avail &gt; 0</code> to <code>avail &gt;= 0</code>. The complete modified implementation can
+be seen <a href="https://github.com/xxks-kkk/shuati/pull/158">here</a>. Note that to use this version of implementation in the 
+"print in order" example above, we need to intialize both semaphores to <code>-1</code> instead of <code>0</code>.</p>
+</div>
+<h2 id="glimpse-from-golang">Glimpse from Golang</h2>
+<p>Recently, I learned about Golang for the work. The idea of using channel, the concept based on <a href="https://en.wikipedia.org/wiki/Communicating_sequential_processes">communicating sequential process (CSP)</a>, as the fundamental concurrency primitive really opens my mind (I've seen the idea in Python and Rust but Golang abuses the concept heavily). Such novel construction naturally brings new angle to re-examine the old concept: semaphore. The following examples are taken from <a href="https://www.goodreads.com/book/show/25080953-the-go-programming-language">The Go Programming Language</a> with page number 241, 250, and 262.</p>
+<p>The purpose of semaphore can be seen from limit parallelism: for example, no more than 20 concurrent calls to open a file. From
+the golang world, we can use a buffered channel of capacity <span class="math">\(n\)</span> to construct the semaphore (or <em>counting semaphore</em> if we want to be specific). Recall that a buffered channel has a queue of elements with the maximum queue size <span class="math">\(n\)</span> (i.e., capacity). A send operation on a buffered channel inserts an element at the back of the queue, and a receive operation removes an element from the front. Then the goroutine is blocked under the following conditions:</p>
+<ul>
+<li>
+<p>If the channel is full, the goroutine with send operation will be blocked until space is available in the queue due to a receive by another goroutine.</p>
+</li>
+<li>
+<p>If the channel is empty, the goroutine with receiver operation is blocked until a value is sent to the queue by another goroutine.</p>
+</li>
+</ul>
+<p>Then, conceptually, to implement semaphore, each of the <span class="math">\(n\)</span> vacant slots in the channel buffer (i.e., queue) represents a token
+entitling the holder to proceed. Token is acquired by sending a value to the channel and is released by receiving a value 
+from the channel. Receiving a value creates a new vacant slot that potentially allows other goroutine to send the value (i.e., acquire token). As one can probably see, with this setting, we can allow at most <span class="math">\(n\)</span> sends without an intervening receive.</p>
+<p>Implement semaphore in this way is surprisingly simple: all we need is a buffere channel and perform send or receive appropriately. The book provides an example of crawling the web (the book is from Google engineers; no wonder):</p>
+<div class="highlight"><pre><span></span><span class="c1">// tokens is a counting semaphore used to</span>
+<span class="c1">// enforce a limit of 20 concurrent requests.</span>
+<span class="kd">var</span> <span class="nx">tokens</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{},</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="kd">func</span> <span class="nx">crawl</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="kt">string</span> <span class="p">{</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
+    <span class="nx">tokens</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span> <span class="c1">// acquire a token</span>
+    <span class="nx">list</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">links</span><span class="p">.</span><span class="nx">Extract</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
+    <span class="o">&lt;-</span><span class="nx">tokens</span> <span class="c1">// release the token</span>
+
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">.</span><span class="nx">Print</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">list</span>
+<span class="p">}</span>
+</pre></div>
+<p>If we compare this Go's implementation with our C++ one, we can see that <code>tokens &lt;- struct{}{}</code> works like <code>wait()</code>: if we 
+cannot send value to the channel, we wait until the channel has some vacant spot. <code>&lt;-tokens</code> works like <code>post()</code>: we're done and thus release token so that another goroutine can do the work. To generalize this implementation, we normally can:</p>
+<div class="highlight"><pre><span></span><span class="c1">// 20 is the intialized semaphore value</span>
+<span class="kd">var</span> <span class="nx">semaphore</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{},</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="kd">func</span> <span class="nx">some_work</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">semaphore</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>        <span class="c1">// acquire token</span>
+    <span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span> <span class="o">&lt;-</span><span class="nx">semaphore</span> <span class="p">}()</span> <span class="c1">// release token</span>
+    <span class="c1">// do the work ...</span>
+<span class="p">}</span>
+</pre></div>
+<p>To see how semaphore work as a lock (mutex) in Go, we can revisit previous concurrent balance update situation and make
+both deposit and check the balance concurrent-safe:</p>
+<div class="highlight"><pre><span></span><span class="kd">var</span> <span class="p">(</span>
+    <span class="nx">semaphore</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{},</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">// a binary semaphore guarding balance</span>
+    <span class="nx">balance</span> <span class="kt">int</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nx">Deposit</span><span class="p">(</span><span class="nx">amount</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">semaphore</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span> <span class="c1">// acquire token</span>
+    <span class="nx">balance</span> <span class="p">=</span> <span class="nx">balance</span> <span class="o">+</span> <span class="nx">amount</span>
+    <span class="o">&lt;-</span><span class="nx">semaphore</span> <span class="c1">// release token</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">Balance</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="nx">semaphore</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span> <span class="c1">// acquire token</span>
+    <span class="nx">b</span> <span class="o">:=</span> <span class="nx">balance</span>
+    <span class="o">&lt;-</span><span class="nx">semaphore</span> <span class="c1">// release token</span>
+    <span class="k">return</span> <span class="nx">b</span>
+<span class="p">}</span>
+</pre></div>
+<h2 id="summary">Summary</h2>
+<p>Semaphore is a really powerful concurrency construct that can work like a lock, perform ordering, and limit parallelism. 
+I always like to semaphore first and use it exculsively without scratching the head to write sppecific condition variable + mutex
+combo for each kind of situation. Certainly, there will be case using conditon variable + mutex is more straightforward but I find it is very rare.</p>
+<div class="footnote">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>The similarity of semaphore and condition variable is suggested by the origin of condition variable idea: Dijkstra's use of "<a href="http://www.cs.utexas.edu/users/EWD/ewd01xx/EWD123.PDF">private semaphore</a>". <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+</li>
+<li id="fn:2">
+<p>Think about why this can happen. If it is not clear, see <a href="https://www.goodreads.com/book/show/25080953-the-go-programming-language">The Go Programming Language book p.259</a>. <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
+</li>
+<li id="fn:4">
+<p>"Always hold the lock while signaling" is one important tip for concurrency correctness mentioned in <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf">OSTEP</a>. There is 4th step that release lock is omitted here because it is automatically taken 
+care of by the destructor of <code>std::lock_guard</code>. <a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 3 in the text">↩</a></p>
+</li>
+<li id="fn:3">
+<p>That's why we always use <code>while</code> instead of <code>if</code> when deciding whether to wait on the condition. In classroom, we normally learned the practice from the difference between Mesa semantics and Hoare semantics. See <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf">OSTEP</a> for more details. <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 4 in the text">↩</a></p>
+</li>
+<li id="fn:5">
+<p>The invariant is stated in one of <a href="https://klevas.mif.vu.lt/~liutauras/books/Dijkstra%20-%20The%20structure%20of%20the%20THE%20multiprogramming%20system.pdf">Dijkstra's papers</a>. <a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text">↩</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article>
+
+<!--        <footer>
+            <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p>
+        </footer>-->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2019 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

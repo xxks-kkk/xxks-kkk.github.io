@@ -109,7 +109,7 @@ the modification looks like below:</p>
 <p>The question we want to answer is why doing so works?</p>
 <h2 id="explanation">Explanation</h2>
 <p>We acquire key data from GDB as following:</p>
-<table class="table-hover  table-striped table">
+<table class="table  table-striped table-hover">
 <thead>
 <tr>
 <th>GDB command</th>
@@ -169,6 +169,10 @@ However, <a href="https://stackoverflow.com/questions/52508492/why-cant-i-pass-t
 <code>s</code> is undefined behavior. Undefined behavior means there is no predictability of the program: anything can happen. Thus, even we can print out the string, we still consider doing so wrong.</p>
 </div>
 <p>Hope this short writeup helps!</p>
+<p>--- 10/15/19 UPDATE ---</p>
+<p>Addtional perspective to understand why <code>&amp;s</code> works: a pointer is just a regular variable that holds some memory address of 
+another variable. Now, we want to instead of holding the memory address of some random content (e.g., <code>0x7fff5fbff360</code>), hold 
+the memory address of string <code>"Hello World!"</code> (e.g., <code>0x100000f8e</code>). A natural choice is to pass in the memory address of the variable that we want to modify the value it holds, which in this case is <code>&amp;s</code>.</p>
         </article>
 
 <!--        <footer>

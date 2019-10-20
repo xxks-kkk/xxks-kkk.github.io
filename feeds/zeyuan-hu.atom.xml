@@ -1,5 +1,360 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-09-14T23:20:00+08:00</updated><entry><title>Secure Connection with MariaDB: A Conceptual Approach</title><link href="https://zhu45.org/posts/2019/Sep/14/secure-connection-with-mariadb-a-conceptual-approach/" rel="alternate"></link><published>2019-09-14T23:20:00+08:00</published><updated>2019-09-14T23:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-09-14:/posts/2019/Sep/14/secure-connection-with-mariadb-a-conceptual-approach/</id><summary type="html">&lt;p&gt;In this post, I discuss how we can &lt;a href="https://www.cyberciti.biz/faq/how-to-setup-mariadb-ssl-and-secure-connections-from-clients/"&gt;have a secure connection with MariaDB&lt;/a&gt; by first understanding the computer science fundamentals behind the steps. Once we have built the concept model, the steps linked above are self-explanatory. In addition, this post applies the same concept to understand SSL ccertificate.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page - Zeyuan Hu</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/zeyuan-hu.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2019-10-20T17:10:00+08:00</updated><entry><title>Semaphore</title><link href="https://zhu45.org/posts/2019/Oct/20/semaphore/" rel="alternate"></link><published>2019-10-20T17:10:00+08:00</published><updated>2019-10-20T17:10:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-10-20:/posts/2019/Oct/20/semaphore/</id><summary type="html">&lt;p&gt;Concurrency is a big topic that I'm planning to write about more for the upcoming days. In this post, I'll cover
+the concept "semaphore", a very important concept when we talk about synchronization. I'll walk through concept,
+and offer an implementation of semaphore in C++ with a working example. 
+Lastly …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Concurrency is a big topic that I'm planning to write about more for the upcoming days. In this post, I'll cover
+the concept "semaphore", a very important concept when we talk about synchronization. I'll walk through concept,
+and offer an implementation of semaphore in C++ with a working example. 
+Lastly, I'll apply &lt;a href="https://tour.golang.org/concurrency/2"&gt;golang's channel concept&lt;/a&gt; to help us understand semaphore better.&lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#why-semaphore"&gt;Why Semaphore?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#concept-and-implementation"&gt;Concept and Implementation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#example"&gt;Example&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#glimpse-from-golang"&gt;Glimpse from Golang&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#summary"&gt;Summary&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="why-semaphore"&gt;Why Semaphore?&lt;/h2&gt;
+&lt;p&gt;Lock (e.g., mutex), condition variable, and semaphore are three tightly-coupled concepts that everyone will learn about
+in their undergraduate OS course. &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf"&gt;Some textbook&lt;/a&gt; presents those concepts
+in the ordering shown above and talks about the missions that each concurrency primitive can achieve. In practice, however, I always find it is challenging to make choice when multiple options present for handling a specific usage scenario. The following
+is some rules of thumb I like to use when work with those concepts in practice:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Semaphore replaces "everything": I can use semaphore to work both as lock to protect shared data across multiple threads (i.e., threads can access data but only one at a time) and as condition variable &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; to order the events (e.g., ordering the access of shared data; ordering the execution of threads).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Mutex is just a easeir tool to use under lock scenario. In other words, we can use semaphore as the lock but implements semaphoreitself requires more LOC than mutex (i.e., if we only need lock, use mutex).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Use condition variable and mutex to implement semaphore and use semaphore as the abstraction for the rest of code. Certainly, one can say using condition variable + mutex for threads ordering but essentially, he is using semaphore (by constructing it with condition variable + mutex first) without explicitly stating it.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;I find how we understand those three concepts implicitly ill shaped by C, which is the default language used in undergraduate OS course. For example, C POSIX has a nice "&lt;a href="https://pubs.opengroup.org/onlinepubs/7908799/xsh/semaphore.h.html"&gt;semaphore.h&lt;/a&gt;" inteface that allows user to use semaphore &lt;a href="http://www.csc.villanova.edu/~mdamian/threads/posixsem.html"&gt;directly&lt;/a&gt;. Such existence of interface makes one to direct use &lt;code&gt;semaphore.h&lt;/code&gt; for using semaphore and &lt;a href="https://pubs.opengroup.org/onlinepubs/7908799/xsh/pthread.h.html"&gt;pthread.h&lt;/a&gt; for condition variable and mutex. The consequence of such usage is that one can easily think that if they are using condition variable + mutex, they are using condition variable instead of semaphore on conceptual level. This is wrong! What they are really doing is to first construct semaphore using condition variable + mutex and then using semaphore to achieve the desired goal. The only difference between their usage and using semaphore directly is the lack of semaphore as an object abstraction. From this angle, I think C++ with LLVM compiler on Mac does a much matter job by &lt;a href="https://stackoverflow.com/questions/27736618/why-are-sem-init-sem-getvalue-sem-destroy-deprecated-on-mac-os-x-and-w"&gt;deprecating POSIX semaphore.h C library&lt;/a&gt;. This forces me to use standard &lt;a href="https://en.cppreference.com/w/cpp/thread/mutex"&gt;mutex&lt;/a&gt; and &lt;a href="https://en.cppreference.com/w/cpp/thread/condition_variable"&gt;condition variable&lt;/a&gt; to implement semaphore first before using it (also makes the code much more portable), which helps me to discover this sublte relationship among three concepts that is masked out in OS and C world. However, I'm not stating that all the condition variable + mutex usage will be equivalent to semaphore but semaphore can achieve the same purpose as condition variable with cleaner encapsulation.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Hopefully, by now, I can convince you why we need semaphore: it is such a indispensable tool in the pocket when we want to deal with commonly-seen concurrency situation: used as the lock to protect shared variable; used as ordering mechanism to facilitate threads execution order and concurrent event ordering.&lt;/p&gt;
+&lt;h2 id="concept-and-implementation"&gt;Concept and Implementation&lt;/h2&gt;
+&lt;p&gt;Before we jump into semaphore, let's revisit mutex and condition variable concepts first because we will leverage those two concepts in our C++ implementation. Mutex is used to allow many threads to acess the same variable but only do so one at a time. It is a
+useful tool to avoid data race: a situation where two threads acess the same variable concurrently and at least one of the access is a write (e.g., Alice deposits $200 into bank with initial balance is 0; Bob deposits $100 to the same account and the final balance can be $200 &lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2" rel="footnote"&gt;2&lt;/a&gt;&lt;/sup&gt;). Whenever a thread wants to modify a shared variable, it needs to acquire mutex first and release the mutex after the modification. Condition variable is used to put one thread to sleep until the condition the thread is waiting for comes true. A condition variable is an explicit queue that threads can put themselves on when some state of execution (i.e., some condition) is not as desired (by &lt;strong&gt;waiting&lt;/strong&gt; on the condition); some other thread, when it changes said state, can then wake one (or more) of those waiting threads and thus allow them to continue (by &lt;strong&gt;signaling&lt;/strong&gt; on the condition).&lt;/p&gt;
+&lt;p&gt;A semaphore is an object with an integer value that we can manipulate with an increment-value method (let's denote such method as &lt;code&gt;post()&lt;/code&gt;) and a decrement-value method (let's denote such method as &lt;code&gt;wait()&lt;/code&gt;). Then, the semantics of semaphore is defined by
+the functionality of &lt;code&gt;post()&lt;/code&gt; and &lt;code&gt;wait()&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;In the following, when we talk about the value of semaphore, we really mean the integer value contained inside semaphore.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;post&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// increment the semaphore value by one&lt;/span&gt;
+  &lt;span class="c1"&gt;// if there are one or more threads waiting on the semaphore, wake one&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// decrement the semaphore value by one&lt;/span&gt;
+  &lt;span class="c1"&gt;// wait if the resulting semaphore value is negative&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now, let's implement semaphore in C++ with the semantics stated above.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Semaphore&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="k"&gt;private&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="kt"&gt;size_t&lt;/span&gt; &lt;span class="n"&gt;avail&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;mutex&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;condition_variable&lt;/span&gt; &lt;span class="n"&gt;cv&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="c1"&gt;// only one thread can call this; by default, we construct a binary semaphore&lt;/span&gt;
+  &lt;span class="k"&gt;explicit&lt;/span&gt; &lt;span class="n"&gt;Semaphore&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;avail_&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;avail&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;avail_&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+
+  &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;unique_lock&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;mutex&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;lk&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;cv&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;avail&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;});&lt;/span&gt;
+    &lt;span class="n"&gt;avail&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;unique_lock&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;mutex&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;lk&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;avail&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;cv&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notify_one&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="kt"&gt;size_t&lt;/span&gt; &lt;span class="n"&gt;available&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;avail&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Since we modify the integer value of semaphore (&lt;code&gt;avail&lt;/code&gt;) that can be updated by multiple threads concurrently, 
+we need to use mutex (&lt;code&gt;m&lt;/code&gt;) to ensure only one thread doing the update. 
+In addition, since threads need to wake up or wait depending on situation, we need to use condition variable (&lt;code&gt;cv&lt;/code&gt;).
+The implementation itself follows some standard practice when working with condition variable.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Here, we describes the procedure in C++ context; but steps generally applied in other languages. Also, the standard practice
+normally done by the thread. However, since the thread simply calls &lt;code&gt;post()&lt;/code&gt; and &lt;code&gt;wait()&lt;/code&gt;, the practice is now presented in
+the &lt;code&gt;post()&lt;/code&gt; and &lt;code&gt;wait()&lt;/code&gt; implementation.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;For thread calling &lt;code&gt;post()&lt;/code&gt; (i.e., the thread that intends to modify the value of semaphore), &lt;code&gt;post()&lt;/code&gt; has to:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;acquire a &lt;a href="https://en.cppreference.com/w/cpp/thread/mutex"&gt;std::mutex&lt;/a&gt; (usually via &lt;a href="https://en.cppreference.com/w/cpp/thread/lock_guard"&gt;std::lock_guard&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;perform the modification while the lock is held (e.g., &lt;code&gt;avail++&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;execute &lt;a href="https://en.cppreference.com/w/cpp/thread/condition_variable/notify_one"&gt;notify_one&lt;/a&gt; or &lt;a href="https://en.cppreference.com/w/cpp/thread/condition_variable/notify_all"&gt;notify_all&lt;/a&gt; on the &lt;a href="https://en.cppreference.com/w/cpp/thread/condition_variable"&gt;std::condition_variable&lt;/a&gt; &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4" rel="footnote"&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For thread calling &lt;code&gt;wait()&lt;/code&gt; (e.g., any threads that intends to wait on the condition variable in semaphore), &lt;code&gt;wait()&lt;/code&gt; has to:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;acquire a &lt;a href="https://en.cppreference.com/w/cpp/thread/unique_lock"&gt;std::unique_lock&lt;std::mutex&gt;&lt;/std::mutex&gt;&lt;/a&gt; on the same mutex as used to protect the shared variable&lt;/li&gt;
+&lt;li&gt;execute &lt;a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait"&gt;wait&lt;/a&gt;, &lt;a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait_for"&gt;wait_for&lt;/a&gt;, or &lt;a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait_until"&gt;wait_until&lt;/a&gt;. The wait operations atomically release the mutex and suspend the execution of the thread.&lt;/li&gt;
+&lt;li&gt;when the condition variable is notified, a timeout expires, or a &lt;a href="https://en.wikipedia.org/wiki/Spurious_wakeup"&gt;spurious wakeup&lt;/a&gt; occurs, the thread is awakened, and the mutex is atomically reacquired. The thread should then check the condition and resume waiting if the wake up was spurious &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3" rel="footnote"&gt;4&lt;/a&gt;&lt;/sup&gt;. &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;One might probably notice, there is no explicitly unlock or using &lt;code&gt;while&lt;/code&gt; to check for the wait condition (&lt;code&gt;avail &amp;gt; 0&lt;/code&gt;) inside the implementation. Actually, those operations happen but are hidden by the C++ library implementation:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;We acquire mutex lock via &lt;a href="http://www.cplusplus.com/reference/mutex/unique_lock/"&gt;std::unique_lock&lt;/a&gt; and since &lt;code&gt;std::unqiue_lock&lt;/code&gt; guarantees an unlocked
+status on &lt;code&gt;mutex&lt;/code&gt; on destruction and &lt;code&gt;std::unqiue_lock&lt;/code&gt; destructor will be automatically invoked when the &lt;code&gt;wait()&lt;/code&gt; or &lt;code&gt;post()&lt;/code&gt; exits, &lt;code&gt;mutex&lt;/code&gt; will be unlocked on function exit.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait"&gt;std::condition_variable::wait&lt;/a&gt; has the function signature &lt;code&gt;template&amp;lt; class Predicate &amp;gt; void wait( std::unique_lock&amp;lt;std::mutex&amp;gt;&amp;amp; lock, Predicate pred );&lt;/code&gt; (e.g., &lt;code&gt;cv.wait()&lt;/code&gt;) and inside the function, it does &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;pred&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Thus, &lt;code&gt;cv.wait(lk, [this] { return avail &amp;gt; 0; });&lt;/code&gt; can be expanded as &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;avail&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lk&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;An intuitve read of &lt;code&gt;cv.wait(lk, [this] { return avail &amp;gt; 0; });&lt;/code&gt; is the thread will wait until &lt;code&gt;avail &amp;gt; 0&lt;/code&gt;, the condition contained in the lambda function argument. This can probably saves some brain power to do the expansion shown above. &lt;/p&gt;
+&lt;p&gt;To make the implementation easier to understand, I borrow the reference implementation in C from &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf"&gt;OSTEP&lt;/a&gt;. Hopefully, it will make the C++ implementation clearer:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;__Zem_t&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;pthread_cond_t&lt;/span&gt; &lt;span class="n"&gt;cond&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;pthread_mutex_t&lt;/span&gt; &lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="n"&gt;Zem_t&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// only one thread can call this&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;Zem_init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Zem_t&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;Cond_init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;cond&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;Mutex_init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;Zem_wait&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Zem_t&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;Mutex_lock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;Cond_wait&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;cond&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;Mutex_unlock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;Zem_post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Zem_t&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;Mutex_lock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;Cond_signal&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;cond&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;Mutex_unlock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id="example"&gt;Example&lt;/h2&gt;
+&lt;p&gt;As one can probably see, semaphore doesn't offer much freedom when come to how much we can customize it. The only thing that can be set by the user
+is the initial integer value of the semaphore (e.g., &lt;code&gt;avail&lt;/code&gt;). In fact, that's the beauty of the semaphore: we can achieve various purposes with semaphore by initalizing it with different values. For exmaple, we can intialize the semaphore with value &lt;code&gt;1&lt;/code&gt; to make the semaphore work like a lock (such semaphore is called &lt;strong&gt;binary semaphore&lt;/strong&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Semaphore&lt;/span&gt; &lt;span class="nf"&gt;lk&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;balance&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="c1"&gt;// some function called by multiple threads on modifying balance&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;func&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;lk&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="n"&gt;balance&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;lk&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We can also set semaphore value properly to order the threads execution. Consider the &lt;a href="https://leetcode.com/problems/print-in-order/"&gt;Leetcode Problem: 1114. Print In Order&lt;/a&gt; where we pass the same object &lt;code&gt;Foo&lt;/code&gt; into three threads and let them calling appropriate print methods to print "first", "second", and "third" in such ordering without restricting which thread is assigned to print which word. For detailed example, see the problem description. The following implementation shows how we can use semaphore implementation shown above to achieve such ordering purpose: always print "first", "second", and "third" in order:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Foo&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;Semaphore&lt;/span&gt; &lt;span class="n"&gt;firstJobDone&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;Semaphore&lt;/span&gt; &lt;span class="n"&gt;secondJobDone&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;Foo&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;firstJobDone&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;secondJobDone&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+
+  &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;first&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;function&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;printFirst&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;printFirst&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;firstJobDone&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;second&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;function&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;printSecond&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;firstJobDone&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;printSecond&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;secondJobDone&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;third&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;function&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;printThird&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;secondJobDone&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wait&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;printThird&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Both &lt;code&gt;firstJobDone&lt;/code&gt; and &lt;code&gt;secondJobDone&lt;/code&gt; have semaphore value of &lt;code&gt;0&lt;/code&gt; when the &lt;code&gt;Foo&lt;/code&gt; class is constructed. 
+Both &lt;code&gt;second()&lt;/code&gt; and &lt;code&gt;third()&lt;/code&gt; will call &lt;code&gt;wait()&lt;/code&gt; method on respective semaphore; unless &lt;code&gt;post()&lt;/code&gt; is called before &lt;code&gt;wait()&lt;/code&gt;, 
+the value of semaphore will be 0, which will put threads calling &lt;code&gt;second()&lt;/code&gt; and &lt;code&gt;third()&lt;/code&gt; pause waiting on respective semaphore. Since &lt;code&gt;first()&lt;/code&gt; doesn't call &lt;code&gt;wait()&lt;/code&gt; initially, &lt;code&gt;first()&lt;/code&gt; will be executed first. Then, &lt;code&gt;firstJobDone.post()&lt;/code&gt; will be called, which will bring &lt;code&gt;fristJobDone&lt;/code&gt; semaphore value to 1 and wake up the thread that wait on the semaphore: in this case, it's the thread calling &lt;code&gt;second()&lt;/code&gt;. Since &lt;code&gt;secondJobDone&lt;/code&gt; semaphore value is still 0, thread calling &lt;code&gt;third()&lt;/code&gt; will continue to pause until thread with &lt;code&gt;second()&lt;/code&gt; done the work and increment the semaphore value. The complete implementation with test can be seen &lt;a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/1114-PrintInOrder/printInOrder.cc"&gt;here&lt;/a&gt;. Note that semaphore implementation used is abstracted in &lt;a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/cppinclude/mysemaphore.h"&gt;mysemaphore.h&lt;/a&gt; with implementation &lt;a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/cppinclude/mysemaphore.cc"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;Probably one may have noticed that the semantics of semaphore implementation has been slightly different than the
+semantics of &lt;code&gt;wait()&lt;/code&gt; and &lt;code&gt;post()&lt;/code&gt; we defined above with the pseudo code comment. In fact, semaphore intially has
+the invariant that: the value of the semaphore, when negative, is equal to the number of waiting threads &lt;sup id="fnref:5"&gt;&lt;a class="footnote-ref" href="#fn:5" rel="footnote"&gt;5&lt;/a&gt;&lt;/sup&gt;. We use
+invariant in the semantics definition instead of the actual implementation is to help remember semaphore functionality.
+We certainly can modify the implementation to make it follow the invariant: we switch type of &lt;code&gt;avail&lt;/code&gt; from &lt;code&gt;size_t&lt;/code&gt;
+to &lt;code&gt;int&lt;/code&gt; and change the wait condition from &lt;code&gt;avail &amp;gt; 0&lt;/code&gt; to &lt;code&gt;avail &amp;gt;= 0&lt;/code&gt;. The complete modified implementation can
+be seen &lt;a href="https://github.com/xxks-kkk/shuati/pull/158"&gt;here&lt;/a&gt;. Note that to use this version of implementation in the 
+"print in order" example above, we need to intialize both semaphores to &lt;code&gt;-1&lt;/code&gt; instead of &lt;code&gt;0&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="glimpse-from-golang"&gt;Glimpse from Golang&lt;/h2&gt;
+&lt;p&gt;Recently, I learned about Golang for the work. The idea of using channel, the concept based on &lt;a href="https://en.wikipedia.org/wiki/Communicating_sequential_processes"&gt;communicating sequential process (CSP)&lt;/a&gt;, as the fundamental concurrency primitive really opens my mind (I've seen the idea in Python and Rust but Golang abuses the concept heavily). Such novel construction naturally brings new angle to re-examine the old concept: semaphore. The following examples are taken from &lt;a href="https://www.goodreads.com/book/show/25080953-the-go-programming-language"&gt;The Go Programming Language&lt;/a&gt; with page number 241, 250, and 262.&lt;/p&gt;
+&lt;p&gt;The purpose of semaphore can be seen from limit parallelism: for example, no more than 20 concurrent calls to open a file. From
+the golang world, we can use a buffered channel of capacity &lt;span class="math"&gt;\(n\)&lt;/span&gt; to construct the semaphore (or &lt;em&gt;counting semaphore&lt;/em&gt; if we want to be specific). Recall that a buffered channel has a queue of elements with the maximum queue size &lt;span class="math"&gt;\(n\)&lt;/span&gt; (i.e., capacity). A send operation on a buffered channel inserts an element at the back of the queue, and a receive operation removes an element from the front. Then the goroutine is blocked under the following conditions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;If the channel is full, the goroutine with send operation will be blocked until space is available in the queue due to a receive by another goroutine.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If the channel is empty, the goroutine with receiver operation is blocked until a value is sent to the queue by another goroutine.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Then, conceptually, to implement semaphore, each of the &lt;span class="math"&gt;\(n\)&lt;/span&gt; vacant slots in the channel buffer (i.e., queue) represents a token
+entitling the holder to proceed. Token is acquired by sending a value to the channel and is released by receiving a value 
+from the channel. Receiving a value creates a new vacant slot that potentially allows other goroutine to send the value (i.e., acquire token). As one can probably see, with this setting, we can allow at most &lt;span class="math"&gt;\(n\)&lt;/span&gt; sends without an intervening receive.&lt;/p&gt;
+&lt;p&gt;Implement semaphore in this way is surprisingly simple: all we need is a buffere channel and perform send or receive appropriately. The book provides an example of crawling the web (the book is from Google engineers; no wonder):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// tokens is a counting semaphore used to&lt;/span&gt;
+&lt;span class="c1"&gt;// enforce a limit of 20 concurrent requests.&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;tokens&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;make&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;chan&lt;/span&gt; &lt;span class="kd"&gt;struct&lt;/span&gt;&lt;span class="p"&gt;{},&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="kd"&gt;func&lt;/span&gt; &lt;span class="nx"&gt;crawl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;url&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;&lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;fmt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Println&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="nx"&gt;tokens&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="kd"&gt;struct&lt;/span&gt;&lt;span class="p"&gt;{}{}&lt;/span&gt; &lt;span class="c1"&gt;// acquire a token&lt;/span&gt;
+    &lt;span class="nx"&gt;list&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;err&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nx"&gt;links&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Extract&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt;&lt;span class="nx"&gt;tokens&lt;/span&gt; &lt;span class="c1"&gt;// release the token&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nx"&gt;err&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;nil&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;list&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If we compare this Go's implementation with our C++ one, we can see that &lt;code&gt;tokens &amp;lt;- struct{}{}&lt;/code&gt; works like &lt;code&gt;wait()&lt;/code&gt;: if we 
+cannot send value to the channel, we wait until the channel has some vacant spot. &lt;code&gt;&amp;lt;-tokens&lt;/code&gt; works like &lt;code&gt;post()&lt;/code&gt;: we're done and thus release token so that another goroutine can do the work. To generalize this implementation, we normally can:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// 20 is the intialized semaphore value&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;semaphore&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;make&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;chan&lt;/span&gt; &lt;span class="kd"&gt;struct&lt;/span&gt;&lt;span class="p"&gt;{},&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="kd"&gt;func&lt;/span&gt; &lt;span class="nx"&gt;some_work&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;semaphore&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="kd"&gt;struct&lt;/span&gt;&lt;span class="p"&gt;{}{}&lt;/span&gt;        &lt;span class="c1"&gt;// acquire token&lt;/span&gt;
+    &lt;span class="k"&gt;defer&lt;/span&gt; &lt;span class="kd"&gt;func&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt;&lt;span class="nx"&gt;semaphore&lt;/span&gt; &lt;span class="p"&gt;}()&lt;/span&gt; &lt;span class="c1"&gt;// release token&lt;/span&gt;
+    &lt;span class="c1"&gt;// do the work ...&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To see how semaphore work as a lock (mutex) in Go, we can revisit previous concurrent balance update situation and make
+both deposit and check the balance concurrent-safe:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="nx"&gt;semaphore&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;make&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;chan&lt;/span&gt; &lt;span class="kd"&gt;struct&lt;/span&gt;&lt;span class="p"&gt;{},&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;// a binary semaphore guarding balance&lt;/span&gt;
+    &lt;span class="nx"&gt;balance&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="kd"&gt;func&lt;/span&gt; &lt;span class="nx"&gt;Deposit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;amount&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;semaphore&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="kd"&gt;struct&lt;/span&gt;&lt;span class="p"&gt;{}{}&lt;/span&gt; &lt;span class="c1"&gt;// acquire token&lt;/span&gt;
+    &lt;span class="nx"&gt;balance&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;balance&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nx"&gt;amount&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt;&lt;span class="nx"&gt;semaphore&lt;/span&gt; &lt;span class="c1"&gt;// release token&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kd"&gt;func&lt;/span&gt; &lt;span class="nx"&gt;Balance&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;semaphore&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="kd"&gt;struct&lt;/span&gt;&lt;span class="p"&gt;{}{}&lt;/span&gt; &lt;span class="c1"&gt;// acquire token&lt;/span&gt;
+    &lt;span class="nx"&gt;b&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nx"&gt;balance&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt;&lt;span class="nx"&gt;semaphore&lt;/span&gt; &lt;span class="c1"&gt;// release token&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;b&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id="summary"&gt;Summary&lt;/h2&gt;
+&lt;p&gt;Semaphore is a really powerful concurrency construct that can work like a lock, perform ordering, and limit parallelism. 
+I always like to semaphore first and use it exculsively without scratching the head to write sppecific condition variable + mutex
+combo for each kind of situation. Certainly, there will be case using conditon variable + mutex is more straightforward but I find it is very rare.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;The similarity of semaphore and condition variable is suggested by the origin of condition variable idea: Dijkstra's use of "&lt;a href="http://www.cs.utexas.edu/users/EWD/ewd01xx/EWD123.PDF"&gt;private semaphore&lt;/a&gt;". &lt;a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;Think about why this can happen. If it is not clear, see &lt;a href="https://www.goodreads.com/book/show/25080953-the-go-programming-language"&gt;The Go Programming Language book p.259&lt;/a&gt;. &lt;a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:4"&gt;
+&lt;p&gt;"Always hold the lock while signaling" is one important tip for concurrency correctness mentioned in &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf"&gt;OSTEP&lt;/a&gt;. There is 4th step that release lock is omitted here because it is automatically taken 
+care of by the destructor of &lt;code&gt;std::lock_guard&lt;/code&gt;. &lt;a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 3 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:3"&gt;
+&lt;p&gt;That's why we always use &lt;code&gt;while&lt;/code&gt; instead of &lt;code&gt;if&lt;/code&gt; when deciding whether to wait on the condition. In classroom, we normally learned the practice from the difference between Mesa semantics and Hoare semantics. See &lt;a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf"&gt;OSTEP&lt;/a&gt; for more details. &lt;a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:5"&gt;
+&lt;p&gt;The invariant is stated in one of &lt;a href="https://klevas.mif.vu.lt/~liutauras/books/Dijkstra%20-%20The%20structure%20of%20the%20THE%20multiprogramming%20system.pdf"&gt;Dijkstra's papers&lt;/a&gt;. &lt;a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="cpp"></category><category term="golang"></category><category term="concurrency"></category></entry><entry><title>Secure Connection with MariaDB: A Conceptual Approach</title><link href="https://zhu45.org/posts/2019/Sep/14/secure-connection-with-mariadb-a-conceptual-approach/" rel="alternate"></link><published>2019-09-14T23:20:00+08:00</published><updated>2019-09-14T23:20:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2019-09-14:/posts/2019/Sep/14/secure-connection-with-mariadb-a-conceptual-approach/</id><summary type="html">&lt;p&gt;In this post, I discuss how we can &lt;a href="https://www.cyberciti.biz/faq/how-to-setup-mariadb-ssl-and-secure-connections-from-clients/"&gt;have a secure connection with MariaDB&lt;/a&gt; by first understanding the computer science fundamentals behind the steps. Once we have built the concept model, the steps linked above are self-explanatory. In addition, this post applies the same concept to understand SSL ccertificate.&lt;/p&gt;
 &lt;h2 id="concepts"&gt;Concepts …&lt;/h2&gt;</summary><content type="html">&lt;p&gt;In this post, I discuss how we can &lt;a href="https://www.cyberciti.biz/faq/how-to-setup-mariadb-ssl-and-secure-connections-from-clients/"&gt;have a secure connection with MariaDB&lt;/a&gt; by first understanding the computer science fundamentals behind the steps. Once we have built the concept model, the steps linked above are self-explanatory. In addition, this post applies the same concept to understand SSL ccertificate.&lt;/p&gt;
 &lt;h2 id="concepts"&gt;Concepts&lt;/h2&gt;
 &lt;p&gt;The key concept behind secure connection is &lt;a href="https://en.wikipedia.org/wiki/Certificate_authority#Overview"&gt;certificate&lt;/a&gt;, which relies on &lt;a href="https://en.wikipedia.org/wiki/Digital_signature"&gt;digital signature&lt;/a&gt;. The following picture shows the key idea of digital signature:&lt;/p&gt;
@@ -3466,7 +3821,7 @@ that cause a page fault uppercase, and those that don’t lowercase):&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
 approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12" rel="footnote"&gt;18&lt;/a&gt;&lt;/sup&gt; to avoid heavy overhead). The trace of the memory references with LRU policy shown below:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -3580,7 +3935,7 @@ approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12
 &lt;/blockquote&gt;
 &lt;p&gt;FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -3694,7 +4049,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 &lt;/blockquote&gt;
 &lt;p&gt;Optimal policy means we want to replace the page that will be accessed &lt;em&gt;furthest in the future&lt;/em&gt; and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -3900,7 +4255,7 @@ which takes a queue and returns, as an unsigned integer, its address.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;One possible scenario of deadlock using &lt;code&gt;transfer()&lt;/code&gt; is illustrated below. Note that &lt;code&gt;queue1&lt;/code&gt; and &lt;code&gt;queue2&lt;/code&gt; in &lt;code&gt;transfer()&lt;/code&gt;
 are replaced with queues that they are pointing to (time increases with the row's number):&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Thread1 (&lt;code&gt;transfer(q1,q2)&lt;/code&gt;)&lt;/th&gt;
@@ -4254,7 +4609,7 @@ the modification looks like below:&lt;/p&gt;
 &lt;p&gt;The question we want to answer is why doing so works?&lt;/p&gt;
 &lt;h2 id="explanation"&gt;Explanation&lt;/h2&gt;
 &lt;p&gt;We acquire key data from GDB as following:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;GDB command&lt;/th&gt;
@@ -4313,7 +4668,11 @@ is accomplished.&lt;/p&gt;
 However, &lt;a href="https://stackoverflow.com/questions/52508492/why-cant-i-pass-the-pointer-instead-of-the-pointer-to-pointer-to-function"&gt;as pointed out by others&lt;/a&gt;, the problem is that &lt;code&gt;s&lt;/code&gt; is uninitialized: whatever we do with the address contained in
 &lt;code&gt;s&lt;/code&gt; is undefined behavior. Undefined behavior means there is no predictability of the program: anything can happen. Thus, even we can print out the string, we still consider doing so wrong.&lt;/p&gt;
 &lt;/div&gt;
-&lt;p&gt;Hope this short writeup helps!&lt;/p&gt;</content><category term="c"></category></entry><entry><title>Graph basics + Topological Sort</title><link href="https://zhu45.org/posts/2018/Jul/14/graph-basics-topological-sort/" rel="alternate"></link><published>2018-07-14T22:30:00+08:00</published><updated>2018-07-14T22:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-07-14:/posts/2018/Jul/14/graph-basics-topological-sort/</id><summary type="html">&lt;p&gt;Basic graph concepts&lt;/p&gt;</summary><content type="html">&lt;div class="toc"&gt;
+&lt;p&gt;Hope this short writeup helps!&lt;/p&gt;
+&lt;p&gt;--- 10/15/19 UPDATE ---&lt;/p&gt;
+&lt;p&gt;Addtional perspective to understand why &lt;code&gt;&amp;amp;s&lt;/code&gt; works: a pointer is just a regular variable that holds some memory address of 
+another variable. Now, we want to instead of holding the memory address of some random content (e.g., &lt;code&gt;0x7fff5fbff360&lt;/code&gt;), hold 
+the memory address of string &lt;code&gt;"Hello World!"&lt;/code&gt; (e.g., &lt;code&gt;0x100000f8e&lt;/code&gt;). A natural choice is to pass in the memory address of the variable that we want to modify the value it holds, which in this case is &lt;code&gt;&amp;amp;s&lt;/code&gt;.&lt;/p&gt;</content><category term="c"></category></entry><entry><title>Graph basics + Topological Sort</title><link href="https://zhu45.org/posts/2018/Jul/14/graph-basics-topological-sort/" rel="alternate"></link><published>2018-07-14T22:30:00+08:00</published><updated>2018-07-14T22:30:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2018-07-14:/posts/2018/Jul/14/graph-basics-topological-sort/</id><summary type="html">&lt;p&gt;Basic graph concepts&lt;/p&gt;</summary><content type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#graph-basics"&gt;Graph Basics&lt;/a&gt;&lt;ul&gt;
@@ -5804,7 +6163,7 @@ blocks from different clients)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;&lt;/th&gt;
@@ -10379,7 +10738,7 @@ a very efficient algorithm in all cases. Path compression is not entirely compat
 to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., &lt;strong&gt;ranks&lt;/strong&gt;), but in theory union-by-rank is as efficient as union-by-size.&lt;/p&gt;
 &lt;p&gt;If we do analysis on smart union with path compression, the running time for any sequence of &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects makes &lt;span class="math"&gt;\(O(N + M\log^*N)\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1" rel="footnote"&gt;1&lt;/a&gt;&lt;/sup&gt; accesses.&lt;/p&gt;
 &lt;p&gt;The following table summarizes the running time for &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on a set of &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects (don't forget we need to spend &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; to initialize disjoint sets):&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -10410,7 +10769,7 @@ to recompute all the heights and in this case, heights stored for each tree beco
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;The running time for each operation for each algorithm is following:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -10611,7 +10970,7 @@ can try to label the items from &lt;span class="math"&gt;\(1 \dots n\)&lt;/span&
 solution for &lt;span class="math"&gt;\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)&lt;/span&gt;. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;) in terms of subproblems (i.e., &lt;span class="math"&gt;\(S_i\)&lt;/span&gt;)? Let's take a look at an example:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -10701,7 +11060,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The running time for this algorithm is &lt;span class="math"&gt;\(O(n*W)\)&lt;/span&gt; because of the double for loop. To understand this algorithm,
 let's take a look at an example:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -10729,7 +11088,7 @@ let's take a look at an example:&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 5\)&lt;/span&gt; and with algorithm above, we essentially fill out a table like following:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10798,7 +11157,7 @@ for i = 1 to n
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now, let's take a look at &lt;span class="math"&gt;\(B[1,1]\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(i = 1, b_i = 3, w_i = 2, w = 1\)&lt;/span&gt;, and since &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, and by our
 algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(B[0,1]\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(B[1,1] = 0\)&lt;/span&gt; and the table becomes&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10859,7 +11218,7 @@ algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, 
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;We can fill out the table like this and have&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -10986,7 +11345,7 @@ for i = 1 to n
             x[i,w] = x_i that is associated with B[i-1,w]
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Let's walk through an example to better understand the algorithm idea:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -11013,7 +11372,7 @@ for i = 1 to n
 &lt;p&gt;&lt;span class="math"&gt;\(W = 8\)&lt;/span&gt; in our example. The algorithm essentially
 tries to build fill out two tables &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; table like
 the 0-1 knapsack problem:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -11081,7 +11440,7 @@ the 0-1 knapsack problem:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;and &lt;span class="math"&gt;\(x[i,w]\)&lt;/span&gt; table to keep track of the optimal
 value of &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; for each &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt;&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -11145,7 +11504,7 @@ $$&lt;/div&gt;
 &lt;p&gt;So, we fill in &lt;span class="math"&gt;\(B[1,3] = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[1,3] = 1\)&lt;/span&gt;. We can repeatedly
 doing this for other &lt;span class="math"&gt;\(i\)&lt;/span&gt;s. We can take a look at the values
 from another perspective like the tables below:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[1,w]&lt;/th&gt;
@@ -11201,7 +11560,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[2,w]&lt;/th&gt;
@@ -11257,7 +11616,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[3,w]&lt;/th&gt;
@@ -11435,7 +11794,7 @@ In addition, this post belongs to part of future work mentioned in &lt;a href="h
 &lt;p&gt;Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Type&lt;/th&gt;
@@ -12204,7 +12563,7 @@ care about the size of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; 
 &lt;p&gt;Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
 housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
 its prediction. What we should try next?&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Method&lt;/th&gt;
@@ -12280,7 +12639,7 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$&lt;/div&gt;
 &lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;component&lt;/th&gt;
@@ -13118,7 +13477,7 @@ is a graphic summary for the text above&lt;/p&gt;
 the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Join types&lt;/th&gt;
@@ -13755,7 +14114,7 @@ $$&lt;/div&gt;
 &lt;p&gt;For example, the sequence &lt;span class="math"&gt;\(1,3,4,2,1\)&lt;/span&gt; can be considered as a sequence of 
 iterated function values with &lt;span class="math"&gt;\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
 x_3 = f(4) = 2, x_4 = f(2) = 1\)&lt;/span&gt;. Let's try another representation:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table"&gt;
+&lt;table class="table  table-striped table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;index&lt;/th&gt;
@@ -20649,7 +21008,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;table class="table-hover  table-striped table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table  table-striped table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21350,7 +21709,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;table class="table-hover  table-striped table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table  table-striped table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21583,7 +21942,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;table class="table-hover  table-striped table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table  table-striped table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21638,7 +21997,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;table class="table-hover  table-striped table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table  table-striped table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21688,7 +22047,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;table class="table-hover  table-striped table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table  table-striped table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21732,7 +22091,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;table class="table-hover  table-striped table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table  table-striped table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21791,7 +22150,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;table class="table-hover  table-striped table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table  table-striped table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -21854,7 +22213,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;table class="table-hover  table-striped table highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+&lt;table class="table  table-striped table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
  4
@@ -22245,7 +22604,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class="table  table-striped docutils table-hover"&gt;
+&lt;table border="1" class="table  table-striped table-hover docutils"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;
