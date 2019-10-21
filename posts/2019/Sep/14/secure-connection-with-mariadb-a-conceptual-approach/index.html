@@ -67,6 +67,16 @@
         
         <article>
             <p>In this post, I discuss how we can <a href="https://www.cyberciti.biz/faq/how-to-setup-mariadb-ssl-and-secure-connections-from-clients/">have a secure connection with MariaDB</a> by first understanding the computer science fundamentals behind the steps. Once we have built the concept model, the steps linked above are self-explanatory. In addition, this post applies the same concept to understand SSL ccertificate.</p>
+<div class="toc">
+<ul>
+<li><a href="#concepts">Concepts</a></li>
+<li><a href="#examples">Examples</a><ul>
+<li><a href="#secure-connection-with-mariadb">Secure Connection with MariaDB</a></li>
+<li><a href="#ssl-certificate">SSL Certificate</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <h2 id="concepts">Concepts</h2>
 <p>The key concept behind secure connection is <a href="https://en.wikipedia.org/wiki/Certificate_authority#Overview">certificate</a>, which relies on <a href="https://en.wikipedia.org/wiki/Digital_signature">digital signature</a>. The following picture shows the key idea of digital signature:</p>
 <p><img alt="digital signature" class="img-responsive" src="../../../../../images/digital_signature.png"/></p>
@@ -135,7 +145,7 @@ Email Address []:
 </pre></div>
 <p>Normally, in an organization setting (e.g., build an internal private cloud), several concepts emerge with CA certificate: <a href="https://en.wikipedia.org/wiki/Root_certificate">root certificate</a>, <a href="https://en.wikipedia.org/wiki/Public_key_certificate#Types_of_certificate">intermediate certificate</a>, and <a href="https://en.wikipedia.org/wiki/Chain_of_trust">chain of trust</a>. The following picture demonstrates this concept:</p>
 <p><img alt="chain of trust" class="img-responsive" src="../../../../../images/chain_of_trust.png"/></p>
-<p>As one can see in the picture, root CA certificate is issued by root CA itself, and such certificate is called "root certificate". The reason for such naming reflects such CA is the root in the tree structure, which means a point of ultimate trust for a CA hierarchy. The CA in the middle of the picture holds "intermediate certificate", which is a certificate signed by another intermediate CA or a root CA and intermediate CA can sign CSR as if it is root CA. Requester (e.g., PayPal)'s certificate obtained via this way is secure because each CA in the CA hierarchy is validated by its ancestor, which can be traced back all the way to the root CA. Thus, requester's certificate can be treated as if it is directly obtained from root CA, the ultimate trusted party.</p>
+<p>As one can see in the picture, root CA certificate is issued by root CA itself, and such certificate is called "root certificate". The reason for such naming reflects such CA is the root in the tree structure, which means a point of ultimate trust for a CA hierarchy. The CA in the middle of the picture holds "intermediate certificate", which is a certificate signed by another intermediate CA or a root CA. Intermediate CA can sign CSR as if it is root CA. Requester (e.g., PayPal)'s certificate obtained via this way is secure because each CA in the CA hierarchy is validated by its ancestor, which can be traced back all the way to the root CA. Thus, requester's certificate can be treated as if it is directly obtained from root CA, the ultimate trusted party.</p>
 <p>Take building private cloud as an example, one usage scenario of CA hierarchy is to eastablish secure connection between API server and database server. The following picture shows such organization:</p>
 <p><img alt="CA usage example" class="img-responsive" src="../../../../../images/ca_usage_example.png"/></p>
 <p>There are two things need to note in the picture: one is the dot line between CA and API server, which indicates they are optional. TLS/SSL protocol does not enforce the client (e.g., API server) to present certificate (i.e., one-way TLS). However, if the database is configured to enable two-way TLS (<a href="https://mariadb.com/kb/en/library/securing-connections-for-client-and-server/#enabling-one-way-tls-for-mariadb-clients">MariaDB</a>), then it is necessary for client to obtain certificate as well. The second is authentication and encryption is a separation of concern: for one-way TLS, we only care about encryption of API access to database and we can choose different method to perform authentication (e.g., user and password).</p>
