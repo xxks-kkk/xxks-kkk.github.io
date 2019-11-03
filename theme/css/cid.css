@@ -219,6 +219,11 @@ code, kbd, pre, samp {
   font-family: "Monaco", "Courier New", serif;
   font-size: 90%;
 }
+@media screen and (max-width: 113ex) {
+  code, kbd, pre, samp {
+    font-size: 80%;
+  }
+}
 
 .post-info {
   padding: 20px;
@@ -403,11 +408,6 @@ body iframe {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
   }
 }
-@media screen and (max-width: 640px) {
-  .container {
-    margin: 0.8em;
-  }
-}
 .container .paginator {
   text-align: center;
   margin: 3.2em 0;
@@ -485,9 +485,11 @@ body iframe {
 .container .post {
   margin: 2em;
 }
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 113ex) {
   .container .post {
-    font-size: 1em;
+    margin: 0;
+    padding: 0;
+    font-size: smaller;
   }
 }
 .container .post h1 {
@@ -523,6 +525,11 @@ body iframe {
   font-weight: bold;
   font-size: 1.5em;
 }
+@media screen and (max-width: 113ex) {
+  .container .post .post-title {
+    margin: 0;
+  }
+}
 .container .post .post-date {
   text-align: left;
   margin-left: -1.9em;
@@ -551,14 +558,15 @@ body iframe {
 
 .admonition.note {
   background: #E0FFE0;
-  margin-left: 10px;
-  margin-right: 72px;
-  margin-bottom: 20px;
-  margin-top: 20px;
   padding: 4px;
   border: 2px black solid;
-  font-size: 90%;
   border-radius: 4px;
+  margin-bottom: 20px;
+}
+@media screen and (max-width: 113ex) {
+  .admonition.note {
+    font-size: smaller;
+  }
 }
 
 .admonition-title {
