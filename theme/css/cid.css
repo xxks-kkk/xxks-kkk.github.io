@@ -219,6 +219,11 @@ code, kbd, pre, samp {
   font-family: "Monaco", "Courier New", serif;
   font-size: 90%;
 }
+@media screen and (max-width: 113ex) {
+  code, kbd, pre, samp {
+    font-size: 70%;
+  }
+}
 
 .post-info {
   padding: 20px;
@@ -271,12 +276,6 @@ span.label.label-default {
   margin-right: 20px;
 }
 
-body {
-  /* @media screen and (min-width: $break-large)
-  *  //background: url(pageframe-right.gif) right top repeat-y, url(pageframe-left.gif) left top repeat-y
-  *  //background: url(pageframe-right.gif) right top repeat-y, url(page-frame-left-25.png) left top repeat-y
-  *  background: url(pageframe-right-160.gif) right top repeat-y, url(pageframe-left-160.gif) left top repeat-y */
-}
 @media screen and (min-width: 640px) {
   body {
     background-image: url("skulls.png");
@@ -407,10 +406,6 @@ body iframe {
   .container {
     padding: 50px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
-  }
-}
-@media screen and (max-width: 640px) {
-  .container {
     margin: 0.8em;
   }
 }
@@ -491,9 +486,11 @@ body iframe {
 .container .post {
   margin: 2em;
 }
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 113ex) {
   .container .post {
-    font-size: 1em;
+    margin: 0;
+    padding: 0;
+    font-size: smaller;
   }
 }
 .container .post h1 {
@@ -530,8 +527,6 @@ body iframe {
   font-size: 1.5em;
 }
 .container .post .post-date {
-  #float: right;
-  #margin: -1.3em;
   text-align: left;
   margin-left: -1.9em;
   margin-top: 0.5em;
