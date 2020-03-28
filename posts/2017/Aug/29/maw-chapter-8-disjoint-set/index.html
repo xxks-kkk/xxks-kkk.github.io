@@ -182,9 +182,9 @@ is exactly the same as the <a href="../../../../../posts/2017/Feb/13/splay-tree/
 is perfectly compatible with union-by-size, and thus both routines can be implemented at the same time. In fact, the combination of path compression and a smart union rule guarantees 
 a very efficient algorithm in all cases. Path compression is not entirely compatible with union-by-height, because path compression can change the heights of the trees. We don't want
 to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., <strong>ranks</strong>), but in theory union-by-rank is as efficient as union-by-size.</p>
-<p>If we do analysis on smart union with path compression, the running time for any sequence of <span class="math">\(M\)</span> union-find operations on <span class="math">\(N\)</span> objects makes <span class="math">\(O(N + M\log^*N)\)</span> <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> accesses.</p>
+<p>If we do analysis on smart union with path compression, the running time for any sequence of <span class="math">\(M\)</span> union-find operations on <span class="math">\(N\)</span> objects makes <span class="math">\(O(N + M\log^*N)\)</span> <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> accesses.</p>
 <p>The following table summarizes the running time for <span class="math">\(M\)</span> union-find operations on a set of <span class="math">\(N\)</span> objects (don't forget we need to spend <span class="math">\(O(N)\)</span> to initialize disjoint sets):</p>
-<table class="table-hover table  table-striped">
+<table class="table-hover  table-striped table">
 <thead>
 <tr>
 <th>algorithm</th>
@@ -215,7 +215,7 @@ to recompute all the heights and in this case, heights stored for each tree beco
 </tbody>
 </table>
 <p>The running time for each operation for each algorithm is following:</p>
-<table class="table-hover table  table-striped">
+<table class="table-hover  table-striped table">
 <thead>
 <tr>
 <th>algorithm</th>
@@ -297,7 +297,7 @@ the union-find data structure. Essentially, union-find structure addresses the "
 <hr/>
 <ol>
 <li id="fn:1">
-<p><span class="math">\(\log^* N\)</span> counts the number of times you have to take the <span class="math">\(\log\)</span> of <span class="math">\(N\)</span> to get one. This is also called iterated log function. For example, <span class="math">\(\log^* 65536 = 4\)</span> because <span class="math">\(\log\log\log\log65536 = 1\)</span>. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
+<p><span class="math">\(\log^* N\)</span> counts the number of times you have to take the <span class="math">\(\log\)</span> of <span class="math">\(N\)</span> to get one. This is also called iterated log function. For example, <span class="math">\(\log^* 65536 = 4\)</span> because <span class="math">\(\log\log\log\log65536 = 1\)</span>. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 </ol>
 </div>

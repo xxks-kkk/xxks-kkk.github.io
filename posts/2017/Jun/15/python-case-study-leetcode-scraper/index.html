@@ -92,7 +92,7 @@ have consistency formatting shown below</p>
 <p>The overhead of adding this header comment can be quite large. 
 So, I ask myself if there is a better way
 to make the whole process automated as much as possible. Python and its famous
-<a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">beautifulsoup</a> library <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> 
+<a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">beautifulsoup</a> library <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> 
 immediately come into my mind.</p>
 <p>In this post, I'll highlight some python usage appeared in the script, which costs
 me quite some time on googling. Please leave your comment if you find any non-pythonic 
@@ -125,7 +125,7 @@ when to use which. Here, I want to quote the explanation from
 <p>The author makes extra remark: Use <em>from module import *</em> sparingly, because it makes it difficult to determine where a particular function or attribute came from, and that makes debugging and refactoring more difficult.</p>
 </blockquote>
 <div class="highlight"><pre><span></span><span class="n">script</span><span class="p">,</span> <span class="n">url</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'url is </span><span class="si">{:s}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'url is {:s}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
 </pre></div>
 <p>I used to really like Python2.7 and not a big fan of Python3. However, with python2.7 EOS,
 change must be made. the <code>print</code> statement is how we do format printing in python3.</p>
@@ -200,7 +200,7 @@ of strings with each string being a line of code. In our case, this will give
 whitespaces, and string with only whitespaces. We need to do some cleanup to keep
 only the question title. The first thing we do is to take out the empty string and
 the string with only whitespaces. This is done by 
-<code>title_lines = list(filter(operator.methodcaller('strip'), title_lines))</code> <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.
+<code>title_lines = list(filter(operator.methodcaller('strip'), title_lines))</code> <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>.
 <a href="https://docs.python.org/2/library/functions.html#filter">filter</a> 
 creates a list of elements for which a function (the 1st argument of <code>filter</code>) 
 returns true. <code>operator.methodcaller('strip')</code> uses 
@@ -241,7 +241,7 @@ of string into lower case. The code is below</p>
 <p><code>^</code> matches the beginning of the string and <code>\d</code> means numeric digits and <code>+</code>
 means at least once appearance (of <code>\d</code>). Just like official doc snippet above,
 <code>filename=title[:m.start()] + title[m.end():]</code> removes, for instance, <code>92-</code> and
-leaves us <code>ReverseLinkedListII</code> <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>. One thing to notice right now is that our
+leaves us <code>ReverseLinkedListII</code> <sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>. One thing to notice right now is that our
 <code>filename</code> has object type <code>str</code>, which is immutable. This means that we cannot
 edit the variable itself. <code>filename=filename[0].lower() + filename[1:]</code> is 
 a typical way to handle immutable <code>str</code> object, which, in our case, lower the 
@@ -255,15 +255,15 @@ the powerful python language and its libraries.</p>
 <hr/>
 <ol>
 <li id="fn:1">
-<p>Here is <a href="http://web.stanford.edu/~zlotnick/TextAsData/Web_Scraping_with_Beautiful_Soup.html">a good tutorial</a> on beautifulSoup. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
+<p>Here is <a href="http://web.stanford.edu/~zlotnick/TextAsData/Web_Scraping_with_Beautiful_Soup.html">a good tutorial</a> on beautifulSoup. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:2">
 <p>This line is found from 
-<a href="https://stackoverflow.com/questions/8449454/remove-strings-containing-only-white-spaces-from-list">this SO post</a>. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
+<a href="https://stackoverflow.com/questions/8449454/remove-strings-containing-only-white-spaces-from-list">this SO post</a>. <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 <li id="fn:3">
 <p>I do a <a href="http://pages.cs.wisc.edu/~zeyuan/projects/notes/diveintopython/chap7.html">quick summary</a> of
-regular expression in python. <a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">↩</a></p>
+regular expression in python. <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">↩</a></p>
 </li>
 </ol>
 </div>
