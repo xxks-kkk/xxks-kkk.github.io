@@ -65,7 +65,7 @@
             <p>This post summarizes three typical simple sorting algorithms: <em>bubble sort</em>, 
 <em>selection sort</em>, and <em>insertion sort</em>. In chapter 7, MAW mainly talks about 
 <em>insertion sort</em> but for the sake of completeness, I will include the other two as
-well <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>.</p>
+well <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</p>
 <div class="toc">
 <ul>
 <li><a href="#bubble-sort">Bubble sort</a><ul>
@@ -104,15 +104,15 @@ from the first to the end of unsorted part of the array.</p>
 </pre></div>
 <p>The key for the alogorithm is that we only do the "bubble up" operation for the
 unsorted part. The following gives an example of the algorithm in action:</p>
-<div class="highlight"><pre><span></span>| index    | 0  | 1  | 2  | 3  | 4  | 5  |
-| original | 34 | 8  | 64 | 51 | 32 | 21 |
-|----------|----|----|----|----|----|----|
-| pass 0   | 8  | 34 | 51 | 32 | 21 | 64 |
-| pass 1   | 8  | 34 | 32 | 21 | 51 | 64 |
-| pass 2   | 8  | 32 | 21 | 34 | 51 | 64 |
-| pass 3   | 8  | 21 | 32 | 34 | 51 | 64 |
-| pass 4   | 8  | 21 | 32 | 34 | 51 | 64 |
-| pass 5   | 8  | 21 | 32 | 34 | 51 | 64 |
+<div class="highlight"><pre><span></span><span class="err">| index    | 0  | 1  | 2  | 3  | 4  | 5  |</span>
+<span class="err">| original | 34 | 8  | 64 | 51 | 32 | 21 |</span>
+<span class="err">|----------|----|----|----|----|----|----|</span>
+<span class="err">| pass 0   | 8  | 34 | 51 | 32 | 21 | 64 |</span>
+<span class="err">| pass 1   | 8  | 34 | 32 | 21 | 51 | 64 |</span>
+<span class="err">| pass 2   | 8  | 32 | 21 | 34 | 51 | 64 |</span>
+<span class="err">| pass 3   | 8  | 21 | 32 | 34 | 51 | 64 |</span>
+<span class="err">| pass 4   | 8  | 21 | 32 | 34 | 51 | 64 |</span>
+<span class="err">| pass 5   | 8  | 21 | 32 | 34 | 51 | 64 |</span>
 </pre></div>
 <h3 id="analysis">Analysis</h3>
 <p>Bubble sort is stable and in place. The running time is <span class="math">\(O(N^2)\)</span>, which is true
@@ -148,14 +148,14 @@ the end of array).</p>
 <span class="p">}</span>   
 </pre></div>
 <p>Here is an example of the algorithm in action:</p>
-<div class="highlight"><pre><span></span>| index    | 0  | 1  | 2  | 3  | 4  | 5  |
-| original | 34 | 8  | 64 | 51 | 32 | 21 |
-|----------|----|----|----|----|----|----|
-| pass 0   | 8  | 34 | 64 | 51 | 32 | 21 |
-| pass 1   | 8  | 21 | 64 | 51 | 32 | 34 |
-| pass 2   | 8  | 21 | 32 | 51 | 64 | 34 |
-| pass 3   | 8  | 21 | 32 | 34 | 64 | 51 |
-| pass 4   | 8  | 21 | 32 | 34 | 51 | 64 |
+<div class="highlight"><pre><span></span><span class="err">| index    | 0  | 1  | 2  | 3  | 4  | 5  |</span>
+<span class="err">| original | 34 | 8  | 64 | 51 | 32 | 21 |</span>
+<span class="err">|----------|----|----|----|----|----|----|</span>
+<span class="err">| pass 0   | 8  | 34 | 64 | 51 | 32 | 21 |</span>
+<span class="err">| pass 1   | 8  | 21 | 64 | 51 | 32 | 34 |</span>
+<span class="err">| pass 2   | 8  | 21 | 32 | 51 | 64 | 34 |</span>
+<span class="err">| pass 3   | 8  | 21 | 32 | 34 | 64 | 51 |</span>
+<span class="err">| pass 4   | 8  | 21 | 32 | 34 | 51 | 64 |</span>
 </pre></div>
 <h3 id="analysis_1">Analysis</h3>
 <p>The selection sort is NOT STABLE but in place. Selection sort is not sensitive
@@ -187,14 +187,14 @@ the first <span class="math">\(P+1\)</span> elements.</p>
 <span class="p">}</span>
 </pre></div>
 <p>Here is an example of the algorithm in action:</p>
-<div class="highlight"><pre><span></span>| index    | 0  | 1  | 2  | 3  | 4  | 5  |
-| original | 34 | 8  | 64 | 51 | 32 | 21 |
-|----------|----|----|----|----|----|----|
-| pass 1   | 8  | 34 | 64 | 51 | 32 | 21 |
-| pass 2   | 8  | 34 | 64 | 51 | 32 | 21 |
-| pass 3   | 8  | 34 | 51 | 64 | 32 | 21 |
-| pass 4   | 8  | 32 | 34 | 51 | 64 | 21 |
-| pass 5   | 8  | 21 | 32 | 34 | 51 | 64 |
+<div class="highlight"><pre><span></span><span class="err">| index    | 0  | 1  | 2  | 3  | 4  | 5  |</span>
+<span class="err">| original | 34 | 8  | 64 | 51 | 32 | 21 |</span>
+<span class="err">|----------|----|----|----|----|----|----|</span>
+<span class="err">| pass 1   | 8  | 34 | 64 | 51 | 32 | 21 |</span>
+<span class="err">| pass 2   | 8  | 34 | 64 | 51 | 32 | 21 |</span>
+<span class="err">| pass 3   | 8  | 34 | 51 | 64 | 32 | 21 |</span>
+<span class="err">| pass 4   | 8  | 32 | 34 | 51 | 64 | 21 |</span>
+<span class="err">| pass 5   | 8  | 21 | 32 | 34 | 51 | 64 |</span>
 </pre></div>
 <h3 id="analysis_2">Analysis</h3>
 <p>Due to the nested loops, the running time is <span class="math">\(O(N^2)\)</span>, which can be achieved
@@ -243,7 +243,7 @@ to break <span class="math">\(O(N^2)\)</span> running time. I'll talk about it i
 <p><a href="https://youtu.be/8Kp-8OGwphY">bubble sort video</a>, <a href="https://youtu.be/f8hXR_Hvybo">selection sort video</a>, 
 <a href="https://youtu.be/DFG-XuyPYUQ">insertion sort video</a> and 
 <a href="https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html">this animation</a>
-can help you understand the concept. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+can help you understand the concept. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 </ol>
 </div>
@@ -306,7 +306,8 @@ can help you understand the concept. <a class="footnote-backref" href="#fnref:1
 
         <footer>
           <!-- <p>This entry is posted in <a href="../../../../../category/data-struct-algo.html">Data Struct & Algo</a>.</p> -->
-          <a href="../../../../../donate.html" class="button">Donate</a>
+          <!-- <a href="../../../../../donate.html" class="button">Donate</a> -->
+          <a href="https://paypal.me/zhu45?locale.x=en_US">paypal.me</a>
         </footer>
         
 <div class="comments">

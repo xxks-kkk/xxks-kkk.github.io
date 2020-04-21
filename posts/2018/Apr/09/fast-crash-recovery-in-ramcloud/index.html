@@ -138,7 +138,7 @@ becomes how to recover from crash within 1s~2s for 64GB or more DRAM data?</p>
 <p><img alt="RAMCloud main architecture" class="img-responsive" src="/images/RAMCloud-architecture.png"/></p>
 <ul>
 <li>
-<p>Each storage server contains a master and a backup. A central coordinator <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> manages the server pool and <a href="../../../../../posts/2018/Mar/08/pnuts-yahoos-hosted-data-serving-platform/">tablet</a> configuration. Client applications run on separate machines and access RAMCloud using a client library that makes remote procedure calls.</p>
+<p>Each storage server contains a master and a backup. A central coordinator <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> manages the server pool and <a href="../../../../../posts/2018/Mar/08/pnuts-yahoos-hosted-data-serving-platform/">tablet</a> configuration. Client applications run on separate machines and access RAMCloud using a client library that makes remote procedure calls.</p>
 <ul>
 <li>master: manages RAMCloud objects in its DRAM and services client requests</li>
 <li>backup: stores redundant copies of objects from other masters using its disk or flash memory</li>
@@ -250,7 +250,7 @@ me in terms of research.</p>
 <hr/>
 <ol>
 <li id="fn:1">
-<p>The coordinator will use ZooKeeper to store its configuration information, which consists of a list of active storage servers along with the tablets they manage. ZooKeeper本身是一个非常牢靠的记事本，用于记录一些概要信息。Hadoop依靠这个记事本来记录当前哪些节点正在用，哪些已掉线，哪些是备用等，以此来管理机群。 <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+<p>The coordinator will use ZooKeeper to store its configuration information, which consists of a list of active storage servers along with the tablets they manage. ZooKeeper本身是一个非常牢靠的记事本，用于记录一些概要信息。Hadoop依靠这个记事本来记录当前哪些节点正在用，哪些已掉线，哪些是备用等，以此来管理机群。 <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 </ol>
 </div>
@@ -258,7 +258,8 @@ me in terms of research.</p>
 
         <footer>
           <!-- <p>This entry is posted in <a href="../../../../../category/system.html">system</a>.</p> -->
-          <a href="../../../../../donate.html" class="button">Donate</a>
+          <!-- <a href="../../../../../donate.html" class="button">Donate</a> -->
+          <a href="https://paypal.me/zhu45?locale.x=en_US">paypal.me</a>
         </footer>
         
 <div class="comments">

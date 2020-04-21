@@ -119,29 +119,29 @@ A challenge password <span class="o">[]</span>:
 </pre></div>
 <p>At this stage, avid reader like you might notice that there can still exist potential loophole: how do we know the public key the user obtained from "CA" is truly owned by CA? Here, CA makes an exaception here: CA issues its own CA digital certificate by signing on its own using its own private key (such digital certificate owned by CA is called <a href="https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc778623(v=ws.10)?redirectedfrom=MSDN">CA certificate</a>). Then we rely on regulation and industry auditing to ensure CA providers can play as a trusted third party.</p>
 <p>One concept needs to clarify is that CA is not resources controlled by serveral public providers: large organizations usually have their own CAs as part of their own <a href="https://en.wikipedia.org/wiki/Public_key_infrastructure">public key infrastructure</a>. For example, if a company decides to build their own private cloud, they may have their own CAs to help with internal network traffic encryption. To show a concrete example, we can generate our own CA certificate like below:</p>
-<div class="highlight"><pre><span></span># Generate CA private key
-$ openssl genrsa 2048 &gt; ca-key.pem
-Generating RSA private key, 2048 bit long modulus
-........................+++
-........................................................................................................................+++
-e is 65537 (0x10001)
+<div class="highlight"><pre><span></span><span class="o">#</span> <span class="n">Generate</span> <span class="n">CA</span> <span class="n">private</span> <span class="k">key</span>
+<span class="err">$</span> <span class="n">openssl</span> <span class="n">genrsa</span> <span class="mi">2048</span> <span class="o">&gt;</span> <span class="n">ca</span><span class="o">-</span><span class="k">key</span><span class="p">.</span><span class="n">pem</span>
+<span class="n">Generating</span> <span class="n">RSA</span> <span class="n">private</span> <span class="k">key</span><span class="p">,</span> <span class="mi">2048</span> <span class="nb">bit</span> <span class="n">long</span> <span class="n">modulus</span>
+<span class="p">........................</span><span class="o">+++</span>
+<span class="p">........................................................................................................................</span><span class="o">+++</span>
+<span class="n">e</span> <span class="k">is</span> <span class="mi">65537</span> <span class="p">(</span><span class="mi">0</span><span class="n">x10001</span><span class="p">)</span>
 
-# Self-signed CA certificate
-$ openssl req -new -x509 -nodes -days 365000 -key ca-key.pem -out ca-cert.pem
-You are about to be asked to enter information that will be incorporated
-into your certificate request.
-What you are about to enter is what is called a Distinguished Name or a DN.
-There are quite a few fields but you can leave some blank
-For some fields there will be a default value,
-If you enter '.', the field will be left blank.
------
-Country Name (2 letter code) []:
-State or Province Name (full name) []:
-Locality Name (eg, city) []:
-Organization Name (eg, company) []:
-Organizational Unit Name (eg, section) []:
-Common Name (eg, fully qualified host name) []:Zeyuan's laptop
-Email Address []:
+<span class="o">#</span> <span class="k">Self</span><span class="o">-</span><span class="n">signed</span> <span class="n">CA</span> <span class="n">certificate</span>
+<span class="err">$</span> <span class="n">openssl</span> <span class="n">req</span> <span class="o">-</span><span class="k">new</span> <span class="o">-</span><span class="n">x509</span> <span class="o">-</span><span class="n">nodes</span> <span class="o">-</span><span class="n">days</span> <span class="mi">365000</span> <span class="o">-</span><span class="k">key</span> <span class="n">ca</span><span class="o">-</span><span class="k">key</span><span class="p">.</span><span class="n">pem</span> <span class="o">-</span><span class="k">out</span> <span class="n">ca</span><span class="o">-</span><span class="n">cert</span><span class="p">.</span><span class="n">pem</span>
+<span class="n">You</span> <span class="k">are</span> <span class="n">about</span> <span class="k">to</span> <span class="n">be</span> <span class="n">asked</span> <span class="k">to</span> <span class="n">enter</span> <span class="n">information</span> <span class="n">that</span> <span class="n">will</span> <span class="n">be</span> <span class="n">incorporated</span>
+<span class="k">into</span> <span class="n">your</span> <span class="n">certificate</span> <span class="n">request</span><span class="p">.</span>
+<span class="n">What</span> <span class="n">you</span> <span class="k">are</span> <span class="n">about</span> <span class="k">to</span> <span class="n">enter</span> <span class="k">is</span> <span class="n">what</span> <span class="k">is</span> <span class="k">called</span> <span class="n">a</span> <span class="n">Distinguished</span> <span class="n">Name</span> <span class="k">or</span> <span class="n">a</span> <span class="n">DN</span><span class="p">.</span>
+<span class="n">There</span> <span class="k">are</span> <span class="n">quite</span> <span class="n">a</span> <span class="n">few</span> <span class="n">fields</span> <span class="n">but</span> <span class="n">you</span> <span class="n">can</span> <span class="n">leave</span> <span class="k">some</span> <span class="n">blank</span>
+<span class="k">For</span> <span class="k">some</span> <span class="n">fields</span> <span class="n">there</span> <span class="n">will</span> <span class="n">be</span> <span class="n">a</span> <span class="k">default</span> <span class="n">value</span><span class="p">,</span>
+<span class="k">If</span> <span class="n">you</span> <span class="n">enter</span> <span class="s1">'.'</span><span class="p">,</span> <span class="n">the</span> <span class="n">field</span> <span class="n">will</span> <span class="n">be</span> <span class="k">left</span> <span class="n">blank</span><span class="p">.</span>
+<span class="c1">-----</span>
+<span class="n">Country</span> <span class="n">Name</span> <span class="p">(</span><span class="mi">2</span> <span class="n">letter</span> <span class="n">code</span><span class="p">)</span> <span class="p">[]:</span>
+<span class="k">State</span> <span class="k">or</span> <span class="n">Province</span> <span class="n">Name</span> <span class="p">(</span><span class="k">full</span> <span class="n">name</span><span class="p">)</span> <span class="p">[]:</span>
+<span class="n">Locality</span> <span class="n">Name</span> <span class="p">(</span><span class="n">eg</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span> <span class="p">[]:</span>
+<span class="n">Organization</span> <span class="n">Name</span> <span class="p">(</span><span class="n">eg</span><span class="p">,</span> <span class="n">company</span><span class="p">)</span> <span class="p">[]:</span>
+<span class="n">Organizational</span> <span class="n">Unit</span> <span class="n">Name</span> <span class="p">(</span><span class="n">eg</span><span class="p">,</span> <span class="n">section</span><span class="p">)</span> <span class="p">[]:</span>
+<span class="n">Common</span> <span class="n">Name</span> <span class="p">(</span><span class="n">eg</span><span class="p">,</span> <span class="n">fully</span> <span class="n">qualified</span> <span class="k">host</span> <span class="n">name</span><span class="p">)</span> <span class="p">[]:</span><span class="n">Zeyuan</span><span class="err">'</span><span class="n">s</span> <span class="n">laptop</span>
+<span class="n">Email</span> <span class="n">Address</span> <span class="p">[]:</span>
 </pre></div>
 <p>Normally, in an organization setting (e.g., build an internal private cloud), several concepts emerge with CA certificate: <a href="https://en.wikipedia.org/wiki/Root_certificate">root certificate</a>, <a href="https://en.wikipedia.org/wiki/Public_key_certificate#Types_of_certificate">intermediate certificate</a>, and <a href="https://en.wikipedia.org/wiki/Chain_of_trust">chain of trust</a>. The following picture demonstrates this concept:</p>
 <p><img alt="chain of trust" class="img-responsive" src="../../../../../images/chain_of_trust.png"/></p>
@@ -160,7 +160,8 @@ Email Address []:
 
         <footer>
           <!-- <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p> -->
-          <a href="../../../../../donate.html" class="button">Donate</a>
+          <!-- <a href="../../../../../donate.html" class="button">Donate</a> -->
+          <a href="https://paypal.me/zhu45?locale.x=en_US">paypal.me</a>
         </footer>
         
 <div class="comments">
