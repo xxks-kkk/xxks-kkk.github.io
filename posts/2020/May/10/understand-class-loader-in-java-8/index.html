@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Understand Class Loader in Java 8
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../publications.html" style="padding: 10px">PUBLICATIONS</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">Understand Class Loader in Java 8</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2020-05-10T23:20:00+08:00"> May 10, 2020</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/java.html">Java</a>
+        /
+	<a href="../../../../../tag/presto.html">Presto</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">Understand Class Loader in Java 8</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2020-05-10T23:20:00+08:00">May 10, 2020</time></div> -->
+        </header>
+        
+        <article>
+            <p>In this post, we study the basic mechanism of class loader in Java 8. 
+Then, we use <a href="https://prestosql.io">Presto</a> as a real example to show 
+how class loader works in Presto and why understanding class loader is important.</p>
+<div class="toc">
+<ul>
+<li><a href="#class-loader-basics">Class Loader Basics</a></li>
+</ul>
+</div>
+<h2 id="class-loader-basics">Class Loader Basics</h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This section's content is adapted from <a href="https://www.amazon.com/dp/B07NCXJR1M/ref=sr_1_1?crid=29HA6UVZMZZ4Z&amp;dchild=1&amp;keywords=core+java+volume+2&amp;qid=1588238324&amp;sprefix=core+java+%2Caps%2C182&amp;sr=8-1">Core Java</a> 10th edition.</p>
+</div>
+<p>Any <code>.java</code> source code files will be compiled into byte code (i.e., virtual machine code), which are contained in <code>.class</code> files.
+Those <code>.class</code> files are then consumed by the Java Virtual Machine (JVM). <code>.class</code> files are <strong>class files</strong>. Each class file contains the definition
+and implementation code for one class or interface. </p>
+<p>Class loader hierarchy is shown <a href="#class-loader-hierarcy">below</a>:</p>
+<p><img alt="class loader hierarchy" class="img-responsive" id="class-loader-hierarchy" src="../../../../../images/classloader.png"/></p>
+<p>Every Java program has at least three class loaders:</p>
+<ul>
+<li>
+<p><strong>Bootstrap class loader</strong> loads the system classes (typically from the JAR file <code>rt.jar</code>)</p>
+<ul>
+<li>It is part of the JVM and implemented in C. Thus, there is no <code>ClassLoader</code> object corresponding to the bootstrap class loader (
+  e.g., <code>String.class.getClassLoader()</code> returns <code>null</code>)</li>
+</ul>
+</li>
+<li>
+<p><strong>Extension class loader</strong> loads "standard extensions" from the <code>jre/lib/ext</code> directory. We can drop JAR files into that directory,
+  and the extension class loader will find the classes in them.</p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If we drop a JAR file into the <code>jre/lib/ext</code> directory, we have to make sure that all classes in the JAR file will have 
+class dependencies that can be loaded by system or extension class loader. This is because if one of the JAR file classes need to load
+a class that is not a system or extension class, extension class loader will not find it because extension class loader does not 
+use the class path.</p>
+</div>
+<ul>
+<li>
+<p><strong>System class loader</strong> loads the application classes. It locates classes in the directories and JAR/ZIP files on the class path
+  set by <code>CLASSPATH</code> environment variable or the <code>-classpath</code> comand-line option.</p>
+</li>
+<li>
+<p><strong>Application-specific class loader</strong>. Application classes can implement their own class loaders. For example, some programs
+  have a <a href="https://stackoverflow.com/questions/465099/best-way-to-build-a-plugin-system-with-java">plugin architecture</a> in which certain 
+  parts of code are packaged as optional plugins. If the plugins are packaged as JAR files, we can load the plugin classes with an 
+  instance of <code>URLClassLoader</code></p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="n">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="k">new</span> <span class="n">URL</span><span class="p">(</span><span class="s">"/path/to/plugin.jar"</span><span class="p">);</span>
+<span class="n">URLClassLoader</span> <span class="n">pluginLoader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">URLClassLoader</span><span class="p">(</span><span class="k">new</span> <span class="n">URL</span><span class="o">[]</span> <span class="p">{</span> <span class="n">url</span> <span class="p">});</span>
+<span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">cl</span> <span class="o">=</span> <span class="n">pluginLoader</span><span class="p">.</span><span class="na">loadClass</span><span class="p">(</span><span class="s">"mypackage.MyClass"</span><span class="p">);</span>
+</pre></div>
+        </article>
+
+        <footer>
+          <!-- <p>This entry is posted in <a href="../../../../../category/2020.html">2020</a>.</p> -->
+          <!-- <a href="../../../../../donate.html" class="button">Donate</a> -->
+          <a href="https://paypal.me/zhu45?locale.x=en_US">paypal.me</a>
+        </footer>
+        
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2020 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
