@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
-        <title>    Understand Class Loader in Java 8
+        <title>    Callbacks
 </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,13 +37,13 @@
 </header>
     <div class="post">
       <header>
-            <h1 class="post-title">Understand Class Loader in Java 8</h1>
+            <h1 class="post-title">Callbacks</h1>
             <div class="panel">
                 <div class="panel-body">
 <footer class="post-info">
     <span class="label label-default">Date</span>
     <span class="published">
-        <time datetime="2020-05-10T23:20:00+08:00"> May 10, 2020</time>
+        <time datetime="2020-10-05T23:11:00+08:00"> Oct 05, 2020</time>
     </span>
 
 
@@ -51,72 +51,54 @@
 
 
 <span class="label label-default">Tags</span>
-	<a href="../tag/java.html">Java</a>
-        /
-	<a href="../tag/presto.html">Presto</a>
+	<a href="../tag/concurrency.html">concurrency</a>
     
 </footer><!-- /.post-info -->                </div>
             </div>
-          <!-- <div class="post-title">Understand Class Loader in Java 8</h1></div> -->
-          <!-- <div class="post-date"><time datetime="2020-05-10T23:20:00+08:00">May 10, 2020</time></div> -->
+          <!-- <div class="post-title">Callbacks</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2020-10-05T23:11:00+08:00">Oct 05, 2020</time></div> -->
         </header>
         
         <article>
-            <p>In this post, we study the basic mechanism of class loader in Java 8. 
-Then, we use <a href="https://prestosql.io">Presto</a> as a real example to show 
-how class loader works in Presto and why understanding class loader is important.</p>
+            <p>In this post, I present two examples: one from functional programming and one from state machine to illustrate "callbacks" concept.</p>
 <div class="toc">
 <ul>
-<li><a href="#class-loader-basics">Class Loader Basics</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#callbacks-as-a-closure-idiom">Callbacks as a Closure Idiom</a></li>
 </ul>
 </div>
-<h2 id="class-loader-basics">Class Loader Basics</h2>
+<h2 id="overview">Overview</h2>
+<p>Callbacks terminology often appears in the following scenario: some library provides a set of API functions that allow user to pass in their own procedures so that when "events" occur, those procedures will be 
+executed. In other words, the user first register their interest in hearing about events by providing a set of procedures to the library. When "events" occur, the library will inform those registered users through 
+procedures provided by users themselves. Those procedures are called "callbacks" - functions that get called when the event occurs. </p>
+<p>One of usages is shown in the figure below in which database library provides an API <code>execOnDBWhen(fn, event)</code>: <code>fn</code> will be executed on database when <code>event</code> happens. 
+Client A register a function called <code>notifyClient</code> to the database library and asks the library to execute this function (i.e., notify the client) when some other clients update the 
+database. Shortly after client A registration, client B sends an update request to the database. Since client A registered a callback <code>notifyClient</code>, database library almost immediately 
+executs <code>notifyClient</code> callback and inform client A about the database update just happened.</p>
+<p><img alt="callback example usage 1" class="img-responsive" src="../images/callbacks.png"/></p>
+<p>Another common usage is to pass a callback to another function and when such function is done its computation, the callback is get invoked to inform the caller of the function 
+that the function has finished its work. As one may sense, this is usually associated with asynchronous framework or <a href="https://en.wikipedia.org/wiki/Futures_and_promises">futures</a>.
+An example figure is shown below. In the example, <code>funA</code> calls <code>funB</code> with a callback called <code>notifyFunA</code>. Then, <code>funA</code> continues its execution. Now, when <code>funB</code> finish its execution
+(indicated by the rectangle) <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>, <code>notifyFunA</code> is invoked, which is used to inform <code>funA</code> that its callee <code>funB</code> has done its work.</p>
+<p><img alt="callback example usage 2" class="img-responsive" src="../images/callbacks2.png"/></p>
+<p>In the following sections, I present several concrete examples to further illustrate "callbacks" concept in action.</p>
+<h2 id="callbacks-as-a-closure-idiom">Callbacks as a Closure Idiom</h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This section's content is adapted from <a href="https://www.amazon.com/dp/B07NCXJR1M/ref=sr_1_1?crid=29HA6UVZMZZ4Z&amp;dchild=1&amp;keywords=core+java+volume+2&amp;qid=1588238324&amp;sprefix=core+java+%2Caps%2C182&amp;sr=8-1">Core Java</a> 10th edition.</p>
+<p>This section is adapted from <a href="https://www.coursera.org/learn/programming-languages/home/welcome">Programming Language: Part A on Coursera</a>.</p>
 </div>
-<p>Any <code>.java</code> source code files will be compiled into byte code (i.e., virtual machine code), which are contained in <code>.class</code> files.
-Those <code>.class</code> files are then consumed by the Java Virtual Machine (JVM). <code>.class</code> files are <strong>class files</strong>. Each class file contains the definition
-and implementation code for one class or interface. </p>
-<p>Class loader hierarchy is shown <a href="#class-loader-hierarcy">below</a>:</p>
-<p><img alt="class loader hierarchy" class="img-responsive" id="class-loader-hierarchy" src="../images/classloader.png"/></p>
-<p>Every Java program has at least three class loaders:</p>
-<ul>
-<li>
-<p><strong>Bootstrap class loader</strong> loads the system classes (typically from the JAR file <code>rt.jar</code>)</p>
-<ul>
-<li>It is part of the JVM and implemented in C. Thus, there is no <code>ClassLoader</code> object corresponding to the bootstrap class loader (
-  e.g., <code>String.class.getClassLoader()</code> returns <code>null</code>)</li>
-</ul>
+<!-- - Also translate the state machine example using futures -->
+<!-- - Ideally, all those three examples will be under the same context for comparison (e.g., all on key stroke events) -->
+<!-- - maybe add another example on callback 2nd usage -->
+<!-- https://spdk.io/doc/concurrency.html -->
+<div class="footnote">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>the figure follows <a href="https://en.wikipedia.org/wiki/Sequence_diagram">sequence digram</a> syntax. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
-<li>
-<p><strong>Extension class loader</strong> loads "standard extensions" from the <code>jre/lib/ext</code> directory. We can drop JAR files into that directory,
-  and the extension class loader will find the classes in them.</p>
-</li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If we drop a JAR file into the <code>jre/lib/ext</code> directory, we have to make sure that all classes in the JAR file will have 
-class dependencies that can be loaded by system or extension class loader. This is because if one of the JAR file classes need to load
-a class that is not a system or extension class, extension class loader will not find it because extension class loader does not 
-use the class path.</p>
+</ol>
 </div>
-<ul>
-<li>
-<p><strong>System class loader</strong> loads the application classes. It locates classes in the directories and JAR/ZIP files on the class path
-  set by <code>CLASSPATH</code> environment variable or the <code>-classpath</code> comand-line option.</p>
-</li>
-<li>
-<p><strong>Application-specific class loader</strong>. Application classes can implement their own class loaders. For example, some programs
-  have a <a href="https://stackoverflow.com/questions/465099/best-way-to-build-a-plugin-system-with-java">plugin architecture</a> in which certain 
-  parts of code are packaged as optional plugins. If the plugins are packaged as JAR files, we can load the plugin classes with an 
-  instance of <code>URLClassLoader</code></p>
-</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="n">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">"/path/to/plugin.jar"</span><span class="o">);</span>
-<span class="n">URLClassLoader</span> <span class="n">pluginLoader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">URLClassLoader</span><span class="o">(</span><span class="k">new</span> <span class="n">URL</span><span class="o">[]</span> <span class="o">{</span> <span class="n">url</span> <span class="o">});</span>
-<span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">cl</span> <span class="o">=</span> <span class="n">pluginLoader</span><span class="o">.</span><span class="na">loadClass</span><span class="o">(</span><span class="s">"mypackage.MyClass"</span><span class="o">);</span>
-</pre></div>
         </article>
 
         <footer>

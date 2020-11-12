@@ -84,7 +84,7 @@ in the ordering shown above and talks about the missions that each concurrency p
 is some rules of thumb I like to use when work with those concepts in practice:</p>
 <ul>
 <li>
-<p>Semaphore replaces "everything": I can use semaphore to work both as lock to protect shared data across multiple threads (i.e., threads can access data but only one at a time) and as condition variable <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> to order the events (e.g., ordering the access of shared data; ordering the execution of threads).</p>
+<p>Semaphore replaces "everything": I can use semaphore to work both as lock to protect shared data across multiple threads (i.e., threads can access data but only one at a time) and as condition variable <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> to order the events (e.g., ordering the access of shared data; ordering the execution of threads).</p>
 </li>
 <li>
 <p>Mutex is just a easeir tool to use under lock scenario. In other words, we can use semaphore as the lock but implements semaphore itself requires more LOC than mutex (i.e., if we only need lock, use mutex).</p>
@@ -100,7 +100,7 @@ is some rules of thumb I like to use when work with those concepts in practice:<
 <p>Hopefully, by now, I can convince you why we need semaphore: it is such a indispensable tool in the pocket when we want to deal with commonly-seen concurrency situation: used as the lock to protect shared variable; used as ordering mechanism to facilitate threads execution order and concurrent event ordering.</p>
 <h2 id="concept-and-implementation">Concept and Implementation</h2>
 <p>Before we jump into semaphore, let's revisit mutex and condition variable concepts first because we will leverage those two concepts in our C++ implementation. Mutex is used to allow many threads to acess the same variable but only do so one at a time. It is a
-useful tool to avoid data race: a situation where two threads acess the same variable concurrently and at least one of the access is a write (e.g., Alice deposits $200 into bank with initial balance is 0; Bob deposits $100 to the same account and the final balance can be $200 <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>). Whenever a thread wants to modify a shared variable, it needs to acquire mutex first and release the mutex after the modification. Condition variable is used to put one thread to sleep until the condition the thread is waiting for comes true. A condition variable is an explicit queue that threads can put themselves on when some state of execution (i.e., some condition) is not as desired (by <strong>waiting</strong> on the condition); some other thread, when it changes said state, can then wake one (or more) of those waiting threads and thus allow them to continue (by <strong>signaling</strong> on the condition).</p>
+useful tool to avoid data race: a situation where two threads acess the same variable concurrently and at least one of the access is a write (e.g., Alice deposits $200 into bank with initial balance is 0; Bob deposits $100 to the same account and the final balance can be $200 <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>). Whenever a thread wants to modify a shared variable, it needs to acquire mutex first and release the mutex after the modification. Condition variable is used to put one thread to sleep until the condition the thread is waiting for comes true. A condition variable is an explicit queue that threads can put themselves on when some state of execution (i.e., some condition) is not as desired (by <strong>waiting</strong> on the condition); some other thread, when it changes said state, can then wake one (or more) of those waiting threads and thus allow them to continue (by <strong>signaling</strong> on the condition).</p>
 <p>A semaphore is an object with an integer value that we can manipulate with an increment-value method (let's denote such method as <code>post()</code>) and a decrement-value method (let's denote such method as <code>wait()</code>). Then, the semantics of semaphore is defined by
 the functionality of <code>post()</code> and <code>wait()</code>.</p>
 <div class="admonition note">
@@ -165,13 +165,13 @@ the <code>post()</code> and <code>wait()</code> implementation.</p>
 <ol>
 <li>acquire a <a href="https://en.cppreference.com/w/cpp/thread/mutex">std::mutex</a> (usually via <a href="https://en.cppreference.com/w/cpp/thread/lock_guard">std::lock_guard</a>)</li>
 <li>perform the modification while the lock is held (e.g., <code>avail++</code>)</li>
-<li>execute <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/notify_one">notify_one</a> or <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/notify_all">notify_all</a> on the <a href="https://en.cppreference.com/w/cpp/thread/condition_variable">std::condition_variable</a> <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">3</a></sup></li>
+<li>execute <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/notify_one">notify_one</a> or <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/notify_all">notify_all</a> on the <a href="https://en.cppreference.com/w/cpp/thread/condition_variable">std::condition_variable</a> <sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">3</a></sup></li>
 </ol>
 <p>For thread calling <code>wait()</code> (e.g., any threads that intends to wait on the condition variable in semaphore), <code>wait()</code> has to:</p>
 <ol>
 <li>acquire a <a href="https://en.cppreference.com/w/cpp/thread/unique_lock">std::unique_lock<std::mutex></std::mutex></a> on the same mutex as used to protect the shared variable</li>
-<li>execute <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait">wait</a> <sup id="fnref:6"><a class="footnote-ref" href="#fn:6">4</a></sup>, <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait_for">wait_for</a>, or <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait_until">wait_until</a>. The wait operations atomically release the mutex and suspend the execution of the thread.</li>
-<li>when the condition variable is notified, a timeout expires, or a <a href="https://en.wikipedia.org/wiki/Spurious_wakeup">spurious wakeup</a> occurs, the thread is awakened, and the mutex is atomically reacquired. The thread should then check the condition and resume waiting if the wake up was spurious <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">5</a></sup>. </li>
+<li>execute <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait">wait</a> <sup id="fnref:6"><a class="footnote-ref" href="#fn:6" rel="footnote">4</a></sup>, <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait_for">wait_for</a>, or <a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait_until">wait_until</a>. The wait operations atomically release the mutex and suspend the execution of the thread.</li>
+<li>when the condition variable is notified, a timeout expires, or a <a href="https://en.wikipedia.org/wiki/Spurious_wakeup">spurious wakeup</a> occurs, the thread is awakened, and the mutex is atomically reacquired. The thread should then check the condition and resume waiting if the wake up was spurious <sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">5</a></sup>. </li>
 </ol>
 <p>One might probably notice, there is no explicitly unlock or using <code>while</code> to check for the wait condition (<code>avail &gt; 0</code>) inside the implementation. Actually, those operations happen but are hidden by the C++ library implementation:</p>
 <ul>
@@ -271,7 +271,7 @@ the value of semaphore will be 0, which will put threads calling <code>second()<
 <p class="admonition-title">Note</p>
 <p>Probably one may have noticed that the semantics of semaphore implementation has been slightly different than the
 semantics of <code>wait()</code> and <code>post()</code> we defined above with the pseudo code comment. In fact, semaphore intially has
-the invariant that: the value of the semaphore, when negative, is equal to the number of waiting threads <sup id="fnref:5"><a class="footnote-ref" href="#fn:5">6</a></sup>. We use
+the invariant that: the value of the semaphore, when negative, is equal to the number of waiting threads <sup id="fnref:5"><a class="footnote-ref" href="#fn:5" rel="footnote">6</a></sup>. We use
 invariant in the semantics definition instead of the actual implementation is to help remember semaphore functionality.
 We certainly can modify the implementation to make it follow the invariant: we switch type of <code>avail</code> from <code>size_t</code>
 to <code>int</code> and change the wait condition from <code>avail &gt; 0</code> to <code>avail &gt;= 0</code>. The complete modified implementation can
@@ -349,23 +349,23 @@ combo for each kind of situation. Certainly, there will be case using conditon v
 <hr/>
 <ol>
 <li id="fn:1">
-<p>The similarity of semaphore and condition variable is suggested by the origin of condition variable idea: Dijkstra's use of "<a href="http://www.cs.utexas.edu/users/EWD/ewd01xx/EWD123.PDF">private semaphore</a>". <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
+<p>The similarity of semaphore and condition variable is suggested by the origin of condition variable idea: Dijkstra's use of "<a href="http://www.cs.utexas.edu/users/EWD/ewd01xx/EWD123.PDF">private semaphore</a>". <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:2">
-<p>Think about why this can happen. If it is not clear, see <a href="https://www.goodreads.com/book/show/25080953-the-go-programming-language">The Go Programming Language book p.259</a>. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
+<p>Think about why this can happen. If it is not clear, see <a href="https://www.goodreads.com/book/show/25080953-the-go-programming-language">The Go Programming Language book p.259</a>. <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 <li id="fn:4">
 <p>"Always hold the lock while signaling" is one important tip for concurrency correctness mentioned in <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf">OSTEP</a>. There is 4th step that release lock is omitted here because it is automatically taken 
-care of by the destructor of <code>std::lock_guard</code>. <a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 3 in the text">↩</a></p>
+care of by the destructor of <code>std::lock_guard</code>. <a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 3 in the text">↩</a></p>
 </li>
 <li id="fn:6">
-<p>Inside <code>condition_variable::wait</code>, unlocking the lock, blocking the current executing thread, and adding it to the list of threads waiting on <code>*this</code> are executed atomically. <a class="footnote-backref" href="#fnref:6" title="Jump back to footnote 4 in the text">↩</a></p>
+<p>Inside <code>condition_variable::wait</code>, unlocking the lock, blocking the current executing thread, and adding it to the list of threads waiting on <code>*this</code> are executed atomically. <a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 4 in the text">↩</a></p>
 </li>
 <li id="fn:3">
-<p>That's why we always use <code>while</code> instead of <code>if</code> when deciding whether to wait on the condition. In classroom, we normally learned the practice from the difference between Mesa semantics and Hoare semantics. See <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf">OSTEP</a> for more details. <a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 5 in the text">↩</a></p>
+<p>That's why we always use <code>while</code> instead of <code>if</code> when deciding whether to wait on the condition. In classroom, we normally learned the practice from the difference between Mesa semantics and Hoare semantics. See <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf">OSTEP</a> for more details. <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 5 in the text">↩</a></p>
 </li>
 <li id="fn:5">
-<p>The invariant is stated in one of <a href="https://klevas.mif.vu.lt/~liutauras/books/Dijkstra%20-%20The%20structure%20of%20the%20THE%20multiprogramming%20system.pdf">Dijkstra's papers</a>. <a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 6 in the text">↩</a></p>
+<p>The invariant is stated in one of <a href="https://klevas.mif.vu.lt/~liutauras/books/Dijkstra%20-%20The%20structure%20of%20the%20THE%20multiprogramming%20system.pdf">Dijkstra's papers</a>. <a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 6 in the text">↩</a></p>
 </li>
 </ol>
 </div>

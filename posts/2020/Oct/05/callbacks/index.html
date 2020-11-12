@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
-        <title>    "END-TO-END ARGUMENTS IN SYSTEM DESIGN"
+        <title>    Callbacks
 </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,13 +37,13 @@
 </header>
     <div class="post">
       <header>
-            <h1 class="post-title">"END-TO-END ARGUMENTS IN SYSTEM DESIGN"</h1>
+            <h1 class="post-title">Callbacks</h1>
             <div class="panel">
                 <div class="panel-body">
 <footer class="post-info">
     <span class="label label-default">Date</span>
     <span class="published">
-        <time datetime="2019-03-09T21:20:00+08:00"> Mar 09, 2019</time>
+        <time datetime="2020-10-05T23:11:00+08:00"> Oct 05, 2020</time>
     </span>
 
 
@@ -51,52 +51,58 @@
 
 
 <span class="label label-default">Tags</span>
-	<a href="../../../../../tag/os.html">os</a>
-        /
-	<a href="../../../../../tag/papers.html">papers</a>
+	<a href="../../../../../tag/concurrency.html">concurrency</a>
     
 </footer><!-- /.post-info -->                </div>
             </div>
-          <!-- <div class="post-title">"END-TO-END ARGUMENTS IN SYSTEM DESIGN"</h1></div> -->
-          <!-- <div class="post-date"><time datetime="2019-03-09T21:20:00+08:00">Mar 09, 2019</time></div> -->
+          <!-- <div class="post-title">Callbacks</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2020-10-05T23:11:00+08:00">Oct 05, 2020</time></div> -->
         </header>
         
         <article>
-            <h2 id="main-point">Main Point</h2>
-<p>The following statements provide different angles of stating the same "end-to-end argument":</p>
+            <p>In this post, I present two examples: one from functional programming and one from state machine to illustrate "callbacks" concept.</p>
+<div class="toc">
 <ul>
-<li>
-<p>Functions placed at low levels of a system may be redundant or of little value when compared with the cost of providing them
-at that low level; low level mechanisms to support these functions are justified only as performance enhancments.</p>
-</li>
-<li>
-<p>Since application knows its needs the most, it is natural for system to move function upward in a layered system, closer to the application that uses the function.</p>
-</li>
-<li>
-<p>The function in question can completely and correctly be implemented only with the knowledge and help of the application standing at the end points of the communication system. Therefore, providing that questioned function as a feature of the communication system itself is not possible. (Sometimes an incomplete version of the function provided by the communication system may be useful as a performance enhancment.<a href="https://en.wikipedia.org/wiki/Worse_is_better">"Worse is better"</a>)</p>
-</li>
-<li>
-<p>The end-to-end argument says that many functions in a communication system can only be completely and correctly implemented with the help of the application(s) at the endpoints <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup></p>
-</li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#callbacks-as-a-closure-idiom">Callbacks as a Closure Idiom</a></li>
 </ul>
-<h2 id="example-file-transfer">Example: File transfer</h2>
-<p>In the paper, a scenario about transferring file between host A and host B is used to demonstrate "end-to-end argument".</p>
-<p>File transfer application still needs to compare checksum on receving host with the sending host to ensure the file consistency
-and retransfer the file if the checksum differ even the underlying communication system has implemented similar mechanism to ensure no change bits in a packet or packet gets dropped. In other words, the file transfer application must provide its own retries based on an end-to-end checksum of the file. And if it does so, the extra effort expended in the communication system to provide a guarantee of reliable data transmission is only reducing the frequency of retries by the file transfer application; it has no effect on inevitablity or correctness of the outcome, since correct file transmission is assured by the end-to-end checksum and retry whether or not the data transmission system is reliable. Thus, the data communication system to go out of its way to be extraordinarily reliable does not reduce the burden on the application program to ensure reliability.</p>
-<p>Thus, low levels need not provide "perfect" reliability (e.g., communication system in this example) as the upper application still needs to implement the same functionality again to ensure correctness. However, communication system still needs to implement some mechanism to improve application performance (e.g., reduce application retries in this case). However, the point is that such mechanism needs not to be "perfect" (e.g., strive for a negligible error rate so that retries never happens). In addition, lower levels may not have enough information to "perfect" functions used by applications and the overhead introduced by such functions tax on the applications that are on the same system but never need such functionality.</p>
-<p>More examples are discussed in paper: (application level) encryption, duplicate message detection, message sequencing, guaranteed message delivery, detection of crashes, and delivery receipts.</p>
+</div>
+<h2 id="overview">Overview</h2>
+<p>Callbacks terminology often appears in the following scenario: some library provides a set of API functions that allow user to pass in their own procedures so that when "events" occur, those procedures will be 
+executed. In other words, the user first register their interest in hearing about events by providing a set of procedures to the library. When "events" occur, the library will inform those registered users through 
+procedures provided by users themselves. Those procedures are called "callbacks" - functions that get called when the event occurs. </p>
+<p>One of usages is shown in the figure below in which database library provides an API <code>execOnDBWhen(fn, event)</code>: <code>fn</code> will be executed on database when <code>event</code> happens. 
+Client A register a function called <code>notifyClient</code> to the database library and asks the library to execute this function (i.e., notify the client) when some other clients update the 
+database. Shortly after client A registration, client B sends an update request to the database. Since client A registered a callback <code>notifyClient</code>, database library almost immediately 
+executs <code>notifyClient</code> callback and inform client A about the database update just happened.</p>
+<p><img alt="callback example usage 1" class="img-responsive" src="../../../../../images/callbacks.png"/></p>
+<p>Another common usage is to pass a callback to another function and when such function is done its computation, the callback is get invoked to inform the caller of the function 
+that the function has finished its work. As one may sense, this is usually associated with asynchronous framework or <a href="https://en.wikipedia.org/wiki/Futures_and_promises">futures</a>.
+An example figure is shown below. In the example, <code>funA</code> calls <code>funB</code> with a callback called <code>notifyFunA</code>. Then, <code>funA</code> continues its execution. Now, when <code>funB</code> finish its execution
+(indicated by the rectangle) <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>, <code>notifyFunA</code> is invoked, which is used to inform <code>funA</code> that its callee <code>funB</code> has done its work.</p>
+<p><img alt="callback example usage 2" class="img-responsive" src="../../../../../images/callbacks2.png"/></p>
+<p>In the following sections, I present several concrete examples to further illustrate "callbacks" concept in action.</p>
+<h2 id="callbacks-as-a-closure-idiom">Callbacks as a Closure Idiom</h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This section is adapted from <a href="https://www.coursera.org/learn/programming-languages/home/welcome">Programming Language: Part A on Coursera</a>.</p>
+</div>
+<!-- - Also translate the state machine example using futures -->
+<!-- - Ideally, all those three examples will be under the same context for comparison (e.g., all on key stroke events) -->
+<!-- - maybe add another example on callback 2nd usage -->
+<!-- https://spdk.io/doc/concurrency.html -->
 <div class="footnote">
 <hr/>
 <ol>
 <li id="fn:1">
-<p>From <a href="https://blog.acolyer.org/2014/11/14/end-to-end-arguments-in-system-design/">morning paper</a> <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+<p>the figure follows <a href="https://en.wikipedia.org/wiki/Sequence_diagram">sequence digram</a> syntax. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 </ol>
 </div>
         </article>
 
         <footer>
-          <!-- <p>This entry is posted in <a href="../../../../../category/2019.html">2019</a>.</p> -->
+          <!-- <p>This entry is posted in <a href="../../../../../category/2020.html">2020</a>.</p> -->
           <!-- <a href="../../../../../donate.html" class="button">Donate</a> -->
           <a href="https://paypal.me/zhu45?locale.x=en_US">paypal.me</a>
         </footer>
