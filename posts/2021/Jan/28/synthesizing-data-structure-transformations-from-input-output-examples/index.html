@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    "Synthesizing Data Structure Transformations from Input-Output Examples"
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../academic.html" style="padding: 10px">ACADEMIC</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">&quot;Synthesizing Data Structure Transformations from Input-Output Examples&quot;</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2021-01-28T04:20:00+08:00"> Jan 28, 2021</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/papers.html">papers</a>
+        /
+	<a href="../../../../../tag/program-synthesis.html">program synthesis</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">&quot;Synthesizing Data Structure Transformations from Input-Output Examples&quot;</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2021-01-28T04:20:00+08:00">Jan 28, 2021</time></div> -->
+        </header>
+        
+        <article>
+            <ul>
+<li><p class="first">The paper presents a method to synthesize functional programs that transform recursive data
+structures (e.g., lists, trees)</p>
+<ul class="simple">
+<li>Examples: see Figure 6 (e.g., <tt class="docutils literal">join</tt>, <tt class="docutils literal">cprod</tt>)</li>
+<li>essentially shows how one can orchestrate a list of operators to generate the desired program</li>
+</ul>
+</li>
+<li><p class="first">Three techniques</p>
+<ul class="simple">
+<li>type-aware inductive generalization<ul>
+<li>purpose: create hypotheses that represent some or all properties of the target program<ul>
+<li>can be open -&gt; contains "holes"</li>
+<li>can be closed -&gt; if is consistent with examples, this is the program</li>
+</ul>
+</li>
+<li>input: inferred types from examples<ul>
+<li>use types -&gt; prune the search space</li>
+</ul>
+</li>
+<li>output: a stream of hypotheses that match types</li>
+<li>how: see paragraph right above 4.3</li>
+</ul>
+</li>
+<li>deduction<ul>
+<li>purpose: solve unknown functions in hypotheses</li>
+<li>Two techniques:<ul>
+<li>Refutation: use counter-example to reject hypotheses</li>
+<li>Example inference: uses properties of combinators to infer new examples on unknown functions</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>best-first enumerate search<ul>
+<li>weighted BFS idea -&gt; use priority queue</li>
+<li>weight created from cost model: simple is better (avoid degenerate case: prog packed with if-blocks)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p class="first">Main algorithm</p>
+<img alt="Synthesis procedure" class="img-responsive" src="/images/feser2015synthesizing/fig2.png"/>
+<ul class="simple">
+<li>a priority queue <span class="math">\(Q\)</span> of subtasks <span class="math">\((e, f, \mathcal{E})\)</span><ul>
+<li><span class="math">\(e\)</span>: a hypothesis</li>
+<li><span class="math">\(f\)</span>: a hole in hypothesis</li>
+<li><span class="math">\(\mathcal{E}\)</span>:  a set of examples</li>
+</ul>
+</li>
+<li>pop the head of queue and obtain a subtask to work on<ul>
+<li>if <span class="math">\(e\)</span> is closed, checking agains input examples<ul>
+<li>ok -&gt; got a solution; discard otherwise</li>
+</ul>
+</li>
+<li>if <span class="math">\(e\)</span> is open<ul>
+<li>synthesize <span class="math">\(f\)</span> in <span class="math">\(e\)</span><ul>
+<li>infer type of <span class="math">\(f\)</span> from <span class="math">\(\mathcal{E}\)</span></li>
+<li>use inductive generalization to create a stream of hypotheses <span class="math">\(H\)</span> for <span class="math">\(f\)</span></li>
+<li>replace <span class="math">\(f\)</span> with each <span class="math">\(h \in H\)</span> to obtain a set of new hypotheses. Say one of them is <span class="math">\(e'\)</span><ul>
+<li>if <span class="math">\(e'\)</span> is closed -&gt; put <span class="math">\((e', \perp, \emptyset)\)</span> as a subtask to queue</li>
+<li>if <span class="math">\(e'\)</span> is open<ul>
+<li>new subtask for each hole <span class="math">\(f^*\)</span> in <span class="math">\(e'\)</span></li>
+<li>uses deduction on <span class="math">\(f^*\)</span> to create new examples <span class="math">\(\mathcal{E^*}\)</span> or refute</li>
+<li>add <span class="math">\((e', f^*, \mathcal{E^*})\)</span> as a subtask if not rejected</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article>
+
+        <footer>
+          <!-- <p>This entry is posted in <a href="../../../../../category/2021.html">2021</a>.</p> -->
+          <!-- <a href="../../../../../donate.html" class="button">Donate</a> -->
+          <a href="https://paypal.me/zhu45?locale.x=en_US">paypal.me</a>
+        </footer>
+        
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2021 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
