@@ -72,7 +72,7 @@ concept using <code>char *</code>. Hopefully, this time I do a better job.</p>
 </div>
 <h2 id="problem">Problem</h2>
 <p>We are given the following program:</p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// modify this function</span>
 <span class="kt">void</span> <span class="nf">function</span><span class="p">()</span>
@@ -87,10 +87,10 @@ concept using <code>char *</code>. Hopefully, this time I do a better job.</p>
     <span class="n">puts</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p>We want to implement <code>function()</code> such that we can print out <code>Hello World!</code> to the screen. The result of
 the modification looks like below:</p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// modify this function</span>
 <span class="kt">void</span> <span class="nf">function</span><span class="p">(</span><span class="kt">char</span><span class="o">**</span> <span class="n">c</span><span class="p">)</span>
@@ -105,11 +105,11 @@ the modification looks like below:</p>
     <span class="n">puts</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p>The question we want to answer is why doing so works?</p>
 <h2 id="explanation">Explanation</h2>
 <p>We acquire key data from GDB as following:</p>
-<table class="table-hover  table-striped table">
+<table class="table  table-striped table-hover">
 <thead>
 <tr>
 <th>GDB command</th>

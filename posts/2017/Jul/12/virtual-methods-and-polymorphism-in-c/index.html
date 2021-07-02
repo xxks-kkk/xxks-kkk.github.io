@@ -79,7 +79,7 @@ need to rewrite the post some day in the future when I know more about the langu
 is good enough for me now.</p>
 <h2 id="virtual-methods">Virtual methods</h2>
 <p>Let's consider the following code snippet: we have a base class called <code>Animal</code> and its subclass called <code>Dog</code></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
 
 <span class="k">class</span> <span class="nc">Animal</span><span class="p">{</span>
@@ -101,29 +101,29 @@ is good enough for me now.</p>
   <span class="n">animal</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
   <span class="n">dog</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p>Now, inside the <code>main</code>, we call <code>animal-&gt;getClass()</code> and <code>dog-&gt;getClass()</code>. We compile our code 
 using <code>g++ -std=c++11 a.cpp</code> and run the program and get</p>
-<div class="highlight"><pre><span></span>I'm an Animal
-I'm a Dog
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="err">I'm an Animal</span>
+<span class="err">I'm a Dog</span>
+</code></pre></div>
 <p>As you can see, each object calls their <code>getClass</code> method respectively.
 Now, let's add a function called <code>whatClassAreYou()</code> to our code above </p>
-<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">whatClassAreYou</span><span class="p">(</span><span class="n">Animal</span> <span class="o">*</span><span class="n">animal</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span> <span class="nf">whatClassAreYou</span><span class="p">(</span><span class="n">Animal</span> <span class="o">*</span><span class="n">animal</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="n">animal</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p>and in our <code>main</code> function, we call our newly-added function with</p>
-<div class="highlight"><pre><span></span><span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">animal</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">animal</span><span class="p">);</span>
 <span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">dog</span><span class="p">);</span>
-</pre></div>
+</code></pre></div>
 <p>and the output looks like below</p>
-<div class="highlight"><pre><span></span>I'm an Animal
-I'm a Dog
-I'm an Animal
-I'm an Animal
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="err">I'm an Animal</span>
+<span class="err">I'm a Dog</span>
+<span class="err">I'm an Animal</span>
+<span class="err">I'm an Animal</span>
+</code></pre></div>
 <p>As you can see <code>whatClassAreYou()</code> only calls the <code>getClass()</code> method of our base class <code>Animal</code> even when we pass in 
 <code>Dog</code> class object. Ideally, we want our <code>whatClassAreYou()</code> method call the right <code>getClass()</code> method depending on
 what class object we pass into. In other words, if our <code>Dog</code> class implements its own <code>getClass()</code> method, we want
@@ -132,7 +132,7 @@ That's why we want to add <code>virtual</code> keyword to the <code>getClass()</
 that our base class <code>getClass()</code> method might be overridden by its subclass and be aware of this fact when some other method
 wants to call it.</p>
 <p>Now our code looks like below</p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
 
 <span class="c1">// Virtual Methods and Polymorphism</span>
@@ -173,13 +173,13 @@ wants to call it.</p>
   <span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">animal</span><span class="p">);</span>
   <span class="n">whatClassAreYou</span><span class="p">(</span><span class="n">dog</span><span class="p">);</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p>and the output is</p>
-<div class="highlight"><pre><span></span>I'm an Animal
-I'm a Dog
-I'm an Animal
-I'm a Dog
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="err">I'm an Animal</span>
+<span class="err">I'm a Dog</span>
+<span class="err">I'm an Animal</span>
+<span class="err">I'm a Dog</span>
+</code></pre></div>
 <p>The reason behind this scenario is what we called <strong>polymorphism</strong>, which means "many form" in Greek. Here is how this
 concept get explained in <a href="https://www.amazon.com/Primer-5th-Stanley-B-Lippman/dp/0321714113">C++ Primer</a>:</p>
 <blockquote>
@@ -205,7 +205,7 @@ Therefore, calls made on an object are bound at compile time to the version defi
 an object’s dynamic type to differ from its static type.</p>
 </div>
 <p>To see the final note of the above quote, let's take a look an example</p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
 
 <span class="k">class</span> <span class="nc">Animal</span><span class="p">{</span>
@@ -246,28 +246,28 @@ an object’s dynamic type to differ from its static type.</p>
   <span class="n">whatClassAreYou2</span><span class="p">(</span><span class="n">animal2</span><span class="p">);</span>
   <span class="n">whatClassAreYou2</span><span class="p">(</span><span class="n">dog2</span><span class="p">);</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p>In this example, we define another method <code>whatClassAreYou2</code> calls on object instead of pointers. Now, we apply this method
 to our newly created objects <code>animal2</code> and <code>dog2</code> and we get</p>
-<div class="highlight"><pre><span></span>I'm an Animal
-I'm a Dog
-I'm an Animal
-I'm a Dog
-I'm an Animal
-I'm an Animal
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="err">I'm an Animal</span>
+<span class="err">I'm a Dog</span>
+<span class="err">I'm an Animal</span>
+<span class="err">I'm a Dog</span>
+<span class="err">I'm an Animal</span>
+<span class="err">I'm an Animal</span>
+</code></pre></div>
 <p>As you can see, even we have virtual function in our base class, <code>whatClassAreYou2()</code> invokes only the base class's <code>getClass()</code>
 method and ignores the subclass overrides. </p>
 <p>Aside note, you may notice that we use two ways to initialize our objects. The first way is through <code>Animal *animal = new Animal;</code>
 and the second way is through <code>Animal animal2;</code>. Initialization is quite complex in C++. These two ways are essentially the same:
-we use <strong>default constructor</strong> <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup> to initialize the objects. The only difference is that the first way gives us a pointer to 
+we use <strong>default constructor</strong> <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> to initialize the objects. The only difference is that the first way gives us a pointer to 
 the object and the second way gives object directly. To obtain the pointer to the object, we can do <code>Animal *ptrAnimal = &amp;animal2</code>.
-Another way to initialize object is through value initilialization <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>. For example:</p>
-<div class="highlight"><pre><span></span><span class="n">string</span> <span class="o">*</span><span class="n">ps1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">string</span><span class="p">;</span>   <span class="c1">// default initalized to the empty string</span>
+Another way to initialize object is through value initilialization <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>. For example:</p>
+<div class="highlight"><pre><span></span><code><span class="n">string</span> <span class="o">*</span><span class="n">ps1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">string</span><span class="p">;</span>   <span class="c1">// default initalized to the empty string</span>
 <span class="n">string</span> <span class="o">*</span><span class="n">ps</span> <span class="o">=</span> <span class="k">new</span> <span class="n">string</span><span class="p">();</span>  <span class="c1">// value initialized to the empty string</span>
 <span class="kt">int</span> <span class="o">*</span><span class="n">pi1</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">;</span>         <span class="c1">// default initialized; *pi1 is undefined</span>
 <span class="kt">int</span> <span class="o">*</span><span class="n">pi2</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">();</span>       <span class="c1">// value initialized to 0; *pi2 is 0</span>
-</pre></div>
+</code></pre></div>
 <h2 id="pure-virtual-function-abstract-base-class">Pure virtual function &amp; abstract base class</h2>
 <p>Another important concept related with <strong>virtual</strong> is called <strong>pure virtual</strong>. The difference between this concept
 is that, as stated in wikipedia:</p>
@@ -277,7 +277,7 @@ by a function with the same signature. A pure virtual function or pure virtual m
 is required to be implemented by a derived class that is not abstract.</p>
 </blockquote>
 <p>In short, virtual function can be overriden; pure virtual function must be implemented. Let's take a look a example</p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
 
 <span class="c1">// An abstract data type is a class that acts as the base to other classes</span>
@@ -309,7 +309,7 @@ is required to be implemented by a derived class that is not abstract.</p>
 
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p>Here, we have a base class called <code>Car</code> and a class that derives from the <code>Car</code> class called <code>StationWagon</code>.  <code>Car</code>
 is a lot similar to our <code>Animal</code> class in the sense that both classes have methods that have keyword <code>virtual</code>. However,
 <code>Car</code> class's methods have <code>=0</code>. This is exactly how we identify <strong>pure virtual</strong>: we specify that a virtual function 
@@ -359,10 +359,10 @@ abstract base-class type.</p>
 <hr/>
 <ol>
 <li id="fn:1">
-<p>See Section 7.1.4 Constructors (p.262) of C++ Primier (5th edition) for details. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+<p>See Section 7.1.4 Constructors (p.262) of C++ Primier (5th edition) for details. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:2">
-<p>See Section 12.1.2 Managing Memory Directly (p.459) of C++ Primier (5th edition) for details. <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
+<p>See Section 12.1.2 Managing Memory Directly (p.459) of C++ Primier (5th edition) for details. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 </ol>
 </div>

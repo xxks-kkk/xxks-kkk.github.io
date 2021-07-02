@@ -80,7 +80,7 @@ from left to right.</p>
 <p>For every nodex <span class="math">\(X\)</span>, the key in the parent of <span class="math">\(X\)</span> is smaller than (or equal to) the
 key in <span class="math">\(X\)</span>, with the exception of the root (which has no parent). In other words,
 every node is less than or equal to its children.</p>
-<p>This property guarantees that the root node is always the smallest node <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>.</p>
+<p>This property guarantees that the root node is always the smallest node <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</p>
 <p>Here are some examples:</p>
 <p><img alt="binary heap examples" class="img-responsive" src="/images/binary-heap.PNG" style="width: 700px;"/></p>
 <h2 id="properties">Properties</h2>
@@ -101,7 +101,7 @@ expensive to do.</p>
 <p>We add the value as the new node at the end of the array, which is the next avaliable
 location in the tree. Then, we need to maintain the heap order property by doing 
 a simple insertion sort operation on the path from the new place to the root to find
-the correct place for it in the tree. This is called <em>percolate up</em> <sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>. </p>
+the correct place for it in the tree. This is called <em>percolate up</em> <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>. </p>
 <p><img alt="binary heap percolate up" class="img-responsive" src="/images/binary-heap-percolate-up.PNG" style="width: 700px;"/></p>
 <ul>
 <li>We start at last node and keep comparing with parent <span class="math">\(A[i/2]\)</span></li>
@@ -143,14 +143,14 @@ followed by <code>DeleteMin</code>. The running time is <span class="math">\(O(\
 <li>Place the <span class="math">\(N\)</span> keys into the tree in order. This satisfies the structure property.</li>
 <li>Then we do the following to maintain the heap order property.</li>
 </ul>
-<div class="highlight"><pre><span></span>for( i = N/2; i &gt; 0; i--)
-  PercolateDown(i);
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="err">for( i = N/2; i &gt; 0; i--)</span>
+<span class="err">  PercolateDown(i);</span>
+</code></pre></div>
 <p>This alogrithm runs in <span class="math">\(O(N)\)</span> time. Detailed proof see MAW p.189.</p>
 <h4 id="mergeh1h2"><code>Merge(H1,H2)</code></h4>
 <p>We merge two heaps <span class="math">\(H1\)</span> and <span class="math">\(H2\)</span> of size <span class="math">\(O(N)\)</span>. <span class="math">\(H1\)</span> and <span class="math">\(H2\)</span> are stored in two
 arrays. We can do <span class="math">\(O(N)\)</span> insert but this requires <span class="math">\(O(N\log N)\)</span> time. We can do better
-by copy <span class="math">\(H2\)</span> at the end of <span class="math">\(H1\)</span> and use <code>BuildHeap</code>. This requires <span class="math">\(O(N)\)</span> time <sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>.</p>
+by copy <span class="math">\(H2\)</span> at the end of <span class="math">\(H1\)</span> and use <code>BuildHeap</code>. This requires <span class="math">\(O(N)\)</span> time <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>.</p>
 <h2 id="runtime-analysis">Runtime analysis</h2>
 <ul>
 <li>Space: <span class="math">\(O(N)\)</span> (an array of size <span class="math">\(N+1\)</span>)</li>
@@ -184,19 +184,19 @@ at <span class="math">\(\lfloor{\frac{i + (d-2)}{d}}\rfloor\)</span> and the chi
 <li id="fn:1">
 <p>The heap order property is for min heap. If you want to have a max heap, then
 the heap order property should be that every node is greater than or equal to 
-its children. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+its children. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:2">
 <p>Position 0 is used as a sentinel, which holds the value that is smaller than
 (or equal to) any element in the heap. This is because every iteration of insert
 needs to test: 1. if it has reached the top node A[1] 2. if parent <span class="math">\(\le\)</span> item
 The first test can be avoid by using sentinel b/c it then becomes a special case
-of second test. <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
+of second test. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 <li id="fn:3">
 <p>As shown on MAW p.183, empirical study shows that on average, percolation terminates
 early: average <em>insert</em> moves an element up 1.607 levels. This means that 
-binary heap support insertion in <em>constant average</em> time per operation. <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">↩</a></p>
+binary heap support insertion in <em>constant average</em> time per operation. <a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">↩</a></p>
 </li>
 </ol>
 </div>

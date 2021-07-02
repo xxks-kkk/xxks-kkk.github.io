@@ -86,7 +86,7 @@ two sorted halves, which can then be merged together using the merging algorithm
 The problem is <em>divided</em> into smaller problems and solved recursively. The <em>conquering</em>
 phase consists of patching together the answers.</p>
 <p>The mergesort algorithm can be implemented as follows:</p>
-<div class="highlight"><pre><span></span><span class="kt">void</span>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span>
 <span class="nf">merge</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span>
       <span class="kt">int</span> <span class="n">tmpArray</span><span class="p">[],</span>
       <span class="kt">int</span> <span class="n">lpos</span><span class="p">,</span> <span class="c1">// start of left half</span>
@@ -140,7 +140,7 @@ phase consists of patching together the answers.</p>
   <span class="n">msort</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">tmpArray</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
   <span class="n">free</span><span class="p">(</span><span class="n">tmpArray</span><span class="p">);</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p>Note that we use <code>tmpArray</code> working as array <span class="math">\(C\)</span> in our merging algorithm
 to hold the merge result from our two input sorted arrays. One naive implementation
 is that we declare a temporary array locally each time we call <code>Merge</code>. This can
@@ -153,7 +153,7 @@ to control the fraction of <code>tmpArray</code> will be used for merge step. Th
 implementation trick, which will visit again immediately.</p>
 <p>Like many other recursive algorithm, mergesort can also be implemented as
 non-recursive algorithm as follows:</p>
-<div class="highlight"><pre><span></span><span class="kt">void</span>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span>
 <span class="nf">mergeSortNonRecursive</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">N</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="kt">int</span> <span class="o">*</span><span class="n">tmpArray</span><span class="p">;</span>
@@ -172,7 +172,7 @@ non-recursive algorithm as follows:</p>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 <p>Let's take a look at an example for better understanding of the implementation
 above. Suppose we want to sort the following list using mergesort: 
 <span class="math">\(31, 41, 59, 26, 53, 58, 97\)</span>. We start from very basic case: merge two sorted
@@ -182,24 +182,24 @@ of while loop when <code>subListSize = 1</code>. Then, we call <code>merge</code
 use the fraction of <code>tmpArray</code> from <code>0</code> to <code>1</code> to hold the merge result.
 We can print out the value <code>part1Start</code>, <code>part2Start</code>, and <code>part2End</code> to help
 us better understand the flow of the program:</p>
-<div class="highlight"><pre><span></span>Before mergeSort: 31, 41, 59, 26, 53, 58, 97,
-part1Start: 0
-part2Start: 1
-part2End: 1
-part1Start: 2
-part2Start: 3
-part2End: 3
-part1Start: 4
-part2Start: 5
-part2End: 5
-part1Start: 0
-part2Start: 2
-part2End: 3
-part1Start: 0
-part2Start: 4
-part2End: 6
-After mergeSort: 26, 31, 41, 53, 58, 59, 97,
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="err">Before mergeSort: 31, 41, 59, 26, 53, 58, 97,</span>
+<span class="c">part1Start: 0</span>
+<span class="c">part2Start: 1</span>
+<span class="c">part2End: 1</span>
+<span class="c">part1Start: 2</span>
+<span class="c">part2Start: 3</span>
+<span class="c">part2End: 3</span>
+<span class="c">part1Start: 4</span>
+<span class="c">part2Start: 5</span>
+<span class="c">part2End: 5</span>
+<span class="c">part1Start: 0</span>
+<span class="c">part2Start: 2</span>
+<span class="c">part2End: 3</span>
+<span class="c">part1Start: 0</span>
+<span class="c">part2Start: 4</span>
+<span class="c">part2End: 6</span>
+<span class="err">After mergeSort: 26, 31, 41, 53, 58, 59, 97,</span>
+</code></pre></div>
 <h2 id="analysis">Analysis</h2>
 <p>The running time of mergesort is <span class="math">\(O(N \log N)\)</span>, which can be obtained
 by <a href="../../../../../posts/2017/Jun/12/solving-recurrence-relations-part-2/">solving the recurrence relation</a>:</p>

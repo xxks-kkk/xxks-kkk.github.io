@@ -134,16 +134,16 @@ Precondition helps us to design the algorithm and postcondition helps us to make
 As mentioned above, invariant is formalized using specific variables and values. Here, we need to decide the representation of "current range". This is
 the place where the binary search has many ways of implementation. We use <code>low</code> and <code>high</code> to define the range and we use <code>n</code> to denote the length of array.
 There are several popular formalization of the "current range":</p>
-<div class="highlight"><pre><span></span>1. A[low] &lt;  A[i] &lt;  A[high]
-2. A[low] &lt;= A[i] &lt;  A[high]
-3. A[low] &lt;  A[i] &lt;= A[high]
-4. A[low] &lt;= A[i] &lt;= A[high]
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="mf">1.</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">low</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w">  </span><span class="n">A</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w">  </span><span class="n">A</span><span class="o">[</span><span class="n">high</span><span class="o">]</span><span class="w"></span>
+<span class="mf">2.</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">low</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w">  </span><span class="n">A</span><span class="o">[</span><span class="n">high</span><span class="o">]</span><span class="w"></span>
+<span class="mf">3.</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">low</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w">  </span><span class="n">A</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">high</span><span class="o">]</span><span class="w"></span>
+<span class="mf">4.</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">low</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">high</span><span class="o">]</span><span class="w"></span>
+</code></pre></div>
 <p>Number 2 and 4 are the invariants that behind two most popular implementation of binary search you can find on the internet. </p>
 <h4 id="implementation-1">Implementation 1</h4>
 <p>For 2, the equation means that <span class="math">\(i \in [\text{low}, \text{high})\)</span>. Thus, <code>low</code> is initialized to <code>0</code> and <code>high</code> initialized to <code>n</code>. Thus, the invariant
 for this is "If <span class="math">\(X\)</span> is at any position <span class="math">\(i\)</span> in <span class="math">\(A\)</span> (i.e., <span class="math">\(A_i = X\)</span>) then <code>low &lt;= i &lt; high</code>". The implementation represents this invariant is below:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">binarySearch</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">binarySearch</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
     <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
     <span class="k">while</span> <span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">:</span>
         <span class="n">i</span> <span class="o">=</span> <span class="n">low</span> <span class="o">+</span> <span class="p">(</span><span class="n">high</span> <span class="o">-</span> <span class="n">low</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
@@ -154,7 +154,7 @@ for this is "If <span class="math">\(X\)</span> is at any position <span class="
         <span class="k">else</span><span class="p">:</span> <span class="c1"># X &lt; A[i]</span>
             <span class="n">high</span> <span class="o">=</span> <span class="n">i</span>
     <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
-</pre></div>
+</code></pre></div>
 <p>In order to show the correctness of the above implementation, we need to make sure that we maintain the invariant through the execution of the function:</p>
 <ul>
 <li>The first thing is to establish the invariant that’s going to hold true for the rest of the function, so we set the variables <code>low</code> and <code>high</code> to appropriate values (i.e. the lowest and one pass the highest indexes of the whole <span class="math">\(A\)</span>).</li>
@@ -176,12 +176,12 @@ and instead, we set it to <code>i</code>. Doing so, we maintain our invariant un
 <p>Since we’ve verified that all three branches of the <code>if</code> maintain the invariant, we know that the invariant holds on exiting that <code>if</code>. That means the invariant is
 true at the bottom of the loop, which means it will be true at the start of the next time around the loop. And by induction we deduce that it always remains true.</p>
 </li>
-<li>Finally, we break out of the loop when <code>low &lt; high</code> is false, which means that the candidate range is empty (i.e. <code>low == high</code>). At this point, we know that the condition of the invariant (“If <span class="math">\(X\)</span> is at any position <span class="math">\(i\)</span> in <span class="math">\(A\)</span>”) does not hold, so the invariant is trivially true; and we return the out-of-band value <code>-1</code>. <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup></li>
+<li>Finally, we break out of the loop when <code>low &lt; high</code> is false, which means that the candidate range is empty (i.e. <code>low == high</code>). At this point, we know that the condition of the invariant (“If <span class="math">\(X\)</span> is at any position <span class="math">\(i\)</span> in <span class="math">\(A\)</span>”) does not hold, so the invariant is trivially true; and we return the out-of-band value <code>-1</code>. <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup></li>
 </ul>
 <h4 id="implementation-2">Implementation 2</h4>
 <p>For 4, the equation means that <span class="math">\(i \in [\text{low}, \text{high}]\)</span>. Thus, <code>low</code> is initialized to <code>0</code> and <code>high</code> initialized to <code>n-1</code>. Thus, the invariant
 for this is "If <span class="math">\(X\)</span> is at any position <span class="math">\(i\)</span> in <span class="math">\(A\)</span> (i.e., <span class="math">\(A_i = X\)</span>) then <code>low &lt;= i &lt;= high</code>". The implementation represents this invariant is below:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">binarySearch</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">binarySearch</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
     <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">while</span> <span class="n">low</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">:</span>
         <span class="n">i</span> <span class="o">=</span> <span class="n">low</span> <span class="o">+</span> <span class="p">(</span><span class="n">high</span><span class="o">-</span><span class="n">low</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
@@ -192,7 +192,7 @@ for this is "If <span class="math">\(X\)</span> is at any position <span class="
         <span class="k">else</span><span class="p">:</span>
             <span class="n">high</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
-</pre></div>
+</code></pre></div>
 <p><a href="https://reprog.wordpress.com/2010/04/25/writing-correct-code-part-1-invariants-binary-search-part-4a/">Mike's post</a> has done the similar invariant unchanged
 analysis, which I'll skip for this implementation. Until now, we haven't touched on the concept of "bound function" and "postcondition" in our analysis. However,
 that doesn't mean these two concepts are not important. Usually, "bound function" is used to prove our loop terminates (Mike's post talks about how to use 
@@ -204,21 +204,21 @@ invariant. </p>
 <h3 id="example-1">Example 1</h3>
 <p>The first example is <a href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/">LC153. Find Minimum in Rotated Sorted Array</a>.
 Here, we are asked to find the minimum element given the rotated array. Suppose we have array <code>[0,1,2,4,5,6,7]</code> and there are seven ways of rotation:</p>
-<div class="highlight"><pre><span></span>0,1,2,4,5,6,7
-7,0,1,2,4,5,6
-6,7,0,1,2,4,5
-5,6,7,0,1,2,4
-4,5,6,7,0,1,2
-2,4,5,6,7,0,1
-1,2,4,5,6,7,0
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="err">0,1,2,4,5,6,7</span>
+<span class="err">7,0,1,2,4,5,6</span>
+<span class="err">6,7,0,1,2,4,5</span>
+<span class="err">5,6,7,0,1,2,4</span>
+<span class="err">4,5,6,7,0,1,2</span>
+<span class="err">2,4,5,6,7,0,1</span>
+<span class="err">1,2,4,5,6,7,0</span>
+</code></pre></div>
 <p>The key observation is that if the middle value is greater than the left value, then the minimum value appears on the righthand-side of the middle value
 (i.e., for <code>[4,5,6,7,0,1,2]</code>, the middle value is <code>7</code> and the minimum value <code>0</code> appears on the righthand-side of <code>7</code>).
 Otherwise, the minimum value appears on the lefthand-side of the middle value. Like the previous section, we need to define <code>left</code> and <code>right</code> and then our invariant.
 Here, we define the <code>left</code> as the <code>0</code> index of the array and <code>right</code> as the last index of the array. Then, our invariant can be formulated as: "the index of minimum
 value (i.e., <span class="math">\(i\)</span>) is always contained in the subarray denoted by <code>left</code> and <code>right</code> (i.e., <span class="math">\(i \in [\text{left}, \text{right}]\)</span>)". In addition, our precondition
 is: an array sorted in ascending order is rotated at some pivot unknown. Our postcondition is: the minimum value. Then, our implementation is:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">findMin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nums</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">findMin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nums</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="n">left</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">right</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">while</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="p">:</span>
@@ -230,7 +230,7 @@ is: an array sorted in ascending order is rotated at some pivot unknown. Our pos
         <span class="k">else</span><span class="p">:</span> <span class="c1"># nums[mid] &lt; nums[left]</span>
             <span class="n">right</span> <span class="o">=</span> <span class="n">mid</span>
     <span class="k">return</span> <span class="n">nums</span><span class="p">[</span><span class="n">left</span><span class="p">]</span>
-</pre></div>
+</code></pre></div>
 <p>We verify our invariant unchanged as follows:</p>
 <ul>
 <li>The invariant is unchanged before the first <code>if</code> when <code>nums[left] &lt; nums[right]</code>. Here, we know that there is no rotation in the array (i.e.,
@@ -256,7 +256,7 @@ In this case, there is no number in the array is greater than the target number,
 <p>What's the invariant for this problem? Similar to the other binary search problem, the invariant is "the index <span class="math">\(i\)</span> of the first number that is greater than
 the given target number in the array is in <span class="math">\([\text{low}, \text{high}]\)</span>". Thus, we can initialize <code>low</code> to be <code>0</code> and <code>high</code> to be <code>n</code>. Note that we set <code>high</code> to <code>n</code> instead of <code>n-1</code> due to the need to maintain the invariant: for the case when there is no number in the array that is greater than the target number, we can think about
 the first number that is greater than the target number happens one past the last index. Then, by our invariant, we need to include that number. Thus, we set our <code>high</code> to <code>n</code> instead of <code>n-1</code>. The implementation is following:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">findFirstGreaterTo</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">findFirstGreaterTo</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
     <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span>
     <span class="k">while</span> <span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">:</span>
         <span class="n">mid</span> <span class="o">=</span> <span class="n">low</span> <span class="o">+</span> <span class="p">(</span><span class="n">high</span> <span class="o">-</span> <span class="n">low</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
@@ -265,7 +265,7 @@ the first number that is greater than the target number happens one past the las
         <span class="k">else</span><span class="p">:</span> <span class="c1"># nums[mid] &gt; target</span>
             <span class="n">high</span> <span class="o">=</span> <span class="n">mid</span>
     <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">high</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span> <span class="k">else</span> <span class="n">high</span>
-</pre></div>
+</code></pre></div>
 <p>The invariant is maintained as follows:</p>
 <ul>
 <li>Invariant is unchanged until the first <code>if</code>: <code>nums[mid] &lt;= target</code>. There are two cases here: when <code>nums[mid] &lt; target</code>, since the array is sorted in
@@ -290,8 +290,8 @@ of the postcondition to help us get the returen result correctly. We haven't emp
 it as well. There are two ways to check the loop indeed terminates: one is through reasoning similar what we have done in invariant analysis 
 (<a href="https://reprog.wordpress.com/2010/04/27/writing-correct-code-part-2-bound-functions-binary-search-part-4b/">Mike's post</a> and 
 <a href="http://coldattic.info/post/95/">Paul's post</a> give us examples on how to do that); another way is by considering some special cases like there are only two 
-elements in the array suggested by the TopCoder article below.<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup> Some details are left out in this post: 1. why use <code>mid = low + (high - low)//2</code> instead of
-<code>mid = (low + high) // 2</code> <sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup> 2. Use <code>A[low] &lt;= A[i] &lt;  A[high]</code> as an invariant is better than <code>A[low] &lt;= A[i] &lt;= A[high]</code>. <sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">4</a></sup></p>
+elements in the array suggested by the TopCoder article below.<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> Some details are left out in this post: 1. why use <code>mid = low + (high - low)//2</code> instead of
+<code>mid = (low + high) // 2</code> <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup> 2. Use <code>A[low] &lt;= A[i] &lt;  A[high]</code> as an invariant is better than <code>A[low] &lt;= A[i] &lt;= A[high]</code>. <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup></p>
 <h2 id="reference">Reference</h2>
 <ul>
 <li><a href="https://stackoverflow.com/questions/504335/what-are-the-pitfalls-in-implementing-binary-search">StackOverflow - What are the pitfalls in implementing binary search?</a> (has a short explanation of the importance of invariant with an example)</li>
@@ -311,19 +311,19 @@ condition as <code>while(low != high - 1)</code>).</li>
 <ol>
 <li id="fn:1">
 <p>The rigorous analysis on this binary search implementation can be found from <a href="https://www.cs.cmu.edu/~rjsimmon/15122-s13/06-binsearch.pdf">Frank's lecture notes on binary search</a>. He encodes <a href="https://www.cs.cmu.edu/~rjsimmon/15122-s13/02-contracts.pdf">contract</a> 
-directly into the implementation, which displays the loop invariant, precondition, and postcondition directly. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+directly into the implementation, which displays the loop invariant, precondition, and postcondition directly. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:2">
 <p>Topcoder article offers an equivalent thought of thinking about invariant: predicate inquiry. For example, our last example invariant can be translated
 into the predicate: "Is <code>nums[i]</code> greater than the target number?" Then, each element is tagged with either "yes" or "no". Then, the problem asks us to find
-out the first element has tag "yes". The two elements special case shown in the article is "no,yes" array. Details see the article. <a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">↩</a></p>
+out the first element has tag "yes". The two elements special case shown in the article is "no,yes" array. Details see the article. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 <li id="fn:3">
 <p>The explanation can be found on <a href="https://rosettacode.org/wiki/Binary_search">Rosettacode page</a> and 
-<a href="https://www.cs.cmu.edu/~rjsimmon/15122-s13/06-binsearch.pdf">Frank's lecture notes on binary search on page L6.12</a>. <a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">↩</a></p>
+<a href="https://www.cs.cmu.edu/~rjsimmon/15122-s13/06-binsearch.pdf">Frank's lecture notes on binary search on page L6.12</a>. <a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">↩</a></p>
 </li>
 <li id="fn:4">
-<p><a href="https://reprog.wordpress.com/2010/04/21/binary-search-redux-part-1/#comment-2178">A comment on Mike's post</a> sheds some insights. <a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text">↩</a></p>
+<p><a href="https://reprog.wordpress.com/2010/04/21/binary-search-redux-part-1/#comment-2178">A comment on Mike's post</a> sheds some insights. <a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">↩</a></p>
 </li>
 </ol>
 </div>

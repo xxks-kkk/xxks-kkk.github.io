@@ -65,7 +65,7 @@
             <p>This post summarizes three typical simple sorting algorithms: <em>bubble sort</em>, 
 <em>selection sort</em>, and <em>insertion sort</em>. In chapter 7, MAW mainly talks about 
 <em>insertion sort</em> but for the sake of completeness, I will include the other two as
-well <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>.</p>
+well <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</p>
 <div class="toc">
 <ul>
 <li><a href="#bubble-sort">Bubble sort</a><ul>
@@ -93,27 +93,27 @@ well <sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a>
 by comparing <span class="math">\(i\)</span> and <span class="math">\(i+1\)</span>, and swapping if <span class="math">\(A[i] &gt; A[i+1]\)</span>. We repeat this 
 from the first to the end of unsorted part of the array.</p>
 <p>The following code demonstrates the actual algorithm</p>
-<div class="highlight"><pre><span></span><span class="cp">#define SWAP(a,b)  {int t; t = a; a = b; b = t;}</span>
-<span class="kt">void</span> <span class="nf">bubbleSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
-  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="c1">// n passes thru the array</span>
-    <span class="k">for</span><span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">i</span><span class="p">);</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="c1">// from start to the end of unsorted part</span>
-      <span class="k">if</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="n">SWAP</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span> 
-<span class="p">}</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">#define</span><span class="w"> </span><span class="n">SWAP</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="w">  </span><span class="err">{</span><span class="nc">int</span><span class="w"> </span><span class="n">t</span><span class="p">;</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">;</span><span class="err">}</span><span class="w"></span>
+<span class="n">void</span><span class="w"> </span><span class="n">bubbleSort</span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">A</span><span class="err">[]</span><span class="p">,</span><span class="w"> </span><span class="nc">int</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="nc">int</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="n">passes</span><span class="w"> </span><span class="n">thru</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">array</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">i</span><span class="p">);</span><span class="w"> </span><span class="n">j</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="k">start</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">end</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">unsorted</span><span class="w"> </span><span class="n">part</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">A</span><span class="o">[</span><span class="n">j-1</span><span class="o">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">j</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="n">SWAP</span><span class="p">(</span><span class="n">A</span><span class="o">[</span><span class="n">j-1</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">j</span><span class="o">]</span><span class="p">);</span><span class="w"> </span>
+<span class="err">}</span><span class="w"></span>
+</code></pre></div>
 <p>The key for the alogorithm is that we only do the "bubble up" operation for the
 unsorted part. The following gives an example of the algorithm in action:</p>
-<div class="highlight"><pre><span></span>| index    | 0  | 1  | 2  | 3  | 4  | 5  |
-| original | 34 | 8  | 64 | 51 | 32 | 21 |
-|----------|----|----|----|----|----|----|
-| pass 0   | 8  | 34 | 51 | 32 | 21 | 64 |
-| pass 1   | 8  | 34 | 32 | 21 | 51 | 64 |
-| pass 2   | 8  | 32 | 21 | 34 | 51 | 64 |
-| pass 3   | 8  | 21 | 32 | 34 | 51 | 64 |
-| pass 4   | 8  | 21 | 32 | 34 | 51 | 64 |
-| pass 5   | 8  | 21 | 32 | 34 | 51 | 64 |
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="err">| index    | 0  | 1  | 2  | 3  | 4  | 5  |</span>
+<span class="err">| original | 34 | 8  | 64 | 51 | 32 | 21 |</span>
+<span class="err">|----------|----|----|----|----|----|----|</span>
+<span class="err">| pass 0   | 8  | 34 | 51 | 32 | 21 | 64 |</span>
+<span class="err">| pass 1   | 8  | 34 | 32 | 21 | 51 | 64 |</span>
+<span class="err">| pass 2   | 8  | 32 | 21 | 34 | 51 | 64 |</span>
+<span class="err">| pass 3   | 8  | 21 | 32 | 34 | 51 | 64 |</span>
+<span class="err">| pass 4   | 8  | 21 | 32 | 34 | 51 | 64 |</span>
+<span class="err">| pass 5   | 8  | 21 | 32 | 34 | 51 | 64 |</span>
+</code></pre></div>
 <h3 id="analysis">Analysis</h3>
 <p>Bubble sort is stable and in place. The running time is <span class="math">\(O(N^2)\)</span>, which is true
 for both worst case and average case. <span class="math">\(O(N)\)</span> can be achieved in the best case, where
@@ -133,30 +133,30 @@ into the sorted part. However, unlike bubble sort, we build the sorted part from
 beginning of the array (in bubble sort, we start with moving the largest element to 
 the end of array).</p>
 <p>The following code demonstrates the actual algorithm</p>
-<div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="nf">selectionSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">N</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">min</span><span class="p">;</span>
-  <span class="n">j</span> <span class="o">=</span> <span class="n">min</span> <span class="o">=</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="k">for</span><span class="p">(;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">for</span><span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
-      <span class="k">if</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">A</span><span class="p">[</span><span class="n">min</span><span class="p">])</span>
-        <span class="n">min</span> <span class="o">=</span> <span class="n">j</span><span class="p">;</span>
-    <span class="n">swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">A</span><span class="p">[</span><span class="n">min</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-  <span class="p">}</span>
-<span class="p">}</span>   
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">void</span><span class="w"></span>
+<span class="n">selectionSort</span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">A</span><span class="err">[]</span><span class="p">,</span><span class="w"> </span><span class="nc">int</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"></span>
+<span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="nc">int</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="nf">min</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">for</span><span class="p">(;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">N</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">++</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">A</span><span class="o">[</span><span class="n">j</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">min</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="nf">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">A</span><span class="o">[</span><span class="n">min</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">A</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="err">}</span><span class="w">   </span>
+</code></pre></div>
 <p>Here is an example of the algorithm in action:</p>
-<div class="highlight"><pre><span></span>| index    | 0  | 1  | 2  | 3  | 4  | 5  |
-| original | 34 | 8  | 64 | 51 | 32 | 21 |
-|----------|----|----|----|----|----|----|
-| pass 0   | 8  | 34 | 64 | 51 | 32 | 21 |
-| pass 1   | 8  | 21 | 64 | 51 | 32 | 34 |
-| pass 2   | 8  | 21 | 32 | 51 | 64 | 34 |
-| pass 3   | 8  | 21 | 32 | 34 | 64 | 51 |
-| pass 4   | 8  | 21 | 32 | 34 | 51 | 64 |
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="err">| index    | 0  | 1  | 2  | 3  | 4  | 5  |</span>
+<span class="err">| original | 34 | 8  | 64 | 51 | 32 | 21 |</span>
+<span class="err">|----------|----|----|----|----|----|----|</span>
+<span class="err">| pass 0   | 8  | 34 | 64 | 51 | 32 | 21 |</span>
+<span class="err">| pass 1   | 8  | 21 | 64 | 51 | 32 | 34 |</span>
+<span class="err">| pass 2   | 8  | 21 | 32 | 51 | 64 | 34 |</span>
+<span class="err">| pass 3   | 8  | 21 | 32 | 34 | 64 | 51 |</span>
+<span class="err">| pass 4   | 8  | 21 | 32 | 34 | 51 | 64 |</span>
+</code></pre></div>
 <h3 id="analysis_1">Analysis</h3>
 <p>The selection sort is NOT STABLE but in place. Selection sort is not sensitive
 to the input and thus running time should be the same in best, average, and worst cases:
@@ -172,30 +172,30 @@ that the elements in positions <span class="math">\(0\)</span> through <span cla
 we move the element in position <span class="math">\(P\)</span> left until its correct place is found among
 the first <span class="math">\(P+1\)</span> elements.</p>
 <p>The following code demonstrates the actual algorithm</p>
-<div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="nf">insertionSort</span><span class="p">(</span><span class="kt">int</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">N</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">j</span><span class="p">,</span> <span class="n">P</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">tmp</span><span class="p">;</span>
-  <span class="k">for</span><span class="p">(</span><span class="n">P</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">P</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">P</span><span class="o">++</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">tmp</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">P</span><span class="p">];</span>
-    <span class="k">for</span><span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="n">P</span><span class="p">;</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">tmp</span> <span class="o">&lt;</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span> <span class="n">j</span><span class="o">--</span><span class="p">)</span>
-      <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
-    <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">void</span><span class="w"></span>
+<span class="n">insertionSort</span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">A</span><span class="err">[]</span><span class="p">,</span><span class="w"> </span><span class="nc">int</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"></span>
+<span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="nc">int</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="nc">int</span><span class="w"> </span><span class="n">tmp</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">N</span><span class="p">;</span><span class="w"> </span><span class="n">P</span><span class="o">++</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">P</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">tmp</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">j-1</span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="c1">--)</span>
+<span class="w">      </span><span class="n">A</span><span class="o">[</span><span class="n">j</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="o">[</span><span class="n">j-1</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">A</span><span class="o">[</span><span class="n">j</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmp</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+</code></pre></div>
 <p>Here is an example of the algorithm in action:</p>
-<div class="highlight"><pre><span></span>| index    | 0  | 1  | 2  | 3  | 4  | 5  |
-| original | 34 | 8  | 64 | 51 | 32 | 21 |
-|----------|----|----|----|----|----|----|
-| pass 1   | 8  | 34 | 64 | 51 | 32 | 21 |
-| pass 2   | 8  | 34 | 64 | 51 | 32 | 21 |
-| pass 3   | 8  | 34 | 51 | 64 | 32 | 21 |
-| pass 4   | 8  | 32 | 34 | 51 | 64 | 21 |
-| pass 5   | 8  | 21 | 32 | 34 | 51 | 64 |
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="err">| index    | 0  | 1  | 2  | 3  | 4  | 5  |</span>
+<span class="err">| original | 34 | 8  | 64 | 51 | 32 | 21 |</span>
+<span class="err">|----------|----|----|----|----|----|----|</span>
+<span class="err">| pass 1   | 8  | 34 | 64 | 51 | 32 | 21 |</span>
+<span class="err">| pass 2   | 8  | 34 | 64 | 51 | 32 | 21 |</span>
+<span class="err">| pass 3   | 8  | 34 | 51 | 64 | 32 | 21 |</span>
+<span class="err">| pass 4   | 8  | 32 | 34 | 51 | 64 | 21 |</span>
+<span class="err">| pass 5   | 8  | 21 | 32 | 34 | 51 | 64 |</span>
+</code></pre></div>
 <h3 id="analysis_2">Analysis</h3>
 <p>Due to the nested loops, the running time is <span class="math">\(O(N^2)\)</span>, which can be achieved
 when the input array is in reverse sorted order. In the best case, where 
@@ -243,7 +243,7 @@ to break <span class="math">\(O(N^2)\)</span> running time. I'll talk about it i
 <p><a href="https://youtu.be/8Kp-8OGwphY">bubble sort video</a>, <a href="https://youtu.be/f8hXR_Hvybo">selection sort video</a>, 
 <a href="https://youtu.be/DFG-XuyPYUQ">insertion sort video</a> and 
 <a href="https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html">this animation</a>
-can help you understand the concept. <a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">↩</a></p>
+can help you understand the concept. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 </ol>
 </div>

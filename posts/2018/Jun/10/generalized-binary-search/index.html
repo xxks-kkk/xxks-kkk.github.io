@@ -170,7 +170,7 @@ we have <span class="math">\(|A_{i-1} - T| &gt; |A_{i+k-1} - T|\)</span>, which 
 </ul>
 <p>Once we verify the predicate satisifies the <em>main theorem</em>, the only thing we left is to build the connection between the
 invariant and predicate, and make sure the invariant holds during the loop execution. Let's first list out the code:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
     <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">findClosestElements</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">arr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
         <span class="kt">int</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
@@ -190,7 +190,7 @@ invariant and predicate, and make sure the invariant holds during the loop execu
         <span class="k">return</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">arr</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">left</span><span class="p">,</span> <span class="n">arr</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">left</span> <span class="o">+</span> <span class="n">k</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">};</span>
-</pre></div>
+</code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Notice that in the code we actually use <span class="math">\(|A_{j+k} - T| \ge |A_j - T|\)</span> instead of <span class="math">\(|A_{j+k} - T| &gt; |A_j - T|\)</span>. The reason
@@ -222,7 +222,7 @@ which you can see is redundant and can be optimized. This is exactly what we are
 <p>One thing to note that <code>while(left &lt; right)</code> means we haven't found the optimal <span class="math">\(j\)</span> yet, which implies that we have to
 either move the subrange to left or move the subrange to right. This provides us the further opportunity to optimize the above
 code:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
     <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">findClosestElements</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">arr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
         <span class="kt">int</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
@@ -242,14 +242,14 @@ code:</p>
         <span class="k">return</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">arr</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">left</span><span class="p">,</span> <span class="n">arr</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">left</span> <span class="o">+</span> <span class="n">k</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">};</span>
-</pre></div>
+</code></pre></div>
 <p>In the first version, we check two conditions explicitly and do nothing if both conditions are not true. However,
 as we state in the previous paragraph, since we are still in the <code>while</code> loop, that means one of those two conditions will be true. 
 In other words, there is no such case that both conditions are false and we are still in the loop. Thus, we can get rid of 
 one of the conditions and use <code>else</code> instead. Another way of thinking is that we do nothing if both conditions are failed
 and thus this third do-nothing case can be combined with the second <code>else if (fabs(x - arr[mid-1]) &gt; fabs(x - arr[mid+k-1]))</code> condition to form a <code>else</code> statement.</p>
 <p>There is another optimization code proposal I find online, which I don't think it is correct:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
     <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">findClosestElements</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">arr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
         <span class="kt">int</span> <span class="n">left</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
@@ -269,7 +269,7 @@ and thus this third do-nothing case can be combined with the second <code>else i
         <span class="k">return</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">arr</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">left</span><span class="p">,</span> <span class="n">arr</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">left</span> <span class="o">+</span> <span class="n">k</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">};</span>
-</pre></div>
+</code></pre></div>
 <p>But this code return the wrong answer for the following case: <code>arr = [5,4,3,2,1], x = 2, k = 4</code>. The above
 solution gives <code>[5,4,3,2]</code>, which is wrong because <code>[4,3,2,1]</code> is the closest elements to <code>2</code>. To see this,
 we can invoke the predicate: <code>5</code> is 3 units away from <code>2</code> but <code>1</code> is only 1 unit away from <code>2</code> (<span class="math">\(|A_j - T| &gt; |A_{j+k} - T|\)</span>), 
