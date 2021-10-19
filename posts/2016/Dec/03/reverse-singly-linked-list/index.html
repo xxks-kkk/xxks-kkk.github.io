@@ -87,37 +87,37 @@ interview.</p>
 </div>
 <div class="section" id="solution-1">
 <h3>Solution 1</h3>
-<table class="table highlighttable  table-striped table-hover"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">List</span>
- <span class="nf">reverseList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">Pos</span> <span class="n">dummyL</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-   <span class="n">List</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+<table class="table-hover highlighttable table  table-striped"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">List</span><span class="w"></span>
+<span class="w"> </span><span class="nf">reverseList</span><span class="p">(</span><span class="n">List</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="n">Pos</span><span class="w"> </span><span class="n">dummyL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">List</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">Node</span><span class="p">));</span><span class="w"></span>
 
-   <span class="k">while</span> <span class="p">(</span><span class="n">dummyL</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="n">Pos</span> <span class="n">tmpNode</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-     <span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Element</span> <span class="o">=</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">;</span>
-     <span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-     <span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">tmpNode</span><span class="p">;</span>
-     <span class="n">dummyL</span> <span class="o">=</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-   <span class="p">}</span>
-   <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
- <span class="p">}</span>
+<span class="w">   </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">dummyL</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="p">{</span><span class="w"></span>
+<span class="w">     </span><span class="n">Pos</span><span class="w"> </span><span class="n">tmpNode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">Node</span><span class="p">));</span><span class="w"></span>
+<span class="w">     </span><span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Element</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmpNode</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="n">dummyL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </td></tr></table><p>Solution 1 is pretty straightforward. We first create a new list. Then, we walk
 through the original list and insert node we visit at the very beginning of the
@@ -142,41 +142,41 @@ a list: in my case, <a class="reference external" href="../../../../../posts/201
 </div>
 <p>However, this solution wastes a ton of memory space and too many <tt class="docutils literal">malloc</tt> operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.</p>
-<table class="table highlighttable  table-striped table-hover"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">List</span>
- <span class="nf">reverseList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">Pos</span> <span class="n">dummyL</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-   <span class="n">List</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+<table class="table-hover highlighttable table  table-striped"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">List</span><span class="w"></span>
+<span class="w"> </span><span class="nf">reverseList</span><span class="p">(</span><span class="n">List</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="n">Pos</span><span class="w"> </span><span class="n">dummyL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">List</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">Node</span><span class="p">));</span><span class="w"></span>
 
-   <span class="k">while</span> <span class="p">(</span><span class="n">dummyL</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="c1">// Remove element from old list.</span>
-     <span class="n">Pos</span> <span class="n">tmpNode</span> <span class="o">=</span> <span class="n">dummyL</span><span class="p">;</span>
-     <span class="n">dummyL</span> <span class="o">=</span> <span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+<span class="w">   </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">dummyL</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="p">{</span><span class="w"></span>
+<span class="w">     </span><span class="c1">// Remove element from old list.</span>
+<span class="w">     </span><span class="n">Pos</span><span class="w"> </span><span class="n">tmpNode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyL</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="n">dummyL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyL</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
 
-     <span class="c1">// Insert element in new list.</span>
-     <span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-     <span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">tmpNode</span><span class="p">;</span>
-   <span class="p">}</span>
-   <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
- <span class="p">}</span>
+<span class="w">     </span><span class="c1">// Insert element in new list.</span>
+<span class="w">     </span><span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="n">R</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmpNode</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </td></tr></table><div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -192,37 +192,37 @@ same assignments in slightly different order).</li>
 </div>
 <div class="section" id="solution-2">
 <h3>Solution 2</h3>
-<table class="table highlighttable  table-striped table-hover"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kt">void</span>
- <span class="nf">reverseListIterative</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">Pos</span> <span class="n">dummyCurrent</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">,</span>
-       <span class="n">dummyPrev</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">,</span>
-       <span class="n">dummyNext</span><span class="p">;</span>
+<table class="table-hover highlighttable table  table-striped"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="w"> </span><span class="kt">void</span><span class="w"></span>
+<span class="w"> </span><span class="nf">reverseListIterative</span><span class="p">(</span><span class="n">List</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="n">Pos</span><span class="w"> </span><span class="n">dummyCurrent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">,</span><span class="w"></span>
+<span class="w">       </span><span class="n">dummyPrev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"></span>
+<span class="w">       </span><span class="n">dummyNext</span><span class="p">;</span><span class="w"></span>
 
-   <span class="k">while</span> <span class="p">(</span><span class="n">dummyCurrent</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="n">dummyNext</span> <span class="o">=</span> <span class="n">dummyCurrent</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-     <span class="n">dummyCurrent</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">dummyPrev</span><span class="p">;</span>
-     <span class="n">dummyPrev</span> <span class="o">=</span> <span class="n">dummyCurrent</span><span class="p">;</span>
-     <span class="n">dummyCurrent</span> <span class="o">=</span> <span class="n">dummyNext</span><span class="p">;</span>
-   <span class="p">}</span>
-   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">dummyPrev</span><span class="p">;</span>
- <span class="p">}</span>
+<span class="w">   </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">dummyCurrent</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="p">{</span><span class="w"></span>
+<span class="w">     </span><span class="n">dummyNext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyCurrent</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="n">dummyCurrent</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyPrev</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="n">dummyPrev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyCurrent</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="n">dummyCurrent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyNext</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyPrev</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </td></tr></table><p>The 2nd solution is an iterative approach. The logic itself is quite straightforward.
 But, please always remember we assume <em>dummy</em> node exists. You can see both from
@@ -236,45 +236,45 @@ works but is not as nice as this one. You can check it out in my
 </div>
 <div class="section" id="solution-3">
 <h3>Solution 3</h3>
-<table class="table highlighttable  table-striped table-hover"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="k">static</span> <span class="n">List</span> <span class="n">P</span><span class="p">;</span>
- <span class="k">static</span> <span class="kt">void</span>
- <span class="nf">reverseListRecursiveHelper</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="n">P</span> <span class="o">=</span> <span class="n">L</span><span class="p">;</span>
-     <span class="k">return</span><span class="p">;</span>
-   <span class="p">}</span>
-   <span class="n">reverseListRecursiveHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
-   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">L</span><span class="p">;</span>
-   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
- <span class="p">}</span>
+<table class="table-hover highlighttable table  table-striped"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="n">List</span><span class="w"> </span><span class="n">P</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"></span>
+<span class="w"> </span><span class="nf">reverseListRecursiveHelper</span><span class="p">(</span><span class="n">List</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="p">{</span><span class="w"></span>
+<span class="w">     </span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="n">reverseListRecursiveHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="p">}</span><span class="w"></span>
 
- <span class="kt">void</span>
- <span class="nf">reverseListRecursive</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">reverseListRecursiveHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
-   <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">P</span><span class="p">;</span>
- <span class="p">}</span>
+<span class="w"> </span><span class="kt">void</span><span class="w"></span>
+<span class="w"> </span><span class="nf">reverseListRecursive</span><span class="p">(</span><span class="n">List</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="n">reverseListRecursiveHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </td></tr></table><p>This solution is a recursive solution. This causes me much time to think about
 because we have a <em>dummy</em> node to be taken care of. That's why I use a private
@@ -295,45 +295,45 @@ is the base case where I got passed in an empty list. Since in our implementatio
 <li><p class="first">We use a private function mainly because we have <em>dummy</em> node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.</p>
-<table class="table highlighttable  table-striped table-hover"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">List</span> <span class="n">P</span><span class="p">;</span>
-<span class="kt">void</span>
-<span class="nf">reverseListRecursive</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="c1">// empty list base case</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">return</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="c1">// only one node (tail node) base case</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">P</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-    <span class="k">return</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="n">reverseListRecursive</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
-  <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-  <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">P</span><span class="p">;</span>
- <span class="p">}</span>
+<table class="table-hover highlighttable table  table-striped"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">List</span><span class="w"> </span><span class="n">P</span><span class="p">;</span><span class="w"></span>
+<span class="kt">void</span><span class="w"></span>
+<span class="nf">reverseListRecursive</span><span class="p">(</span><span class="n">List</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="c1">// empty list base case</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="c1">// only one node (tail node) base case</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="n">reverseListRecursive</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </td></tr></table><p>The above code shows a perfect example why <em>dummy</em> node case cannot be handled
 in recursive call. This is because, when we do recursion, we always assume

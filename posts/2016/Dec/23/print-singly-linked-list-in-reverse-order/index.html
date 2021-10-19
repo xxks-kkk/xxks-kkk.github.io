@@ -69,22 +69,22 @@ Print a singly linked list in reverse order.</blockquote>
 (luckily, they didn't offer me the position). I didn't get the correct answer at that time
 and I think the problem may help me to kill some time during the break.</p>
 <p>The question itself is not hard if you're familar with linked list and recursion philosophy:</p>
-<div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span>
-<span class="nf">printListReverseHelper</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">L</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">return</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="n">printListReverseHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">"%d-&gt;"</span><span class="p">,</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"></span>
+<span class="nf">printListReverseHelper</span><span class="p">(</span><span class="n">List</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">L</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="n">printListReverseHelper</span><span class="p">(</span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">"%d-&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">printListReverse</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">Pos</span> <span class="n">dummyL</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
-  <span class="n">printListReverseHelper</span><span class="p">(</span><span class="n">dummyL</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">printListReverse</span><span class="p">(</span><span class="n">List</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">Pos</span><span class="w"> </span><span class="n">dummyL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">printListReverseHelper</span><span class="p">(</span><span class="n">dummyL</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 <p>Again, in our implementation of linked list, we use header node. Given the simiplicity of the problem,
 I think it is good time to revisit some basic rules in recursion.</p>
