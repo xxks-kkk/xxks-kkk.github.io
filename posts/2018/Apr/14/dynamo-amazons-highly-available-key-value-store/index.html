@@ -286,10 +286,8 @@ You can think about <code>Sx</code>, <code>Sy</code>, <code>Sz</code> as process
 <li>
 <p>The values of W and R impact object availability, durability and consistency</p>
 <ul>
-<li>If W is set to 1, then the system will never reject a write request as long as there is at least one node in the system that can successfully process a write request<ul>
+<li>If W is set to 1, then the system will never reject a write request as long as there is at least one node in the system that can successfully process a write request</li>
 <li>low values of W and R can increase the risk of inconsistency as write requests are deemed successful and returned to the clients even if they are not processed by a majority of the replicas; This also introduces a vulnerability window for durability when a write request is successfully returned to the client even though it has been persisted at only a small number of nodes.</li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>

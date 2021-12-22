@@ -117,107 +117,107 @@ and <a class="reference external" href="http://valgrind.org/docs/manual/mc-manua
 <li>Always <tt class="docutils literal">free</tt> the chunk allocated by <tt class="docutils literal">malloc</tt> whenever possible.</li>
 </ol>
 <p>Take <tt class="docutils literal">multiply</tt> function as an example:</p>
-<table class="table  table-striped highlighttable table-hover"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">integerList</span>
- <span class="nf">multiply</span><span class="p">(</span><span class="n">integerList</span> <span class="n">A</span><span class="p">,</span> <span class="n">integerList</span> <span class="n">B</span><span class="p">)</span>
- <span class="p">{</span>
-   <span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-   <span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
+<table class="highlighttable  table-striped table table-hover"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="w"> </span><span class="n">integerList</span><span class="w"></span>
+<span class="w"> </span><span class="nf">multiply</span><span class="p">(</span><span class="n">integerList</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">integerList</span><span class="w"> </span><span class="n">B</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
 
-   <span class="n">integerList</span> <span class="n">tmpR</span> <span class="o">=</span> <span class="n">makeEmpty</span><span class="p">();</span>
-   <span class="n">PtrToNode</span> <span class="n">dummyTmpR</span> <span class="o">=</span> <span class="n">tmpR</span><span class="p">;</span>
+<span class="w">   </span><span class="n">integerList</span><span class="w"> </span><span class="n">tmpR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">makeEmpty</span><span class="p">();</span><span class="w"></span>
+<span class="w">   </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyTmpR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmpR</span><span class="p">;</span><span class="w"></span>
 
-   <span class="n">integerList</span> <span class="n">R</span> <span class="o">=</span> <span class="n">makeEmpty</span><span class="p">();</span>
+<span class="w">   </span><span class="n">integerList</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">makeEmpty</span><span class="p">();</span><span class="w"></span>
 
-   <span class="kt">int</span> <span class="n">product</span><span class="p">,</span> <span class="n">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-   <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">indent</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="w">   </span><span class="kt">int</span><span class="w"> </span><span class="n">product</span><span class="p">,</span><span class="w"> </span><span class="n">carry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">indent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
 
-   <span class="k">while</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-   <span class="p">{</span>
-     <span class="k">while</span> <span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-     <span class="p">{</span>
-       <span class="n">product</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span> <span class="o">*</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Digit</span> <span class="o">+</span> <span class="n">carry</span><span class="p">;</span>
-       <span class="n">carry</span> <span class="o">=</span> <span class="n">product</span> <span class="o">/</span> <span class="mi">10</span><span class="p">;</span>
-       <span class="n">addDigit</span><span class="p">(</span><span class="n">product</span> <span class="o">%</span> <span class="mi">10</span><span class="p">,</span> <span class="n">dummyTmpR</span><span class="p">);</span>
-       <span class="n">dummyTmpR</span> <span class="o">=</span> <span class="n">dummyTmpR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-       <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-     <span class="p">}</span>
+<span class="w">   </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">dummyA</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="p">{</span><span class="w"></span>
+<span class="w">     </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">dummyB</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">     </span><span class="p">{</span><span class="w"></span>
+<span class="w">       </span><span class="n">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">carry</span><span class="p">;</span><span class="w"></span>
+<span class="w">       </span><span class="n">carry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"></span>
+<span class="w">       </span><span class="n">addDigit</span><span class="p">(</span><span class="n">product</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">dummyTmpR</span><span class="p">);</span><span class="w"></span>
+<span class="w">       </span><span class="n">dummyTmpR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyTmpR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">       </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="p">}</span><span class="w"></span>
 
-     <span class="k">if</span> <span class="p">(</span><span class="n">carry</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-     <span class="p">{</span>
-       <span class="n">addDigit</span><span class="p">(</span><span class="n">carry</span><span class="p">,</span> <span class="n">dummyTmpR</span><span class="p">);</span>
-       <span class="n">dummyTmpR</span> <span class="o">=</span> <span class="n">dummyTmpR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-     <span class="p">}</span>
+<span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">carry</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">     </span><span class="p">{</span><span class="w"></span>
+<span class="w">       </span><span class="n">addDigit</span><span class="p">(</span><span class="n">carry</span><span class="p">,</span><span class="w"> </span><span class="n">dummyTmpR</span><span class="p">);</span><span class="w"></span>
+<span class="w">       </span><span class="n">dummyTmpR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyTmpR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="p">}</span><span class="w"></span>
 
-     <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">indent</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-     <span class="p">{</span>
-       <span class="n">addDigit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">tmpR</span><span class="p">);</span>
-     <span class="p">}</span>
+<span class="w">     </span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">indent</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"></span>
+<span class="w">     </span><span class="p">{</span><span class="w"></span>
+<span class="w">       </span><span class="n">addDigit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">tmpR</span><span class="p">);</span><span class="w"></span>
+<span class="w">     </span><span class="p">}</span><span class="w"></span>
 
-     <span class="n">integerList</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span> <span class="c1">// prevent memory leak</span>
-     <span class="n">R</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">tmpR</span><span class="p">);</span>
-     <span class="n">deleteAll</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
+<span class="w">     </span><span class="n">integerList</span><span class="w"> </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"> </span><span class="c1">// prevent memory leak</span>
+<span class="w">     </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">add</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">tmpR</span><span class="p">);</span><span class="w"></span>
+<span class="w">     </span><span class="n">deleteAll</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span><span class="w"></span>
 
-     <span class="n">indent</span> <span class="o">++</span><span class="p">;</span>
-     <span class="n">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-     <span class="n">deleteIntegerList</span><span class="p">(</span><span class="n">tmpR</span><span class="p">);</span>
-     <span class="n">dummyTmpR</span> <span class="o">=</span> <span class="n">tmpR</span><span class="p">;</span>
-     <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-     <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-   <span class="p">}</span>
+<span class="w">     </span><span class="n">indent</span><span class="w"> </span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="n">carry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="n">deleteIntegerList</span><span class="p">(</span><span class="n">tmpR</span><span class="p">);</span><span class="w"></span>
+<span class="w">     </span><span class="n">dummyTmpR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmpR</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="n">dummyA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
 
-   <span class="n">deleteAll</span><span class="p">(</span><span class="n">tmpR</span><span class="p">);</span>
-   <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
- <span class="p">}</span>
+<span class="w">   </span><span class="n">deleteAll</span><span class="p">(</span><span class="n">tmpR</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </td></tr></table><p>We allocate <tt class="docutils literal">tmpR</tt> through <tt class="docutils literal">makeEmpty()</tt> in Line[7]. If we don't do anything about it
 inside the function, then the memory will be lost because we have no way to reference this
@@ -229,9 +229,9 @@ before we exit the function (Line[49]).</p>
 <li>Be careful with a function call inside a function call.</li>
 </ol>
 <p>This type of leak is much more subtle than the first one. Originally instead of</p>
-<div class="highlight"><pre><span></span><span class="n">integerList</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
-<span class="n">R</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">tmpR</span><span class="p">);</span>
-<span class="n">deleteAll</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><span class="n">integerList</span><span class="w"> </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
+<span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">add</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">tmpR</span><span class="p">);</span><span class="w"></span>
+<span class="n">deleteAll</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 <p>I only have <tt class="docutils literal">R = add(R, tmpR)</tt>. This cause the leak because of the following reasoning:
 Originally, we have <tt class="docutils literal">R</tt> points to a list of nodes. When we do <tt class="docutils literal">add(R,tmpR)</tt>, we create
@@ -241,13 +241,13 @@ list. This makes us lose the list of nodes originally pointed by <tt class="docu
 <div class="section" id="makeempty">
 <h2>makeEmpty ?</h2>
 <p>Originally, I don't have this <tt class="docutils literal">makeEmpty</tt> function:</p>
-<div class="highlight"><pre><span></span><span class="n">integerList</span>
-<span class="nf">makeEmpty</span><span class="p">()</span>
-<span class="p">{</span>
-  <span class="n">integerList</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-  <span class="n">R</span><span class="o">-&gt;</span><span class="n">NextDigit</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="c1">// super important step</span>
-  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><span class="n">integerList</span><span class="w"></span>
+<span class="nf">makeEmpty</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">integerList</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">Node</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="n">R</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span><span class="w"> </span><span class="c1">// super important step</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 <p>If you take a look at this function, it seems to be a wrapper around <tt class="docutils literal">malloc</tt> operation, which
 seems redundant (we could directly call <tt class="docutils literal">malloc</tt> directly in the place that <tt class="docutils literal">makeEmpty</tt> appears).

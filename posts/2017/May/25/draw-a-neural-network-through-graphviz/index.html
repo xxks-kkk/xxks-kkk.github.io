@@ -90,9 +90,9 @@ input, bias term, hidden units, and output units. So, I decide to draw one on my
 that generates the picture below <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>. Let me briefly
 highlights some key points in the code:</p>
 <p><img alt="" class="img-responsive" src="../../../../../images/nn2.png"/></p>
-<div class="highlight"><pre><span></span><code><span class="err">rankdir = LR;</span>
-<span class="err">splines=false;</span>
-<span class="err">edge[style=invis];</span>
+<div class="highlight"><pre><span></span><code>rankdir = LR;
+splines=false;
+edge[style=invis];
 </code></pre></div>
 <ol>
 <li><code>rankdir=LR</code> makes the directed graphs drawn from left to right.</li>
@@ -117,10 +117,10 @@ how we write subscript and superscript in Graphviz.</li>
 <li><code>{...}</code> specifies the scope of the node property. This code chunk as a whole shows
 how we can specify several nodes at the once with the same node property <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="err">{</span>
-<span class="err">  rank=same;</span>
-<span class="err">  x0-&gt;x1-&gt;x2-&gt;x3;</span>
-<span class="err">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nf">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span>
+  <span class="n">x0</span><span class="o">-&gt;</span><span class="n">x1</span><span class="o">-&gt;</span><span class="n">x2</span><span class="o">-&gt;</span><span class="n">x3</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre></div>
 <ol>
 <li><code>rank=same</code> is another trick I'll talk about later. This specifies what "layer"
@@ -131,7 +131,7 @@ Then by <code>x0-&gt;...-&gt;x3</code>, the first node will be <code>x0</code>, 
 we have <code>edge[style=invis]</code> and this will hide the edges among these four nodes. This 
 is how we draw the NN layers.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="err">a02-&gt;a03;</span>
+<div class="highlight"><pre><span></span><code><span class="n">a02</span><span class="o">-&gt;</span><span class="n">a03</span><span class="p">;</span>
 </code></pre></div>
 <ol>
 <li>This line is used to prevent tilting of the graph. As you can see, we specify
@@ -140,9 +140,9 @@ the layers should be positioned except <code>rankdir=LR</code>, which says layer
 ordered from left to right. <code>a02-&gt;a03</code> says layer with <code>a02</code> should be lined up with 
 layer with <code>a03</code>.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="err">l0 [shape=plaintext, label="layer 1 (input layer)"];</span>
-<span class="err">l0-&gt;x0;</span>
-<span class="err">{rank=same; l0;x0};</span>
+<div class="highlight"><pre><span></span><code><span class="n">l0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">plaintext</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">"layer 1 (input layer)"</span><span class="p">];</span>
+<span class="n">l0</span><span class="o">-&gt;</span><span class="n">x0</span><span class="p">;</span>
+<span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">l0</span><span class="p">;</span><span class="n">x0</span><span class="p">};</span>
 </code></pre></div>
 <ol>
 <li>This code chunk is how we add label text to each layer. As you can see we use
@@ -150,16 +150,16 @@ another node <code>l0</code> with shape <code>plaintext</code>, which says <code
 Then we connect it with the first node of layer 1 <code>x0</code>, which serves as attaching
 the text to the layer 1.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="err">edge[style=solid, tailport=e, headport=w];</span>
+<div class="highlight"><pre><span></span><code>edge[style=solid, tailport=e, headport=w];
 </code></pre></div>
 <ol>
 <li>We specify the edge style again. This will only affect the edges after this setup
 not before. One small trick here is <code>tailport=e, headport=w</code>. This will let all the edges
 point to the same position.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="err">{x0; x1; x2; x3} -&gt; {a12;a22;a32;a42;a52};</span>
-<span class="err">{a02;a12;a22;a32;a42;a52} -&gt; {a13;a23;a33;a43;a53};</span>
-<span class="err">{a03;a13;a23;a33;a43;a53} -&gt; {O1,O2,O3,O4};</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="n">x0</span><span class="p">;</span> <span class="n">x1</span><span class="p">;</span> <span class="n">x2</span><span class="p">;</span> <span class="n">x3</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">a12</span><span class="p">;</span><span class="n">a22</span><span class="p">;</span><span class="n">a32</span><span class="p">;</span><span class="n">a42</span><span class="p">;</span><span class="n">a52</span><span class="p">};</span>
+<span class="p">{</span><span class="n">a02</span><span class="p">;</span><span class="n">a12</span><span class="p">;</span><span class="n">a22</span><span class="p">;</span><span class="n">a32</span><span class="p">;</span><span class="n">a42</span><span class="p">;</span><span class="n">a52</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">a13</span><span class="p">;</span><span class="n">a23</span><span class="p">;</span><span class="n">a33</span><span class="p">;</span><span class="n">a43</span><span class="p">;</span><span class="n">a53</span><span class="p">};</span>
+<span class="p">{</span><span class="n">a03</span><span class="p">;</span><span class="n">a13</span><span class="p">;</span><span class="n">a23</span><span class="p">;</span><span class="n">a33</span><span class="p">;</span><span class="n">a43</span><span class="p">;</span><span class="n">a53</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">O1</span><span class="p">,</span><span class="n">O2</span><span class="p">,</span><span class="n">O3</span><span class="p">,</span><span class="n">O4</span><span class="p">};</span>
 </code></pre></div>
 <ol>
 <li>This code chunk is how we actually draw the edges. In the simple example above,
@@ -197,11 +197,11 @@ for rank="max" and rank="sink". (Note: the minimum rank is topmost or leftmost, 
 rank is bottommost or rightmost.)</p>
 </blockquote>
 <p>Let's demonstrate this description with a simple example <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>:</p>
-<div class="highlight"><pre><span></span><code><span class="err">digraph G</span>
-<span class="err">{</span>
-<span class="err">  {rank=source; a-&gt;b;}</span>
-<span class="err">  {rank=same; c-&gt;d;}</span>
-<span class="err">}</span>
+<div class="highlight"><pre><span></span><code><span class="n">digraph</span> <span class="n">G</span>
+<span class="p">{</span>
+  <span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">source</span><span class="p">;</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">;}</span>
+  <span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">d</span><span class="p">;}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>This example gives a graph with two rows. <code>a-&gt;b</code> is above <code>c-&gt;d</code>.
 However, if I change <code>{rank=source; a-&gt;b;}</code> to <code>{rank=min; a-&gt;b;}</code>, we'll
@@ -211,10 +211,10 @@ minimum rank. However, <code>source</code> only allows other subgraphs of <code>
 to be on the minimum rank (we have <code>same</code> in this case).</p>
 <p><code>sink</code> and <code>max</code> works similarly. For instance, the below example gives a picture
 with <code>c-&gt;d</code> at the top and <code>a-&gt;b</code> at the bottom:</p>
-<div class="highlight"><pre><span></span><code><span class="err">digraph G{</span>
-<span class="err">  {rank=sink; a-&gt;b;}</span>
-<span class="err">  {rank=same; c-&gt;d;}</span>
-<span class="err">}</span>
+<div class="highlight"><pre><span></span><code><span class="n">digraph</span> <span class="n">G</span><span class="p">{</span>
+  <span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">sink</span><span class="p">;</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">;}</span>
+  <span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">d</span><span class="p">;}</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="footnote">
 <hr/>

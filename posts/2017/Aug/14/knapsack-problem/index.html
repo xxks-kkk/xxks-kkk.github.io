@@ -197,19 +197,19 @@ the solution to <span class="math">\(B[i-1, w]\)</span> and <span class="math">\
 dynamic programming.</p>
 </div>
 <p>The algorithm is below:</p>
-<div class="highlight"><pre><span></span><code><span class="err">for w = 0 to W </span>
-<span class="err">    B[0,w] = 0</span>
-<span class="err">for i = 1 to n </span>
-<span class="err">    B[i,0] = 0 </span>
-<span class="err">for i = 1 to n</span>
-<span class="err">    for w = 1 to W</span>
-<span class="err">        if w_i &lt;=w  //item i can be part of the solution </span>
-<span class="err">            if b_i + B[i-1,w-w_i ] &gt; B[i-1,w]</span>
-<span class="err">                B[i,w] = b_i + B[i-1, w-w_i]</span>
-<span class="err">            else</span>
-<span class="err">                B[i,w] = B[i-1,w]</span>
-<span class="err">        else </span>
-<span class="err">            B[i,w] = B[i-1,w] // w_i &gt; w</span>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">0</span> <span class="nv">to</span> <span class="nv">W</span> 
+    <span class="nv">B</span>[<span class="mi">0</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span> 
+    <span class="nv">B</span>[<span class="nv">i</span>,<span class="mi">0</span>] <span class="o">=</span> <span class="mi">0</span> 
+<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span>
+    <span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">W</span>
+        <span class="k">if</span> <span class="nv">w_i</span> <span class="o">&lt;=</span><span class="nv">w</span>  <span class="o">//</span><span class="nv">item</span> <span class="nv">i</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">part</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">solution</span> 
+            <span class="k">if</span> <span class="nv">b_i</span> <span class="o">+</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span><span class="o">-</span><span class="nv">w_i</span> ] <span class="o">&gt;</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>]
+                <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">b_i</span> <span class="o">+</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>, <span class="nv">w</span><span class="o">-</span><span class="nv">w_i</span>]
+            <span class="k">else</span>
+                <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>]
+        <span class="k">else</span> 
+            <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>] <span class="o">//</span> <span class="nv">w_i</span> <span class="o">&gt;</span> <span class="nv">w</span>
 </code></pre></div>
 <p>The running time for this algorithm is <span class="math">\(O(n*W)\)</span> because of the double for loop. To understand this algorithm,
 let's take a look at an example:</p>
@@ -303,10 +303,10 @@ let's take a look at an example:</p>
 </table>
 <p>Each cell in the above table represents <span class="math">\(B[i,w]\)</span> and the table looks like above after we executing 
 the first two for loops</p>
-<div class="highlight"><pre><span></span><code><span class="err">for w = 0 to W </span>
-<span class="err">    B[0,w] = 0</span>
-<span class="err">for i = 1 to n </span>
-<span class="err">    B[i,0] = 0 </span>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">0</span> <span class="nv">to</span> <span class="nv">W</span> 
+    <span class="nv">B</span>[<span class="mi">0</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span> 
+    <span class="nv">B</span>[<span class="nv">i</span>,<span class="mi">0</span>] <span class="o">=</span> <span class="mi">0</span> 
 </code></pre></div>
 <p>Now, let's take a look at <span class="math">\(B[1,1]\)</span>. We have <span class="math">\(i = 1, b_i = 3, w_i = 2, w = 1\)</span>, and since <span class="math">\(w_i &gt; w\)</span>, and by our
 algorithm, we have <span class="math">\(B[i,w] = B[i-1,w]\)</span>, which is <span class="math">\(B[0,1]\)</span>. Thus, <span class="math">\(B[1,1] = 0\)</span> and the table becomes</p>
@@ -434,14 +434,14 @@ algorithm, we have <span class="math">\(B[i,w] = B[i-1,w]\)</span>, which is <sp
 <p>Now, we have the maximum benefit value given the capacity of the knapsack, which is <span class="math">\(B[4,5] = 7\)</span>. 
 The next question is to find out what items we should put inside the knapsack in order to have
 this maximum benefit (i.e., <span class="math">\(7\)</span>). The algorithm is below:</p>
-<div class="highlight"><pre><span></span><code><span class="err">Let i = n and k = W</span>
-<span class="err">while i &gt; 0 and k &gt; 0</span>
-<span class="err">    if B[i,k] != B[i-1,k], then</span>
-<span class="err">        mark the ith item as in the knapsack</span>
-<span class="err">        i = i - 1</span>
-<span class="err">        k = k - w_i</span>
-<span class="err">    else</span>
-<span class="err">        i = i - 1</span>
+<div class="highlight"><pre><span></span><code><span class="nv">Let</span> <span class="nv">i</span> <span class="o">=</span> <span class="nv">n</span> <span class="nv">and</span> <span class="nv">k</span> <span class="o">=</span> <span class="nv">W</span>
+<span class="k">while</span> <span class="nv">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="nv">and</span> <span class="nv">k</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">k</span>] <span class="o">!=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">k</span>], <span class="k">then</span>
+        <span class="nv">mark</span> <span class="nv">the</span> <span class="nv">ith</span> <span class="nv">item</span> <span class="nv">as</span> <span class="nv">in</span> <span class="nv">the</span> <span class="nv">knapsack</span>
+        <span class="nv">i</span> <span class="o">=</span> <span class="nv">i</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="nv">k</span> <span class="o">=</span> <span class="nv">k</span> <span class="o">-</span> <span class="nv">w_i</span>
+    <span class="k">else</span>
+        <span class="nv">i</span> <span class="o">=</span> <span class="nv">i</span> <span class="o">-</span> <span class="mi">1</span>
 </code></pre></div>
 <p>Let's first take a look a few examples on how this algorithm runs and then we will
 see the intuition behind this algorithm. In our example, we start with

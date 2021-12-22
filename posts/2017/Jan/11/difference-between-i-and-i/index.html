@@ -65,84 +65,84 @@ my four hours daily commute to work in order to get myself more comfortable work
 <ul class="simple">
 <li><tt class="docutils literal">i++</tt> means increment the value of <tt class="docutils literal">i</tt> by <tt class="docutils literal">1</tt> <em>after</em> evaluating the arithmetic operation.</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">;</span>
-<span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">++</span> <span class="o">*</span> <span class="mi">6</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"></span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"></span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">++</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 <p><tt class="docutils literal">b</tt> will contain <tt class="docutils literal">30</tt> and <tt class="docutils literal">a</tt> will contain <tt class="docutils literal">6</tt>, since the shorthand of <tt class="docutils literal">b = a++ * 6</tt>;
 is the equivalent to the following statements:</p>
-<div class="highlight"><pre><span></span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="mi">6</span><span class="p">;</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"></span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 <ul class="simple">
 <li><tt class="docutils literal">++i</tt> means increment the value of <tt class="docutils literal">i</tt> by <tt class="docutils literal">1</tt> <em>before</em> evaluating the arithmetic operation.</li>
 </ul>
-<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">;</span>
-<span class="n">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
-<span class="n">b</span> <span class="o">=</span> <span class="o">++</span><span class="n">a</span> <span class="o">*</span> <span class="mi">6</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"></span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"></span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">++</span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 <p><tt class="docutils literal">b</tt> will contain <tt class="docutils literal">36</tt> and <tt class="docutils literal">a</tt> wil contain <tt class="docutils literal">6</tt>, since the shorthand of <tt class="docutils literal">b = ++a * 6</tt>; is the
 equivalent to the following statement:</p>
-<div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="mi">6</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 <p>In fact, the two principles mentioned above apply more than "evaluating the arithmetic operation".
 For example, in the stack <tt class="docutils literal">push</tt> operation:</p>
 <div class="highlight"><pre><span></span><span class="cm">/* Push an element on the Stack</span>
-<span class="cm"> */</span>
-<span class="kt">void</span>
-<span class="nf">push</span> <span class="p">(</span><span class="n">ET</span> <span class="n">elem</span><span class="p">,</span> <span class="n">Stack</span> <span class="n">S</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">isFull</span><span class="p">(</span><span class="n">S</span><span class="p">))</span>
-  <span class="p">{</span>
-    <span class="n">resizeStack</span><span class="p">(</span><span class="n">S</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="n">S</span><span class="o">-&gt;</span><span class="n">Array</span><span class="p">[</span><span class="o">++</span><span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span><span class="p">]</span> <span class="o">=</span> <span class="n">elem</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="cm"> */</span><span class="w"></span>
+<span class="kt">void</span><span class="w"></span>
+<span class="nf">push</span><span class="w"> </span><span class="p">(</span><span class="n">ET</span><span class="w"> </span><span class="n">elem</span><span class="p">,</span><span class="w"> </span><span class="n">Stack</span><span class="w"> </span><span class="n">S</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">isFull</span><span class="p">(</span><span class="n">S</span><span class="p">))</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">resizeStack</span><span class="p">(</span><span class="n">S</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="n">S</span><span class="o">-&gt;</span><span class="n">Array</span><span class="p">[</span><span class="o">++</span><span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">elem</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 <p>we can do <tt class="docutils literal"><span class="pre">S-&gt;Array[++S-&gt;TopOfStack]</span> = elem;</tt>, which is equivalent with the following, a nice short verison:</p>
-<div class="highlight"><pre><span></span><span class="n">S</span><span class="o">-&gt;</span><span class="n">Array</span><span class="p">[</span><span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span><span class="p">]</span> <span class="o">=</span> <span class="n">elem</span><span class="p">;</span>
-<span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span> <span class="o">=</span> <span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="n">S</span><span class="o">-&gt;</span><span class="n">Array</span><span class="p">[</span><span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">elem</span><span class="p">;</span><span class="w"></span>
+<span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 <p>Another example is stack <tt class="docutils literal">topAndPop</tt>:</p>
 <div class="highlight"><pre><span></span><span class="cm">/* Check the top element and pop it out of Stack</span>
-<span class="cm"> */</span>
-<span class="n">ET</span>
-<span class="nf">topAndPop</span><span class="p">(</span><span class="n">Stack</span> <span class="n">S</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">return</span> <span class="n">S</span><span class="o">-&gt;</span><span class="n">Array</span><span class="p">[</span><span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span><span class="o">--</span><span class="p">];</span>
-<span class="p">}</span>
+<span class="cm"> */</span><span class="w"></span>
+<span class="n">ET</span><span class="w"></span>
+<span class="nf">topAndPop</span><span class="p">(</span><span class="n">Stack</span><span class="w"> </span><span class="n">S</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">S</span><span class="o">-&gt;</span><span class="n">Array</span><span class="p">[</span><span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span><span class="o">--</span><span class="p">];</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 <p>In this case, we essentially do:</p>
-<div class="highlight"><pre><span></span><span class="n">ET</span> <span class="n">a</span> <span class="o">=</span> <span class="n">S</span><span class="o">-&gt;</span><span class="n">Array</span><span class="p">[</span><span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span><span class="p">];</span>
-<span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span> <span class="o">=</span> <span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
-<span class="k">return</span> <span class="n">a</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="n">ET</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">S</span><span class="o">-&gt;</span><span class="n">Array</span><span class="p">[</span><span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span><span class="p">];</span><span class="w"></span>
+<span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">S</span><span class="o">-&gt;</span><span class="n">TopOfStack</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 <p>Look how clean I can make my code is if I can understand the difference between <tt class="docutils literal">++i</tt> and <tt class="docutils literal">i++</tt>.</p>
 <p>--- 01/19/2017 UPDATE ---</p>
 <p><tt class="docutils literal">++i</tt> and <tt class="docutils literal">i++</tt> is really a powerful technique to shorten the C code. However, it can be error-prune
 if we are not careful enough.</p>
 <p>Let's take a look at the following code snippet, which is adapted from the program on K &amp; R p.117.</p>
-<div class="highlight"><pre><span></span><span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
-<span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="o">--</span><span class="n">argc</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="o">*++</span><span class="n">argv</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'-'</span><span class="p">)</span>
-    <span class="k">while</span> <span class="p">(</span><span class="n">c</span> <span class="o">=</span> <span class="o">*++</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-      <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span>
-      <span class="p">{</span>
-        <span class="k">case</span> <span class="sc">'x'</span><span class="o">:</span>
-          <span class="n">printf</span> <span class="p">(</span><span class="s">"user invokes the program with -x option</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
-          <span class="k">break</span><span class="p">;</span>
-        <span class="k">case</span> <span class="sc">'n'</span><span class="o">:</span>
-          <span class="n">printf</span> <span class="p">(</span><span class="s">"user invokes the program with -n option</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
-          <span class="k">break</span><span class="p">;</span>
-        <span class="k">default</span><span class="o">:</span>
-          <span class="n">printf</span><span class="p">(</span><span class="s">"illegal option %c</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
-          <span class="n">argc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-          <span class="k">break</span><span class="p">;</span>
-      <span class="p">}</span>
-   <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span>
-     <span class="n">printf</span><span class="p">(</span><span class="s">"Usage: find -x pattern</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><span class="n">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">--</span><span class="n">argc</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="o">*++</span><span class="n">argv</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">'-'</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*++</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="w"></span>
+<span class="w">      </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">'x'</span><span class="o">:</span><span class="w"></span>
+<span class="w">          </span><span class="n">printf</span><span class="w"> </span><span class="p">(</span><span class="s">"user invokes the program with -x option</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span><span class="w"></span>
+<span class="w">          </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">'n'</span><span class="o">:</span><span class="w"></span>
+<span class="w">          </span><span class="n">printf</span><span class="w"> </span><span class="p">(</span><span class="s">"user invokes the program with -n option</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span><span class="w"></span>
+<span class="w">          </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">default</span><span class="o">:</span><span class="w"></span>
+<span class="w">          </span><span class="n">printf</span><span class="p">(</span><span class="s">"illegal option %c</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">);</span><span class="w"></span>
+<span class="w">          </span><span class="n">argc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">          </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">     </span><span class="n">printf</span><span class="p">(</span><span class="s">"Usage: find -x pattern</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 <p>This program itself is straightforward. Let's take a look at <tt class="docutils literal"><span class="pre">(*++argv)[0]</span></tt> to see what it means.
 Since <tt class="docutils literal">argv</tt> is a pointer to the beginning of the array of argument strings, incrementing it by
@@ -161,11 +161,11 @@ dereference <tt class="docutils literal">argv[0]</tt> to get <tt class="docutils
 p.53. in K &amp; R:</p>
 <img alt="" class="img-responsive" src="/images/precedence-operators-c.PNG"/>
 <p>Let's see another example from K &amp; R p. 105.</p>
-<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">strcpy</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">while</span> <span class="p">((</span><span class="o">*</span><span class="n">s</span><span class="o">++</span> <span class="o">=</span> <span class="o">*</span><span class="n">t</span><span class="o">++</span><span class="p">)</span> <span class="o">!=</span> <span class="sc">'\0'</span><span class="p">)</span>
-    <span class="p">;</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">strcpy</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">((</span><span class="o">*</span><span class="n">s</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">t</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 <p>In this case, the value of <tt class="docutils literal">*t++</tt> is the character that <tt class="docutils literal">t</tt> pointed to before <tt class="docutils literal">t</tt> was incremented; the
 postfix <tt class="docutils literal">++</tt> doesn't change <tt class="docutils literal">t</tt> until after this character has been fetched. This makes sense if we

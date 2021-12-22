@@ -137,12 +137,12 @@ use a cartesian product or join of columns of the same data type.</p>
 The end result of cartesian product is a relation that has all attributes from
 all the relations in the <code>from</code> clause. The following iterative process shows
 how the cartesian product of the relations in the <code>from</code> clause get generated</p>
-<div class="highlight"><pre><span></span><code><span class="err">for each tuple t1 in relation r1</span>
-<span class="err">  for each tuple t2 in relation r2</span>
-<span class="err">    . . .</span>
-<span class="err">    for each tuple tm in relation rm</span>
-<span class="err">      Concatenate t1, t2, . . . , tm into a single tuple t</span>
-<span class="err">      Add t into the result relation</span>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="nv">each</span> <span class="nv">tuple</span> <span class="nv">t1</span> <span class="nv">in</span> <span class="nv">relation</span> <span class="nv">r1</span>
+  <span class="k">for</span> <span class="nv">each</span> <span class="nv">tuple</span> <span class="nv">t2</span> <span class="nv">in</span> <span class="nv">relation</span> <span class="nv">r2</span>
+    . . .
+    <span class="k">for</span> <span class="nv">each</span> <span class="nv">tuple</span> <span class="nv">tm</span> <span class="nv">in</span> <span class="nv">relation</span> <span class="nv">rm</span>
+      <span class="nv">Concatenate</span> <span class="nv">t1</span>, <span class="nv">t2</span>, . . . , <span class="nv">tm</span> <span class="nv">into</span> <span class="nv">a</span> <span class="nv">single</span> <span class="nv">tuple</span> <span class="nv">t</span>
+      <span class="nv">Add</span> <span class="nv">t</span> <span class="nv">into</span> <span class="nv">the</span> <span class="nb">result</span> <span class="nv">relation</span>
 </code></pre></div>
 <p>Another perspective to understand cartesian product is from relation algebra cross-product
 <span class="math">\(R \times S\)</span>, which is defined as: returns a relation instance whose schema
@@ -154,63 +154,63 @@ for each pair of tuples <span class="math">\(r \in R\)</span>, <span class="math
 <div class="highlight"><pre><span></span><code><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">teaches</span><span class="p">,</span> <span class="n">instructor</span><span class="p">;</span>
 </code></pre></div>
 <p>The <em>teaches</em> and <em>instructor</em> table look like below</p>
-<div class="highlight"><pre><span></span><code><span class="n">sqlite</span><span class="o">&gt;</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">teaches</span><span class="p">;</span>
-<span class="n">ID</span><span class="o">|</span><span class="n">course_id</span><span class="o">|</span><span class="n">sec_id</span><span class="o">|</span><span class="n">semester</span><span class="o">|</span><span class="k">year</span>
-<span class="mi">10101</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Fall</span><span class="o">|</span><span class="mi">2009</span>
-<span class="mi">10101</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">315</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span>
-<span class="mi">10101</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">347</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Fall</span><span class="o">|</span><span class="mi">2009</span>
-<span class="mi">12121</span><span class="o">|</span><span class="n">FIN</span><span class="o">-</span><span class="mi">201</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span>
-<span class="mi">15151</span><span class="o">|</span><span class="n">MU</span><span class="o">-</span><span class="mi">199</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span>
-<span class="mi">22222</span><span class="o">|</span><span class="n">PHY</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Fall</span><span class="o">|</span><span class="mi">2009</span>
-<span class="mi">32343</span><span class="o">|</span><span class="n">HIS</span><span class="o">-</span><span class="mi">351</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span>
-<span class="mi">45565</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span>
-<span class="mi">45565</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">319</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span>
-<span class="mi">76766</span><span class="o">|</span><span class="n">BIO</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Summer</span><span class="o">|</span><span class="mi">2009</span>
-<span class="mi">76766</span><span class="o">|</span><span class="n">BIO</span><span class="o">-</span><span class="mi">301</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Summer</span><span class="o">|</span><span class="mi">2010</span>
-<span class="mi">83821</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">190</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2009</span>
-<span class="mi">83821</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">190</span><span class="o">|</span><span class="mi">2</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2009</span>
-<span class="mi">83821</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">319</span><span class="o">|</span><span class="mi">2</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span>
-<span class="mi">98345</span><span class="o">|</span><span class="n">EE</span><span class="o">-</span><span class="mi">181</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2009</span>
+<div class="highlight"><pre><span></span><code>sqlite&gt; select * from teaches;
+ID|course_id|sec_id|semester|year
+10101|CS-101|1|Fall|2009
+10101|CS-315|1|Spring|2010
+10101|CS-347|1|Fall|2009
+12121|FIN-201|1|Spring|2010
+15151|MU-199|1|Spring|2010
+22222|PHY-101|1|Fall|2009
+32343|HIS-351|1|Spring|2010
+45565|CS-101|1|Spring|2010
+45565|CS-319|1|Spring|2010
+76766|BIO-101|1|Summer|2009
+76766|BIO-301|1|Summer|2010
+83821|CS-190|1|Spring|2009
+83821|CS-190|2|Spring|2009
+83821|CS-319|2|Spring|2010
+98345|EE-181|1|Spring|2009
 
-<span class="n">sqlite</span><span class="o">&gt;</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">instructor</span><span class="p">;</span>
-<span class="n">ID</span><span class="o">|</span><span class="n">name</span><span class="o">|</span><span class="n">dept_name</span><span class="o">|</span><span class="n">salary</span>
-<span class="mi">10101</span><span class="o">|</span><span class="n">Srinivasan</span><span class="o">|</span><span class="n">Comp</span><span class="p">.</span> <span class="n">Sci</span><span class="p">.</span><span class="o">|</span><span class="mi">65000</span>
-<span class="mi">12121</span><span class="o">|</span><span class="n">Wu</span><span class="o">|</span><span class="n">Finance</span><span class="o">|</span><span class="mi">90000</span>
-<span class="mi">15151</span><span class="o">|</span><span class="n">Mozart</span><span class="o">|</span><span class="n">Music</span><span class="o">|</span><span class="mi">40000</span>
-<span class="mi">22222</span><span class="o">|</span><span class="n">Einstein</span><span class="o">|</span><span class="n">Physics</span><span class="o">|</span><span class="mi">95000</span>
-<span class="mi">32343</span><span class="o">|</span><span class="n">El</span> <span class="n">Said</span><span class="o">|</span><span class="n">History</span><span class="o">|</span><span class="mi">60000</span>
-<span class="mi">33456</span><span class="o">|</span><span class="n">Gold</span><span class="o">|</span><span class="n">Physics</span><span class="o">|</span><span class="mi">87000</span>
-<span class="mi">45565</span><span class="o">|</span><span class="n">Katz</span><span class="o">|</span><span class="n">Comp</span><span class="p">.</span> <span class="n">Sci</span><span class="p">.</span><span class="o">|</span><span class="mi">75000</span>
-<span class="mi">58583</span><span class="o">|</span><span class="n">Califieri</span><span class="o">|</span><span class="n">History</span><span class="o">|</span><span class="mi">62000</span>
-<span class="mi">76543</span><span class="o">|</span><span class="n">Singh</span><span class="o">|</span><span class="n">Finance</span><span class="o">|</span><span class="mi">80000</span>
-<span class="mi">76766</span><span class="o">|</span><span class="n">Crick</span><span class="o">|</span><span class="n">Biology</span><span class="o">|</span><span class="mi">72000</span>
-<span class="mi">83821</span><span class="o">|</span><span class="n">Brandt</span><span class="o">|</span><span class="n">Comp</span><span class="p">.</span> <span class="n">Sci</span><span class="p">.</span><span class="o">|</span><span class="mi">92000</span>
-<span class="mi">98345</span><span class="o">|</span><span class="n">Kim</span><span class="o">|</span><span class="n">Elec</span><span class="p">.</span> <span class="n">Eng</span><span class="p">.</span><span class="o">|</span><span class="mi">80000</span>
+sqlite&gt; select * from instructor;
+ID|name|dept_name|salary
+10101|Srinivasan|Comp. Sci.|65000
+12121|Wu|Finance|90000
+15151|Mozart|Music|40000
+22222|Einstein|Physics|95000
+32343|El Said|History|60000
+33456|Gold|Physics|87000
+45565|Katz|Comp. Sci.|75000
+58583|Califieri|History|62000
+76543|Singh|Finance|80000
+76766|Crick|Biology|72000
+83821|Brandt|Comp. Sci.|92000
+98345|Kim|Elec. Eng.|80000
 </code></pre></div>
 <p><em>teaches</em> table has 15 rows; <em>instructor</em> table
 has 12 rows. Then, if we run our SQL above, we get our result looks like</p>
-<div class="highlight"><pre><span></span><code><span class="err">sqlite&gt; select * from instructor, teaches limit 20;</span>
-<span class="err">ID|name|dept_name|salary|ID|course_id|sec_id|semester|year</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|10101|CS-101|1|Fall|2009</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|10101|CS-315|1|Spring|2010</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|10101|CS-347|1|Fall|2009</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|12121|FIN-201|1|Spring|2010</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|15151|MU-199|1|Spring|2010</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|22222|PHY-101|1|Fall|2009</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|32343|HIS-351|1|Spring|2010</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|45565|CS-101|1|Spring|2010</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|45565|CS-319|1|Spring|2010</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|76766|BIO-101|1|Summer|2009</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|76766|BIO-301|1|Summer|2010</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|83821|CS-190|1|Spring|2009</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|83821|CS-190|2|Spring|2009</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|83821|CS-319|2|Spring|2010</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|98345|EE-181|1|Spring|2009</span>
-<span class="err">12121|Wu|Finance|90000|10101|CS-101|1|Fall|2009</span>
-<span class="err">12121|Wu|Finance|90000|10101|CS-315|1|Spring|2010</span>
-<span class="err">12121|Wu|Finance|90000|10101|CS-347|1|Fall|2009</span>
-<span class="err">12121|Wu|Finance|90000|12121|FIN-201|1|Spring|2010</span>
-<span class="err">12121|Wu|Finance|90000|15151|MU-199|1|Spring|2010</span>
+<div class="highlight"><pre><span></span><code>sqlite&gt; select * from instructor, teaches limit 20;
+ID|name|dept_name|salary|ID|course_id|sec_id|semester|year
+10101|Srinivasan|Comp. Sci.|65000|10101|CS-101|1|Fall|2009
+10101|Srinivasan|Comp. Sci.|65000|10101|CS-315|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|10101|CS-347|1|Fall|2009
+10101|Srinivasan|Comp. Sci.|65000|12121|FIN-201|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|15151|MU-199|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|22222|PHY-101|1|Fall|2009
+10101|Srinivasan|Comp. Sci.|65000|32343|HIS-351|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|45565|CS-101|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|45565|CS-319|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|76766|BIO-101|1|Summer|2009
+10101|Srinivasan|Comp. Sci.|65000|76766|BIO-301|1|Summer|2010
+10101|Srinivasan|Comp. Sci.|65000|83821|CS-190|1|Spring|2009
+10101|Srinivasan|Comp. Sci.|65000|83821|CS-190|2|Spring|2009
+10101|Srinivasan|Comp. Sci.|65000|83821|CS-319|2|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|98345|EE-181|1|Spring|2009
+12121|Wu|Finance|90000|10101|CS-101|1|Fall|2009
+12121|Wu|Finance|90000|10101|CS-315|1|Spring|2010
+12121|Wu|Finance|90000|10101|CS-347|1|Fall|2009
+12121|Wu|Finance|90000|12121|FIN-201|1|Spring|2010
+12121|Wu|Finance|90000|15151|MU-199|1|Spring|2010
 </code></pre></div>
 <p>The result relation has 180 rows, which exactly equal to <span class="math">\(12 \times 15\)</span>. </p>
 <p>Quite often, we use <code>where</code> clause to restrict the combinations created by the 
@@ -232,11 +232,11 @@ is optional. In other words, if only <code>join</code> appears in the SQL statem
 assume it to be <strong>inner join</strong>. Under <strong>outer join</strong>, we can further specify whether
 it is <strong>left outer join</strong>, <strong>right outer join</strong>, or <strong>full outer join</strong>. Here 
 is a graphic summary for the text above</p>
-<div class="highlight"><pre><span></span><code><span class="err">- (inner) join</span>
-<span class="err">- outer join</span>
-<span class="err">   |- left outer join</span>
-<span class="err">   |- right outer join</span>
-<span class="err">   |- full outer join</span>
+<div class="highlight"><pre><span></span><code>- (inner) join
+- outer join
+   |- left outer join
+   |- right outer join
+   |- full outer join
 </code></pre></div>
 <p>In addition, there are join conditions that we can use in combination with
 the join form mentioned above. Any form of join (inner, left outer,
@@ -269,7 +269,7 @@ The table below provides a summary of join types and join conditions</p>
 </tbody>
 </table>
 <p>Then the SQL syntax is </p>
-<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">table1</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">natural</span><span class="o">&gt;</span> <span class="p">[</span><span class="n">Join</span> <span class="n">types</span><span class="p">]</span> <span class="p">[</span><span class="n">table2</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">on</span> <span class="o">|</span> <span class="n">using</span><span class="o">&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">table1</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="n">natural</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">Join</span><span class="w"> </span><span class="n">types</span><span class="p">]</span><span class="w"> </span><span class="p">[</span><span class="n">table2</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="n">on</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">using</span><span class="o">&gt;</span><span class="w"></span>
 </code></pre></div>
 <h4 id="inner-join">inner join</h4>
 <h5 id="natural-join">natural join</h5>
@@ -283,23 +283,23 @@ with the same value on those attributes that appear in the schemas of both relat
 <p>Consider the query above, computing <code>instructor natural join teaches</code> considers
 only those pairs of tuples where both the tuple from <code>instructor</code> and the tuple
 from <code>teaches</code> have the same value on the common attribute, <code>ID</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="err">sqlite&gt; select * from instructor natural join teaches;</span>
-<span class="err">ID|name|dept_name|salary|course_id|sec_id|semester|year</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|CS-101|1|Fall|2009</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|CS-315|1|Spring|2010</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|CS-347|1|Fall|2009</span>
-<span class="err">12121|Wu|Finance|90000|FIN-201|1|Spring|2010</span>
-<span class="err">15151|Mozart|Music|40000|MU-199|1|Spring|2010</span>
-<span class="err">22222|Einstein|Physics|95000|PHY-101|1|Fall|2009</span>
-<span class="err">32343|El Said|History|60000|HIS-351|1|Spring|2010</span>
-<span class="err">45565|Katz|Comp. Sci.|75000|CS-101|1|Spring|2010</span>
-<span class="err">45565|Katz|Comp. Sci.|75000|CS-319|1|Spring|2010</span>
-<span class="err">76766|Crick|Biology|72000|BIO-101|1|Summer|2009</span>
-<span class="err">76766|Crick|Biology|72000|BIO-301|1|Summer|2010</span>
-<span class="err">83821|Brandt|Comp. Sci.|92000|CS-190|1|Spring|2009</span>
-<span class="err">83821|Brandt|Comp. Sci.|92000|CS-190|2|Spring|2009</span>
-<span class="err">83821|Brandt|Comp. Sci.|92000|CS-319|2|Spring|2010</span>
-<span class="err">98345|Kim|Elec. Eng.|80000|EE-181|1|Spring|2009</span>
+<div class="highlight"><pre><span></span><code>sqlite&gt; select * from instructor natural join teaches;
+ID|name|dept_name|salary|course_id|sec_id|semester|year
+10101|Srinivasan|Comp. Sci.|65000|CS-101|1|Fall|2009
+10101|Srinivasan|Comp. Sci.|65000|CS-315|1|Spring|2010
+10101|Srinivasan|Comp. Sci.|65000|CS-347|1|Fall|2009
+12121|Wu|Finance|90000|FIN-201|1|Spring|2010
+15151|Mozart|Music|40000|MU-199|1|Spring|2010
+22222|Einstein|Physics|95000|PHY-101|1|Fall|2009
+32343|El Said|History|60000|HIS-351|1|Spring|2010
+45565|Katz|Comp. Sci.|75000|CS-101|1|Spring|2010
+45565|Katz|Comp. Sci.|75000|CS-319|1|Spring|2010
+76766|Crick|Biology|72000|BIO-101|1|Summer|2009
+76766|Crick|Biology|72000|BIO-301|1|Summer|2010
+83821|Brandt|Comp. Sci.|92000|CS-190|1|Spring|2009
+83821|Brandt|Comp. Sci.|92000|CS-190|2|Spring|2009
+83821|Brandt|Comp. Sci.|92000|CS-319|2|Spring|2010
+98345|Kim|Elec. Eng.|80000|EE-181|1|Spring|2009
 </code></pre></div>
 <p>Since <code>join</code> is really a shorthand of writing a type of SQL with cartesian product, we can get the same 
 result using <code>select * from instructor, teaches where instructor.ID = teaches.ID;</code>. From above query result we can see that:</p>
@@ -323,21 +323,21 @@ schemas of both relations. Consider the following query</p>
 <span class="k">from</span> <span class="n">instructor</span> <span class="k">natural</span> <span class="k">join</span> <span class="n">teaches</span> <span class="k">natural</span> <span class="k">join</span> <span class="n">course</span><span class="p">;</span>
 </code></pre></div>
 <p><em>course</em> table looks like the following</p>
-<div class="highlight"><pre><span></span><code><span class="err">sqlite&gt; select * from course;</span>
-<span class="err">course_id|title|dept_name|credits</span>
-<span class="err">BIO-101|Intro. to Biology|Biology|4</span>
-<span class="err">BIO-301|Genetics|Biology|4</span>
-<span class="err">BIO-399|Computational Biology|Biology|3</span>
-<span class="err">CS-101|Intro. to Computer Science|Comp. Sci.|4</span>
-<span class="err">CS-190|Game Design|Comp. Sci.|4</span>
-<span class="err">CS-315|Robotics|Comp. Sci.|3</span>
-<span class="err">CS-319|Image Processing|Comp. Sci.|3</span>
-<span class="err">CS-347|Database System Concepts|Comp. Sci.|3</span>
-<span class="err">EE-181|Intro. to Digital Systems|Elec. Eng.|3</span>
-<span class="err">FIN-201|Investment Banking|Finance|3</span>
-<span class="err">HIS-351|World History|History|3</span>
-<span class="err">MU-199|Music Video Production|Music|3</span>
-<span class="err">PHY-101|Physical Principles|Physics|4</span>
+<div class="highlight"><pre><span></span><code>sqlite&gt; select * from course;
+course_id|title|dept_name|credits
+BIO-101|Intro. to Biology|Biology|4
+BIO-301|Genetics|Biology|4
+BIO-399|Computational Biology|Biology|3
+CS-101|Intro. to Computer Science|Comp. Sci.|4
+CS-190|Game Design|Comp. Sci.|4
+CS-315|Robotics|Comp. Sci.|3
+CS-319|Image Processing|Comp. Sci.|3
+CS-347|Database System Concepts|Comp. Sci.|3
+EE-181|Intro. to Digital Systems|Elec. Eng.|3
+FIN-201|Investment Banking|Finance|3
+HIS-351|World History|History|3
+MU-199|Music Video Production|Music|3
+PHY-101|Physical Principles|Physics|4
 </code></pre></div>
 <p><code>instructor</code> has attributes (<code>ID|name|dept_name|salary</code>); 
 <code>teaches</code> has attributes (<code>ID|course_id|sec_id|semester|year</code>);
@@ -346,23 +346,23 @@ will first do cartesian product of <code>instructor</code> and <code>teaches</co
 keep the tuples that have the same value on <code>ID</code>. Then, the resulting relation
 will do the second <code>natural join</code> with <code>course</code> and 
 will keep the tuples that have the same value on <code>course_id</code> and <code>dept_name</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="err">sqlite&gt; select * from instructor natural join teaches natural join course;</span>
-<span class="err">ID|name|dept_name|salary|course_id|sec_id|semester|year|title|credits</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|CS-101|1|Fall|2009|Intro. to Computer Science|4</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|CS-315|1|Spring|2010|Robotics|3</span>
-<span class="err">10101|Srinivasan|Comp. Sci.|65000|CS-347|1|Fall|2009|Database System Concepts|3</span>
-<span class="err">12121|Wu|Finance|90000|FIN-201|1|Spring|2010|Investment Banking|3</span>
-<span class="err">15151|Mozart|Music|40000|MU-199|1|Spring|2010|Music Video Production|3</span>
-<span class="err">22222|Einstein|Physics|95000|PHY-101|1|Fall|2009|Physical Principles|4</span>
-<span class="err">32343|El Said|History|60000|HIS-351|1|Spring|2010|World History|3</span>
-<span class="err">45565|Katz|Comp. Sci.|75000|CS-101|1|Spring|2010|Intro. to Computer Science|4</span>
-<span class="err">45565|Katz|Comp. Sci.|75000|CS-319|1|Spring|2010|Image Processing|3</span>
-<span class="err">76766|Crick|Biology|72000|BIO-101|1|Summer|2009|Intro. to Biology|4</span>
-<span class="err">76766|Crick|Biology|72000|BIO-301|1|Summer|2010|Genetics|4</span>
-<span class="err">83821|Brandt|Comp. Sci.|92000|CS-190|1|Spring|2009|Game Design|4</span>
-<span class="err">83821|Brandt|Comp. Sci.|92000|CS-190|2|Spring|2009|Game Design|4</span>
-<span class="err">83821|Brandt|Comp. Sci.|92000|CS-319|2|Spring|2010|Image Processing|3</span>
-<span class="err">98345|Kim|Elec. Eng.|80000|EE-181|1|Spring|2009|Intro. to Digital Systems|3</span>
+<div class="highlight"><pre><span></span><code>sqlite&gt; select * from instructor natural join teaches natural join course;
+ID|name|dept_name|salary|course_id|sec_id|semester|year|title|credits
+10101|Srinivasan|Comp. Sci.|65000|CS-101|1|Fall|2009|Intro. to Computer Science|4
+10101|Srinivasan|Comp. Sci.|65000|CS-315|1|Spring|2010|Robotics|3
+10101|Srinivasan|Comp. Sci.|65000|CS-347|1|Fall|2009|Database System Concepts|3
+12121|Wu|Finance|90000|FIN-201|1|Spring|2010|Investment Banking|3
+15151|Mozart|Music|40000|MU-199|1|Spring|2010|Music Video Production|3
+22222|Einstein|Physics|95000|PHY-101|1|Fall|2009|Physical Principles|4
+32343|El Said|History|60000|HIS-351|1|Spring|2010|World History|3
+45565|Katz|Comp. Sci.|75000|CS-101|1|Spring|2010|Intro. to Computer Science|4
+45565|Katz|Comp. Sci.|75000|CS-319|1|Spring|2010|Image Processing|3
+76766|Crick|Biology|72000|BIO-101|1|Summer|2009|Intro. to Biology|4
+76766|Crick|Biology|72000|BIO-301|1|Summer|2010|Genetics|4
+83821|Brandt|Comp. Sci.|92000|CS-190|1|Spring|2009|Game Design|4
+83821|Brandt|Comp. Sci.|92000|CS-190|2|Spring|2009|Game Design|4
+83821|Brandt|Comp. Sci.|92000|CS-319|2|Spring|2010|Image Processing|3
+98345|Kim|Elec. Eng.|80000|EE-181|1|Spring|2009|Intro. to Digital Systems|3
 </code></pre></div>
 <h5 id="join-using">join ... using</h5>
 <p>Automatically equate all the attributes with the same name from both schemas of 
@@ -409,46 +409,46 @@ like working exactly the same as <strong>where</strong> clause? The answer is</p
 <h4 id="outer-join">outer join</h4>
 <h5 id="motivation_1">Motivation</h5>
 <p>Let's consider <code>student</code> and <code>takes</code> tables look like the below</p>
-<div class="highlight"><pre><span></span><code><span class="n">sqlite</span><span class="o">&gt;</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span><span class="p">;</span>
-<span class="n">ID</span><span class="o">|</span><span class="n">name</span><span class="o">|</span><span class="n">dept_name</span><span class="o">|</span><span class="n">tot_cred</span>
-<span class="mi">00128</span><span class="o">|</span><span class="n">Zhang</span><span class="o">|</span><span class="n">Comp</span><span class="p">.</span> <span class="n">Sci</span><span class="p">.</span><span class="o">|</span><span class="mi">102</span>
-<span class="mi">12345</span><span class="o">|</span><span class="n">Shankar</span><span class="o">|</span><span class="n">Comp</span><span class="p">.</span> <span class="n">Sci</span><span class="p">.</span><span class="o">|</span><span class="mi">32</span>
-<span class="mi">19991</span><span class="o">|</span><span class="n">Brandt</span><span class="o">|</span><span class="n">History</span><span class="o">|</span><span class="mi">80</span>
-<span class="mi">23121</span><span class="o">|</span><span class="n">Chavez</span><span class="o">|</span><span class="n">Finance</span><span class="o">|</span><span class="mi">110</span>
-<span class="mi">44553</span><span class="o">|</span><span class="n">Peltier</span><span class="o">|</span><span class="n">Physics</span><span class="o">|</span><span class="mi">56</span>
-<span class="mi">45678</span><span class="o">|</span><span class="n">Levy</span><span class="o">|</span><span class="n">Physics</span><span class="o">|</span><span class="mi">46</span>
-<span class="mi">54321</span><span class="o">|</span><span class="n">Williams</span><span class="o">|</span><span class="n">Comp</span><span class="p">.</span> <span class="n">Sci</span><span class="p">.</span><span class="o">|</span><span class="mi">54</span>
-<span class="mi">55739</span><span class="o">|</span><span class="n">Sanchez</span><span class="o">|</span><span class="n">Music</span><span class="o">|</span><span class="mi">38</span>
-<span class="mi">70557</span><span class="o">|</span><span class="n">Snow</span><span class="o">|</span><span class="n">Physics</span><span class="o">|</span><span class="mi">0</span>
-<span class="mi">76543</span><span class="o">|</span><span class="n">Brown</span><span class="o">|</span><span class="n">Comp</span><span class="p">.</span> <span class="n">Sci</span><span class="p">.</span><span class="o">|</span><span class="mi">58</span>
-<span class="mi">76653</span><span class="o">|</span><span class="n">Aoi</span><span class="o">|</span><span class="n">Elec</span><span class="p">.</span> <span class="n">Eng</span><span class="p">.</span><span class="o">|</span><span class="mi">60</span>
-<span class="mi">98765</span><span class="o">|</span><span class="n">Bourikas</span><span class="o">|</span><span class="n">Elec</span><span class="p">.</span> <span class="n">Eng</span><span class="p">.</span><span class="o">|</span><span class="mi">98</span>
-<span class="mi">98988</span><span class="o">|</span><span class="n">Tanaka</span><span class="o">|</span><span class="n">Biology</span><span class="o">|</span><span class="mi">120</span>
+<div class="highlight"><pre><span></span><code>sqlite&gt; select * from student;
+ID|name|dept_name|tot_cred
+00128|Zhang|Comp. Sci.|102
+12345|Shankar|Comp. Sci.|32
+19991|Brandt|History|80
+23121|Chavez|Finance|110
+44553|Peltier|Physics|56
+45678|Levy|Physics|46
+54321|Williams|Comp. Sci.|54
+55739|Sanchez|Music|38
+70557|Snow|Physics|0
+76543|Brown|Comp. Sci.|58
+76653|Aoi|Elec. Eng.|60
+98765|Bourikas|Elec. Eng.|98
+98988|Tanaka|Biology|120
 
-<span class="n">sqlite</span><span class="o">&gt;</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">takes</span><span class="p">;</span>
-<span class="n">ID</span><span class="o">|</span><span class="n">course_id</span><span class="o">|</span><span class="n">sec_id</span><span class="o">|</span><span class="n">semester</span><span class="o">|</span><span class="k">year</span><span class="o">|</span><span class="n">grade</span>
-<span class="mi">00128</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Fall</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="n">A</span>
-<span class="mi">00128</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">347</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Fall</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="n">A</span><span class="o">-</span>
-<span class="mi">12345</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Fall</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="k">C</span>
-<span class="mi">12345</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">190</span><span class="o">|</span><span class="mi">2</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="n">A</span>
-<span class="mi">12345</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">315</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span><span class="o">|</span><span class="n">A</span>
-<span class="mi">12345</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">347</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Fall</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="n">A</span>
-<span class="mi">19991</span><span class="o">|</span><span class="n">HIS</span><span class="o">-</span><span class="mi">351</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span><span class="o">|</span><span class="n">B</span>
-<span class="mi">23121</span><span class="o">|</span><span class="n">FIN</span><span class="o">-</span><span class="mi">201</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span><span class="o">|</span><span class="k">C</span><span class="o">+</span>
-<span class="mi">44553</span><span class="o">|</span><span class="n">PHY</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Fall</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="n">B</span><span class="o">-</span>
-<span class="mi">45678</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Fall</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="n">F</span>
-<span class="mi">45678</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span><span class="o">|</span><span class="n">B</span><span class="o">+</span>
-<span class="mi">45678</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">319</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span><span class="o">|</span><span class="n">B</span>
-<span class="mi">54321</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Fall</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="n">A</span><span class="o">-</span>
-<span class="mi">54321</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">190</span><span class="o">|</span><span class="mi">2</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="n">B</span><span class="o">+</span>
-<span class="mi">55739</span><span class="o">|</span><span class="n">MU</span><span class="o">-</span><span class="mi">199</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span><span class="o">|</span><span class="n">A</span><span class="o">-</span>
-<span class="mi">76543</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Fall</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="n">A</span>
-<span class="mi">76543</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">319</span><span class="o">|</span><span class="mi">2</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span><span class="o">|</span><span class="n">A</span>
-<span class="mi">76653</span><span class="o">|</span><span class="n">EE</span><span class="o">-</span><span class="mi">181</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="k">C</span>
-<span class="mi">98765</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Fall</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="k">C</span><span class="o">-</span>
-<span class="mi">98765</span><span class="o">|</span><span class="n">CS</span><span class="o">-</span><span class="mi">315</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Spring</span><span class="o">|</span><span class="mi">2010</span><span class="o">|</span><span class="n">B</span>
-<span class="mi">98988</span><span class="o">|</span><span class="n">BIO</span><span class="o">-</span><span class="mi">101</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Summer</span><span class="o">|</span><span class="mi">2009</span><span class="o">|</span><span class="n">A</span>
-<span class="mi">98988</span><span class="o">|</span><span class="n">BIO</span><span class="o">-</span><span class="mi">301</span><span class="o">|</span><span class="mi">1</span><span class="o">|</span><span class="n">Summer</span><span class="o">|</span><span class="mi">2010</span><span class="o">|</span>
+sqlite&gt; select * from takes;
+ID|course_id|sec_id|semester|year|grade
+00128|CS-101|1|Fall|2009|A
+00128|CS-347|1|Fall|2009|A-
+12345|CS-101|1|Fall|2009|C
+12345|CS-190|2|Spring|2009|A
+12345|CS-315|1|Spring|2010|A
+12345|CS-347|1|Fall|2009|A
+19991|HIS-351|1|Spring|2010|B
+23121|FIN-201|1|Spring|2010|C+
+44553|PHY-101|1|Fall|2009|B-
+45678|CS-101|1|Fall|2009|F
+45678|CS-101|1|Spring|2010|B+
+45678|CS-319|1|Spring|2010|B
+54321|CS-101|1|Fall|2009|A-
+54321|CS-190|2|Spring|2009|B+
+55739|MU-199|1|Spring|2010|A-
+76543|CS-101|1|Fall|2009|A
+76543|CS-319|2|Spring|2010|A
+76653|EE-181|1|Spring|2009|C
+98765|CS-101|1|Fall|2009|C-
+98765|CS-315|1|Spring|2010|B
+98988|BIO-101|1|Summer|2009|A
+98988|BIO-301|1|Summer|2010|
 </code></pre></div>
 <p>Suppose we wish to display a list of all students along with the courses they have
 taken. We come up a query that looks like</p>
@@ -461,30 +461,30 @@ in <code>student</code> table not in <code>takes</code> table. If we do <code>na
 of <code>ID</code> will not equal (one is a number and the other is null), which will
 not show up in our final result set. Example in our case will be student Snow
 with <code>ID</code> 70557, who has not taken any course. </p>
-<div class="highlight"><pre><span></span><code><span class="err">sqlite&gt; select * from student natural join takes;</span>
-<span class="err">ID|name|dept_name|tot_cred|course_id|sec_id|semester|year|grade</span>
-<span class="err">00128|Zhang|Comp. Sci.|102|CS-101|1|Fall|2009|A</span>
-<span class="err">00128|Zhang|Comp. Sci.|102|CS-347|1|Fall|2009|A-</span>
-<span class="err">12345|Shankar|Comp. Sci.|32|CS-101|1|Fall|2009|C</span>
-<span class="err">12345|Shankar|Comp. Sci.|32|CS-190|2|Spring|2009|A</span>
-<span class="err">12345|Shankar|Comp. Sci.|32|CS-315|1|Spring|2010|A</span>
-<span class="err">12345|Shankar|Comp. Sci.|32|CS-347|1|Fall|2009|A</span>
-<span class="err">19991|Brandt|History|80|HIS-351|1|Spring|2010|B</span>
-<span class="err">23121|Chavez|Finance|110|FIN-201|1|Spring|2010|C+</span>
-<span class="err">44553|Peltier|Physics|56|PHY-101|1|Fall|2009|B-</span>
-<span class="err">45678|Levy|Physics|46|CS-101|1|Fall|2009|F</span>
-<span class="err">45678|Levy|Physics|46|CS-101|1|Spring|2010|B+</span>
-<span class="err">45678|Levy|Physics|46|CS-319|1|Spring|2010|B</span>
-<span class="err">54321|Williams|Comp. Sci.|54|CS-101|1|Fall|2009|A-</span>
-<span class="err">54321|Williams|Comp. Sci.|54|CS-190|2|Spring|2009|B+</span>
-<span class="err">55739|Sanchez|Music|38|MU-199|1|Spring|2010|A-</span>
-<span class="err">76543|Brown|Comp. Sci.|58|CS-101|1|Fall|2009|A</span>
-<span class="err">76543|Brown|Comp. Sci.|58|CS-319|2|Spring|2010|A</span>
-<span class="err">76653|Aoi|Elec. Eng.|60|EE-181|1|Spring|2009|C</span>
-<span class="err">98765|Bourikas|Elec. Eng.|98|CS-101|1|Fall|2009|C-</span>
-<span class="err">98765|Bourikas|Elec. Eng.|98|CS-315|1|Spring|2010|B</span>
-<span class="err">98988|Tanaka|Biology|120|BIO-101|1|Summer|2009|A</span>
-<span class="err">98988|Tanaka|Biology|120|BIO-301|1|Summer|2010|</span>
+<div class="highlight"><pre><span></span><code>sqlite&gt; select * from student natural join takes;
+ID|name|dept_name|tot_cred|course_id|sec_id|semester|year|grade
+00128|Zhang|Comp. Sci.|102|CS-101|1|Fall|2009|A
+00128|Zhang|Comp. Sci.|102|CS-347|1|Fall|2009|A-
+12345|Shankar|Comp. Sci.|32|CS-101|1|Fall|2009|C
+12345|Shankar|Comp. Sci.|32|CS-190|2|Spring|2009|A
+12345|Shankar|Comp. Sci.|32|CS-315|1|Spring|2010|A
+12345|Shankar|Comp. Sci.|32|CS-347|1|Fall|2009|A
+19991|Brandt|History|80|HIS-351|1|Spring|2010|B
+23121|Chavez|Finance|110|FIN-201|1|Spring|2010|C+
+44553|Peltier|Physics|56|PHY-101|1|Fall|2009|B-
+45678|Levy|Physics|46|CS-101|1|Fall|2009|F
+45678|Levy|Physics|46|CS-101|1|Spring|2010|B+
+45678|Levy|Physics|46|CS-319|1|Spring|2010|B
+54321|Williams|Comp. Sci.|54|CS-101|1|Fall|2009|A-
+54321|Williams|Comp. Sci.|54|CS-190|2|Spring|2009|B+
+55739|Sanchez|Music|38|MU-199|1|Spring|2010|A-
+76543|Brown|Comp. Sci.|58|CS-101|1|Fall|2009|A
+76543|Brown|Comp. Sci.|58|CS-319|2|Spring|2010|A
+76653|Aoi|Elec. Eng.|60|EE-181|1|Spring|2009|C
+98765|Bourikas|Elec. Eng.|98|CS-101|1|Fall|2009|C-
+98765|Bourikas|Elec. Eng.|98|CS-315|1|Spring|2010|B
+98988|Tanaka|Biology|120|BIO-101|1|Summer|2009|A
+98988|Tanaka|Biology|120|BIO-301|1|Summer|2010|
 </code></pre></div>
 <p>More generally, some tuples in either or both of the relations being joined 
 may be "lost" in this way. The <strong>outer join</strong> operation works in a manner similar
@@ -511,31 +511,31 @@ lost in a join, by creating tuples in the result containing null values.</p>
 </code></pre></div>
 <p>which returns result that includes student Snow with nulls for the
 attributes that appear only in the schema of the <em>take</em> relation</p>
-<div class="highlight"><pre><span></span><code><span class="err">sqlite&gt; select * from student natural left outer join takes;</span>
-<span class="err">ID|name|dept_name|tot_cred|course_id|sec_id|semester|year|grade</span>
-<span class="err">00128|Zhang|Comp. Sci.|102|CS-101|1|Fall|2009|A</span>
-<span class="err">00128|Zhang|Comp. Sci.|102|CS-347|1|Fall|2009|A-</span>
-<span class="err">12345|Shankar|Comp. Sci.|32|CS-101|1|Fall|2009|C</span>
-<span class="err">12345|Shankar|Comp. Sci.|32|CS-190|2|Spring|2009|A</span>
-<span class="err">12345|Shankar|Comp. Sci.|32|CS-315|1|Spring|2010|A</span>
-<span class="err">12345|Shankar|Comp. Sci.|32|CS-347|1|Fall|2009|A</span>
-<span class="err">19991|Brandt|History|80|HIS-351|1|Spring|2010|B</span>
-<span class="err">23121|Chavez|Finance|110|FIN-201|1|Spring|2010|C+</span>
-<span class="err">44553|Peltier|Physics|56|PHY-101|1|Fall|2009|B-</span>
-<span class="err">45678|Levy|Physics|46|CS-101|1|Fall|2009|F</span>
-<span class="err">45678|Levy|Physics|46|CS-101|1|Spring|2010|B+</span>
-<span class="err">45678|Levy|Physics|46|CS-319|1|Spring|2010|B</span>
-<span class="err">54321|Williams|Comp. Sci.|54|CS-101|1|Fall|2009|A-</span>
-<span class="err">54321|Williams|Comp. Sci.|54|CS-190|2|Spring|2009|B+</span>
-<span class="err">55739|Sanchez|Music|38|MU-199|1|Spring|2010|A-</span>
-<span class="err">70557|Snow|Physics|0|||||</span>
-<span class="err">76543|Brown|Comp. Sci.|58|CS-101|1|Fall|2009|A</span>
-<span class="err">76543|Brown|Comp. Sci.|58|CS-319|2|Spring|2010|A</span>
-<span class="err">76653|Aoi|Elec. Eng.|60|EE-181|1|Spring|2009|C</span>
-<span class="err">98765|Bourikas|Elec. Eng.|98|CS-101|1|Fall|2009|C-</span>
-<span class="err">98765|Bourikas|Elec. Eng.|98|CS-315|1|Spring|2010|B</span>
-<span class="err">98988|Tanaka|Biology|120|BIO-101|1|Summer|2009|A</span>
-<span class="err">98988|Tanaka|Biology|120|BIO-301|1|Summer|2010|</span>
+<div class="highlight"><pre><span></span><code>sqlite&gt; select * from student natural left outer join takes;
+ID|name|dept_name|tot_cred|course_id|sec_id|semester|year|grade
+00128|Zhang|Comp. Sci.|102|CS-101|1|Fall|2009|A
+00128|Zhang|Comp. Sci.|102|CS-347|1|Fall|2009|A-
+12345|Shankar|Comp. Sci.|32|CS-101|1|Fall|2009|C
+12345|Shankar|Comp. Sci.|32|CS-190|2|Spring|2009|A
+12345|Shankar|Comp. Sci.|32|CS-315|1|Spring|2010|A
+12345|Shankar|Comp. Sci.|32|CS-347|1|Fall|2009|A
+19991|Brandt|History|80|HIS-351|1|Spring|2010|B
+23121|Chavez|Finance|110|FIN-201|1|Spring|2010|C+
+44553|Peltier|Physics|56|PHY-101|1|Fall|2009|B-
+45678|Levy|Physics|46|CS-101|1|Fall|2009|F
+45678|Levy|Physics|46|CS-101|1|Spring|2010|B+
+45678|Levy|Physics|46|CS-319|1|Spring|2010|B
+54321|Williams|Comp. Sci.|54|CS-101|1|Fall|2009|A-
+54321|Williams|Comp. Sci.|54|CS-190|2|Spring|2009|B+
+55739|Sanchez|Music|38|MU-199|1|Spring|2010|A-
+70557|Snow|Physics|0|||||
+76543|Brown|Comp. Sci.|58|CS-101|1|Fall|2009|A
+76543|Brown|Comp. Sci.|58|CS-319|2|Spring|2010|A
+76653|Aoi|Elec. Eng.|60|EE-181|1|Spring|2009|C
+98765|Bourikas|Elec. Eng.|98|CS-101|1|Fall|2009|C-
+98765|Bourikas|Elec. Eng.|98|CS-315|1|Spring|2010|B
+98988|Tanaka|Biology|120|BIO-101|1|Summer|2009|A
+98988|Tanaka|Biology|120|BIO-301|1|Summer|2010|
 </code></pre></div>
 <p>We mention earlier that <strong>on</strong> and <strong>where</strong> behave differently
 for outer join. Let's consider the following example</p>
@@ -544,30 +544,30 @@ for outer join. Let's consider the following example</p>
 <span class="k">where</span> <span class="n">student</span><span class="p">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">takes</span><span class="p">.</span><span class="n">ID</span>
 </code></pre></div>
 <p>This gives the following result <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup></p>
-<div class="highlight"><pre><span></span><code><span class="err">sqlite&gt; select * from student left outer join takes where student.ID = takes.ID;</span>
-<span class="err">ID|name|dept_name|tot_cred|ID|course_id|sec_id|semester|year|grade</span>
-<span class="err">00128|Zhang|Comp. Sci.|102|00128|CS-101|1|Fall|2009|A</span>
-<span class="err">00128|Zhang|Comp. Sci.|102|00128|CS-347|1|Fall|2009|A-</span>
-<span class="err">12345|Shankar|Comp. Sci.|32|12345|CS-101|1|Fall|2009|C</span>
-<span class="err">12345|Shankar|Comp. Sci.|32|12345|CS-190|2|Spring|2009|A</span>
-<span class="err">12345|Shankar|Comp. Sci.|32|12345|CS-315|1|Spring|2010|A</span>
-<span class="err">12345|Shankar|Comp. Sci.|32|12345|CS-347|1|Fall|2009|A</span>
-<span class="err">19991|Brandt|History|80|19991|HIS-351|1|Spring|2010|B</span>
-<span class="err">23121|Chavez|Finance|110|23121|FIN-201|1|Spring|2010|C+</span>
-<span class="err">44553|Peltier|Physics|56|44553|PHY-101|1|Fall|2009|B-</span>
-<span class="err">45678|Levy|Physics|46|45678|CS-101|1|Fall|2009|F</span>
-<span class="err">45678|Levy|Physics|46|45678|CS-101|1|Spring|2010|B+</span>
-<span class="err">45678|Levy|Physics|46|45678|CS-319|1|Spring|2010|B</span>
-<span class="err">54321|Williams|Comp. Sci.|54|54321|CS-101|1|Fall|2009|A-</span>
-<span class="err">54321|Williams|Comp. Sci.|54|54321|CS-190|2|Spring|2009|B+</span>
-<span class="err">55739|Sanchez|Music|38|55739|MU-199|1|Spring|2010|A-</span>
-<span class="err">76543|Brown|Comp. Sci.|58|76543|CS-101|1|Fall|2009|A</span>
-<span class="err">76543|Brown|Comp. Sci.|58|76543|CS-319|2|Spring|2010|A</span>
-<span class="err">76653|Aoi|Elec. Eng.|60|76653|EE-181|1|Spring|2009|C</span>
-<span class="err">98765|Bourikas|Elec. Eng.|98|98765|CS-101|1|Fall|2009|C-</span>
-<span class="err">98765|Bourikas|Elec. Eng.|98|98765|CS-315|1|Spring|2010|B</span>
-<span class="err">98988|Tanaka|Biology|120|98988|BIO-101|1|Summer|2009|A</span>
-<span class="err">98988|Tanaka|Biology|120|98988|BIO-301|1|Summer|2010|</span>
+<div class="highlight"><pre><span></span><code>sqlite&gt; select * from student left outer join takes where student.ID = takes.ID;
+ID|name|dept_name|tot_cred|ID|course_id|sec_id|semester|year|grade
+00128|Zhang|Comp. Sci.|102|00128|CS-101|1|Fall|2009|A
+00128|Zhang|Comp. Sci.|102|00128|CS-347|1|Fall|2009|A-
+12345|Shankar|Comp. Sci.|32|12345|CS-101|1|Fall|2009|C
+12345|Shankar|Comp. Sci.|32|12345|CS-190|2|Spring|2009|A
+12345|Shankar|Comp. Sci.|32|12345|CS-315|1|Spring|2010|A
+12345|Shankar|Comp. Sci.|32|12345|CS-347|1|Fall|2009|A
+19991|Brandt|History|80|19991|HIS-351|1|Spring|2010|B
+23121|Chavez|Finance|110|23121|FIN-201|1|Spring|2010|C+
+44553|Peltier|Physics|56|44553|PHY-101|1|Fall|2009|B-
+45678|Levy|Physics|46|45678|CS-101|1|Fall|2009|F
+45678|Levy|Physics|46|45678|CS-101|1|Spring|2010|B+
+45678|Levy|Physics|46|45678|CS-319|1|Spring|2010|B
+54321|Williams|Comp. Sci.|54|54321|CS-101|1|Fall|2009|A-
+54321|Williams|Comp. Sci.|54|54321|CS-190|2|Spring|2009|B+
+55739|Sanchez|Music|38|55739|MU-199|1|Spring|2010|A-
+76543|Brown|Comp. Sci.|58|76543|CS-101|1|Fall|2009|A
+76543|Brown|Comp. Sci.|58|76543|CS-319|2|Spring|2010|A
+76653|Aoi|Elec. Eng.|60|76653|EE-181|1|Spring|2009|C
+98765|Bourikas|Elec. Eng.|98|98765|CS-101|1|Fall|2009|C-
+98765|Bourikas|Elec. Eng.|98|98765|CS-315|1|Spring|2010|B
+98988|Tanaka|Biology|120|98988|BIO-101|1|Summer|2009|A
+98988|Tanaka|Biology|120|98988|BIO-301|1|Summer|2010|
 </code></pre></div>
 <p>Here, <code>left outer join</code> esentially returns a cartesian product of two relations.
 Since there is no tuple in <code>take</code> with <code>ID = 70577</code>, every time a tuple appears in the outer
@@ -638,8 +638,8 @@ they may not appear in the "Address" table. There are several queries we can wri
 <p>We should have no trouble to understand these queries now. </p>
 <h3 id="example-two">Example Two</h3>
 <p>Suppose we have two tables <code>t1</code> and <code>t2</code> that are created like:</p>
-<div class="highlight"><pre><span></span><code><span class="err">create table t1 (a int, b char(1));</span>
-<span class="err">create table t2 (b char(1), c char(10));</span>
+<div class="highlight"><pre><span></span><code>create table t1 (a int, b char(1));
+create table t2 (b char(1), c char(10));
 </code></pre></div>
 <p>Also, <code>t1.b</code> contains 7 <code>'x'</code> and <code>t2.b</code> contains 3 <code>'x'</code>. If we do <code>select * from t1 inner join t2 on t1.b = t2.b</code>:</p>
 <blockquote>

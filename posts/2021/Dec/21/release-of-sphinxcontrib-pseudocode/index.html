@@ -75,17 +75,17 @@ details behind this extension. </p>
 </ul>
 </div>
 <h2 id="introduction">Introduction</h2>
-<p>sphinxcontrib-pseudocode allows one to write <a href="https://www.overleaf.com/learn/latex/Algorithms">LaTeX algorithm</a> 
+<p>sphinxcontrib-pseudocode allows one to write <span class="math">\(\LaTeX\)</span> <a href="https://www.overleaf.com/learn/latex/Algorithms">algorithm</a> 
 (using <code>algpseudocode</code> package, in specific) within sphinx-doc. The horsepower of doing so comes from 
 <a href="https://github.com/SaswatPadhi/pseudocode.js">pseudocode.js</a>. The extension itself simply streamlines all the 
-setup steps required by pseudocode.js and allows user to directly type LaTeX algorithms within a sphinx-doc 
+setup steps required by pseudocode.js and allows user to directly type <span class="math">\(\LaTeX\)</span> algorithms within a sphinx-doc 
 <a href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html">directive</a> <code>pcode</code>, which is introduced
 by this extension. The pseudocode.js specific html block and javascript (js) rendering code are automatically handled by the extension.
 The rest of html generation steps, as usual, are done by sphinx-doc rendering engine.</p>
 <p>There aren't many choices when coming to write algorithms within sphinx-doc. To my best knowledge, I only able to 
 find <a href="https://sphinx-proof.readthedocs.io/en/latest/syntax.html#algorithms">sphinx-proof</a> that offers this cability.
 However, I think sphinx-proof is suitable to write simple algorithms on very high level (e.g., I haven't able to 
-find a way to write explicitly for loop quite nicely using this extension). Thus, I think being able to write algorithm using LaTeX
+find a way to write explicitly for loop quite nicely using this extension). Thus, I think being able to write algorithm using <span class="math">\(\LaTeX\)</span>
 is a nice add-on in this niche territory. </p>
 <h2 id="background">Background</h2>
 <p>I built this extension based on <a href="https://github.com/mgaitan/sphinxcontrib-mermaid">sphinxcontrib-mermaid</a>. Thus, a plenty 
@@ -97,7 +97,7 @@ pseudocode.js. <a href="https://github.com/SaswatPadhi/pseudocode.js/blob/master
 detailed steps. Here, I highlight some of the steps that are related to the implementation detailed later:</p>
 <ul>
 <li>
-<p>After including the necessary js dependencies, we can embed our LaTeX algorithm within a html block</p>
+<p>After including the necessary js dependencies, we can embed our <span class="math">\(\LaTeX\)</span> algorithm within a html block</p>
 <div class="highlight"><pre><span></span><code>  <span class="nt">&lt;pre</span> <span class="na">id=</span><span class="s">"quicksort"</span> <span class="na">style=</span><span class="s">"display:hidden;"</span><span class="nt">&gt;</span>
   <span class="c">&lt;!-- our LaTeX algorithm --&gt;</span>
   <span class="nt">&lt;/pre&gt;</span>
@@ -161,7 +161,8 @@ so that sphinx-doc produces html algorithm block during the html generation.</p>
 <ul>
 <li>we need to fill those function calls with <code>id</code>s we just created</li>
 <li>create the exact same number of render functions as the number of algorithm blocks </li>
-<li>able to pass in specific options if a <code>pcode</code> directive contains specific options</li>
+<li>able to pass in specific options if a <code>pcode</code> <a href="https://www.sphinx-doc.org/en/master/extdev/markupapi.html#directives">directive</a> 
+  contains specific options</li>
 <li>put those js functions at the end of html document</li>
 </ul>
 </li>
@@ -190,7 +191,7 @@ blocks successfully. I'm no javascript expert but as suggested by multiple sourc
 to make pseudocode.js render functions work properly after the whole html document is loaded. As a result, I can put all the js elements at the 
 beginning of the html document.</p>
 <p>My implementation for part 2 follows <a href="https://github.com/hagenw/sphinxcontrib-katex/blob/ce89a95b3b330a19ad4562b87aacc69ddb6742f2/sphinxcontrib/katex.py#L185">sphinxcontrib-katex</a> closely.
-The very thing to do is to gather all <code>id</code>s we have created so that we know how many <code>renderElement</code> function calls we need. We do so when 
+The very first thing to do is to gather all <code>id</code>s we have created so that we know how many <code>renderElement</code> function calls we need. We do so when 
 <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#event-doctree-resolved">doctree-resolved</a> event happens. When this event happens, the 
 parse tree of Docutils node (i.e., doctree) has been created. Thus, we can access all <code>pcode</code> nodes. I follow <a href="https://www.sphinx-doc.org/en/master/development/tutorials/todo.html">TODO extension example</a>
 to <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L143">traverse the doctree and collect ids</a>.
@@ -225,6 +226,61 @@ this post becomes useful when you build your own extension to sphinx-doc.</p>
 </li>
 </ol>
 </div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
         </article>
 
         <footer>
