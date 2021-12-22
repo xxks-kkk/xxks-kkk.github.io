@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>    Release of sphinxcontrib-pseudocode
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../research.html" style="padding: 10px">RESEARCH</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">Release of sphinxcontrib-pseudocode</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2021-12-21T02:11:00+08:00"> Dec 21, 2021</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/sphinx-doc.html">sphinx-doc</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">Release of sphinxcontrib-pseudocode</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2021-12-21T02:11:00+08:00">Dec 21, 2021</time></div> -->
+        </header>
+        
+        <article>
+            <p>To celebrate the release of <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode">sphinxcontrib-pseudocode</a>, the 
+first <a href="https://www.sphinx-doc.org/en/master/">sphinx-doc</a> extension I have ever written, I document some implementation 
+details behind this extension. </p>
+<div class="toc">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#background">Background</a></li>
+<li><a href="#implementation-details">Implementation Details</a><ul>
+<li><a href="#generating-unique-ids">Generating Unique IDs</a></li>
+<li><a href="#handling-js-scripts-and-code">Handling JS scripts and code</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="introduction">Introduction</h2>
+<p>sphinxcontrib-pseudocode allows one to write <a href="https://www.overleaf.com/learn/latex/Algorithms">LaTeX algorithm</a> 
+(using <code>algpseudocode</code> package, in specific) within sphinx-doc. The horsepower of doing so comes from 
+<a href="https://github.com/SaswatPadhi/pseudocode.js">pseudocode.js</a>. The extension itself simply streamlines all the 
+setup steps required by pseudocode.js and allows user to directly type LaTeX algorithms within a sphinx-doc 
+<a href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html">directive</a> <code>pcode</code>, which is introduced
+by this extension. The pseudocode.js specific html block and javascript (js) rendering code are automatically handled by the extension.
+The rest of html generation steps, as usual, are done by sphinx-doc rendering engine.</p>
+<p>There aren't many choices when coming to write algorithms within sphinx-doc. To my best knowledge, I only able to 
+find <a href="https://sphinx-proof.readthedocs.io/en/latest/syntax.html#algorithms">sphinx-proof</a> that offers this cability.
+However, I think sphinx-proof is suitable to write simple algorithms on very high level (e.g., I haven't able to 
+find a way to write explicitly for loop quite nicely using this extension). Thus, I think being able to write algorithm using LaTeX
+is a nice add-on in this niche territory. </p>
+<h2 id="background">Background</h2>
+<p>I built this extension based on <a href="https://github.com/mgaitan/sphinxcontrib-mermaid">sphinxcontrib-mermaid</a>. Thus, a plenty 
+of boilerplate steps have been done (e.g., properly set up python package, etc). The major development effort is spent 
+on modification to python files under <code>sphinxcontrib</code> directory; in particular, 
+<a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/master/sphinxcontrib/pseudocode.py">pseudocode.py</a>.</p>
+<p>To understand implementation details behind sphinxcontrib-pseudocode, we first need to understand how to use 
+pseudocode.js. <a href="https://github.com/SaswatPadhi/pseudocode.js/blob/master/README.md">README</a> of pseudocode.js provides 
+detailed steps. Here, I highlight some of the steps that are related to the implementation detailed later:</p>
+<ul>
+<li>
+<p>After including the necessary js dependencies, we can embed our LaTeX algorithm within a html block</p>
+<div class="highlight"><pre><span></span><code>  <span class="nt">&lt;pre</span> <span class="na">id=</span><span class="s">"quicksort"</span> <span class="na">style=</span><span class="s">"display:hidden;"</span><span class="nt">&gt;</span>
+  <span class="c">&lt;!-- our LaTeX algorithm --&gt;</span>
+  <span class="nt">&lt;/pre&gt;</span>
+</code></pre></div>
+</li>
+<li>
+<p>To render the algorithm, we need to specify <code>id</code> of the algorithm html block in the following js render code.
+  In this example, the <code>id</code> is <code>quicksort</code>. We then need to put this render code at the end of the document.
+  As shown in <a href="https://github.com/SaswatPadhi/pseudocode.js/blob/master/static/footer.html.part">pseudocode.js example</a>, 
+  this piece of code sits right before we close <code>&lt;body&gt;</code> tag. If there are multiple algorithm blocks within a page, 
+  we need to assign each block with an unique id and add corresponding <code>renderElement</code> function call as well in the above 
+  <code>&lt;script&gt;</code> block.</p>
+<div class="highlight"><pre><span></span><code>  <span class="nt">&lt;script&gt;</span>
+  pseudocode.renderElement(document.getElementById("quicksort"));
+  <span class="nt">&lt;/script&gt;</span>
+</code></pre></div>
+</li>
+<li>
+<p>pseudocode.js can take <a href="https://github.com/SaswatPadhi/pseudocode.js#options">options</a> that allow user to tweak rendering 
+  behavior. As an example, we can pass in <code>lineNumber</code> to a js render function to indicate we want to line numbering 
+  the algorithm that the js render function associated with:</p>
+<div class="highlight"><pre><span></span><code>  <span class="nt">pseudocode</span><span class="p">.</span><span class="nc">renderElement</span><span class="o">(</span><span class="nt">document</span><span class="p">.</span><span class="nc">getElementById</span><span class="o">(</span><span class="s2">"quicksort"</span><span class="o">),</span>
+                           <span class="p">{</span> <span class="n">lineNumber</span><span class="p">:</span> <span class="n">true</span> <span class="p">}</span><span class="o">);</span>
+</code></pre></div>
+</li>
+</ul>
+<p>The usage of pseudocode.js exposes a few requirmenets we need to handle in our extension:</p>
+<ol>
+<li>We need to assign unique <code>id</code> to each algorithm block.</li>
+<li>Each algorithm block has to be associated with a <code>renderElement</code> function, which itself may take extra options 
+   that are supported by pseudocode.js (e.g., <code>lineNumber</code>).</li>
+<li>the <code>&lt;script&gt;</code> block that contains render functions needs to be placed at the bottom of html page.</li>
+</ol>
+<h2 id="implementation-details">Implementation Details</h2>
+<p>Now, we start to detail the implementation idea behind sphinxcontrib-pseudocode and introduces a few concepts around 
+writing extenstion to sphinx-doc rendering engine.</p>
+<h3 id="generating-unique-ids">Generating Unique IDs</h3>
+<p>To generate unique <code>id</code> to each algorithm block, I use 
+<a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L62">uuid.uuid4()</a>.
+to create a unique id to each algorithm block.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_node">add_node()</a> is used to 
+add a new Docutils node class to the sphinx-doc build system. During <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L168">this function call</a>, we specify the <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L88">visitor function</a> that can be used to render 
+html code during the <a href="https://www.sphinx-doc.org/en/master/extdev/index.html#build-phases">Phase 4 (Writing)</a> of the sphinx-doc 
+build phases <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</p>
+</div>
+<p><code>id</code> created from <code>uuid</code> are stored in Docutils node, which can then be referenced during sphinx-doc build phases. In specific,
+we can reference <code>id</code> attribute of the node to fill the id into the <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L72">html template</a> 
+so that sphinx-doc produces html algorithm block during the html generation.</p>
+<h3 id="handling-js-scripts-and-code">Handling JS scripts and code</h3>
+<p>There are two parts that the extension needs to deal with js:</p>
+<ol>
+<li>
+<p>We need to install pseudocode.js and its dependencies at the very beginning of the phase when Sphinx-doc needs to convert the parsed document 
+   (i.e., a tree of Docutils nodes) into an output format (i.e., html). This is because we need to let Sphinx-doc includes those necessary js scripts 
+   at the beginning of the html document being produced. </p>
+</li>
+<li>
+<p>We also want to create corresponding pseudocode.js render function calls so that all the algorithm html blocks can be rendered properly. That means:</p>
+<ul>
+<li>we need to fill those function calls with <code>id</code>s we just created</li>
+<li>create the exact same number of render functions as the number of algorithm blocks </li>
+<li>able to pass in specific options if a <code>pcode</code> directive contains specific options</li>
+<li>put those js functions at the end of html document</li>
+</ul>
+</li>
+</ol>
+<p>Let's talk about each part in more details. The core concepts from sphinx-doc to our implementation are <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx-core-events">events and associated events handlers</a>.
+Essentially, sphinx-doc will emit different events during its build phase and our extension can register associated event handlers to perform certain tasks 
+when certain events happened. </p>
+<p>The first important event is <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#event-builder-inited">builder-inited</a>. This is the time when 
+we need to <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L173">supply</a> pseudocode.js and its dependencies. 
+<a href="https://www.sphinx-doc.org/en/master/extdev/index.html#important-objects">Builder</a> is the object that takes care of converting the parsed document into an output format. 
+In specific, we use <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_js_file">add_js_file</a> to add pseudocode.js. We also 
+<a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L132">add</a>
+<a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_css_file">css files</a> as well <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When <code>builder-inited</code> event happens, the document has been parsed yet. This means sphinx-doc 
+doesn't encounter our <code>pcode</code> directives yet. Thus, the number of algorithm blocks are unknown.
+Thus, we cannot generate render functions at this time.</p>
+</div>
+<p>There is one limitation about sphinx-doc that shapes how we handle part 2. That is, to my best knowledge, sphinx-doc doesn't provide 
+a way to insert <code>&lt;script&gt;</code> right before <code>&lt;body&gt;</code> tag close (as stated in pseudocode.js usage guide) during the build. This means,
+all js related elements (depenendent scripts, js function calls) have to appear at the very beginning of the document. In my experiment
+with pseudocode.js, directly following example usage (i.e., <code>&lt;script&gt;</code> block with <code>renderElement</code> calls) cannot render the algorithm 
+blocks successfully. I'm no javascript expert but as suggested by multiple sources (<a href="https://stackoverflow.com/questions/38860740/alternative-for-executing-script-at-end-of-document-body">1</a>,
+<a href="https://stackoverflow.com/questions/436411/where-should-i-put-script-tags-in-html-markup">2</a>), I can use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event">DOMContentLoaded</a>
+to make pseudocode.js render functions work properly after the whole html document is loaded. As a result, I can put all the js elements at the 
+beginning of the html document.</p>
+<p>My implementation for part 2 follows <a href="https://github.com/hagenw/sphinxcontrib-katex/blob/ce89a95b3b330a19ad4562b87aacc69ddb6742f2/sphinxcontrib/katex.py#L185">sphinxcontrib-katex</a> closely.
+The very thing to do is to gather all <code>id</code>s we have created so that we know how many <code>renderElement</code> function calls we need. We do so when 
+<a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#event-doctree-resolved">doctree-resolved</a> event happens. When this event happens, the 
+parse tree of Docutils node (i.e., doctree) has been created. Thus, we can access all <code>pcode</code> nodes. I follow <a href="https://www.sphinx-doc.org/en/master/development/tutorials/todo.html">TODO extension example</a>
+to <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L143">traverse the doctree and collect ids</a>.
+In addition to ids, we also any options that each <code>pcode</code> directive specifies.</p>
+<p>Once we have collected ids and options, we can generate a js script called <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L101">katex_autorenderer.js</a>,
+which contains all <code>renderElement</code> function calls. As an example, it looks like </p>
+<div class="highlight"><pre><span></span><code><span class="nt">document</span><span class="p">.</span><span class="nc">addEventListener</span><span class="o">(</span><span class="s2">"DOMContentLoaded"</span><span class="o">,</span> <span class="nt">function</span><span class="o">()</span> <span class="p">{</span>
+  <span class="err">pseudocode.renderElement(document.getElementById("37667c0e-b9e7-489f-b48e-d64117042cd2"),</span> <span class="err">{</span><span class="n">lineNumber</span><span class="p">:</span> <span class="n">true</span><span class="p">}</span><span class="o">);</span>
+  <span class="nt">pseudocode</span><span class="p">.</span><span class="nc">renderElement</span><span class="o">(</span><span class="nt">document</span><span class="p">.</span><span class="nc">getElementById</span><span class="o">(</span><span class="s2">"37c7acbe-a36a-4260-a464-9fd6bff71a3c"</span><span class="o">),</span> <span class="p">{</span><span class="n">lineNumber</span><span class="p">:</span> <span class="n">true</span><span class="p">}</span><span class="o">);</span>
+  <span class="nt">pseudocode</span><span class="p">.</span><span class="nc">renderElement</span><span class="o">(</span><span class="nt">document</span><span class="p">.</span><span class="nc">getElementById</span><span class="o">(</span><span class="s2">"2bace0ba-4113-4766-b226-13c7a6456925"</span><span class="o">));</span>
+  <span class="nt">pseudocode</span><span class="p">.</span><span class="nc">renderElement</span><span class="o">(</span><span class="nt">document</span><span class="p">.</span><span class="nc">getElementById</span><span class="o">(</span><span class="s2">"bb8f4069-52bd-48d0-b782-9d4b0038f2ec"</span><span class="o">));</span>
+  <span class="nt">pseudocode</span><span class="p">.</span><span class="nc">renderElement</span><span class="o">(</span><span class="nt">document</span><span class="p">.</span><span class="nc">getElementById</span><span class="o">(</span><span class="s2">"6f8008db-5388-46c6-938e-837c763d7ed9"</span><span class="o">));</span>
+<span class="err">}</span><span class="o">);</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We cannot register <code>katex_autorenderer.js</code> at <code>doctree-resolved</code> event but we can do so instead at <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#event-html-page-context">html-page-context</a>. 
+That's where <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L149">install_js2_part2</a> comes from: 
+we have to split js generation and js registration in two phases.</p>
+</div>
+<p>That's all I have to say about implementing <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode">sphinxcontrib-pseudocode</a>. Hope 
+this post becomes useful when you build your own extension to sphinx-doc.</p>
+<div class="footnote">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>You can also see the explanation in the <a href="https://www.sphinx-doc.org/en/master/development/tutorials/todo.html">"TODO" extension</a> 
+  provided by sphinx-doc. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
+</li>
+<li id="fn:2">
+<p>I also reference how sphinx-doc <a href="https://github.com/sphinx-doc/sphinx/blob/7d7c59aaf22f110bfc7ed5a1385e6865ccf327fa/sphinx/ext/mathjax.py#L73">installs MathJax.js</a> for this part. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
+</li>
+</ol>
+</div>
+        </article>
+
+        <footer>
+          <!-- <p>This entry is posted in <a href="../../../../../category/2021.html">2021</a>.</p> -->
+          <!-- <a href="../../../../../donate.html" class="button">Donate</a> -->
+          <a href="https://paypal.me/zhu45?locale.x=en_US">paypal.me</a>
+        </footer>
+        
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2021 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

@@ -1,5 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2021-09-29T02:11:00+08:00</updated><entry><title>Build My First PC</title><link href="https://zhu45.org/posts/2021/Sep/29/build-my-first-pc/" rel="alternate"></link><published>2021-09-29T02:11:00+08:00</published><updated>2021-09-29T02:11:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2021-09-29:/posts/2021/Sep/29/build-my-first-pc/</id><summary type="html">&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2021-12-21T02:11:00+08:00</updated><entry><title>Release of sphinxcontrib-pseudocode</title><link href="https://zhu45.org/posts/2021/Dec/21/release-of-sphinxcontrib-pseudocode/" rel="alternate"></link><published>2021-12-21T02:11:00+08:00</published><updated>2021-12-21T02:11:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2021-12-21:/posts/2021/Dec/21/release-of-sphinxcontrib-pseudocode/</id><summary type="html">&lt;p&gt;To celebrate the release of &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode"&gt;sphinxcontrib-pseudocode&lt;/a&gt;, the 
+first &lt;a href="https://www.sphinx-doc.org/en/master/"&gt;sphinx-doc&lt;/a&gt; extension I have ever written, I document some implementation 
+details behind this extension. &lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#implementation-details"&gt;Implementation Details&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#generating-unique-ids"&gt;Generating Unique IDs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#handling-js-scripts-and-code"&gt;Handling JS scripts and code&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;sphinxcontrib-pseudocode allows one to write &lt;a href="https://www.overleaf.com/learn/latex/Algorithms"&gt;LaTeX algorithm&lt;/a&gt; 
+(using &lt;code&gt;algpseudocode&lt;/code&gt; package, in specific) within sphinx-doc. The …&lt;/p&gt;</summary><content type="html">&lt;p&gt;To celebrate the release of &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode"&gt;sphinxcontrib-pseudocode&lt;/a&gt;, the 
+first &lt;a href="https://www.sphinx-doc.org/en/master/"&gt;sphinx-doc&lt;/a&gt; extension I have ever written, I document some implementation 
+details behind this extension. &lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#introduction"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#implementation-details"&gt;Implementation Details&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#generating-unique-ids"&gt;Generating Unique IDs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#handling-js-scripts-and-code"&gt;Handling JS scripts and code&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;sphinxcontrib-pseudocode allows one to write &lt;a href="https://www.overleaf.com/learn/latex/Algorithms"&gt;LaTeX algorithm&lt;/a&gt; 
+(using &lt;code&gt;algpseudocode&lt;/code&gt; package, in specific) within sphinx-doc. The horsepower of doing so comes from 
+&lt;a href="https://github.com/SaswatPadhi/pseudocode.js"&gt;pseudocode.js&lt;/a&gt;. The extension itself simply streamlines all the 
+setup steps required by pseudocode.js and allows user to directly type LaTeX algorithms within a sphinx-doc 
+&lt;a href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html"&gt;directive&lt;/a&gt; &lt;code&gt;pcode&lt;/code&gt;, which is introduced
+by this extension. The pseudocode.js specific html block and javascript (js) rendering code are automatically handled by the extension.
+The rest of html generation steps, as usual, are done by sphinx-doc rendering engine.&lt;/p&gt;
+&lt;p&gt;There aren't many choices when coming to write algorithms within sphinx-doc. To my best knowledge, I only able to 
+find &lt;a href="https://sphinx-proof.readthedocs.io/en/latest/syntax.html#algorithms"&gt;sphinx-proof&lt;/a&gt; that offers this cability.
+However, I think sphinx-proof is suitable to write simple algorithms on very high level (e.g., I haven't able to 
+find a way to write explicitly for loop quite nicely using this extension). Thus, I think being able to write algorithm using LaTeX
+is a nice add-on in this niche territory. &lt;/p&gt;
+&lt;h2 id="background"&gt;Background&lt;/h2&gt;
+&lt;p&gt;I built this extension based on &lt;a href="https://github.com/mgaitan/sphinxcontrib-mermaid"&gt;sphinxcontrib-mermaid&lt;/a&gt;. Thus, a plenty 
+of boilerplate steps have been done (e.g., properly set up python package, etc). The major development effort is spent 
+on modification to python files under &lt;code&gt;sphinxcontrib&lt;/code&gt; directory; in particular, 
+&lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/master/sphinxcontrib/pseudocode.py"&gt;pseudocode.py&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;To understand implementation details behind sphinxcontrib-pseudocode, we first need to understand how to use 
+pseudocode.js. &lt;a href="https://github.com/SaswatPadhi/pseudocode.js/blob/master/README.md"&gt;README&lt;/a&gt; of pseudocode.js provides 
+detailed steps. Here, I highlight some of the steps that are related to the implementation detailed later:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;After including the necessary js dependencies, we can embed our LaTeX algorithm within a html block&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  &lt;span class="nt"&gt;&amp;lt;pre&lt;/span&gt; &lt;span class="na"&gt;id=&lt;/span&gt;&lt;span class="s"&gt;"quicksort"&lt;/span&gt; &lt;span class="na"&gt;style=&lt;/span&gt;&lt;span class="s"&gt;"display:hidden;"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="c"&gt;&amp;lt;!-- our LaTeX algorithm --&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;/pre&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;To render the algorithm, we need to specify &lt;code&gt;id&lt;/code&gt; of the algorithm html block in the following js render code.
+  In this example, the &lt;code&gt;id&lt;/code&gt; is &lt;code&gt;quicksort&lt;/code&gt;. We then need to put this render code at the end of the document.
+  As shown in &lt;a href="https://github.com/SaswatPadhi/pseudocode.js/blob/master/static/footer.html.part"&gt;pseudocode.js example&lt;/a&gt;, 
+  this piece of code sits right before we close &lt;code&gt;&amp;lt;body&amp;gt;&lt;/code&gt; tag. If there are multiple algorithm blocks within a page, 
+  we need to assign each block with an unique id and add corresponding &lt;code&gt;renderElement&lt;/code&gt; function call as well in the above 
+  &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; block.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  &lt;span class="nt"&gt;&amp;lt;script&amp;gt;&lt;/span&gt;
+  pseudocode.renderElement(document.getElementById("quicksort"));
+  &lt;span class="nt"&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;pseudocode.js can take &lt;a href="https://github.com/SaswatPadhi/pseudocode.js#options"&gt;options&lt;/a&gt; that allow user to tweak rendering 
+  behavior. As an example, we can pass in &lt;code&gt;lineNumber&lt;/code&gt; to a js render function to indicate we want to line numbering 
+  the algorithm that the js render function associated with:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  &lt;span class="nt"&gt;pseudocode&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;renderElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;getElementById&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"quicksort"&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt;
+                           &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;lineNumber&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;true&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The usage of pseudocode.js exposes a few requirmenets we need to handle in our extension:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;We need to assign unique &lt;code&gt;id&lt;/code&gt; to each algorithm block.&lt;/li&gt;
+&lt;li&gt;Each algorithm block has to be associated with a &lt;code&gt;renderElement&lt;/code&gt; function, which itself may take extra options 
+   that are supported by pseudocode.js (e.g., &lt;code&gt;lineNumber&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;the &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; block that contains render functions needs to be placed at the bottom of html page.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="implementation-details"&gt;Implementation Details&lt;/h2&gt;
+&lt;p&gt;Now, we start to detail the implementation idea behind sphinxcontrib-pseudocode and introduces a few concepts around 
+writing extenstion to sphinx-doc rendering engine.&lt;/p&gt;
+&lt;h3 id="generating-unique-ids"&gt;Generating Unique IDs&lt;/h3&gt;
+&lt;p&gt;To generate unique &lt;code&gt;id&lt;/code&gt; to each algorithm block, I use 
+&lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L62"&gt;uuid.uuid4()&lt;/a&gt;.
+to create a unique id to each algorithm block.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_node"&gt;add_node()&lt;/a&gt; is used to 
+add a new Docutils node class to the sphinx-doc build system. During &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L168"&gt;this function call&lt;/a&gt;, we specify the &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L88"&gt;visitor function&lt;/a&gt; that can be used to render 
+html code during the &lt;a href="https://www.sphinx-doc.org/en/master/extdev/index.html#build-phases"&gt;Phase 4 (Writing)&lt;/a&gt; of the sphinx-doc 
+build phases &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;id&lt;/code&gt; created from &lt;code&gt;uuid&lt;/code&gt; are stored in Docutils node, which can then be referenced during sphinx-doc build phases. In specific,
+we can reference &lt;code&gt;id&lt;/code&gt; attribute of the node to fill the id into the &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L72"&gt;html template&lt;/a&gt; 
+so that sphinx-doc produces html algorithm block during the html generation.&lt;/p&gt;
+&lt;h3 id="handling-js-scripts-and-code"&gt;Handling JS scripts and code&lt;/h3&gt;
+&lt;p&gt;There are two parts that the extension needs to deal with js:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;We need to install pseudocode.js and its dependencies at the very beginning of the phase when Sphinx-doc needs to convert the parsed document 
+   (i.e., a tree of Docutils nodes) into an output format (i.e., html). This is because we need to let Sphinx-doc includes those necessary js scripts 
+   at the beginning of the html document being produced. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We also want to create corresponding pseudocode.js render function calls so that all the algorithm html blocks can be rendered properly. That means:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;we need to fill those function calls with &lt;code&gt;id&lt;/code&gt;s we just created&lt;/li&gt;
+&lt;li&gt;create the exact same number of render functions as the number of algorithm blocks &lt;/li&gt;
+&lt;li&gt;able to pass in specific options if a &lt;code&gt;pcode&lt;/code&gt; directive contains specific options&lt;/li&gt;
+&lt;li&gt;put those js functions at the end of html document&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Let's talk about each part in more details. The core concepts from sphinx-doc to our implementation are &lt;a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx-core-events"&gt;events and associated events handlers&lt;/a&gt;.
+Essentially, sphinx-doc will emit different events during its build phase and our extension can register associated event handlers to perform certain tasks 
+when certain events happened. &lt;/p&gt;
+&lt;p&gt;The first important event is &lt;a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#event-builder-inited"&gt;builder-inited&lt;/a&gt;. This is the time when 
+we need to &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L173"&gt;supply&lt;/a&gt; pseudocode.js and its dependencies. 
+&lt;a href="https://www.sphinx-doc.org/en/master/extdev/index.html#important-objects"&gt;Builder&lt;/a&gt; is the object that takes care of converting the parsed document into an output format. 
+In specific, we use &lt;a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_js_file"&gt;add_js_file&lt;/a&gt; to add pseudocode.js. We also 
+&lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L132"&gt;add&lt;/a&gt;
+&lt;a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_css_file"&gt;css files&lt;/a&gt; as well &lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2"&gt;2&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;When &lt;code&gt;builder-inited&lt;/code&gt; event happens, the document has been parsed yet. This means sphinx-doc 
+doesn't encounter our &lt;code&gt;pcode&lt;/code&gt; directives yet. Thus, the number of algorithm blocks are unknown.
+Thus, we cannot generate render functions at this time.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;There is one limitation about sphinx-doc that shapes how we handle part 2. That is, to my best knowledge, sphinx-doc doesn't provide 
+a way to insert &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; right before &lt;code&gt;&amp;lt;body&amp;gt;&lt;/code&gt; tag close (as stated in pseudocode.js usage guide) during the build. This means,
+all js related elements (depenendent scripts, js function calls) have to appear at the very beginning of the document. In my experiment
+with pseudocode.js, directly following example usage (i.e., &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; block with &lt;code&gt;renderElement&lt;/code&gt; calls) cannot render the algorithm 
+blocks successfully. I'm no javascript expert but as suggested by multiple sources (&lt;a href="https://stackoverflow.com/questions/38860740/alternative-for-executing-script-at-end-of-document-body"&gt;1&lt;/a&gt;,
+&lt;a href="https://stackoverflow.com/questions/436411/where-should-i-put-script-tags-in-html-markup"&gt;2&lt;/a&gt;), I can use &lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event"&gt;DOMContentLoaded&lt;/a&gt;
+to make pseudocode.js render functions work properly after the whole html document is loaded. As a result, I can put all the js elements at the 
+beginning of the html document.&lt;/p&gt;
+&lt;p&gt;My implementation for part 2 follows &lt;a href="https://github.com/hagenw/sphinxcontrib-katex/blob/ce89a95b3b330a19ad4562b87aacc69ddb6742f2/sphinxcontrib/katex.py#L185"&gt;sphinxcontrib-katex&lt;/a&gt; closely.
+The very thing to do is to gather all &lt;code&gt;id&lt;/code&gt;s we have created so that we know how many &lt;code&gt;renderElement&lt;/code&gt; function calls we need. We do so when 
+&lt;a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#event-doctree-resolved"&gt;doctree-resolved&lt;/a&gt; event happens. When this event happens, the 
+parse tree of Docutils node (i.e., doctree) has been created. Thus, we can access all &lt;code&gt;pcode&lt;/code&gt; nodes. I follow &lt;a href="https://www.sphinx-doc.org/en/master/development/tutorials/todo.html"&gt;TODO extension example&lt;/a&gt;
+to &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L143"&gt;traverse the doctree and collect ids&lt;/a&gt;.
+In addition to ids, we also any options that each &lt;code&gt;pcode&lt;/code&gt; directive specifies.&lt;/p&gt;
+&lt;p&gt;Once we have collected ids and options, we can generate a js script called &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L101"&gt;katex_autorenderer.js&lt;/a&gt;,
+which contains all &lt;code&gt;renderElement&lt;/code&gt; function calls. As an example, it looks like &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;addEventListener&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"DOMContentLoaded"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;function&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="err"&gt;pseudocode.renderElement(document.getElementById("37667c0e-b9e7-489f-b48e-d64117042cd2"),&lt;/span&gt; &lt;span class="err"&gt;{&lt;/span&gt;&lt;span class="n"&gt;lineNumber&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;true&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+  &lt;span class="nt"&gt;pseudocode&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;renderElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;getElementById&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"37c7acbe-a36a-4260-a464-9fd6bff71a3c"&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;lineNumber&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;true&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+  &lt;span class="nt"&gt;pseudocode&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;renderElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;getElementById&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"2bace0ba-4113-4766-b226-13c7a6456925"&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+  &lt;span class="nt"&gt;pseudocode&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;renderElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;getElementById&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"bb8f4069-52bd-48d0-b782-9d4b0038f2ec"&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+  &lt;span class="nt"&gt;pseudocode&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;renderElement&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;getElementById&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"6f8008db-5388-46c6-938e-837c763d7ed9"&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+&lt;span class="err"&gt;}&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;We cannot register &lt;code&gt;katex_autorenderer.js&lt;/code&gt; at &lt;code&gt;doctree-resolved&lt;/code&gt; event but we can do so instead at &lt;a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#event-html-page-context"&gt;html-page-context&lt;/a&gt;. 
+That's where &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L149"&gt;install_js2_part2&lt;/a&gt; comes from: 
+we have to split js generation and js registration in two phases.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;That's all I have to say about implementing &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode"&gt;sphinxcontrib-pseudocode&lt;/a&gt;. Hope 
+this post becomes useful when you build your own extension to sphinx-doc.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;You can also see the explanation in the &lt;a href="https://www.sphinx-doc.org/en/master/development/tutorials/todo.html"&gt;"TODO" extension&lt;/a&gt; 
+  provided by sphinx-doc. &lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;I also reference how sphinx-doc &lt;a href="https://github.com/sphinx-doc/sphinx/blob/7d7c59aaf22f110bfc7ed5a1385e6865ccf327fa/sphinx/ext/mathjax.py#L73"&gt;installs MathJax.js&lt;/a&gt; for this part. &lt;a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content><category term="2021"></category><category term="sphinx-doc"></category></entry><entry><title>Build My First PC</title><link href="https://zhu45.org/posts/2021/Sep/29/build-my-first-pc/" rel="alternate"></link><published>2021-09-29T02:11:00+08:00</published><updated>2021-09-29T02:11:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2021-09-29:/posts/2021/Sep/29/build-my-first-pc/</id><summary type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#requirement"&gt;Requirement&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#background"&gt;Background&lt;/a&gt;&lt;ul&gt;
@@ -4474,7 +4654,7 @@ that cause a page fault uppercase, and those that don’t lowercase):&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
 approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12"&gt;18&lt;/a&gt;&lt;/sup&gt; to avoid heavy overhead). The trace of the memory references with LRU policy shown below:&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -4588,7 +4768,7 @@ approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12
 &lt;/blockquote&gt;
 &lt;p&gt;FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -4702,7 +4882,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 &lt;/blockquote&gt;
 &lt;p&gt;Optimal policy means we want to replace the page that will be accessed &lt;em&gt;furthest in the future&lt;/em&gt; and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -4908,7 +5088,7 @@ which takes a queue and returns, as an unsigned integer, its address.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;One possible scenario of deadlock using &lt;code&gt;transfer()&lt;/code&gt; is illustrated below. Note that &lt;code&gt;queue1&lt;/code&gt; and &lt;code&gt;queue2&lt;/code&gt; in &lt;code&gt;transfer()&lt;/code&gt;
 are replaced with queues that they are pointing to (time increases with the row's number):&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Thread1 (&lt;code&gt;transfer(q1,q2)&lt;/code&gt;)&lt;/th&gt;
@@ -5262,7 +5442,7 @@ the modification looks like below:&lt;/p&gt;
 &lt;p&gt;The question we want to answer is why doing so works?&lt;/p&gt;
 &lt;h2 id="explanation"&gt;Explanation&lt;/h2&gt;
 &lt;p&gt;We acquire key data from GDB as following:&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;GDB command&lt;/th&gt;
@@ -6816,7 +6996,7 @@ blocks from different clients)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;&lt;/th&gt;
@@ -11394,7 +11574,7 @@ a very efficient algorithm in all cases. Path compression is not entirely compat
 to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., &lt;strong&gt;ranks&lt;/strong&gt;), but in theory union-by-rank is as efficient as union-by-size.&lt;/p&gt;
 &lt;p&gt;If we do analysis on smart union with path compression, the running time for any sequence of &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects makes &lt;span class="math"&gt;\(O(N + M\log^*N)\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt; accesses.&lt;/p&gt;
 &lt;p&gt;The following table summarizes the running time for &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on a set of &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects (don't forget we need to spend &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; to initialize disjoint sets):&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -11425,7 +11605,7 @@ to recompute all the heights and in this case, heights stored for each tree beco
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;The running time for each operation for each algorithm is following:&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -11626,7 +11806,7 @@ can try to label the items from &lt;span class="math"&gt;\(1 \dots n\)&lt;/span&
 solution for &lt;span class="math"&gt;\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)&lt;/span&gt;. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;) in terms of subproblems (i.e., &lt;span class="math"&gt;\(S_i\)&lt;/span&gt;)? Let's take a look at an example:&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -11716,7 +11896,7 @@ dynamic programming.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The running time for this algorithm is &lt;span class="math"&gt;\(O(n*W)\)&lt;/span&gt; because of the double for loop. To understand this algorithm,
 let's take a look at an example:&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -11744,7 +11924,7 @@ let's take a look at an example:&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 5\)&lt;/span&gt; and with algorithm above, we essentially fill out a table like following:&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -11813,7 +11993,7 @@ the first two for loops&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now, let's take a look at &lt;span class="math"&gt;\(B[1,1]\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(i = 1, b_i = 3, w_i = 2, w = 1\)&lt;/span&gt;, and since &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, and by our
 algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(B[0,1]\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(B[1,1] = 0\)&lt;/span&gt; and the table becomes&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -11874,7 +12054,7 @@ algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, 
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;We can fill out the table like this and have&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12001,7 +12181,7 @@ defined as the greatest integer less than or equal to &lt;span class="math"&gt;\
 &lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i,w&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x_i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;that&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;associated&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i-1,w&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Let's walk through an example to better understand the algorithm idea:&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -12028,7 +12208,7 @@ defined as the greatest integer less than or equal to &lt;span class="math"&gt;\
 &lt;p&gt;&lt;span class="math"&gt;\(W = 8\)&lt;/span&gt; in our example. The algorithm essentially
 tries to build fill out two tables &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; table like
 the 0-1 knapsack problem:&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12096,7 +12276,7 @@ the 0-1 knapsack problem:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;and &lt;span class="math"&gt;\(x[i,w]\)&lt;/span&gt; table to keep track of the optimal
 value of &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; for each &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt;&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12160,7 +12340,7 @@ $$&lt;/div&gt;
 &lt;p&gt;So, we fill in &lt;span class="math"&gt;\(B[1,3] = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[1,3] = 1\)&lt;/span&gt;. We can repeatedly
 doing this for other &lt;span class="math"&gt;\(i\)&lt;/span&gt;s. We can take a look at the values
 from another perspective like the tables below:&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[1,w]&lt;/th&gt;
@@ -12216,7 +12396,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[2,w]&lt;/th&gt;
@@ -12272,7 +12452,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[3,w]&lt;/th&gt;
@@ -12450,7 +12630,7 @@ In addition, this post belongs to part of future work mentioned in &lt;a href="h
 &lt;p&gt;Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Type&lt;/th&gt;
@@ -13219,7 +13399,7 @@ care about the size of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; 
 &lt;p&gt;Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
 housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
 its prediction. What we should try next?&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Method&lt;/th&gt;
@@ -13295,7 +13475,7 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$&lt;/div&gt;
 &lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;component&lt;/th&gt;
@@ -14133,7 +14313,7 @@ is a graphic summary for the text above&lt;/p&gt;
 the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Join types&lt;/th&gt;
@@ -14770,7 +14950,7 @@ $$&lt;/div&gt;
 &lt;p&gt;For example, the sequence &lt;span class="math"&gt;\(1,3,4,2,1\)&lt;/span&gt; can be considered as a sequence of 
 iterated function values with &lt;span class="math"&gt;\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
 x_3 = f(4) = 2, x_4 = f(2) = 1\)&lt;/span&gt;. Let's try another representation:&lt;/p&gt;
-&lt;table class="table  table-striped table-hover"&gt;
+&lt;table class=" table-striped table table-hover"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;index&lt;/th&gt;
@@ -23264,7 +23444,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class="table  table-striped table-hover docutils"&gt;
+&lt;table border="1" class=" table-striped table docutils table-hover"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;
