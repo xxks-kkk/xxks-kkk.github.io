@@ -61,19 +61,19 @@
         
         <article>
             <p>Today I learned a C trick. Here is my original <tt class="docutils literal">printList</tt>:</p>
-<div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"></span>
-<span class="nf">printList</span><span class="p">(</span><span class="n">List</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">Pos</span><span class="w"> </span><span class="n">dummy</span><span class="p">;</span><span class="w"> </span><span class="c1">// creates a dummy node to traverse the list</span>
+<div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">printList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">Pos</span> <span class="n">dummy</span><span class="p">;</span> <span class="c1">// creates a dummy node to traverse the list</span>
 
-<span class="w">  </span><span class="n">dummy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+  <span class="n">dummy</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
 
-<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">dummy</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"%d-&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">dummy</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d-&gt;"</span><span class="p">,</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">);</span>
+    <span class="n">dummy</span> <span class="o">=</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 <p>It works but there is a small caveat in this routine. This is
 part of print out for the <tt class="docutils literal">linkedListTestMain</tt>:</p>
@@ -88,34 +88,34 @@ do complicated stuff just to remove this <tt class="docutils literal"><span clas
 today that is very clean to eliminate <tt class="docutils literal"><span class="pre">-&gt;</span></tt> without adding additional complexity to
 the routine.</p>
 <p>In C, we know we can use if-else shorthand likes the following:</p>
-<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dummyA</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-<span class="k">else</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 <p>is equivalent with</p>
-<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
-<span class="p">(</span><span class="n">dummyA</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+<span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
 </pre></div>
 <p>We can use this shorthand inside our routine <tt class="docutils literal">printf</tt> statement to solve our problem:</p>
-<div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"></span>
-<span class="nf">printList</span><span class="p">(</span><span class="n">List</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">Pos</span><span class="w"> </span><span class="n">dummy</span><span class="p">;</span><span class="w"> </span><span class="c1">// creates a dummy node to traverse the list</span>
+<div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">printList</span><span class="p">(</span><span class="n">List</span> <span class="n">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">Pos</span> <span class="n">dummy</span><span class="p">;</span> <span class="c1">// creates a dummy node to traverse the list</span>
 
-<span class="w">  </span><span class="n">dummy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+  <span class="n">dummy</span> <span class="o">=</span> <span class="n">L</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
 
-<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">dummy</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"%d%s"</span><span class="p">,</span><span class="w"> </span><span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">(</span><span class="s">"-&gt;"</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="s">""</span><span class="p">));</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">dummy</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d%s"</span><span class="p">,</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">,</span> <span class="p">(</span><span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="s">"-&gt;"</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="s">""</span><span class="p">));</span>
+    <span class="n">dummy</span> <span class="o">=</span> <span class="n">dummy</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 <p>As you can see, inside <tt class="docutils literal">printf</tt> statement, we don't printout <tt class="docutils literal"><span class="pre">-&gt;</span></tt> by default, we check
 if <tt class="docutils literal"><span class="pre">dummy-&gt;Next</span></tt> is <tt class="docutils literal">NULL</tt>, then that means we are at the last element of the list, and

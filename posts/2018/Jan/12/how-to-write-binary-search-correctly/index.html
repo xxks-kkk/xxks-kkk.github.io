@@ -204,13 +204,13 @@ invariant. </p>
 <h3 id="example-1">Example 1</h3>
 <p>The first example is <a href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/">LC153. Find Minimum in Rotated Sorted Array</a>.
 Here, we are asked to find the minimum element given the rotated array. Suppose we have array <code>[0,1,2,4,5,6,7]</code> and there are seven ways of rotation:</p>
-<div class="highlight"><pre><span></span><code><span class="mf">0</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">,</span><span class="mf">7</span>
-<span class="mf">7</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span>
-<span class="mf">6</span><span class="p">,</span><span class="mf">7</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span>
-<span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">,</span><span class="mf">7</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">4</span>
-<span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">,</span><span class="mf">7</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span>
-<span class="mf">2</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">,</span><span class="mf">7</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="mf">1</span>
-<span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">,</span><span class="mf">7</span><span class="p">,</span><span class="mf">0</span>
+<div class="highlight"><pre><span></span><code><span class="err">0,1,2,4,5,6,7</span>
+<span class="err">7,0,1,2,4,5,6</span>
+<span class="err">6,7,0,1,2,4,5</span>
+<span class="err">5,6,7,0,1,2,4</span>
+<span class="err">4,5,6,7,0,1,2</span>
+<span class="err">2,4,5,6,7,0,1</span>
+<span class="err">1,2,4,5,6,7,0</span>
 </code></pre></div>
 <p>The key observation is that if the middle value is greater than the left value, then the minimum value appears on the righthand-side of the middle value
 (i.e., for <code>[4,5,6,7,0,1,2]</code>, the middle value is <code>7</code> and the minimum value <code>0</code> appears on the righthand-side of <code>7</code>).

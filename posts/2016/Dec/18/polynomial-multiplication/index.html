@@ -85,56 +85,56 @@ of terms in the polynomiial of fewer terms.</li>
 exponent sorted in descending order. Each time a multiply is performed, we search through
 the result linkedlist for the term with the same exponent as ours. If so, we simply add
 coefficients together. If not, we add our product as a new term.</p>
-<div class="highlight"><pre><span></span><span class="n">Polynomial</span><span class="w"></span>
-<span class="nf">multiply1</span><span class="p">(</span><span class="n">Polynomial</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">Polynomial</span><span class="w"> </span><span class="n">B</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="n">Polynomial</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">Node</span><span class="p">));</span><span class="w"></span>
-<span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyRPrev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
-<span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
-<span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="n">Polynomial</span>
+<span class="nf">multiply1</span><span class="p">(</span><span class="n">Polynomial</span> <span class="n">A</span><span class="p">,</span> <span class="n">Polynomial</span> <span class="n">B</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="n">Polynomial</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+<span class="n">PtrToNode</span> <span class="n">dummyRPrev</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
+<span class="n">PtrToNode</span> <span class="n">dummyR</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
+<span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+<span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
 
-<span class="kt">int</span><span class="w"> </span><span class="n">tmpExponent</span><span class="p">,</span><span class="w"> </span><span class="n">tmpCoefficient</span><span class="p">;</span><span class="w"></span>
+<span class="kt">int</span> <span class="n">tmpExponent</span><span class="p">,</span> <span class="n">tmpCoefficient</span><span class="p">;</span>
 
-<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">dummyA</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">dummyB</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="n">tmpExponent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="n">tmpCoefficient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="p">;</span><span class="w"></span>
+<span class="k">while</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="n">tmpExponent</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">exponent</span> <span class="o">+</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="p">;</span>
+      <span class="n">tmpCoefficient</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">*</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="p">;</span>
 
-<span class="w">      </span><span class="c1">// we go through the output polynomial to see if there is</span>
-<span class="w">      </span><span class="c1">// a term with the same exponent as our tmpExponent.</span>
-<span class="w">      </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">dummyR</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">tmpExponent</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="p">{</span><span class="w"></span>
-<span class="w">          </span><span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">tmpCoefficient</span><span class="p">;</span><span class="w"></span>
-<span class="w">          </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="k">else</span><span class="w"></span>
-<span class="w">        </span><span class="p">{</span><span class="w"></span>
-<span class="w">          </span><span class="n">dummyRPrev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyR</span><span class="p">;</span><span class="w"></span>
-<span class="w">          </span><span class="n">dummyR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
+      <span class="c1">// we go through the output polynomial to see if there is</span>
+      <span class="c1">// a term with the same exponent as our tmpExponent.</span>
+      <span class="k">while</span> <span class="p">(</span><span class="n">dummyR</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+      <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">exponent</span> <span class="o">==</span> <span class="n">tmpExponent</span><span class="p">)</span>
+        <span class="p">{</span>
+          <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">+</span> <span class="n">tmpCoefficient</span><span class="p">;</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+        <span class="p">{</span>
+          <span class="n">dummyRPrev</span> <span class="o">=</span> <span class="n">dummyR</span><span class="p">;</span>
+          <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
 
-<span class="w">      </span><span class="c1">// We couldn't find the term with the same exponent, so we create</span>
-<span class="w">      </span><span class="c1">// a new term in our output polynomial.</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dummyR</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">insert</span><span class="p">(</span><span class="n">tmpCoefficient</span><span class="p">,</span><span class="w"> </span><span class="n">tmpExponent</span><span class="p">,</span><span class="w"> </span><span class="n">dummyRPrev</span><span class="p">);</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
+      <span class="c1">// We couldn't find the term with the same exponent, so we create</span>
+      <span class="c1">// a new term in our output polynomial.</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">dummyR</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+      <span class="p">{</span>
+        <span class="n">insert</span><span class="p">(</span><span class="n">tmpCoefficient</span><span class="p">,</span> <span class="n">tmpExponent</span><span class="p">,</span> <span class="n">dummyRPrev</span><span class="p">);</span>
+      <span class="p">}</span>
 
-<span class="w">      </span><span class="n">dummyR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummyA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
+      <span class="n">dummyR</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
+      <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
 
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 <p>The total running time is <span class="math">\(O(M*N)\)</span>. We start from the inner most loop. We
 go through the result linkedList to search for the duplicate exponent term. The running
@@ -146,60 +146,60 @@ is <span class="math">\(O(M*N*MN) = O(M^2N^2)\)</span>.</p>
 <div class="section" id="question-2">
 <h3>Question 2</h3>
 <p>We can certainly do better than <span class="math">\(O(M^2N^2)\)</span>.</p>
-<div class="highlight"><pre><span></span><span class="n">Polynomial</span><span class="w"></span>
-<span class="nf">multiply2</span><span class="p">(</span><span class="n">Polynomial</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">Polynomial</span><span class="w"> </span><span class="n">B</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">lenA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">lenB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">Polynomial</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">Node</span><span class="p">));</span><span class="w"></span>
-<span class="w">  </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyTmp</span><span class="p">,</span><span class="w"> </span><span class="n">dummyShort</span><span class="p">,</span><span class="w"> </span><span class="n">dummyLong</span><span class="p">,</span><span class="w"> </span><span class="n">Long</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">Polynomial</span><span class="w"> </span><span class="n">Tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">Node</span><span class="p">));</span><span class="w"></span>
+<div class="highlight"><pre><span></span><span class="n">Polynomial</span>
+<span class="nf">multiply2</span><span class="p">(</span><span class="n">Polynomial</span> <span class="n">A</span><span class="p">,</span> <span class="n">Polynomial</span> <span class="n">B</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">lenA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">lenB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="n">Polynomial</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+  <span class="n">PtrToNode</span> <span class="n">dummyTmp</span><span class="p">,</span> <span class="n">dummyShort</span><span class="p">,</span> <span class="n">dummyLong</span><span class="p">,</span> <span class="n">Long</span><span class="p">;</span>
+  <span class="n">Polynomial</span> <span class="n">Tmp</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
 
-<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">dummyA</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">lenA</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummyA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
+  <span class="k">while</span><span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">lenA</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
 
-<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">dummyB</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">lenB</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
+  <span class="k">while</span><span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">lenB</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
 
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">lenA</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">lenB</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummyShort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummyLong</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">Long</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="k">else</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummyShort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummyLong</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">Long</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">lenA</span> <span class="o">&lt;</span> <span class="n">lenB</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">dummyShort</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">Long</span> <span class="o">=</span> <span class="n">B</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="n">dummyShort</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">Long</span> <span class="o">=</span> <span class="n">A</span><span class="p">;</span>
+  <span class="p">}</span>
 
-<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">dummyShort</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummyTmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Tmp</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="k">while</span><span class="p">(</span><span class="n">dummyLong</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="kt">int</span><span class="w"> </span><span class="n">coefficient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="kt">int</span><span class="w"> </span><span class="n">exponent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="n">insert</span><span class="p">(</span><span class="n">coefficient</span><span class="p">,</span><span class="w"> </span><span class="n">exponent</span><span class="p">,</span><span class="w"> </span><span class="n">dummyTmp</span><span class="p">);</span><span class="w"></span>
-<span class="w">      </span><span class="n">dummyTmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyTmp</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="n">dummyLong</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">add</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">Tmp</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummyLong</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Long</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">deletePolynomial</span><span class="p">(</span><span class="n">Tmp</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">dummyShort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
+  <span class="k">while</span><span class="p">(</span><span class="n">dummyShort</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">dummyTmp</span> <span class="o">=</span> <span class="n">Tmp</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">dummyLong</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">coefficient</span> <span class="o">=</span> <span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">coefficient</span> <span class="o">*</span> <span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">coefficient</span><span class="p">;</span>
+      <span class="kt">int</span> <span class="n">exponent</span> <span class="o">=</span> <span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">exponent</span> <span class="o">+</span> <span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">exponent</span><span class="p">;</span>
+      <span class="n">insert</span><span class="p">(</span><span class="n">coefficient</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">dummyTmp</span><span class="p">);</span>
+      <span class="n">dummyTmp</span> <span class="o">=</span> <span class="n">dummyTmp</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+      <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">dummyLong</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Tmp</span><span class="p">);</span>
+    <span class="n">dummyLong</span> <span class="o">=</span> <span class="n">Long</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+    <span class="n">deletePolynomial</span><span class="p">(</span><span class="n">Tmp</span><span class="p">);</span>
+    <span class="n">dummyShort</span> <span class="o">=</span> <span class="n">dummyShort</span><span class="o">-&gt;</span><span class="n">Next</span><span class="p">;</span>
+  <span class="p">}</span>
 
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 <p>Suppose polynomials <span class="math">\(A\)</span> has <span class="math">\(M\)</span> terms, and polynomials
 <span class="math">\(B\)</span> has <span class="math">\(N\)</span> terms. <span class="math">\(M &lt; N\)</span>.
