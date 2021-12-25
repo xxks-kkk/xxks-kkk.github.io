@@ -70,8 +70,11 @@ details behind this extension. </p>
 <li><a href="#implementation-details">Implementation Details</a><ul>
 <li><a href="#generating-unique-ids">Generating Unique IDs</a></li>
 <li><a href="#handling-js-scripts-and-code">Handling JS scripts and code</a></li>
+<li><a href="#support-references">Support References</a></li>
 </ul>
 </li>
+<li><a href="#development-environment-setup">Development Environment Setup</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
 </ul>
 </div>
 <h2 id="introduction">Introduction</h2>
@@ -136,8 +139,7 @@ detailed steps. Here, I highlight some of the steps that are related to the impl
 writing extenstion to sphinx-doc rendering engine.</p>
 <h3 id="generating-unique-ids">Generating Unique IDs</h3>
 <p>To generate unique <code>id</code> to each algorithm block, I use 
-<a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L62">uuid.uuid4()</a>.
-to create a unique id to each algorithm block.</p>
+<a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L62">uuid.uuid4()</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_node">add_node()</a> is used to 
@@ -212,6 +214,73 @@ which contains all <code>renderElement</code> function calls. As an example, it 
 That's where <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L149">install_js2_part2</a> comes from: 
 we have to split js generation and js registration in two phases.</p>
 </div>
+<h3 id="support-references">Support References</h3>
+<p><em>Support since 0.5.0</em></p>
+<p>One important feature is to allow one easily reference the algorithm written in <code>pcode</code> directive. 
+As documented in <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/issues/8">this issue</a>, 
+there are two considerations on how to implement this feature:</p>
+<ol>
+<li>
+<p>Like <a href="https://www.sphinx-doc.org/en/master/development/tutorials/recipe.html">recipe extension example</a>, we can add
+   special reference role like <code>:recipe:ref:</code> to reference any paritcular algorithm.</p>
+</li>
+<li>
+<p>Alternatively, just like figure, table, or sections, we can use 
+   <a href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-numref">numref</a> role to reference 
+   <code>pcode</code> directives as well.</p>
+</li>
+</ol>
+<p>I use the 2nd option. To implement such feature, we need to leverage <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_enumerable_node">add_enumerable_node</a> API. To understand how to use it, let's take a closer look at how <code>:numref:</code> works with figure. 
+Suppose, in <code>rst</code> document, I have </p>
+<div class="highlight"><pre><span></span><code><span class="p">..</span> <span class="nt">_l7-fig2.3:</span>
+<span class="p">..</span> <span class="ow">figure</span><span class="p">::</span> /_static/linear-programming/l7-fig2.3.png
+
+   A toy example of LP
+</code></pre></div>
+<p>This code is rendered as </p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;figure</span> <span class="na">class=</span><span class="s">"align-default"</span> <span class="na">id=</span><span class="s">"id13"</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;span</span> <span class="na">id=</span><span class="s">"l7-fig2-3"</span><span class="nt">&gt;&lt;/span&gt;</span>
+ <span class="nt">&lt;img</span> <span class="na">alt=</span><span class="s">"../_images/l7-fig2.3.png"</span> <span class="na">src=</span><span class="s">"../_images/l7-fig2.3.png"</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;figcaption&gt;</span>
+  <span class="nt">&lt;p&gt;</span>
+  <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"caption-number"</span><span class="nt">&gt;</span>Fig. 97 <span class="nt">&lt;/span&gt;</span>
+  <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"caption-text"</span><span class="nt">&gt;</span>A toy example of LP<span class="nt">&lt;/span&gt;</span>
+  <span class="nt">&lt;a</span> <span class="na">class=</span><span class="s">"headerlink"</span> <span class="na">href=</span><span class="s">"#id13"</span> <span class="na">title=</span><span class="s">"Permalink to this image"</span><span class="nt">&gt;</span>¶<span class="nt">&lt;/a&gt;</span>
+  <span class="nt">&lt;/p&gt;</span>
+ <span class="nt">&lt;/figcaption&gt;</span>
+<span class="nt">&lt;/figure&gt;</span>
+</code></pre></div>
+<p><code>id13</code> is the numbering automatically incremented by <code>add_eumerable_node</code> API. <code>l7-fig2-3</code> is the reference label, which 
+has to be unique. Then the structure of the HTML code is: <code>&lt;figure&gt;</code> corresponds to <code>figure::</code> directive and 
+<code>&lt;img&gt;</code> is the actual content (i.e., image) of the directive. Caption indicated by <code>&lt;figcaption&gt;</code> follows content immediately.
+Thus, in practice, we use three docutils nodes to correspond these three components (directive, content, caption). 
+The best way to learn how to use <code>add_enumerable_node</code> is to study 
+<a href="https://github.com/sphinx-contrib/stuffcounter">stuffCounter</a> code repository. </p>
+<p>In fact, as shown by <a href="https://github.com/hnakamur/sphinx-deb/blob/34e8fa6013e0567f12eabfd4f71e7a82ce63394e/tests/roots/test-add_enumerable_node/enumerable_node.py">this code</a>, there is a much simpler way to use <code>add_eumerable_node</code> API if the directive has a required caption option. Then, we can directly pass a <a href="https://github.com/hnakamur/sphinx-deb/blob/34e8fa6013e0567f12eabfd4f71e7a82ce63394e/tests/roots/test-add_enumerable_node/enumerable_node.py#L61">caption getter function</a> to the API. The reason we need to use three nodes implementation style is that we want to set <span class="math">\(\LaTeX\)</span> algorithm numbering 
+the same as <code>pcode</code> reference numbering. As an example, suppose we have the code </p>
+<div class="highlight"><pre><span></span><code><span class="p">..</span> <span class="nt">_dummy-algorithm:</span>
+<span class="p">..</span> <span class="ow">pcode</span><span class="p">::</span>
+
+    \begin{algorithm}
+    \caption{Dummy Algorithm}
+    \begin{algorithmic}
+    \PRINT \texttt{'hello world'}
+    \end{algorithmic}
+    \end{algorithm}
+</code></pre></div>
+<p>Then, it will be rendered as </p>
+<p><img alt="render of the above pcode block" class="img-responsive" src="../../../../../images/sphinxcontrib-pseudocode/dummy-algorithm.png"/></p>
+<p>The algorithm has numbering 1. Then, when we reference the algorithm via <code>:numref:`dummy-algorithm</code>, we want to have "Algorithm 1" rendered in 
+HTML as well. To do so, we extract the numeric part from id of the directive (e.g., <code>13</code> in <code>id13</code> in the figure HTML example) and use 
+<code>captionCount</code> option offered by pseudocode.js to manually set <span class="math">\(\LaTeX\)</span> numbering.</p>
+<h2 id="development-environment-setup">Development Environment Setup</h2>
+<p>To concludes this post, I describe the setup I have for extension development. I reference <a href="https://techwriter.documatt.com/2021/debug-sphinx-extension.html">this post</a> 
+and <a href="https://gitlab.com/Molcas/OpenMolcas/-/blob/master/doc/source/conf.py#L34">code</a> for my setup. Here is my configuration in PyCharm</p>
+<p><img alt="pycharm configuration setup" class="img-responsive" src="../../../../../images/sphinxcontrib-pseudocode/pycharm-setup.png"/></p>
+<p>The central idea is to run/debug <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/tree/master/docs">demo docs</a> using <code>sphinx-build</code>. 
+Since the whole project is organized as a python package, we need to modify <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/546756083b2c2d0aa2a5dff817a9e6a472369b5a/docs/conf.py#L31">conf.py</a>
+to allow the demo docs to automatically find the extension source code but not via python package installation. </p>
+<h2 id="conclusion">Conclusion</h2>
 <p>That's all I have to say about implementing <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode">sphinxcontrib-pseudocode</a>. Hope 
 this post becomes useful when you build your own extension to sphinx-doc.</p>
 <div class="footnote">

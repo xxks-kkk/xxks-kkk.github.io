@@ -9,13 +9,16 @@ details behind this extension. &lt;/p&gt;
 &lt;li&gt;&lt;a href="#implementation-details"&gt;Implementation Details&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href="#generating-unique-ids"&gt;Generating Unique IDs&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#handling-js-scripts-and-code"&gt;Handling JS scripts and code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#support-references"&gt;Support References&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
+&lt;li&gt;&lt;a href="#development-environment-setup"&gt;Development Environment Setup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#conclusion"&gt;Conclusion&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;sphinxcontrib-pseudocode allows one to write &lt;span class="math"&gt;\(\LaTeX\)&lt;/span&gt; &lt;a href="https://www.overleaf.com/learn/latex/Algorithms"&gt;algorithm&lt;/a&gt; 
-(using &lt;code&gt;algpseudocode&lt;/code&gt; package, in specific) within sphinx-doc. The …&lt;/p&gt;</summary><content type="html">&lt;p&gt;To celebrate the release of &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode"&gt;sphinxcontrib-pseudocode&lt;/a&gt;, the 
+(using &lt;code&gt;algpseudocode …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;To celebrate the release of &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode"&gt;sphinxcontrib-pseudocode&lt;/a&gt;, the 
 first &lt;a href="https://www.sphinx-doc.org/en/master/"&gt;sphinx-doc&lt;/a&gt; extension I have ever written, I document some implementation 
 details behind this extension. &lt;/p&gt;
 &lt;div class="toc"&gt;
@@ -25,8 +28,11 @@ details behind this extension. &lt;/p&gt;
 &lt;li&gt;&lt;a href="#implementation-details"&gt;Implementation Details&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href="#generating-unique-ids"&gt;Generating Unique IDs&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#handling-js-scripts-and-code"&gt;Handling JS scripts and code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#support-references"&gt;Support References&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
+&lt;li&gt;&lt;a href="#development-environment-setup"&gt;Development Environment Setup&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#conclusion"&gt;Conclusion&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
@@ -91,8 +97,7 @@ detailed steps. Here, I highlight some of the steps that are related to the impl
 writing extenstion to sphinx-doc rendering engine.&lt;/p&gt;
 &lt;h3 id="generating-unique-ids"&gt;Generating Unique IDs&lt;/h3&gt;
 &lt;p&gt;To generate unique &lt;code&gt;id&lt;/code&gt; to each algorithm block, I use 
-&lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L62"&gt;uuid.uuid4()&lt;/a&gt;.
-to create a unique id to each algorithm block.&lt;/p&gt;
+&lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L62"&gt;uuid.uuid4()&lt;/a&gt;.&lt;/p&gt;
 &lt;div class="admonition note"&gt;
 &lt;p class="admonition-title"&gt;Note&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_node"&gt;add_node()&lt;/a&gt; is used to 
@@ -167,6 +172,73 @@ which contains all &lt;code&gt;renderElement&lt;/code&gt; function calls. As an 
 That's where &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L149"&gt;install_js2_part2&lt;/a&gt; comes from: 
 we have to split js generation and js registration in two phases.&lt;/p&gt;
 &lt;/div&gt;
+&lt;h3 id="support-references"&gt;Support References&lt;/h3&gt;
+&lt;p&gt;&lt;em&gt;Support since 0.5.0&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;One important feature is to allow one easily reference the algorithm written in &lt;code&gt;pcode&lt;/code&gt; directive. 
+As documented in &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/issues/8"&gt;this issue&lt;/a&gt;, 
+there are two considerations on how to implement this feature:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Like &lt;a href="https://www.sphinx-doc.org/en/master/development/tutorials/recipe.html"&gt;recipe extension example&lt;/a&gt;, we can add
+   special reference role like &lt;code&gt;:recipe:ref:&lt;/code&gt; to reference any paritcular algorithm.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Alternatively, just like figure, table, or sections, we can use 
+   &lt;a href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-numref"&gt;numref&lt;/a&gt; role to reference 
+   &lt;code&gt;pcode&lt;/code&gt; directives as well.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I use the 2nd option. To implement such feature, we need to leverage &lt;a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_enumerable_node"&gt;add_enumerable_node&lt;/a&gt; API. To understand how to use it, let's take a closer look at how &lt;code&gt;:numref:&lt;/code&gt; works with figure. 
+Suppose, in &lt;code&gt;rst&lt;/code&gt; document, I have &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;..&lt;/span&gt; &lt;span class="nt"&gt;_l7-fig2.3:&lt;/span&gt;
+&lt;span class="p"&gt;..&lt;/span&gt; &lt;span class="ow"&gt;figure&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt; /_static/linear-programming/l7-fig2.3.png
+
+   A toy example of LP
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This code is rendered as &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;&amp;lt;figure&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"align-default"&lt;/span&gt; &lt;span class="na"&gt;id=&lt;/span&gt;&lt;span class="s"&gt;"id13"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;span&lt;/span&gt; &lt;span class="na"&gt;id=&lt;/span&gt;&lt;span class="s"&gt;"l7-fig2-3"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&amp;lt;/span&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;img&lt;/span&gt; &lt;span class="na"&gt;alt=&lt;/span&gt;&lt;span class="s"&gt;"../_images/l7-fig2.3.png"&lt;/span&gt; &lt;span class="na"&gt;src=&lt;/span&gt;&lt;span class="s"&gt;"../_images/l7-fig2.3.png"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;figcaption&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;p&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;span&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"caption-number"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;Fig. 97 &lt;span class="nt"&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;span&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"caption-text"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;A toy example of LP&lt;span class="nt"&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;a&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"headerlink"&lt;/span&gt; &lt;span class="na"&gt;href=&lt;/span&gt;&lt;span class="s"&gt;"#id13"&lt;/span&gt; &lt;span class="na"&gt;title=&lt;/span&gt;&lt;span class="s"&gt;"Permalink to this image"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;¶&lt;span class="nt"&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;/figcaption&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/figure&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;id13&lt;/code&gt; is the numbering automatically incremented by &lt;code&gt;add_eumerable_node&lt;/code&gt; API. &lt;code&gt;l7-fig2-3&lt;/code&gt; is the reference label, which 
+has to be unique. Then the structure of the HTML code is: &lt;code&gt;&amp;lt;figure&amp;gt;&lt;/code&gt; corresponds to &lt;code&gt;figure::&lt;/code&gt; directive and 
+&lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; is the actual content (i.e., image) of the directive. Caption indicated by &lt;code&gt;&amp;lt;figcaption&amp;gt;&lt;/code&gt; follows content immediately.
+Thus, in practice, we use three docutils nodes to correspond these three components (directive, content, caption). 
+The best way to learn how to use &lt;code&gt;add_enumerable_node&lt;/code&gt; is to study 
+&lt;a href="https://github.com/sphinx-contrib/stuffcounter"&gt;stuffCounter&lt;/a&gt; code repository. &lt;/p&gt;
+&lt;p&gt;In fact, as shown by &lt;a href="https://github.com/hnakamur/sphinx-deb/blob/34e8fa6013e0567f12eabfd4f71e7a82ce63394e/tests/roots/test-add_enumerable_node/enumerable_node.py"&gt;this code&lt;/a&gt;, there is a much simpler way to use &lt;code&gt;add_eumerable_node&lt;/code&gt; API if the directive has a required caption option. Then, we can directly pass a &lt;a href="https://github.com/hnakamur/sphinx-deb/blob/34e8fa6013e0567f12eabfd4f71e7a82ce63394e/tests/roots/test-add_enumerable_node/enumerable_node.py#L61"&gt;caption getter function&lt;/a&gt; to the API. The reason we need to use three nodes implementation style is that we want to set &lt;span class="math"&gt;\(\LaTeX\)&lt;/span&gt; algorithm numbering 
+the same as &lt;code&gt;pcode&lt;/code&gt; reference numbering. As an example, suppose we have the code &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;..&lt;/span&gt; &lt;span class="nt"&gt;_dummy-algorithm:&lt;/span&gt;
+&lt;span class="p"&gt;..&lt;/span&gt; &lt;span class="ow"&gt;pcode&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;
+
+    \begin{algorithm}
+    \caption{Dummy Algorithm}
+    \begin{algorithmic}
+    \PRINT \texttt{'hello world'}
+    \end{algorithmic}
+    \end{algorithm}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Then, it will be rendered as &lt;/p&gt;
+&lt;p&gt;&lt;img alt="render of the above pcode block" class="img-responsive" src="https://zhu45.org/images/sphinxcontrib-pseudocode/dummy-algorithm.png"/&gt;&lt;/p&gt;
+&lt;p&gt;The algorithm has numbering 1. Then, when we reference the algorithm via &lt;code&gt;:numref:`dummy-algorithm&lt;/code&gt;, we want to have "Algorithm 1" rendered in 
+HTML as well. To do so, we extract the numeric part from id of the directive (e.g., &lt;code&gt;13&lt;/code&gt; in &lt;code&gt;id13&lt;/code&gt; in the figure HTML example) and use 
+&lt;code&gt;captionCount&lt;/code&gt; option offered by pseudocode.js to manually set &lt;span class="math"&gt;\(\LaTeX\)&lt;/span&gt; numbering.&lt;/p&gt;
+&lt;h2 id="development-environment-setup"&gt;Development Environment Setup&lt;/h2&gt;
+&lt;p&gt;To concludes this post, I describe the setup I have for extension development. I reference &lt;a href="https://techwriter.documatt.com/2021/debug-sphinx-extension.html"&gt;this post&lt;/a&gt; 
+and &lt;a href="https://gitlab.com/Molcas/OpenMolcas/-/blob/master/doc/source/conf.py#L34"&gt;code&lt;/a&gt; for my setup. Here is my configuration in PyCharm&lt;/p&gt;
+&lt;p&gt;&lt;img alt="pycharm configuration setup" class="img-responsive" src="https://zhu45.org/images/sphinxcontrib-pseudocode/pycharm-setup.png"/&gt;&lt;/p&gt;
+&lt;p&gt;The central idea is to run/debug &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/tree/master/docs"&gt;demo docs&lt;/a&gt; using &lt;code&gt;sphinx-build&lt;/code&gt;. 
+Since the whole project is organized as a python package, we need to modify &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/546756083b2c2d0aa2a5dff817a9e6a472369b5a/docs/conf.py#L31"&gt;conf.py&lt;/a&gt;
+to allow the demo docs to automatically find the extension source code but not via python package installation. &lt;/p&gt;
+&lt;h2 id="conclusion"&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;That's all I have to say about implementing &lt;a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode"&gt;sphinxcontrib-pseudocode&lt;/a&gt;. Hope 
 this post becomes useful when you build your own extension to sphinx-doc.&lt;/p&gt;
 &lt;div class="footnote"&gt;
@@ -4710,7 +4782,7 @@ that cause a page fault uppercase, and those that don’t lowercase):&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
 approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12"&gt;18&lt;/a&gt;&lt;/sup&gt; to avoid heavy overhead). The trace of the memory references with LRU policy shown below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -4824,7 +4896,7 @@ approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12
 &lt;/blockquote&gt;
 &lt;p&gt;FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -4938,7 +5010,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 &lt;/blockquote&gt;
 &lt;p&gt;Optimal policy means we want to replace the page that will be accessed &lt;em&gt;furthest in the future&lt;/em&gt; and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -5144,7 +5216,7 @@ which takes a queue and returns, as an unsigned integer, its address.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;One possible scenario of deadlock using &lt;code&gt;transfer()&lt;/code&gt; is illustrated below. Note that &lt;code&gt;queue1&lt;/code&gt; and &lt;code&gt;queue2&lt;/code&gt; in &lt;code&gt;transfer()&lt;/code&gt;
 are replaced with queues that they are pointing to (time increases with the row's number):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Thread1 (&lt;code&gt;transfer(q1,q2)&lt;/code&gt;)&lt;/th&gt;
@@ -5498,7 +5570,7 @@ the modification looks like below:&lt;/p&gt;
 &lt;p&gt;The question we want to answer is why doing so works?&lt;/p&gt;
 &lt;h2 id="explanation"&gt;Explanation&lt;/h2&gt;
 &lt;p&gt;We acquire key data from GDB as following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;GDB command&lt;/th&gt;
@@ -7052,7 +7124,7 @@ blocks from different clients)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;&lt;/th&gt;
@@ -11630,7 +11702,7 @@ a very efficient algorithm in all cases. Path compression is not entirely compat
 to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., &lt;strong&gt;ranks&lt;/strong&gt;), but in theory union-by-rank is as efficient as union-by-size.&lt;/p&gt;
 &lt;p&gt;If we do analysis on smart union with path compression, the running time for any sequence of &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects makes &lt;span class="math"&gt;\(O(N + M\log^*N)\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt; accesses.&lt;/p&gt;
 &lt;p&gt;The following table summarizes the running time for &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on a set of &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects (don't forget we need to spend &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; to initialize disjoint sets):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -11661,7 +11733,7 @@ to recompute all the heights and in this case, heights stored for each tree beco
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;The running time for each operation for each algorithm is following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -11862,7 +11934,7 @@ can try to label the items from &lt;span class="math"&gt;\(1 \dots n\)&lt;/span&
 solution for &lt;span class="math"&gt;\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)&lt;/span&gt;. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;) in terms of subproblems (i.e., &lt;span class="math"&gt;\(S_i\)&lt;/span&gt;)? Let's take a look at an example:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -11952,7 +12024,7 @@ dynamic programming.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The running time for this algorithm is &lt;span class="math"&gt;\(O(n*W)\)&lt;/span&gt; because of the double for loop. To understand this algorithm,
 let's take a look at an example:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -11980,7 +12052,7 @@ let's take a look at an example:&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 5\)&lt;/span&gt; and with algorithm above, we essentially fill out a table like following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12049,7 +12121,7 @@ the first two for loops&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now, let's take a look at &lt;span class="math"&gt;\(B[1,1]\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(i = 1, b_i = 3, w_i = 2, w = 1\)&lt;/span&gt;, and since &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, and by our
 algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(B[0,1]\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(B[1,1] = 0\)&lt;/span&gt; and the table becomes&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12110,7 +12182,7 @@ algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, 
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;We can fill out the table like this and have&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12237,7 +12309,7 @@ defined as the greatest integer less than or equal to &lt;span class="math"&gt;\
 &lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i,w&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x_i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;that&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;associated&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i-1,w&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Let's walk through an example to better understand the algorithm idea:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -12264,7 +12336,7 @@ defined as the greatest integer less than or equal to &lt;span class="math"&gt;\
 &lt;p&gt;&lt;span class="math"&gt;\(W = 8\)&lt;/span&gt; in our example. The algorithm essentially
 tries to build fill out two tables &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; table like
 the 0-1 knapsack problem:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12332,7 +12404,7 @@ the 0-1 knapsack problem:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;and &lt;span class="math"&gt;\(x[i,w]\)&lt;/span&gt; table to keep track of the optimal
 value of &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; for each &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt;&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12396,7 +12468,7 @@ $$&lt;/div&gt;
 &lt;p&gt;So, we fill in &lt;span class="math"&gt;\(B[1,3] = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[1,3] = 1\)&lt;/span&gt;. We can repeatedly
 doing this for other &lt;span class="math"&gt;\(i\)&lt;/span&gt;s. We can take a look at the values
 from another perspective like the tables below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[1,w]&lt;/th&gt;
@@ -12452,7 +12524,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[2,w]&lt;/th&gt;
@@ -12508,7 +12580,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[3,w]&lt;/th&gt;
@@ -12686,7 +12758,7 @@ In addition, this post belongs to part of future work mentioned in &lt;a href="h
 &lt;p&gt;Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Type&lt;/th&gt;
@@ -13455,7 +13527,7 @@ care about the size of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; 
 &lt;p&gt;Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
 housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
 its prediction. What we should try next?&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Method&lt;/th&gt;
@@ -13531,7 +13603,7 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$&lt;/div&gt;
 &lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;component&lt;/th&gt;
@@ -14369,7 +14441,7 @@ is a graphic summary for the text above&lt;/p&gt;
 the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Join types&lt;/th&gt;
@@ -15006,7 +15078,7 @@ $$&lt;/div&gt;
 &lt;p&gt;For example, the sequence &lt;span class="math"&gt;\(1,3,4,2,1\)&lt;/span&gt; can be considered as a sequence of 
 iterated function values with &lt;span class="math"&gt;\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
 x_3 = f(4) = 2, x_4 = f(2) = 1\)&lt;/span&gt;. Let's try another representation:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class=" table-striped table-hover table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;index&lt;/th&gt;
@@ -21904,7 +21976,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -22605,7 +22677,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -22838,7 +22910,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -22893,7 +22965,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -22943,7 +23015,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -22987,7 +23059,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23046,7 +23118,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23109,7 +23181,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;table class=" table-striped table table-hover highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23500,7 +23572,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class=" table-striped docutils table table-hover"&gt;
+&lt;table border="1" class=" table-striped docutils table-hover table"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;
