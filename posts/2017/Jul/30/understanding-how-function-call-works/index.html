@@ -4,16 +4,23 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-44FB4FMFCD"></script>
+        <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'G-44FB4FMFCD');
+        </script>
         <meta charset="utf-8">
         <title>    Understanding how function call works
 </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta content="This is the homepage of Zeyuan Hu" name="description">
-        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation, Zeyuan UT-Austin, Zeyuan Texas, Zeyuan University of Texas at Austin, Zeyuan Amazon, Zeyuan Microsoft Research, Zeyuan Microsoft" name="keywords">
         <meta content="Zeyuan Hu" name="author">
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8696888278948966"
-                     crossorigin="anonymous"></script>
         <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="../../../../../theme/css/cid.css">
         <!-- add font-awesome -->
@@ -94,7 +101,7 @@ In addition, this post belongs to part of future work mentioned in <a href="../.
 <p>Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Type</th>
@@ -240,11 +247,11 @@ you want to save before calling a function, you need to save them
 by pushing them on the stack before pushing the function's parameters.</p>
 </div>
 <p>So, at the time the function starts, the stack looks like this:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">Argument</span> <span class="nv">N</span>
-...
-<span class="nv">Argument</span> <span class="mi">2</span>
-<span class="nv">Argument</span> <span class="mi">1</span>
-<span class="k">Return</span> <span class="nv">address</span> <span class="o">&lt;---</span> <span class="ss">(</span><span class="o">%</span><span class="nv">esp</span><span class="ss">)</span>
+<div class="highlight"><pre><span></span><code><span class="err">Argument N</span>
+<span class="err">...</span>
+<span class="err">Argument 2</span>
+<span class="err">Argument 1</span>
+<span class="err">Return address &lt;--- (%esp)</span>
 </code></pre></div>
 <p>As noted previously, the stack pointer holds the address, which contains return address as its value.</p>
 <h4 id="writing-a-function">Writing a function</h4>
@@ -271,12 +278,12 @@ able to access the function parameters that are pushed earlier onto the stack by
 as fixed indexes from the base pointer. We cannot use stack pointer directly for accessing
 parameters because the stack pointer can move while the function is executing. </p>
 <p>At this point, the stack looks like this:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">Argument</span> <span class="nv">N</span>     <span class="o">&lt;---</span> <span class="nv">N</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="mi">4</span><span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
-... 
-<span class="nv">Argument</span> <span class="mi">2</span>     <span class="o">&lt;---</span> <span class="mi">16</span> <span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
-<span class="nv">Argument</span> <span class="mi">1</span>     <span class="o">&lt;---</span> <span class="mi">12</span><span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
-<span class="k">Return</span> <span class="nv">address</span> <span class="o">&lt;---</span> <span class="mi">4</span><span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
-<span class="nv">Old</span> <span class="o">%</span><span class="nv">ebp</span>       <span class="o">&lt;---</span> <span class="ss">(</span><span class="o">%</span><span class="nv">esp</span><span class="ss">)</span> <span class="nv">and</span> <span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
+<div class="highlight"><pre><span></span><code><span class="err">Argument N     &lt;--- N*4+4(%ebp)</span>
+<span class="err">... </span>
+<span class="err">Argument 2     &lt;--- 16 (%ebp)</span>
+<span class="err">Argument 1     &lt;--- 12(%ebp)</span>
+<span class="err">Return address &lt;--- 4(%ebp)</span>
+<span class="err">Old %ebp       &lt;--- (%esp) and (%ebp)</span>
 </code></pre></div>
 <h5 id="using-the-stack-frame">Using the stack frame</h5>
 <p>Once we have performed the fix setup, we can now use the stack frame to:</p>
@@ -313,15 +320,15 @@ we are free of worring about clobbering them with pushes that we may make for ne
 function, which all happens in "Argument build area" in the above picture).</p>
 <p>Suppose we save <span class="math">\(\mathtt{\%ebx}\)</span> (i.e. callee-save register),
 and with our two words for local storage, our stack now looks like this:</p>
-<div class="highlight"><pre><span></span><code><span class="n">Argument</span><span class="w"> </span><span class="n">N</span><span class="w">      </span><span class="o">&lt;---</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="mi">4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="p">...</span><span class="w"> </span>
-<span class="n">Argument</span><span class="w"> </span><span class="mi">2</span><span class="w">      </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="n">Argument</span><span class="w"> </span><span class="mi">1</span><span class="w">      </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">8</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="n">Return</span><span class="w"> </span><span class="n">address</span><span class="w">  </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="n">Old</span><span class="w"> </span><span class="nf">%ebp</span><span class="w">        </span><span class="o">&lt;---</span><span class="w"> </span><span class="p">(</span><span class="nf">%esp</span><span class="p">)</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="nf">%ebx</span><span class="w">            </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">-4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="n">Local</span><span class="w"> </span><span class="n">variable1</span><span class="w"> </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">-8</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="n">Local</span><span class="w"> </span><span class="n">variable2</span><span class="w"> </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">-12</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="p">(</span><span class="nf">%esp</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="n">Argument</span> <span class="n">N</span>      <span class="o">&lt;---</span> <span class="n">N</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="mi">4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="p">...</span> 
+<span class="n">Argument</span> <span class="mi">2</span>      <span class="o">&lt;---</span> <span class="mi">12</span> <span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="n">Argument</span> <span class="mi">1</span>      <span class="o">&lt;---</span> <span class="mi">8</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="n">Return</span> <span class="n">address</span>  <span class="o">&lt;---</span> <span class="mi">4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="n">Old</span> <span class="nf">%ebp</span>        <span class="o">&lt;---</span> <span class="p">(</span><span class="nf">%esp</span><span class="p">)</span> <span class="n">and</span> <span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="nf">%ebx</span>            <span class="o">&lt;---</span> <span class="o">-</span><span class="mi">4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="n">Local</span> <span class="n">variable1</span> <span class="o">&lt;---</span> <span class="o">-</span><span class="mi">8</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="n">Local</span> <span class="n">variable2</span> <span class="o">&lt;---</span> <span class="o">-</span><span class="mi">12</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span> <span class="n">and</span> <span class="p">(</span><span class="nf">%esp</span><span class="p">)</span>
 </code></pre></div>
 <p>As you can see, we can now access all of the data we need for this function by
 using base pointer addressing using different offsets from <span class="math">\(\mathtt{\%ebp}\)</span>.
@@ -417,20 +424,20 @@ a given number, which demonstrates how the recursive function is done.</p>
         <span class="nf">movl</span> <span class="mi">8</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%ebx</span>        <span class="c1"># put first argument in %eax</span>
         <span class="nf">movl</span> <span class="mi">12</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%ecx</span>       <span class="c1"># put second argument in %ecx</span>
 
-        <span class="nf">movl</span> <span class="nv">%ebx</span><span class="p">,</span> <span class="mi">-4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">)</span>       <span class="c1"># store current result</span>
+        <span class="nf">movl</span> <span class="nv">%ebx</span><span class="p">,</span> <span class="p">-</span><span class="mi">4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">)</span>       <span class="c1"># store current result</span>
 
 <span class="nl">power_loop_start:</span>
         <span class="nf">cmpl</span> <span class="no">$1</span><span class="p">,</span> <span class="nv">%ecx</span>             <span class="c1"># if the power is 1, we are done</span>
         <span class="nf">je</span> <span class="no">end_power</span>
-        <span class="nf">movl</span> <span class="mi">-4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%eax</span>       <span class="c1"># move the current result into %eax</span>
+        <span class="nf">movl</span> <span class="p">-</span><span class="mi">4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%eax</span>       <span class="c1"># move the current result into %eax</span>
         <span class="nf">imull</span> <span class="nv">%ebx</span><span class="p">,</span> <span class="nv">%eax</span>          <span class="c1"># multiply the current result by the base number</span>
-        <span class="nf">movl</span> <span class="nv">%eax</span><span class="p">,</span> <span class="mi">-4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">)</span>       <span class="c1"># store the current result</span>
+        <span class="nf">movl</span> <span class="nv">%eax</span><span class="p">,</span> <span class="p">-</span><span class="mi">4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">)</span>       <span class="c1"># store the current result</span>
 
         <span class="nf">decl</span> <span class="nv">%ecx</span>                 <span class="c1"># decrease the power</span>
         <span class="nf">jmp</span> <span class="no">power_loop_start</span>      <span class="c1"># run for the next power</span>
 
 <span class="nl">end_power:</span>
-        <span class="nf">movl</span> <span class="mi">-4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%eax</span>       <span class="c1"># return value goes in %eax</span>
+        <span class="nf">movl</span> <span class="p">-</span><span class="mi">4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%eax</span>       <span class="c1"># return value goes in %eax</span>
         <span class="nf">movl</span> <span class="nv">%ebp</span><span class="p">,</span> <span class="nv">%esp</span>           <span class="c1"># restore the stack pointer</span>
         <span class="nf">pop</span> <span class="nv">%ebp</span>                  <span class="c1"># restore the base pointer</span>
         <span class="nf">ret</span>

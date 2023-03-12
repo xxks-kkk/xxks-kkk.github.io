@@ -4,16 +4,23 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-44FB4FMFCD"></script>
+        <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'G-44FB4FMFCD');
+        </script>
         <meta charset="utf-8">
         <title>    Knapsack problem
 </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta content="This is the homepage of Zeyuan Hu" name="description">
-        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation" name="keywords">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation, Zeyuan UT-Austin, Zeyuan Texas, Zeyuan University of Texas at Austin, Zeyuan Amazon, Zeyuan Microsoft Research, Zeyuan Microsoft" name="keywords">
         <meta content="Zeyuan Hu" name="author">
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8696888278948966"
-                     crossorigin="anonymous"></script>
         <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="../../../../../theme/css/cid.css">
         <!-- add font-awesome -->
@@ -125,7 +132,7 @@ can try to label the items from <span class="math">\(1 \dots n\)</span>, and the
 solution for <span class="math">\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)</span>. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., <span class="math">\(S_n\)</span>) in terms of subproblems (i.e., <span class="math">\(S_i\)</span>)? Let's take a look at an example:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Item</th>
@@ -199,23 +206,23 @@ the solution to <span class="math">\(B[i-1, w]\)</span> and <span class="math">\
 dynamic programming.</p>
 </div>
 <p>The algorithm is below:</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">0</span> <span class="nv">to</span> <span class="nv">W</span> 
-    <span class="nv">B</span>[<span class="mi">0</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span> 
-    <span class="nv">B</span>[<span class="nv">i</span>,<span class="mi">0</span>] <span class="o">=</span> <span class="mi">0</span> 
-<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span>
-    <span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">W</span>
-        <span class="k">if</span> <span class="nv">w_i</span> <span class="o">&lt;=</span><span class="nv">w</span>  <span class="o">//</span><span class="nv">item</span> <span class="nv">i</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">part</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">solution</span> 
-            <span class="k">if</span> <span class="nv">b_i</span> <span class="o">+</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span><span class="o">-</span><span class="nv">w_i</span> ] <span class="o">&gt;</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>]
-                <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">b_i</span> <span class="o">+</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>, <span class="nv">w</span><span class="o">-</span><span class="nv">w_i</span>]
-            <span class="k">else</span>
-                <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>]
-        <span class="k">else</span> 
-            <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>] <span class="o">//</span> <span class="nv">w_i</span> <span class="o">&gt;</span> <span class="nv">w</span>
+<div class="highlight"><pre><span></span><code><span class="err">for w = 0 to W </span>
+<span class="err">    B[0,w] = 0</span>
+<span class="err">for i = 1 to n </span>
+<span class="err">    B[i,0] = 0 </span>
+<span class="err">for i = 1 to n</span>
+<span class="err">    for w = 1 to W</span>
+<span class="err">        if w_i &lt;=w  //item i can be part of the solution </span>
+<span class="err">            if b_i + B[i-1,w-w_i ] &gt; B[i-1,w]</span>
+<span class="err">                B[i,w] = b_i + B[i-1, w-w_i]</span>
+<span class="err">            else</span>
+<span class="err">                B[i,w] = B[i-1,w]</span>
+<span class="err">        else </span>
+<span class="err">            B[i,w] = B[i-1,w] // w_i &gt; w</span>
 </code></pre></div>
 <p>The running time for this algorithm is <span class="math">\(O(n*W)\)</span> because of the double for loop. To understand this algorithm,
 let's take a look at an example:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Item</th>
@@ -243,7 +250,7 @@ let's take a look at an example:</p>
 </tbody>
 </table>
 <p>Suppose <span class="math">\(W = 5\)</span> and with algorithm above, we essentially fill out a table like following:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>i \ w</th>
@@ -305,14 +312,14 @@ let's take a look at an example:</p>
 </table>
 <p>Each cell in the above table represents <span class="math">\(B[i,w]\)</span> and the table looks like above after we executing 
 the first two for loops</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">0</span> <span class="nv">to</span> <span class="nv">W</span> 
-    <span class="nv">B</span>[<span class="mi">0</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span> 
-    <span class="nv">B</span>[<span class="nv">i</span>,<span class="mi">0</span>] <span class="o">=</span> <span class="mi">0</span> 
+<div class="highlight"><pre><span></span><code><span class="err">for w = 0 to W </span>
+<span class="err">    B[0,w] = 0</span>
+<span class="err">for i = 1 to n </span>
+<span class="err">    B[i,0] = 0 </span>
 </code></pre></div>
 <p>Now, let's take a look at <span class="math">\(B[1,1]\)</span>. We have <span class="math">\(i = 1, b_i = 3, w_i = 2, w = 1\)</span>, and since <span class="math">\(w_i &gt; w\)</span>, and by our
 algorithm, we have <span class="math">\(B[i,w] = B[i-1,w]\)</span>, which is <span class="math">\(B[0,1]\)</span>. Thus, <span class="math">\(B[1,1] = 0\)</span> and the table becomes</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>i \ w</th>
@@ -373,7 +380,7 @@ algorithm, we have <span class="math">\(B[i,w] = B[i-1,w]\)</span>, which is <sp
 </tbody>
 </table>
 <p>We can fill out the table like this and have</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>i \ w</th>
@@ -436,14 +443,14 @@ algorithm, we have <span class="math">\(B[i,w] = B[i-1,w]\)</span>, which is <sp
 <p>Now, we have the maximum benefit value given the capacity of the knapsack, which is <span class="math">\(B[4,5] = 7\)</span>. 
 The next question is to find out what items we should put inside the knapsack in order to have
 this maximum benefit (i.e., <span class="math">\(7\)</span>). The algorithm is below:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">Let</span> <span class="nv">i</span> <span class="o">=</span> <span class="nv">n</span> <span class="nv">and</span> <span class="nv">k</span> <span class="o">=</span> <span class="nv">W</span>
-<span class="k">while</span> <span class="nv">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="nv">and</span> <span class="nv">k</span> <span class="o">&gt;</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">k</span>] <span class="o">!=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">k</span>], <span class="k">then</span>
-        <span class="nv">mark</span> <span class="nv">the</span> <span class="nv">ith</span> <span class="nv">item</span> <span class="nv">as</span> <span class="nv">in</span> <span class="nv">the</span> <span class="nv">knapsack</span>
-        <span class="nv">i</span> <span class="o">=</span> <span class="nv">i</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="nv">k</span> <span class="o">=</span> <span class="nv">k</span> <span class="o">-</span> <span class="nv">w_i</span>
-    <span class="k">else</span>
-        <span class="nv">i</span> <span class="o">=</span> <span class="nv">i</span> <span class="o">-</span> <span class="mi">1</span>
+<div class="highlight"><pre><span></span><code><span class="err">Let i = n and k = W</span>
+<span class="err">while i &gt; 0 and k &gt; 0</span>
+<span class="err">    if B[i,k] != B[i-1,k], then</span>
+<span class="err">        mark the ith item as in the knapsack</span>
+<span class="err">        i = i - 1</span>
+<span class="err">        k = k - w_i</span>
+<span class="err">    else</span>
+<span class="err">        i = i - 1</span>
 </code></pre></div>
 <p>Let's first take a look a few examples on how this algorithm runs and then we will
 see the intuition behind this algorithm. In our example, we start with
@@ -500,7 +507,7 @@ defined as the greatest integer less than or equal to <span class="math">\(x\)</
 <span class="w">            </span><span class="n">x</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_i</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">associated</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">B</span><span class="o">[</span><span class="n">i-1,w</span><span class="o">]</span><span class="w"></span>
 </code></pre></div>
 <p>Let's walk through an example to better understand the algorithm idea:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Item</th>
@@ -527,7 +534,7 @@ defined as the greatest integer less than or equal to <span class="math">\(x\)</
 <p><span class="math">\(W = 8\)</span> in our example. The algorithm essentially
 tries to build fill out two tables <span class="math">\(B[i,w]\)</span> table like
 the 0-1 knapsack problem:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>i \ w</th>
@@ -595,7 +602,7 @@ the 0-1 knapsack problem:</p>
 </table>
 <p>and <span class="math">\(x[i,w]\)</span> table to keep track of the optimal
 value of <span class="math">\(x_i\)</span> for each <span class="math">\(i\)</span> and <span class="math">\(w\)</span></p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>i \ w</th>
@@ -659,7 +666,7 @@ $$</div>
 <p>So, we fill in <span class="math">\(B[1,3] = 4\)</span> and <span class="math">\(x[1,3] = 1\)</span>. We can repeatedly
 doing this for other <span class="math">\(i\)</span>s. We can take a look at the values
 from another perspective like the tables below:</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>B[1,w]</th>
@@ -715,7 +722,7 @@ from another perspective like the tables below:</p>
 </tr>
 </tbody>
 </table>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>B[2,w]</th>
@@ -771,7 +778,7 @@ from another perspective like the tables below:</p>
 </tr>
 </tbody>
 </table>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>B[3,w]</th>
