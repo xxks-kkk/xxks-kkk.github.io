@@ -89,42 +89,42 @@ the amortized time bound should be <span class="math">\(O(M N)\)</span> for a se
 <p>The way we restructure the tree is called <em>splaying</em>. Chapter 4 talks about bottom-up splaying algorithms. Every time a node is accessed in a splay tree,
 it is moved to the root of the tree. The amortized cost of the operation is <span class="math">\(O(\log N)\)</span>. As shown by MAW, simply moving the element to the root by
 rotating it up the trees does not have this property. However, the following three structuring rules do guarantee this amortized bound.</p>
-<div class="highlight"><pre><span></span><code>                             <span class="n">y</span>             <span class="n">x</span>
-   <span class="n">Zig</span> <span class="p">(</span><span class="n">terminal</span> <span class="k">case</span><span class="p">):</span>     <span class="o">/</span>     <span class="o">====&gt;</span>     <span class="err">\</span>               <span class="p">(</span><span class="n">same</span> <span class="k">as</span> <span class="n">AVL</span> <span class="n">single</span> <span class="n">rotation</span><span class="p">)</span>
-                           <span class="n">x</span>                 <span class="n">y</span>
+<div class="highlight"><pre><span></span><code>                             y             x
+   Zig (terminal case):     /     ====&gt;     \               (same as AVL single rotation)
+                           x                 y
 
-                    <span class="n">z</span>              <span class="n">z</span>
-                   <span class="o">/</span>              <span class="o">/</span>             <span class="n">x</span>
-   <span class="n">Zig</span><span class="o">-</span><span class="n">zag</span><span class="p">:</span>       <span class="n">y</span>     <span class="o">====&gt;</span>    <span class="n">x</span>   <span class="o">====&gt;</span>     <span class="o">/</span> <span class="err">\</span>          <span class="p">(</span><span class="n">same</span> <span class="k">as</span> <span class="n">AVL</span> <span class="n">double</span> <span class="n">rotation</span><span class="p">)</span>
-                   <span class="err">\</span>            <span class="o">/</span>             <span class="n">y</span>   <span class="n">z</span>
-                    <span class="n">x</span>          <span class="n">y</span>
+                    z              z
+                   /              /             x
+   Zig-zag:       y     ====&gt;    x   ====&gt;     / \          (same as AVL double rotation)
+                   \            /             y   z
+                    x          y
 
-                    <span class="n">z</span>                         <span class="n">x</span>
-                   <span class="o">/</span>            <span class="n">y</span>              <span class="err">\</span>
-   <span class="n">Zig</span><span class="o">-</span><span class="n">zig</span><span class="p">:</span>       <span class="n">y</span>     <span class="o">====&gt;</span>  <span class="o">/</span> <span class="err">\</span>   <span class="o">====&gt;</span>      <span class="n">y</span>
-                 <span class="o">/</span>            <span class="n">x</span>   <span class="n">z</span>              <span class="err">\</span>
-                <span class="n">x</span>                                 <span class="n">z</span>
+                    z                         x
+                   /            y              \
+   Zig-zig:       y     ====&gt;  / \   ====&gt;      y
+                 /            x   z              \
+                x                                 z
 </code></pre></div>
 <p>In the above pictures, x is the node that was accessed (that will
 eventually be at the root of the tree).  By looking at the local
 structure of the tree defined by x, x's parent, and x's grandparent we
 decide which of three rules to follow.  We continue to
 apply the rules until x is at the root of the tree.</p>
-<div class="highlight"><pre><span></span><code><span class="n">Splay</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code>Splay(1)
 
-              <span class="mi">7</span>                    <span class="mi">7</span>                   <span class="mi">7</span>               <span class="mi">1</span>
-             <span class="o">/</span>                    <span class="o">/</span>                   <span class="o">/</span>                 <span class="err">\</span>
-            <span class="mi">6</span>                    <span class="mi">6</span>                   <span class="mi">6</span>                   <span class="mi">6</span>
-           <span class="o">/</span>                    <span class="o">/</span>                   <span class="o">/</span>                   <span class="o">/</span> <span class="err">\</span>
-          <span class="mi">5</span>                    <span class="mi">5</span>                   <span class="mi">1</span>                   <span class="mi">4</span>   <span class="mi">7</span> 
-         <span class="o">/</span>      <span class="o">=======&gt;</span>      <span class="o">/</span>        <span class="o">=======&gt;</span>     <span class="err">\</span>    <span class="o">======&gt;</span>      <span class="o">/</span> <span class="err">\</span>
-        <span class="mi">4</span>                    <span class="mi">4</span>                       <span class="mi">4</span>               <span class="mi">2</span>   <span class="mi">5</span>
-       <span class="o">/</span>                    <span class="o">/</span>                       <span class="o">/</span> <span class="err">\</span>               <span class="err">\</span>
-      <span class="mi">3</span>                    <span class="mi">1</span>                       <span class="mi">2</span>   <span class="mi">5</span>               <span class="mi">3</span>
-     <span class="o">/</span>                      <span class="err">\</span>                       <span class="err">\</span>
-    <span class="mi">2</span>                        <span class="mi">2</span>                       <span class="mi">3</span>
-   <span class="o">/</span>                          <span class="err">\</span>
-  <span class="mi">1</span>                            <span class="mi">3</span>
+              7                    7                   7               1
+             /                    /                   /                 \
+            6                    6                   6                   6
+           /                    /                   /                   / \
+          5                    5                   1                   4   7 
+         /      =======&gt;      /        =======&gt;     \    ======&gt;      / \
+        4                    4                       4               2   5
+       /                    /                       / \               \
+      3                    1                       2   5               3
+     /                      \                       \
+    2                        2                       3
+   /                          \
+  1                            3
 </code></pre></div>
 <h2 id="implementation-details">Implementation details</h2>
 <p>Splay tree is really a flexible data structure in the sense that there are many options to implement 
@@ -135,12 +135,12 @@ may be different (i.e. different insert algorithm may result in different tree s
 <p>There are two ways to do this. The first way is to use "split" to split the tree based upon the insertion value. By the property of splaying, 
 we will either have the insertion value (already inside the tree) or the parent of the insertion point at the root. Then we can make our insertion 
 value as the new root and adjust the orginal tree to form the new tree. For example,  if the insertion value <code>elem</code> smaller than the root, we do</p>
-<div class="highlight"><pre><span></span><code><span class="err">if (elem &lt; T-&gt;Element)</span>
-<span class="err">{</span>
-<span class="err">  newT-&gt;Right = T;</span>
-<span class="err">  newT-&gt;Left = T-&gt;Left; // we can do this b/c the result of splaying is the parent node of where we should insert.</span>
-<span class="err">  T-&gt;Left = NULL;</span>
-<span class="err">}</span>
+<div class="highlight"><pre><span></span><code><span class="nf">if</span> <span class="p">(</span><span class="n">elem</span> <span class="o">&lt;</span> <span class="n">T</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">newT</span><span class="o">-&gt;</span><span class="kr">Right</span> <span class="o">=</span> <span class="n">T</span><span class="p">;</span>
+  <span class="n">newT</span><span class="o">-&gt;</span><span class="kr">Left</span> <span class="o">=</span> <span class="n">T</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="p">;</span> <span class="c1">// we can do this b/c the result of splaying is the parent node of where we should insert.</span>
+  <span class="n">T</span><span class="o">-&gt;</span><span class="kr">Left</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>The code is straightforward but <code>newT-&gt;Left = T-&gt;Left</code> is worth a remark. Here, when <code>T</code> is the parent of the insertion point, 
 we know <code>T</code>'s left subtree's values are smaller than <code>elem</code> as well. This is because 

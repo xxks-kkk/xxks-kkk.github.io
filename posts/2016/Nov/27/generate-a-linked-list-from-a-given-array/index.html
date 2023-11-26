@@ -95,63 +95,63 @@ Things can get rusty pretty quickly. So, I need a way to keep fresh.</p>
 <div class="section" id="solution">
 <h2>Solution</h2>
 <p>For completeness and readability, here is my basic node declaraiton and definition.</p>
-<div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="kt">int</span> <span class="n">ET</span><span class="p">;</span> <span class="c1">// ET shorts for "ElementType"</span>
+<div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ET</span><span class="p">;</span><span class="w"> </span><span class="c1">// ET shorts for "ElementType"</span>
 
 <span class="c1">// we always assume there is a dummy node at the very beginning</span>
 <span class="c1">// of the list.</span>
 <span class="cp">#ifndef _LINKED_LIST_H</span>
 <span class="cp">#define _LINKED_LIST_H</span>
 
-<span class="k">struct</span> <span class="n">Node</span><span class="p">;</span>
-<span class="k">typedef</span> <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">PtrToNode</span><span class="p">;</span>
-<span class="k">typedef</span> <span class="n">PtrToNode</span> <span class="n">List</span><span class="p">;</span>
-<span class="k">typedef</span> <span class="n">PtrToNode</span> <span class="n">Pos</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">Node</span><span class="p">;</span><span class="w"></span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span> <span class="nc">Node</span><span class="w"> </span><span class="o">*</span><span class="n">PtrToNode</span><span class="p">;</span><span class="w"></span>
+<span class="k">typedef</span><span class="w"> </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">List</span><span class="p">;</span><span class="w"></span>
+<span class="k">typedef</span><span class="w"> </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">Pos</span><span class="p">;</span><span class="w"></span>
 
 <span class="cp">#endif</span>
 
 <span class="c1">// placed in the implementation file</span>
-<span class="k">struct</span> <span class="n">Node</span>
-<span class="p">{</span>
-  <span class="n">ET</span> <span class="n">Element</span><span class="p">;</span>
-  <span class="n">Pos</span> <span class="n">Next</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span> <span class="nc">Node</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">ET</span><span class="w"> </span><span class="n">Element</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">Pos</span><span class="w"> </span><span class="n">Next</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 <p>When I try to work through the linked list related questions in Chapter 2, the first thing
 I need to do is to able to verify my solution. I need to figure out a way to quickly
 generate a test linked list. So, that's what <code>List initializeList(ET A[], int arrayLen);</code> for.</p>
-<div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">List</span>
-<span class="nf">initializeNoHeaderList</span><span class="p">(</span><span class="n">ET</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">arrayLen</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">Pos</span> <span class="n">tmpNode</span><span class="p">;;</span>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="n">List</span><span class="w"></span>
+<span class="nf">initializeNoHeaderList</span><span class="p">(</span><span class="n">ET</span><span class="w"> </span><span class="n">A</span><span class="p">[],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">arrayLen</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">Pos</span><span class="w"> </span><span class="n">tmpNode</span><span class="p">;;</span><span class="w"></span>
 
-  <span class="k">if</span> <span class="p">(</span><span class="n">arrayLen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="n">tmpNode</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">tmpNode</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Element</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-  <span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">initializeNoHeaderList</span><span class="p">(</span><span class="n">A</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">arrayLen</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">tmpNode</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arrayLen</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="n">tmpNode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">Node</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tmpNode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Element</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
+<span class="w">  </span><span class="n">tmpNode</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initializeNoHeaderList</span><span class="p">(</span><span class="n">A</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">arrayLen</span><span class="mi">-1</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">tmpNode</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">List</span>
-<span class="nf">initializeList</span><span class="p">(</span><span class="n">ET</span> <span class="n">A</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">arrayLen</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">Pos</span> <span class="n">header</span><span class="p">;</span>
+<span class="n">List</span><span class="w"></span>
+<span class="nf">initializeList</span><span class="p">(</span><span class="n">ET</span><span class="w"> </span><span class="n">A</span><span class="p">[],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">arrayLen</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">Pos</span><span class="w"> </span><span class="n">header</span><span class="p">;</span><span class="w"></span>
 
-  <span class="n">header</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">header</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="n">header</span><span class="o">-&gt;</span><span class="n">Next</span> <span class="o">=</span> <span class="n">initializeNoHeaderList</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">arrayLen</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">header</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">Node</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">header</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="n">header</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initializeNoHeaderList</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">arrayLen</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">header</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 <p><tt class="docutils literal">initializeList</tt> adds a dummy node and invokes <tt class="docutils literal">initializeNoHeaderList</tt> to
 actually generate linked list from a given array. Inside <tt class="docutils literal">initializeNoHeaderList</tt>,

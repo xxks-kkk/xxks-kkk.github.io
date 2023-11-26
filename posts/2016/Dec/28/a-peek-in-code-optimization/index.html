@@ -83,59 +83,59 @@ We don't have to give a perfect solution right away. We can provide a
 solution and gradually make it better.</p>
 <p>The example I show here is <tt class="docutils literal">integerList add(integerList A, integerList B)</tt>,
 which is part of <a class="reference external" href="../../../../../posts/2016/Dec/26/reflection-on-integer-arithmetic-package-problem/">MAW 3.9 integer arithmetic package question</a></p>
-<div class="highlight"><pre><span></span><span class="n">integerList</span>
-<span class="nf">add</span><span class="p">(</span><span class="n">integerList</span> <span class="n">A</span><span class="p">,</span> <span class="n">integerList</span> <span class="n">B</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="n">integerList</span> <span class="n">R</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyR</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">digitSum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="n">integerList</span><span class="w"></span>
+<span class="nf">add</span><span class="p">(</span><span class="n">integerList</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">integerList</span><span class="w"> </span><span class="n">B</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">integerList</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">Node</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">digitSum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">carry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
 
-  <span class="k">while</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">digitSum</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span> <span class="o">+</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Digit</span> <span class="o">+</span> <span class="n">carry</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">digitSum</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)</span>
-    <span class="p">{</span>
-      <span class="n">addDigit</span><span class="p">(</span><span class="n">digitSum</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-      <span class="n">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">else</span>
-    <span class="p">{</span>
-      <span class="n">carry</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="n">addDigit</span><span class="p">(</span><span class="n">digitSum</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span> <span class="o">-&gt;</span> <span class="n">NextDigit</span><span class="p">;</span>
-    <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span> <span class="o">-&gt;</span> <span class="n">NextDigit</span><span class="p">;</span>
-    <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span> <span class="o">-&gt;</span> <span class="n">NextDigit</span><span class="p">;</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">dummyA</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">dummyB</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">digitSum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">carry</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">digitSum</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">addDigit</span><span class="p">(</span><span class="n">digitSum</span><span class="p">,</span><span class="w"> </span><span class="n">dummyR</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="n">carry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="k">else</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">carry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">addDigit</span><span class="p">(</span><span class="n">digitSum</span><span class="mi">-10</span><span class="p">,</span><span class="w"> </span><span class="n">dummyR</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">dummyA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyB</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">dummyR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyR</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="c1">// example case: 342 + 706</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">carry</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">dummyA</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">dummyB</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">addDigit</span><span class="p">(</span><span class="n">carry</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-    <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="c1">// example case: 342 + 706</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">carry</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">dummyA</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">dummyB</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">addDigit</span><span class="p">(</span><span class="n">carry</span><span class="p">,</span><span class="w"> </span><span class="n">dummyR</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">dummyR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="k">while</span><span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">addDigit</span><span class="p">(</span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span> <span class="o">+</span> <span class="n">carry</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-    <span class="n">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-    <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">dummyA</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">addDigit</span><span class="p">(</span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">carry</span><span class="p">,</span><span class="w"> </span><span class="n">dummyR</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">carry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">dummyA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">dummyR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="k">while</span><span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">addDigit</span><span class="p">(</span><span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Digit</span> <span class="o">+</span> <span class="n">carry</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-    <span class="n">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-    <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">dummyB</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">addDigit</span><span class="p">(</span><span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">carry</span><span class="p">,</span><span class="w"> </span><span class="n">dummyR</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">carry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">dummyR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 <p>The idea for this first iteration solution stems from MAW 3.5
 <a class="reference external" href="https://github.com/xxks-kkk/algo/blob/master/linkedList/generic/linkedList.c">List unionSortedLists(List L, List P)</a>:</p>
@@ -159,40 +159,40 @@ adding two numbers with different number of digits the same as adding two number
 number of digits. So, we eliminate the latter two while loops and only need to keep the first while
 loop in the original solution.</p>
 <p>Here is the final result.</p>
-<div class="highlight"><pre><span></span><span class="n">integerList</span>
-<span class="nf">add</span><span class="p">(</span><span class="n">integerList</span> <span class="n">A</span><span class="p">,</span> <span class="n">integerList</span> <span class="n">B</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">B</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="n">integerList</span> <span class="n">R</span> <span class="o">=</span> <span class="n">makeEmpty</span><span class="p">();</span>
-  <span class="n">PtrToNode</span> <span class="n">dummyR</span> <span class="o">=</span> <span class="n">R</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">digitSum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">carry</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="n">integerList</span><span class="w"></span>
+<span class="nf">add</span><span class="p">(</span><span class="n">integerList</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">integerList</span><span class="w"> </span><span class="n">B</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">integerList</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">makeEmpty</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="n">PtrToNode</span><span class="w"> </span><span class="n">dummyR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">digitSum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">carry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w"></span>
 
-  <span class="k">while</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
-    <span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">dummyA</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">dummyB</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="p">(</span><span class="n">dummyA</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">(</span><span class="n">dummyB</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyB</span><span class="o">-&gt;</span><span class="n">Digit</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
 
-    <span class="n">digitSum</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="n">carry</span><span class="p">;</span>
-    <span class="n">carry</span> <span class="o">=</span> <span class="n">digitSum</span> <span class="o">/</span> <span class="mi">10</span><span class="p">;</span>
-    <span class="n">addDigit</span><span class="p">(</span><span class="n">digitSum</span> <span class="o">%</span> <span class="mi">10</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
+<span class="w">    </span><span class="n">digitSum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">carry</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">carry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">digitSum</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">addDigit</span><span class="p">(</span><span class="n">digitSum</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">dummyR</span><span class="p">);</span><span class="w"></span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="n">dummyA</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="n">dummyA</span> <span class="o">=</span> <span class="n">dummyA</span> <span class="o">-&gt;</span> <span class="n">NextDigit</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">dummyB</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="n">dummyB</span> <span class="o">=</span> <span class="n">dummyB</span> <span class="o">-&gt;</span> <span class="n">NextDigit</span><span class="p">;</span>
-    <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span> <span class="o">-&gt;</span> <span class="n">NextDigit</span><span class="p">;</span>
-  <span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dummyA</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="n">dummyA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyA</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dummyB</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="n">dummyB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyB</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">dummyR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyR</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="c1">// example case: 342 + 706</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">carry</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">addDigit</span><span class="p">(</span><span class="n">carry</span><span class="p">,</span> <span class="n">dummyR</span><span class="p">);</span>
-    <span class="n">dummyR</span> <span class="o">=</span> <span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="c1">// example case: 342 + 706</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">carry</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">addDigit</span><span class="p">(</span><span class="n">carry</span><span class="p">,</span><span class="w"> </span><span class="n">dummyR</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">dummyR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummyR</span><span class="o">-&gt;</span><span class="n">NextDigit</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="k">return</span> <span class="n">R</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">R</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 
         </article>

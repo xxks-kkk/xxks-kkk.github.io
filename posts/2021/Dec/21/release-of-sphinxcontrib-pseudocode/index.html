@@ -133,8 +133,8 @@ detailed steps. Here, I highlight some of the steps that are related to the impl
 <p>pseudocode.js can take <a href="https://github.com/SaswatPadhi/pseudocode.js#options">options</a> that allow user to tweak rendering 
   behavior. As an example, we can pass in <code>lineNumber</code> to a js render function to indicate we want to line numbering 
   the algorithm that the js render function associated with:</p>
-<div class="highlight"><pre><span></span><code><span class="err">  pseudocode.renderElement(document.getElementById("quicksort"),</span>
-<span class="err">                           { lineNumber: true });</span>
+<div class="highlight"><pre><span></span><code>  <span class="nt">pseudocode</span><span class="p">.</span><span class="nc">renderElement</span><span class="o">(</span><span class="nt">document</span><span class="p">.</span><span class="nc">getElementById</span><span class="o">(</span><span class="s2">"quicksort"</span><span class="o">),</span>
+                           <span class="p">{</span> <span class="n">lineNumber</span><span class="p">:</span> <span class="n">true</span> <span class="p">}</span><span class="o">);</span>
 </code></pre></div>
 </li>
 </ul>
@@ -211,13 +211,13 @@ to <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9
 In addition to ids, we also any options that each <code>pcode</code> directive specifies.</p>
 <p>Once we have collected ids and options, we can generate a js script called <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L101">katex_autorenderer.js</a>,
 which contains all <code>renderElement</code> function calls. As an example, it looks like </p>
-<div class="highlight"><pre><span></span><code><span class="err">document.addEventListener("DOMContentLoaded", function() {</span>
-<span class="err">  pseudocode.renderElement(document.getElementById("37667c0e-b9e7-489f-b48e-d64117042cd2"), {lineNumber: true});</span>
-<span class="err">  pseudocode.renderElement(document.getElementById("37c7acbe-a36a-4260-a464-9fd6bff71a3c"), {lineNumber: true});</span>
-<span class="err">  pseudocode.renderElement(document.getElementById("2bace0ba-4113-4766-b226-13c7a6456925"));</span>
-<span class="err">  pseudocode.renderElement(document.getElementById("bb8f4069-52bd-48d0-b782-9d4b0038f2ec"));</span>
-<span class="err">  pseudocode.renderElement(document.getElementById("6f8008db-5388-46c6-938e-837c763d7ed9"));</span>
-<span class="err">});</span>
+<div class="highlight"><pre><span></span><code><span class="nt">document</span><span class="p">.</span><span class="nc">addEventListener</span><span class="o">(</span><span class="s2">"DOMContentLoaded"</span><span class="o">,</span> <span class="nt">function</span><span class="o">()</span> <span class="p">{</span>
+  <span class="err">pseudocode.renderElement(document.getElementById("37667c0e-b9e7-489f-b48e-d64117042cd2"),</span> <span class="err">{</span><span class="n">lineNumber</span><span class="p">:</span> <span class="n">true</span><span class="p">}</span><span class="o">);</span>
+  <span class="nt">pseudocode</span><span class="p">.</span><span class="nc">renderElement</span><span class="o">(</span><span class="nt">document</span><span class="p">.</span><span class="nc">getElementById</span><span class="o">(</span><span class="s2">"37c7acbe-a36a-4260-a464-9fd6bff71a3c"</span><span class="o">),</span> <span class="p">{</span><span class="n">lineNumber</span><span class="p">:</span> <span class="n">true</span><span class="p">}</span><span class="o">);</span>
+  <span class="nt">pseudocode</span><span class="p">.</span><span class="nc">renderElement</span><span class="o">(</span><span class="nt">document</span><span class="p">.</span><span class="nc">getElementById</span><span class="o">(</span><span class="s2">"2bace0ba-4113-4766-b226-13c7a6456925"</span><span class="o">));</span>
+  <span class="nt">pseudocode</span><span class="p">.</span><span class="nc">renderElement</span><span class="o">(</span><span class="nt">document</span><span class="p">.</span><span class="nc">getElementById</span><span class="o">(</span><span class="s2">"bb8f4069-52bd-48d0-b782-9d4b0038f2ec"</span><span class="o">));</span>
+  <span class="nt">pseudocode</span><span class="p">.</span><span class="nc">renderElement</span><span class="o">(</span><span class="nt">document</span><span class="p">.</span><span class="nc">getElementById</span><span class="o">(</span><span class="s2">"6f8008db-5388-46c6-938e-837c763d7ed9"</span><span class="o">));</span>
+<span class="err">}</span><span class="o">);</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
