@@ -272,7 +272,7 @@ $$</div>
 <p>One tricky thing I find out when I work through quiz and programming problems 
 is the gap between the mathematical representation and the actual implementation.</p>
 <p>For the cost function \ref{eq:2}, we implement it in Octave as following:</p>
-<div class="highlight"><pre><span></span><code><span class="err">J = 1/(2*m) * (X*theta-y)' * (X*theta - y); </span>
+<div class="highlight"><pre><span></span><code>J = 1/(2*m) * (X*theta-y)' * (X*theta - y); 
 </code></pre></div>
 <p>where </p>
 <div class="math">$$
@@ -295,7 +295,7 @@ $$</div>
 <p>Matrix transpose times matrix itself is a commonly-seen technique that is used to
 avoid explictly summation.</p>
 <p>For gradient descent, we can calculate like the following in octave:</p>
-<div class="highlight"><pre><span></span><code><span class="err">theta = theta - alpha * 1/m * (X'*(X*theta - y));</span>
+<div class="highlight"><pre><span></span><code>theta = theta - alpha * 1/m * (X'*(X*theta - y));
 </code></pre></div>
 <p>Let me use an example to illustrate why we can calculate \ref{eq:3} like above.
 Suppose <span class="math">\(m = 4\)</span> with <span class="math">\(h_\theta(x) = \theta_0x_0+\theta_1x_1\)</span>.
@@ -333,7 +333,7 @@ x_1^{(1)} &amp;&amp; x_1^{(2)} &amp;&amp; x_1^{(3)} &amp;&amp; x_1^{(4)}
 \end{eqnarray*}
 $$</div>
 <p>For normal equation, we can calculate like the following in octave:</p>
-<div class="highlight"><pre><span></span><code><span class="err">theta = pinv(X'*X)*X'*y;</span>
+<div class="highlight"><pre><span></span><code>theta = pinv(X'*X)*X'*y;
 </code></pre></div>
 <p>This is no different than \ref{eq:4} we mentioned above.</p>
 <h2 id="linear-regression-with-regularization">Linear regression with regularization</h2>
@@ -392,11 +392,11 @@ $$</div>
 <p>Linear regression regularization implementation doesn't differ from no-regularization
 implementation in terms of matrices implementation technique. The following code chunk
 demonstrates a way to calculate the cost function <span class="math">\(J(\theta)\)</span> and the gradients (not gradient descent):</p>
-<div class="highlight"><pre><span></span><code><span class="err">J = 1/(2*m)*(sum((X*theta-y).^2)) + lambda/(2*m)*(sum(theta(2:end).^2));         </span>
-<span class="err">G = (lambda/m) .* theta;</span>
-<span class="err">G(1) = 0; </span>
-<span class="err">grad = ((1/m) * X' * (X*theta - y)) + G;</span>
-<span class="err">grad = grad(:);</span>
+<div class="highlight"><pre><span></span><code><span class="nt">J</span> <span class="o">=</span> <span class="nt">1</span><span class="o">/(</span><span class="nt">2</span><span class="o">*</span><span class="nt">m</span><span class="o">)*(</span><span class="nt">sum</span><span class="o">((</span><span class="nt">X</span><span class="o">*</span><span class="nt">theta-y</span><span class="o">).^</span><span class="nt">2</span><span class="o">))</span> <span class="o">+</span> <span class="nt">lambda</span><span class="o">/(</span><span class="nt">2</span><span class="o">*</span><span class="nt">m</span><span class="o">)*(</span><span class="nt">sum</span><span class="o">(</span><span class="nt">theta</span><span class="o">(</span><span class="nt">2</span><span class="p">:</span><span class="nd">end</span><span class="o">).^</span><span class="nt">2</span><span class="o">));</span>         
+<span class="nt">G</span> <span class="o">=</span> <span class="o">(</span><span class="nt">lambda</span><span class="o">/</span><span class="nt">m</span><span class="o">)</span> <span class="o">.*</span> <span class="nt">theta</span><span class="o">;</span>
+<span class="nt">G</span><span class="o">(</span><span class="nt">1</span><span class="o">)</span> <span class="o">=</span> <span class="nt">0</span><span class="o">;</span> 
+<span class="nt">grad</span> <span class="o">=</span> <span class="o">((</span><span class="nt">1</span><span class="o">/</span><span class="nt">m</span><span class="o">)</span> <span class="o">*</span> <span class="nt">X</span><span class="err">'</span> <span class="o">*</span> <span class="o">(</span><span class="nt">X</span><span class="o">*</span><span class="nt">theta</span> <span class="nt">-</span> <span class="nt">y</span><span class="o">))</span> <span class="o">+</span> <span class="nt">G</span><span class="o">;</span>
+<span class="nt">grad</span> <span class="o">=</span> <span class="nt">grad</span><span class="o">(:);</span>
 </code></pre></div>
 <h2 id="logistic-regression">Logistic regression</h2>
 <p>Logistic regression is a classification algorithm. It is better than the linear
@@ -446,14 +446,14 @@ the class <span class="math">\(i\)</span> that gives highest <span class="math">
 <h3 id="in-practice_2">In practice</h3>
 <p>The implementation for cost function and gradient descent for logistic regression
 should be no hard for us now:</p>
-<div class="highlight"><pre><span></span><code><span class="c">% cost function for logistic regression</span>
-<span class="n">J</span> <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">sum</span><span class="p">(</span> <span class="c">...</span>
-                 <span class="o">-</span><span class="n">y</span><span class="o">'*</span><span class="nb">log</span><span class="p">(</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">))</span><span class="o">-</span> <span class="c">...       </span>
-                 <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">'*</span><span class="nb">log</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">))</span> <span class="c">...    </span>
-             <span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="c">% cost function for logistic regression</span><span class="w"></span>
+<span class="n">J</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="n">m</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb">sum</span><span class="p">(</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="w">                 </span><span class="o">-</span><span class="n">y</span><span class="o">'*</span><span class="nb">log</span><span class="p">(</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">))</span><span class="o">-</span><span class="w"> </span><span class="k">...</span><span class="c">       </span><span class="w"></span>
+<span class="w">                 </span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">'*</span><span class="nb">log</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">))</span><span class="w"> </span><span class="k">...</span><span class="c">    </span><span class="w"></span>
+<span class="w">             </span><span class="p">);</span><span class="w"></span>
 
-<span class="c">% gradient descent for logist regression</span>
-<span class="n">grad</span> <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">X</span><span class="o">'*</span><span class="p">(</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">);</span>
+<span class="c">% gradient descent for logist regression</span><span class="w"></span>
+<span class="n">grad</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="n">m</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">X</span><span class="o">'*</span><span class="p">(</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">X</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="p">);</span><span class="w"></span>
 </code></pre></div>
 <h2 id="logistic-regression-with-regularization">Logistic regression with regularization</h2>
 <h3 id="in-theory_3">In theory</h3>

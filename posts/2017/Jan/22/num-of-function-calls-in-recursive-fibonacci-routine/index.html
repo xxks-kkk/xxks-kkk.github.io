@@ -81,40 +81,40 @@
 <blockquote>
 <p>If the recursive rotuine in Section 2.4 used to computeFibonacci numbers is run for N = 50, is stack space likely to run out?Why or why not?</p>
 </blockquote>
-<div class="highlight"><pre><span></span><code><span class="err">unsigned long</span>
-<span class="err">Fib(int N)</span>
-<span class="err">{</span>
-<span class="err">  if (N &lt;= 1)</span>
-<span class="err">    return 1;</span>
-<span class="err">  else</span>
-<span class="err">    return Fib(N-1) + Fib(N-2);</span>
-<span class="err">}</span>
+<div class="highlight"><pre><span></span><code><span class="nv">unsigned</span> <span class="nv">long</span>
+<span class="nv">Fib</span><span class="ss">(</span><span class="nv">int</span> <span class="nv">N</span><span class="ss">)</span>
+{
+  <span class="k">if</span> <span class="ss">(</span><span class="nv">N</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="ss">)</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="c1">;</span>
+  <span class="k">else</span>
+    <span class="k">return</span> <span class="nv">Fib</span><span class="ss">(</span><span class="nv">N</span><span class="o">-</span><span class="mi">1</span><span class="ss">)</span> <span class="o">+</span> <span class="nv">Fib</span><span class="ss">(</span><span class="nv">N</span><span class="o">-</span><span class="mi">2</span><span class="ss">)</span><span class="c1">;</span>
+}
 </code></pre></div>
 <p>Let's first do an empirical experimentation. By running <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/numCalls/numCalls.c">our test program numCalls</a>
 and we can get the following output:</p>
-<div class="highlight"><pre><span></span><code><span class="err">    i               Fib(i)          numCalls</span>
-<span class="err">    i = 0           1               1</span>
-<span class="err">    i = 1           1               1</span>
-<span class="err">    i = 2           2               3</span>
-<span class="err">    i = 3           3               5</span>
-<span class="err">    i = 4           5               9</span>
-<span class="err">    i = 5           8               15</span>
-<span class="err">    i = 6           13              25</span>
-<span class="err">    i = 7           21              41</span>
-<span class="err">    i = 8           34              67</span>
-<span class="err">    i = 9           55              109</span>
-<span class="err">    i = 10          89              177</span>
-<span class="err">    i = 11          144             287</span>
-<span class="err">    i = 12          233             465</span>
-<span class="err">    i = 13          377             753</span>
-<span class="err">    i = 14          610             1219</span>
-<span class="err">    i = 15          987             1973</span>
-<span class="err">    i = 16          1597            3193</span>
-<span class="err">    i = 17          2584            5167</span>
-<span class="err">    i = 18          4181            8361</span>
-<span class="err">    i = 19          6765            13529</span>
-<span class="err">    ... snip ...</span>
-<span class="err">    i = 50          20365011074     40730022147</span>
+<div class="highlight"><pre><span></span><code>    i               Fib(i)          numCalls
+    i = 0           1               1
+    i = 1           1               1
+    i = 2           2               3
+    i = 3           3               5
+    i = 4           5               9
+    i = 5           8               15
+    i = 6           13              25
+    i = 7           21              41
+    i = 8           34              67
+    i = 9           55              109
+    i = 10          89              177
+    i = 11          144             287
+    i = 12          233             465
+    i = 13          377             753
+    i = 14          610             1219
+    i = 15          987             1973
+    i = 16          1597            3193
+    i = 17          2584            5167
+    i = 18          4181            8361
+    i = 19          6765            13529
+    ... snip ...
+    i = 50          20365011074     40730022147
 </code></pre></div>
 <p>We know that the Fibonacci numbers are defined by the following recurrence relation:</p>
 <div class="math">$$
@@ -173,8 +173,8 @@ stack size              <span class="o">(</span>kbytes, -s<span class="o">)</spa
 <p>As you can see, the default stack size is <code>10 MB</code>. Let's see how large space our <code>Fib</code>
 is going to use on stack: as of <code>gcc 4.6</code>, there is an option <code>-fstack-usage</code> to allow
 us check the function max amount of stack use. <a href="https://gcc.gnu.org/onlinedocs/gnat_ugn/Static-Stack-Usage-Analysis.html&gt;">Read more info here</a>.</p>
-<div class="highlight"><pre><span></span><code><span class="err">numCalls.c:17:1:Fib     48      static</span>
-<span class="err">numCalls.c:27:1:main    64      static</span>
+<div class="highlight"><pre><span></span><code>numCalls.c:17:1:Fib     48      static
+numCalls.c:27:1:main    64      static
 </code></pre></div>
 <p>As you can see, <code>Fib</code> only uses <code>48 bytes</code> and it's quite unlikely to drain out our stack space. 
 But, of course, the runing time is another thing. I mean it's going to be very slow to get the output

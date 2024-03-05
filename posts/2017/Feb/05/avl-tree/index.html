@@ -133,20 +133,20 @@ if the insert value is smaller than unbalanced node value, and smaller than the 
 single rotation. However, when we deal with deletion, we actually think about the height of the subtree: a left-left insertion is equivalent as 
 we make the the left subtree of unbalanced node's child taller than its right subtree. In deletion, there is no way we can use a specific element value 
 to decide what rotation we should use (like insertion). Thus, we have the following code in our <code>deletion</code> routine:</p>
-<div class="highlight"><pre><span></span><code><span class="err">if (Height(T-&gt;Left) - Height(T-&gt;Right) == 2)</span>
-<span class="err">  {</span>
-<span class="err">    if (Height(T-&gt;Left-&gt;Left) - Height(T-&gt;Left-&gt;Right) &gt;= 0) </span>
-<span class="err">      T = singleRotateWithLeft(T); //Left Left case</span>
-<span class="err">    else</span>
-<span class="err">      T = doubleRotateWithLeft(T); //Left Right case</span>
-<span class="err">  }</span>
-<span class="err">  else if (Height(T-&gt;Right) - Height(T-&gt;Left) == 2)</span>
-<span class="err">  {</span>
-<span class="err">    if (Height(T-&gt;Right-&gt;Right) - Height(T-&gt;Right-&gt;Left) &gt;= 0)</span>
-<span class="err">      T = singleRotateWithRight(T); //Right Right case</span>
-<span class="err">    else</span>
-<span class="err">      T = doubleRotateWithRight(T); //Right Left case</span>
-<span class="err">  }</span>
+<div class="highlight"><pre><span></span><code><span class="nf">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="nf">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> 
+      <span class="n">T</span> <span class="o">=</span> <span class="n">singleRotateWithLeft</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Left Left case</span>
+    <span class="n">else</span>
+      <span class="n">T</span> <span class="o">=</span> <span class="n">doubleRotateWithLeft</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Left Right case</span>
+  <span class="p">}</span>
+  <span class="n">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="nf">if</span> <span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="p">)</span> <span class="o">-</span> <span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="n">T</span> <span class="o">=</span> <span class="n">singleRotateWithRight</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Right Right case</span>
+    <span class="n">else</span>
+      <span class="n">T</span> <span class="o">=</span> <span class="n">doubleRotateWithRight</span><span class="p">(</span><span class="n">T</span><span class="p">);</span> <span class="c1">//Right Left case</span>
+  <span class="p">}</span>
 </code></pre></div>
 <p>Of course, the following simple example may help you understand the code chunk above:</p>
 <p><img alt="AVL-deletion" class="img-responsive" src="../../../../../images/AVL-deletion.PNG"/></p>

@@ -118,49 +118,49 @@ the functionality of <code>post()</code> and <code>wait()</code>.</p>
 <p class="admonition-title">Note</p>
 <p>In the following, when we talk about the value of semaphore, we really mean the integer value contained inside semaphore.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="kt">void</span> <span class="nf">post</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// increment the semaphore value by one</span>
-  <span class="c1">// if there are one or more threads waiting on the semaphore, wake one</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">post</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="c1">// increment the semaphore value by one</span>
+<span class="w">  </span><span class="c1">// if there are one or more threads waiting on the semaphore, wake one</span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">wait</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// decrement the semaphore value by one</span>
-  <span class="c1">// wait if the resulting semaphore value is negative</span>
-<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">wait</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="c1">// decrement the semaphore value by one</span>
+<span class="w">  </span><span class="c1">// wait if the resulting semaphore value is negative</span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>Here is the pseudo code for the semaphore implementation:</p>
 <p><img alt="semaphore pseudo code" class="img-responsive" src="../../../../../images/semaphore.png"/></p>
 <p>Now, let's implement semaphore in C++ with the semantics stated above.</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Semaphore</span>
-<span class="p">{</span>
-<span class="k">private</span><span class="o">:</span>
-  <span class="kt">size_t</span> <span class="n">avail</span><span class="p">;</span>
-  <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">m</span><span class="p">;</span>
-  <span class="n">std</span><span class="o">::</span><span class="n">condition_variable</span> <span class="n">cv</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Semaphore</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">avail</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="w"> </span><span class="n">m</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">condition_variable</span><span class="w"> </span><span class="n">cv</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">public</span><span class="o">:</span>
-  <span class="c1">// only one thread can call this; by default, we construct a binary semaphore</span>
-  <span class="k">explicit</span> <span class="n">Semaphore</span><span class="p">(</span><span class="kt">int</span> <span class="n">avail_</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">:</span> <span class="n">avail</span><span class="p">(</span><span class="n">avail_</span><span class="p">)</span> <span class="p">{}</span>
+<span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">  </span><span class="c1">// only one thread can call this; by default, we construct a binary semaphore</span>
+<span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">Semaphore</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">avail_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">avail</span><span class="p">(</span><span class="n">avail_</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-  <span class="kt">void</span> <span class="n">wait</span><span class="p">()</span>
-  <span class="p">{</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lk</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
-    <span class="n">cv</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lk</span><span class="p">,</span> <span class="p">[</span><span class="k">this</span><span class="p">]</span> <span class="p">{</span> <span class="k">return</span> <span class="n">avail</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="p">});</span>
-    <span class="n">avail</span><span class="o">--</span><span class="p">;</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">wait</span><span class="p">()</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lk</span><span class="p">(</span><span class="n">m</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cv</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lk</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="k">this</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">avail</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="w">    </span><span class="n">avail</span><span class="o">--</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="kt">void</span> <span class="n">post</span><span class="p">()</span>
-  <span class="p">{</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lk</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
-    <span class="n">avail</span><span class="o">++</span><span class="p">;</span>
-    <span class="n">cv</span><span class="p">.</span><span class="n">notify_one</span><span class="p">();</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">post</span><span class="p">()</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lk</span><span class="p">(</span><span class="n">m</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">avail</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">cv</span><span class="p">.</span><span class="n">notify_one</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="kt">size_t</span> <span class="n">available</span><span class="p">()</span> <span class="k">const</span>
-  <span class="p">{</span>
-    <span class="k">return</span> <span class="n">avail</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">};</span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">available</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">avail</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 </code></pre></div>
 <p>Since we modify the integer value of semaphore (<code>avail</code>) that can be updated by multiple threads concurrently, 
 we need to use mutex (<code>m</code>) to ensure only one thread doing the update. 
@@ -194,86 +194,86 @@ status on <code>mutex</code> on destruction and <code>std::unqiue_lock</code> de
 <p><a href="https://en.cppreference.com/w/cpp/thread/condition_variable/wait">std::condition_variable::wait</a> has the function signature <code>template&lt; class Predicate &gt; void wait( std::unique_lock&lt;std::mutex&gt;&amp; lock, Predicate pred );</code> (e.g., <code>cv.wait()</code>) and inside the function, it does </p>
 </li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">pred</span><span class="p">())</span> <span class="p">{</span>
-    <span class="n">wait</span><span class="p">(</span><span class="n">lock</span><span class="p">);</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">pred</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">wait</span><span class="p">(</span><span class="n">lock</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>Thus, <code>cv.wait(lk, [this] { return avail &gt; 0; });</code> can be expanded as </p>
-<div class="highlight"><pre><span></span><code><span class="k">while</span> <span class="p">(</span><span class="n">avail</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">wait</span><span class="p">(</span><span class="n">lk</span><span class="p">);</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">avail</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">wait</span><span class="p">(</span><span class="n">lk</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>An intuitve read of <code>cv.wait(lk, [this] { return avail &gt; 0; });</code> is the thread will wait until <code>avail &gt; 0</code>, the condition contained in the lambda function argument. This can probably saves some brain power to do the expansion shown above. </p>
 <p>To make the implementation easier to understand, I borrow the reference implementation in C from <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf">OSTEP</a>. Hopefully, it will make the C++ implementation clearer:</p>
-<div class="highlight"><pre><span></span><code><span class="k">typedef</span> <span class="k">struct</span> <span class="n">__Zem_t</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">value</span><span class="p">;</span>
-  <span class="n">pthread_cond_t</span> <span class="n">cond</span><span class="p">;</span>
-  <span class="n">pthread_mutex_t</span> <span class="n">lock</span><span class="p">;</span>
-<span class="p">}</span> <span class="n">Zem_t</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span> <span class="nc">__Zem_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">pthread_cond_t</span><span class="w"> </span><span class="n">cond</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">pthread_mutex_t</span><span class="w"> </span><span class="n">lock</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"> </span><span class="n">Zem_t</span><span class="p">;</span><span class="w"></span>
 
 <span class="c1">// only one thread can call this</span>
-<span class="kt">void</span> <span class="nf">Zem_init</span><span class="p">(</span><span class="n">Zem_t</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
-  <span class="n">Cond_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">cond</span><span class="p">);</span>
-  <span class="n">Mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">Zem_init</span><span class="p">(</span><span class="n">Zem_t</span><span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">Cond_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">cond</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">Mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">Zem_wait</span><span class="p">(</span><span class="n">Zem_t</span><span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">Mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">Cond_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">cond</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
-  <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="o">--</span><span class="p">;</span>
-  <span class="n">Mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">Zem_wait</span><span class="p">(</span><span class="n">Zem_t</span><span class="o">*</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">Mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">Cond_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">cond</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="o">--</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">Mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">Zem_post</span><span class="p">(</span><span class="n">Zem_t</span><span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">Mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
-  <span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="o">++</span><span class="p">;</span>
-  <span class="n">Cond_signal</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">cond</span><span class="p">);</span>
-  <span class="n">Mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">Zem_post</span><span class="p">(</span><span class="n">Zem_t</span><span class="o">*</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">Mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">value</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">Cond_signal</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">cond</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">Mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h2 id="example">Example</h2>
 <p>As one can probably see, semaphore doesn't offer much freedom when come to how much we can customize it. The only thing that can be set by the user
 is the initial integer value of the semaphore (e.g., <code>avail</code>). In fact, that's the beauty of the semaphore: we can achieve various purposes with semaphore by initalizing it with different values. For exmaple, we can intialize the semaphore with value <code>1</code> to make the semaphore work like a lock (such semaphore is called <strong>binary semaphore</strong>):</p>
-<div class="highlight"><pre><span></span><code><span class="n">Semaphore</span> <span class="nf">lk</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="kt">int</span> <span class="n">balance</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="n">Semaphore</span><span class="w"> </span><span class="nf">lk</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="kt">int</span><span class="w"> </span><span class="n">balance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
 <span class="c1">// deposit called by multiple threads to update balance</span>
-<span class="kt">void</span> <span class="nf">deposit</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">lk</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span>
-  <span class="n">balance</span> <span class="o">+=</span> <span class="mi">100</span><span class="p">;</span>
-  <span class="n">lk</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
-<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">deposit</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">lk</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="n">balance</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">lk</span><span class="p">.</span><span class="n">post</span><span class="p">();</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>Here is an intuitive description to understand semaphore based on this deposit example: Suppose there are five people want to withdraw money
 from the bank. Semaphore works like a key hanging on the bank door. Since the semaphore value is intialized with one, there is only one key hang on the door. The first person arrives at the bank is able to grab the key, open the door, and withdraw money. The rest four people have to wait in line for the key. Once the first person finishes the withdrawing, he puts the key back to the door and pat the next person's shoulder and tells her the key is available and she can go in. Now, the second person checks the key is indeed hang on the door and now she can grab it to withdraw. The whole process repeats for the rest three person waiting in the line. This describes the five threads with one semaphore situation. </p>
 <p>We can also set semaphore value properly to order the threads execution. Consider the <a href="https://leetcode.com/problems/print-in-order/">Leetcode Problem: 1114. Print In Order</a> where we pass the same object <code>Foo</code> into three threads and let them calling appropriate print methods to print "first", "second", and "third" in such ordering without restricting which thread is assigned to print which word. For detailed example, see the problem description. The following implementation shows how we can use semaphore implementation shown above to achieve such ordering purpose: always print "first", "second", and "third" in order:</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Foo</span>
-<span class="p">{</span>
-  <span class="n">Semaphore</span> <span class="n">firstJobDone</span><span class="p">;</span>
-  <span class="n">Semaphore</span> <span class="n">secondJobDone</span><span class="p">;</span>
-<span class="k">public</span><span class="o">:</span>
-  <span class="n">Foo</span><span class="p">()</span><span class="o">:</span> <span class="n">firstJobDone</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">secondJobDone</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{}</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Foo</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">Semaphore</span><span class="w"> </span><span class="n">firstJobDone</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">Semaphore</span><span class="w"> </span><span class="n">secondJobDone</span><span class="p">;</span><span class="w"></span>
+<span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">  </span><span class="n">Foo</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="n">firstJobDone</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="n">secondJobDone</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-  <span class="kt">void</span> <span class="n">first</span><span class="p">(</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span> <span class="n">printFirst</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">printFirst</span><span class="p">();</span>
-    <span class="n">firstJobDone</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">first</span><span class="p">(</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="n">printFirst</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">printFirst</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="n">firstJobDone</span><span class="p">.</span><span class="n">post</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="kt">void</span> <span class="n">second</span><span class="p">(</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span> <span class="n">printSecond</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">firstJobDone</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span>
-    <span class="n">printSecond</span><span class="p">();</span>
-    <span class="n">secondJobDone</span><span class="p">.</span><span class="n">post</span><span class="p">();</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">second</span><span class="p">(</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="n">printSecond</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">firstJobDone</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="n">printSecond</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="n">secondJobDone</span><span class="p">.</span><span class="n">post</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="kt">void</span> <span class="n">third</span><span class="p">(</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span> <span class="n">printThird</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">secondJobDone</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span>
-    <span class="n">printThird</span><span class="p">();</span>
-  <span class="p">}</span>
-<span class="p">};</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">third</span><span class="p">(</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="n">printThird</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">secondJobDone</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="n">printThird</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 </code></pre></div>
 <p>Both <code>firstJobDone</code> and <code>secondJobDone</code> have semaphore value of <code>0</code> when the <code>Foo</code> class is constructed. 
 Both <code>second()</code> and <code>third()</code> will call <code>wait()</code> method on respective semaphore; unless <code>post()</code> is called before <code>wait()</code>, 
