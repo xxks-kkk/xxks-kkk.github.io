@@ -85,7 +85,7 @@ Driver=INSTHOME/bar/bar.so
 </pre>
 <p>We want to replace all the appearance of <tt class="docutils literal">INSTHOME</tt> with the
 value we hold in <tt class="docutils literal">$HOME</tt>. Here is what I do initially:</p>
-<div class="highlight"><pre><span></span>sed -i -e <span class="s2">"s/INSTHOME/</span><span class="nv">$HOME</span><span class="s2">/g"</span> config.ini
+<div class="highlight"><pre><span></span>sed<span class="w"> </span>-i<span class="w"> </span>-e<span class="w"> </span><span class="s2">"s/INSTHOME/</span><span class="nv">$HOME</span><span class="s2">/g"</span><span class="w"> </span>config.ini
 </pre></div>
 <ul class="simple">
 <li><tt class="docutils literal">s</tt> is used to replace the found expression <tt class="docutils literal">INSTHOME</tt> with <tt class="docutils literal">$HOME</tt></li>
@@ -106,7 +106,7 @@ sed: -e expression #1, char 13: unknown option to `s'
 </pre>
 <p>Why did this error happen? That confused me for a while. Then, I try to
 simulate what the program will do for the above expression:</p>
-<div class="highlight"><pre><span></span>sed -i -e <span class="s2">"s/INSTHOME//home/iidev20/g"</span> config.ini
+<div class="highlight"><pre><span></span>sed<span class="w"> </span>-i<span class="w"> </span>-e<span class="w"> </span><span class="s2">"s/INSTHOME//home/iidev20/g"</span><span class="w"> </span>config.ini
 </pre></div>
 <p>Ah! This expansion result doesn't make sense at all because <tt class="docutils literal">sed</tt> expression
 inside <tt class="docutils literal">"</tt> needs to follow:</p>
@@ -114,7 +114,7 @@ inside <tt class="docutils literal">"</tt> needs to follow:</p>
 "s/[target_expression]/[replace_expression/g"
 </pre>
 <p>So, the first thought comes to me is to escape all <tt class="docutils literal">/</tt> in the expression:</p>
-<div class="highlight"><pre><span></span>sed -i -e <span class="s2">"s/INSTHOME/\/home\/iidev20/g"</span> config.ini
+<div class="highlight"><pre><span></span>sed<span class="w"> </span>-i<span class="w"> </span>-e<span class="w"> </span><span class="s2">"s/INSTHOME/\/home\/iidev20/g"</span><span class="w"> </span>config.ini
 </pre></div>
 <p>This can work but it has two severe drawbacks:</p>
 <ul class="simple">
@@ -135,13 +135,13 @@ This also matches the regular expression regexp, but allows one to use a differe
 </blockquote>
 <p>Essentially, we don't have to use <tt class="docutils literal">/</tt> as our delimiter for the expression, especially when the pattern itself contains a lot of slashes (i.e. file path in my case).</p>
 <p>so, I decide to use <tt class="docutils literal">|</tt> as the delimiter:</p>
-<div class="highlight"><pre><span></span>sed -i <span class="s2">"s|INSTHOME|</span><span class="nv">$HOME</span><span class="s2">|g"</span> config.ini
+<div class="highlight"><pre><span></span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s2">"s|INSTHOME|</span><span class="nv">$HOME</span><span class="s2">|g"</span><span class="w"> </span>config.ini
 </pre></div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>I can also use single quote <tt class="docutils literal">'</tt> but the command should be modified like the below
 by leaving out to-be-expanded variable name outside of single quotes.</p>
-<div class="last"><div class="highlight"><pre><span></span>sed -i <span class="s1">'s|INSTHOME|'</span><span class="nv">$HOME</span><span class="s1">'|g'</span> config.ini
+<div class="last"><div class="highlight"><pre><span></span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'s|INSTHOME|'</span><span class="nv">$HOME</span><span class="s1">'|g'</span><span class="w"> </span>config.ini
 </pre></div>
 </div></div>
 <p>Now, everything works nice and clean.</p>

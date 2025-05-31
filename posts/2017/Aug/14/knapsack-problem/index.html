@@ -208,19 +208,19 @@ the solution to <span class="math">\(B[i-1, w]\)</span> and <span class="math">\
 dynamic programming.</p>
 </div>
 <p>The algorithm is below:</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">0</span> <span class="nv">to</span> <span class="nv">W</span> 
-    <span class="nv">B</span>[<span class="mi">0</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span> 
-    <span class="nv">B</span>[<span class="nv">i</span>,<span class="mi">0</span>] <span class="o">=</span> <span class="mi">0</span> 
-<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span>
-    <span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">W</span>
-        <span class="k">if</span> <span class="nv">w_i</span> <span class="o">&lt;=</span><span class="nv">w</span>  <span class="o">//</span><span class="nv">item</span> <span class="nv">i</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">part</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">solution</span> 
-            <span class="k">if</span> <span class="nv">b_i</span> <span class="o">+</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span><span class="o">-</span><span class="nv">w_i</span> ] <span class="o">&gt;</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>]
-                <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">b_i</span> <span class="o">+</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>, <span class="nv">w</span><span class="o">-</span><span class="nv">w_i</span>]
-            <span class="k">else</span>
-                <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>]
-        <span class="k">else</span> 
-            <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">w</span>] <span class="o">//</span> <span class="nv">w_i</span> <span class="o">&gt;</span> <span class="nv">w</span>
+<div class="highlight"><pre><span></span><code>for w = 0 to W 
+    B[0,w] = 0
+for i = 1 to n 
+    B[i,0] = 0 
+for i = 1 to n
+    for w = 1 to W
+        if w_i &lt;=w  //item i can be part of the solution 
+            if b_i + B[i-1,w-w_i ] &gt; B[i-1,w]
+                B[i,w] = b_i + B[i-1, w-w_i]
+            else
+                B[i,w] = B[i-1,w]
+        else 
+            B[i,w] = B[i-1,w] // w_i &gt; w
 </code></pre></div>
 <p>The running time for this algorithm is <span class="math">\(O(n*W)\)</span> because of the double for loop. To understand this algorithm,
 let's take a look at an example:</p>
@@ -314,10 +314,10 @@ let's take a look at an example:</p>
 </table>
 <p>Each cell in the above table represents <span class="math">\(B[i,w]\)</span> and the table looks like above after we executing 
 the first two for loops</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="nv">w</span> <span class="o">=</span> <span class="mi">0</span> <span class="nv">to</span> <span class="nv">W</span> 
-    <span class="nv">B</span>[<span class="mi">0</span>,<span class="nv">w</span>] <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="nv">to</span> <span class="nv">n</span> 
-    <span class="nv">B</span>[<span class="nv">i</span>,<span class="mi">0</span>] <span class="o">=</span> <span class="mi">0</span> 
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="nv">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">W</span><span class="w"> </span>
+<span class="w">    </span><span class="nv">B</span>[<span class="mi">0</span>,<span class="nv">w</span>]<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="k">for</span><span class="w"> </span><span class="nv">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">n</span><span class="w"> </span>
+<span class="w">    </span><span class="nv">B</span>[<span class="nv">i</span>,<span class="mi">0</span>]<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span>
 </code></pre></div>
 <p>Now, let's take a look at <span class="math">\(B[1,1]\)</span>. We have <span class="math">\(i = 1, b_i = 3, w_i = 2, w = 1\)</span>, and since <span class="math">\(w_i &gt; w\)</span>, and by our
 algorithm, we have <span class="math">\(B[i,w] = B[i-1,w]\)</span>, which is <span class="math">\(B[0,1]\)</span>. Thus, <span class="math">\(B[1,1] = 0\)</span> and the table becomes</p>
@@ -445,14 +445,14 @@ algorithm, we have <span class="math">\(B[i,w] = B[i-1,w]\)</span>, which is <sp
 <p>Now, we have the maximum benefit value given the capacity of the knapsack, which is <span class="math">\(B[4,5] = 7\)</span>. 
 The next question is to find out what items we should put inside the knapsack in order to have
 this maximum benefit (i.e., <span class="math">\(7\)</span>). The algorithm is below:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">Let</span> <span class="nv">i</span> <span class="o">=</span> <span class="nv">n</span> <span class="nv">and</span> <span class="nv">k</span> <span class="o">=</span> <span class="nv">W</span>
-<span class="k">while</span> <span class="nv">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="nv">and</span> <span class="nv">k</span> <span class="o">&gt;</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="nv">B</span>[<span class="nv">i</span>,<span class="nv">k</span>] <span class="o">!=</span> <span class="nv">B</span>[<span class="nv">i</span><span class="o">-</span><span class="mi">1</span>,<span class="nv">k</span>], <span class="k">then</span>
-        <span class="nv">mark</span> <span class="nv">the</span> <span class="nv">ith</span> <span class="nv">item</span> <span class="nv">as</span> <span class="nv">in</span> <span class="nv">the</span> <span class="nv">knapsack</span>
-        <span class="nv">i</span> <span class="o">=</span> <span class="nv">i</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="nv">k</span> <span class="o">=</span> <span class="nv">k</span> <span class="o">-</span> <span class="nv">w_i</span>
-    <span class="k">else</span>
-        <span class="nv">i</span> <span class="o">=</span> <span class="nv">i</span> <span class="o">-</span> <span class="mi">1</span>
+<div class="highlight"><pre><span></span><code>Let i = n and k = W
+while i &gt; 0 and k &gt; 0
+    if B[i,k] != B[i-1,k], then
+        mark the ith item as in the knapsack
+        i = i - 1
+        k = k - w_i
+    else
+        i = i - 1
 </code></pre></div>
 <p>Let's first take a look a few examples on how this algorithm runs and then we will
 see the intuition behind this algorithm. In our example, we start with
@@ -492,21 +492,21 @@ because we can include multiple of item <span class="math">\(i\)</span>. But, we
 to <span class="math">\(x_i\)</span>. In addition, <span class="math">\(w/w_i\)</span> may not be an integer. So, we <span class="math">\(x_i\)</span> should be in the range 
 <span class="math">\(0 \le x_i \le \lfloor w/w_i \rfloor\)</span>, where the notation <span class="math">\(\lfloor x \rfloor\)</span> is, for any given <span class="math">\(x\)</span>, 
 defined as the greatest integer less than or equal to <span class="math">\(x\)</span>. The algorithm is shown below:</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">W</span><span class="w"></span>
-<span class="w">    </span><span class="n">B</span><span class="o">[</span><span class="n">0,w</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
-<span class="w">    </span><span class="n">B</span><span class="o">[</span><span class="n">i,0</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">W</span><span class="w"></span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">w_i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">w</span><span class="w"></span>
-<span class="w">            </span><span class="n">cands_B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="n">x_i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="k">hold</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">possible</span><span class="w"> </span><span class="n">B</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">x_i</span><span class="w"></span>
-<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="n">x_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">w</span><span class="o">/</span><span class="n">x_i</span><span class="w"></span>
-<span class="w">                </span><span class="n">cands_B</span><span class="o">[</span><span class="n">x_i</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">[</span><span class="n">i-1, w - w_i * x_i</span><span class="o">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b_i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x_i</span><span class="w"></span>
-<span class="w">                </span><span class="n">B</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">cands_B</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="n">x</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_i</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">associated</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">B</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span><span class="w"></span>
-<span class="w">        </span><span class="k">else</span><span class="w"></span>
-<span class="w">            </span><span class="n">B</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">[</span><span class="n">i-1,w</span><span class="o">]</span><span class="w"></span>
-<span class="w">            </span><span class="n">x</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_i</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">associated</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">B</span><span class="o">[</span><span class="n">i-1,w</span><span class="o">]</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">W</span>
+<span class="w">    </span><span class="n">B</span><span class="o">[</span><span class="n">0,w</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">n</span>
+<span class="w">    </span><span class="n">B</span><span class="o">[</span><span class="n">i,0</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">n</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">W</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">w_i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">w</span>
+<span class="w">            </span><span class="n">cands_B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="n">x_i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="k">hold</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">possible</span><span class="w"> </span><span class="n">B</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">x_i</span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="n">x_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">w</span><span class="o">/</span><span class="n">x_i</span>
+<span class="w">                </span><span class="n">cands_B</span><span class="o">[</span><span class="n">x_i</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">[</span><span class="n">i-1, w - w_i * x_i</span><span class="o">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b_i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x_i</span>
+<span class="w">                </span><span class="n">B</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">cands_B</span><span class="p">)</span>
+<span class="w">                </span><span class="n">x</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_i</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">associated</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">B</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span>
+<span class="w">        </span><span class="k">else</span>
+<span class="w">            </span><span class="n">B</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">B</span><span class="o">[</span><span class="n">i-1,w</span><span class="o">]</span>
+<span class="w">            </span><span class="n">x</span><span class="o">[</span><span class="n">i,w</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_i</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">associated</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">B</span><span class="o">[</span><span class="n">i-1,w</span><span class="o">]</span>
 </code></pre></div>
 <p>Let's walk through an example to better understand the algorithm idea:</p>
 <table class="table-hover table  table-striped">

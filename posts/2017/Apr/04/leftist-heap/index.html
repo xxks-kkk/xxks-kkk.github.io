@@ -140,25 +140,25 @@ swap step.</p>
 <a href="../../../../../posts/2017/Mar/26/maw-chapter-6-priority-queues-heaps-writing-questions/">my chapter 6 writing question post</a>.</p>
 <p>The actual implementation in C is below, which is copied from maw p.198:</p>
 <div class="highlight"><pre><span></span><code><span class="n">PriorityQueue</span>
-<span class="nf">Merge</span><span class="p">(</span><span class="n">PriorityQueue</span> <span class="n">H1</span><span class="p">,</span> <span class="n">PriorityQueue</span> <span class="n">H2</span><span class="p">)</span>
+<span class="nf">Merge</span><span class="p">(</span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">H1</span><span class="p">,</span><span class="w"> </span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">H2</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="nf">if</span> <span class="p">(</span><span class="n">H1</span> <span class="o">==</span> <span class="n">NULL</span><span class="p">)</span> <span class="kr">return</span> <span class="n">H2</span><span class="p">;</span>
-  <span class="nf">if</span> <span class="p">(</span><span class="n">H2</span> <span class="o">==</span> <span class="n">NULL</span><span class="p">)</span> <span class="kr">return</span> <span class="n">H1</span><span class="p">;</span>
-  <span class="nf">if</span> <span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="n">Element</span> <span class="o">&lt;</span> <span class="n">H2</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span> <span class="kr">return</span> <span class="n">Merge1</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="n">H2</span><span class="p">);</span>
-  <span class="nf">if</span> <span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="n">Element</span> <span class="o">&gt;</span> <span class="n">H2</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span> <span class="kr">return</span> <span class="n">Merge1</span><span class="p">(</span><span class="n">H2</span><span class="p">,</span> <span class="n">H1</span><span class="p">);</span>
+<span class="w">  </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">H1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NULL</span><span class="p">)</span><span class="w"> </span><span class="kr">return</span><span class="w"> </span><span class="n">H2</span><span class="p">;</span>
+<span class="w">  </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">H2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NULL</span><span class="p">)</span><span class="w"> </span><span class="kr">return</span><span class="w"> </span><span class="n">H1</span><span class="p">;</span>
+<span class="w">  </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="n">Element</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">H2</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span><span class="w"> </span><span class="kr">return</span><span class="w"> </span><span class="n">Merge1</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span><span class="w"> </span><span class="n">H2</span><span class="p">);</span>
+<span class="w">  </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="n">Element</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">H2</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span><span class="w"> </span><span class="kr">return</span><span class="w"> </span><span class="n">Merge1</span><span class="p">(</span><span class="n">H2</span><span class="p">,</span><span class="w"> </span><span class="n">H1</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="n">static</span> <span class="n">PriorityQueue</span>
-<span class="n">Merge1</span><span class="p">(</span><span class="n">PriorityQueue</span> <span class="n">H1</span><span class="p">,</span> <span class="n">PriorityQueue</span> <span class="n">H2</span><span class="p">)</span>
+<span class="n">static</span><span class="w"> </span><span class="n">PriorityQueue</span>
+<span class="n">Merge1</span><span class="p">(</span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">H1</span><span class="p">,</span><span class="w"> </span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">H2</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="nf">if</span> <span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Left</span> <span class="o">==</span> <span class="n">NULL</span><span class="p">)</span> <span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Left</span> <span class="o">=</span> <span class="n">H2</span><span class="p">;</span> <span class="c1">// Single node; H1-&gt;Right is already NULL</span>
-  <span class="n">else</span>
-  <span class="p">{</span>
-    <span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Right</span> <span class="o">=</span> <span class="nf">Merge</span><span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="p">,</span> <span class="n">H2</span><span class="p">);</span>
-    <span class="nf">if</span><span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="o">-&gt;</span><span class="n">Npl</span> <span class="o">&lt;</span> <span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="o">-&gt;</span><span class="n">Npl</span><span class="p">)</span> <span class="n">swapChildren</span><span class="p">(</span><span class="n">H1</span><span class="p">);</span>
-    <span class="n">H1</span><span class="o">-&gt;</span><span class="n">Npl</span> <span class="o">=</span> <span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="o">-&gt;</span><span class="n">Npl</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>    
-  <span class="p">}</span>    
-  <span class="kr">return</span> <span class="n">H1</span><span class="p">;</span>
+<span class="w">  </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NULL</span><span class="p">)</span><span class="w"> </span><span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">H2</span><span class="p">;</span><span class="w"> </span><span class="c1">// Single node; H1-&gt;Right is already NULL</span>
+<span class="w">  </span><span class="n">else</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">Merge</span><span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="p">,</span><span class="w"> </span><span class="n">H2</span><span class="p">);</span>
+<span class="w">    </span><span class="nf">if</span><span class="p">(</span><span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="o">-&gt;</span><span class="n">Npl</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="o">-&gt;</span><span class="n">Npl</span><span class="p">)</span><span class="w"> </span><span class="n">swapChildren</span><span class="p">(</span><span class="n">H1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">H1</span><span class="o">-&gt;</span><span class="n">Npl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">H1</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="o">-&gt;</span><span class="n">Npl</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">    </span>
+<span class="w">  </span><span class="p">}</span><span class="w">    </span>
+<span class="w">  </span><span class="kr">return</span><span class="w"> </span><span class="n">H1</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="insert">insert</h3>
@@ -167,17 +167,17 @@ and perform a merge. </p>
 <p>Reference section offers a link to visualize the whole insertion process. The
 actual implementation is on maw p.199 and copied below:</p>
 <div class="highlight"><pre><span></span><code><span class="n">PriorityQueue</span>
-<span class="n">Insert1</span><span class="p">(</span><span class="n">ElementType</span> <span class="n">X</span><span class="p">,</span> <span class="n">PriorityQueue</span> <span class="n">H</span><span class="p">)</span>
+<span class="n">Insert1</span><span class="p">(</span><span class="n">ElementType</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">H</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="n">PriorityQueue</span> <span class="n">SingleNode</span><span class="p">;</span>
+<span class="w">  </span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">SingleNode</span><span class="p">;</span>
 
-  <span class="n">SingleNode</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="nf">sizeof</span><span class="p">(</span><span class="n">struct</span> <span class="n">TreeNode</span><span class="p">));</span>
-  <span class="kr">assert</span><span class="p">(</span><span class="n">SingleNode</span><span class="p">);</span>
+<span class="w">  </span><span class="n">SingleNode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="nf">sizeof</span><span class="p">(</span><span class="n">struct</span><span class="w"> </span><span class="n">TreeNode</span><span class="p">));</span>
+<span class="w">  </span><span class="kr">assert</span><span class="p">(</span><span class="n">SingleNode</span><span class="p">);</span>
 
-  <span class="n">SingleNode</span><span class="o">-&gt;</span><span class="n">Element</span> <span class="o">=</span> <span class="n">X</span><span class="p">;</span> <span class="n">SingleNode</span><span class="o">-&gt;</span><span class="n">Npl</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">SingleNode</span><span class="o">-&gt;</span><span class="kr">Left</span> <span class="o">=</span> <span class="n">SingleNode</span><span class="o">-&gt;</span><span class="kr">Right</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>
-  <span class="n">H</span> <span class="o">=</span> <span class="nf">merge</span><span class="p">(</span><span class="n">SingleNode</span><span class="p">,</span> <span class="n">H</span><span class="p">);</span>
-  <span class="kr">return</span> <span class="n">H</span><span class="p">;</span>    
+<span class="w">  </span><span class="n">SingleNode</span><span class="o">-&gt;</span><span class="n">Element</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X</span><span class="p">;</span><span class="w"> </span><span class="n">SingleNode</span><span class="o">-&gt;</span><span class="n">Npl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="n">SingleNode</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SingleNode</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NULL</span><span class="p">;</span>
+<span class="w">  </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="n">SingleNode</span><span class="p">,</span><span class="w"> </span><span class="n">H</span><span class="p">);</span>
+<span class="w">  </span><span class="kr">return</span><span class="w"> </span><span class="n">H</span><span class="p">;</span><span class="w">    </span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="deletemin">deleteMin</h3>
@@ -185,18 +185,18 @@ actual implementation is on maw p.199 and copied below:</p>
 a new leftist heap.</p>
 <p>The actual implementation is on maw p.200 and copied below:</p>
 <div class="highlight"><pre><span></span><code><span class="n">PriorityQueue</span>
-<span class="n">DeleteMin</span><span class="p">(</span><span class="n">PriorityQueue</span> <span class="n">H</span><span class="p">)</span>
+<span class="n">DeleteMin</span><span class="p">(</span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">H</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="n">PriorityQueue</span> <span class="n">LeftHeap</span><span class="p">,</span> <span class="n">RightHeap</span><span class="p">;</span>
-  <span class="nf">if</span><span class="p">(</span><span class="n">IsEmpty</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
-  <span class="p">{</span>
-    <span class="nf">Error</span><span class="p">(</span><span class="s">"Priority queue is empty"</span><span class="p">);</span>
-    <span class="kr">return</span> <span class="n">H</span><span class="p">;</span>    
-  <span class="p">}</span>    
-  <span class="n">LeftHeap</span> <span class="o">=</span> <span class="n">H</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="p">;</span>
-  <span class="n">RightHeap</span> <span class="o">=</span> <span class="n">H</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="p">;</span>
-  <span class="n">free</span><span class="p">(</span><span class="n">H</span><span class="p">);</span>
-  <span class="kr">return</span> <span class="nf">Merge</span><span class="p">(</span><span class="n">LeftHeap</span><span class="p">,</span> <span class="n">RightHeap</span><span class="p">);</span>
+<span class="w">  </span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">LeftHeap</span><span class="p">,</span><span class="w"> </span><span class="n">RightHeap</span><span class="p">;</span>
+<span class="w">  </span><span class="nf">if</span><span class="p">(</span><span class="n">IsEmpty</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">Error</span><span class="p">(</span><span class="s">"Priority queue is empty"</span><span class="p">);</span>
+<span class="w">    </span><span class="kr">return</span><span class="w"> </span><span class="n">H</span><span class="p">;</span><span class="w">    </span>
+<span class="w">  </span><span class="p">}</span><span class="w">    </span>
+<span class="w">  </span><span class="n">LeftHeap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">H</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="p">;</span>
+<span class="w">  </span><span class="n">RightHeap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">H</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="p">;</span>
+<span class="w">  </span><span class="n">free</span><span class="p">(</span><span class="n">H</span><span class="p">);</span>
+<span class="w">  </span><span class="kr">return</span><span class="w"> </span><span class="nf">Merge</span><span class="p">(</span><span class="n">LeftHeap</span><span class="p">,</span><span class="w"> </span><span class="n">RightHeap</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="buildheap">BuildHeap</h3>

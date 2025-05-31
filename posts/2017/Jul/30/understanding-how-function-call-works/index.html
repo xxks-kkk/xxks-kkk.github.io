@@ -249,11 +249,11 @@ you want to save before calling a function, you need to save them
 by pushing them on the stack before pushing the function's parameters.</p>
 </div>
 <p>So, at the time the function starts, the stack looks like this:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">Argument</span> <span class="nv">N</span>
-...
-<span class="nv">Argument</span> <span class="mi">2</span>
-<span class="nv">Argument</span> <span class="mi">1</span>
-<span class="k">Return</span> <span class="nv">address</span> <span class="o">&lt;---</span> <span class="ss">(</span><span class="o">%</span><span class="nv">esp</span><span class="ss">)</span>
+<div class="highlight"><pre><span></span><code><span class="nx">Argument</span><span class="w"> </span><span class="nx">N</span>
+<span class="o">...</span>
+<span class="nx">Argument</span><span class="w"> </span><span class="mi">2</span>
+<span class="nx">Argument</span><span class="w"> </span><span class="mi">1</span>
+<span class="nx">Return</span><span class="w"> </span><span class="nx">address</span><span class="w"> </span><span class="p">&lt;</span><span class="o">---</span><span class="w"> </span><span class="p">(</span><span class="o">%</span><span class="nx">esp</span><span class="p">)</span>
 </code></pre></div>
 <p>As noted previously, the stack pointer holds the address, which contains return address as its value.</p>
 <h4 id="writing-a-function">Writing a function</h4>
@@ -262,8 +262,8 @@ task, cleanup. The setup and cleanup steps are the same acrossed all the functio
 will be explained in details.</p>
 <h5 id="setup">Setup</h5>
 <p>During the setup, the following two instructions are carried out immediately:</p>
-<div class="highlight"><pre><span></span><code><span class="nf">pushl</span> <span class="nv">%ebp</span>
-<span class="nf">movl</span> <span class="nv">%esp</span> <span class="nv">%ebp</span>
+<div class="highlight"><pre><span></span><code><span class="nf">pushl</span><span class="w"> </span><span class="nv">%ebp</span>
+<span class="nf">movl</span><span class="w"> </span><span class="nv">%esp</span><span class="w"> </span><span class="nv">%ebp</span>
 </code></pre></div>
 <p>The first instruction is to save the current base pointer register (aka frame pointer), <span class="math">\(\mathtt{\%ebp}\)</span>. 
 The base pointer is a special register used for accessing function parameters and local 
@@ -280,12 +280,12 @@ able to access the function parameters that are pushed earlier onto the stack by
 as fixed indexes from the base pointer. We cannot use stack pointer directly for accessing
 parameters because the stack pointer can move while the function is executing. </p>
 <p>At this point, the stack looks like this:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">Argument</span> <span class="nv">N</span>     <span class="o">&lt;---</span> <span class="nv">N</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="mi">4</span><span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
-... 
-<span class="nv">Argument</span> <span class="mi">2</span>     <span class="o">&lt;---</span> <span class="mi">16</span> <span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
-<span class="nv">Argument</span> <span class="mi">1</span>     <span class="o">&lt;---</span> <span class="mi">12</span><span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
-<span class="k">Return</span> <span class="nv">address</span> <span class="o">&lt;---</span> <span class="mi">4</span><span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
-<span class="nv">Old</span> <span class="o">%</span><span class="nv">ebp</span>       <span class="o">&lt;---</span> <span class="ss">(</span><span class="o">%</span><span class="nv">esp</span><span class="ss">)</span> <span class="nv">and</span> <span class="ss">(</span><span class="o">%</span><span class="nv">ebp</span><span class="ss">)</span>
+<div class="highlight"><pre><span></span><code><span class="nx">Argument</span><span class="w"> </span><span class="nx">N</span><span class="w">     </span><span class="p">&lt;</span><span class="o">---</span><span class="w"> </span><span class="nx">N</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="mi">4</span><span class="p">(</span><span class="o">%</span><span class="nx">ebp</span><span class="p">)</span>
+<span class="o">...</span><span class="w"> </span>
+<span class="nx">Argument</span><span class="w"> </span><span class="mi">2</span><span class="w">     </span><span class="p">&lt;</span><span class="o">---</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="p">(</span><span class="o">%</span><span class="nx">ebp</span><span class="p">)</span>
+<span class="nx">Argument</span><span class="w"> </span><span class="mi">1</span><span class="w">     </span><span class="p">&lt;</span><span class="o">---</span><span class="w"> </span><span class="mi">12</span><span class="p">(</span><span class="o">%</span><span class="nx">ebp</span><span class="p">)</span>
+<span class="nx">Return</span><span class="w"> </span><span class="nx">address</span><span class="w"> </span><span class="p">&lt;</span><span class="o">---</span><span class="w"> </span><span class="mi">4</span><span class="p">(</span><span class="o">%</span><span class="nx">ebp</span><span class="p">)</span>
+<span class="nx">Old</span><span class="w"> </span><span class="o">%</span><span class="nx">ebp</span><span class="w">       </span><span class="p">&lt;</span><span class="o">---</span><span class="w"> </span><span class="p">(</span><span class="o">%</span><span class="nx">esp</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="p">(</span><span class="o">%</span><span class="nx">ebp</span><span class="p">)</span>
 </code></pre></div>
 <h5 id="using-the-stack-frame">Using the stack frame</h5>
 <p>Once we have performed the fix setup, we can now use the stack frame to:</p>
@@ -313,7 +313,7 @@ no specified initial value can be allocated on the stack by simply decrementing 
 by an appropriate amount. Similarly, space can be deallocated by incrementing pointer. Suppose
 we are going to need two words of memory to run a function. We can simply move the stack pointer
 down two words to serve the space:</p>
-<div class="highlight"><pre><span></span><code><span class="nf">subl</span> <span class="no">$8</span><span class="p">,</span> <span class="nv">%esp</span>  <span class="c1"># Allocate 8 bytes of space on the stack</span>
+<div class="highlight"><pre><span></span><code><span class="nf">subl</span><span class="w"> </span><span class="no">$8</span><span class="p">,</span><span class="w"> </span><span class="nv">%esp</span><span class="w">  </span><span class="c1"># Allocate 8 bytes of space on the stack</span>
 </code></pre></div>
 <p>While it is possible to make space on the stack as needed in a function body, it is generally
 more efficient to allocate this space all at once at the beginning of the function. This way,
@@ -322,15 +322,15 @@ we are free of worring about clobbering them with pushes that we may make for ne
 function, which all happens in "Argument build area" in the above picture).</p>
 <p>Suppose we save <span class="math">\(\mathtt{\%ebx}\)</span> (i.e. callee-save register),
 and with our two words for local storage, our stack now looks like this:</p>
-<div class="highlight"><pre><span></span><code><span class="n">Argument</span><span class="w"> </span><span class="n">N</span><span class="w">      </span><span class="o">&lt;---</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="mi">4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="n">Argument</span><span class="w"> </span><span class="n">N</span><span class="w">      </span><span class="o">&lt;---</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="mi">4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
 <span class="p">...</span><span class="w"> </span>
-<span class="n">Argument</span><span class="w"> </span><span class="mi">2</span><span class="w">      </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="n">Argument</span><span class="w"> </span><span class="mi">1</span><span class="w">      </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">8</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="n">Return</span><span class="w"> </span><span class="n">address</span><span class="w">  </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="n">Old</span><span class="w"> </span><span class="nf">%ebp</span><span class="w">        </span><span class="o">&lt;---</span><span class="w"> </span><span class="p">(</span><span class="nf">%esp</span><span class="p">)</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="nf">%ebx</span><span class="w">            </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">-4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="n">Local</span><span class="w"> </span><span class="n">variable1</span><span class="w"> </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">-8</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"></span>
-<span class="n">Local</span><span class="w"> </span><span class="n">variable2</span><span class="w"> </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">-12</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="p">(</span><span class="nf">%esp</span><span class="p">)</span><span class="w"></span>
+<span class="n">Argument</span><span class="w"> </span><span class="mi">2</span><span class="w">      </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="n">Argument</span><span class="w"> </span><span class="mi">1</span><span class="w">      </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">8</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="n">Return</span><span class="w"> </span><span class="n">address</span><span class="w">  </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="n">Old</span><span class="w"> </span><span class="nf">%ebp</span><span class="w">        </span><span class="o">&lt;---</span><span class="w"> </span><span class="p">(</span><span class="nf">%esp</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="nf">%ebx</span><span class="w">            </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">-4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="n">Local</span><span class="w"> </span><span class="n">variable1</span><span class="w"> </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">-8</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
+<span class="n">Local</span><span class="w"> </span><span class="n">variable2</span><span class="w"> </span><span class="o">&lt;---</span><span class="w"> </span><span class="mi">-12</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="p">(</span><span class="nf">%esp</span><span class="p">)</span>
 </code></pre></div>
 <p>As you can see, we can now access all of the data we need for this function by
 using base pointer addressing using different offsets from <span class="math">\(\mathtt{\%ebp}\)</span>.
@@ -355,9 +355,9 @@ we need to move the stack pointer <span class="math">\(\mathtt{\%esp}\)</span> t
 and restore the caller's frame pointer first. Then, the return address will be the top of the stack.
 Since we need to perform caller's frame pointer restoration anyway, everything just works out.</p>
 <p>Thus, to return from the function you have to do the following:</p>
-<div class="highlight"><pre><span></span><code><span class="nf">movl</span> <span class="nv">%ebp</span><span class="p">,</span> <span class="nv">%esp</span> <span class="c1"># Set stack pointer back to the beginning of the frame</span>
-<span class="nf">popl</span> <span class="nv">%ebp</span>       <span class="c1"># Restore the caller's base pointer and now stack pointer pointing to Return address</span>
-<span class="nf">ret</span>             <span class="c1"># Since stack pointer pointing to return address, we can now call ret</span>
+<div class="highlight"><pre><span></span><code><span class="nf">movl</span><span class="w"> </span><span class="nv">%ebp</span><span class="p">,</span><span class="w"> </span><span class="nv">%esp</span><span class="w"> </span><span class="c1"># Set stack pointer back to the beginning of the frame</span>
+<span class="nf">popl</span><span class="w"> </span><span class="nv">%ebp</span><span class="w">       </span><span class="c1"># Restore the caller's base pointer and now stack pointer pointing to Return address</span>
+<span class="nf">ret</span><span class="w">             </span><span class="c1"># Since stack pointer pointing to return address, we can now call ret</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -371,82 +371,82 @@ put there. </p>
 <p>Now, we can take a look at two examples: the first one is to calculate the power given two numbers: one
 as the base and the other one as the power. The second example calculate the factorial of
 a given number, which demonstrates how the recursive function is done.</p>
-<div class="highlight"><pre><span></span><code>        <span class="c1"># PURPOSE: Program to illustrate how functions work</span>
-        <span class="c1">#          This program will compute the value of  2^3 + 5^2</span>
-        <span class="c1">#</span>
+<div class="highlight"><pre><span></span><code><span class="w">        </span><span class="c1"># PURPOSE: Program to illustrate how functions work</span>
+<span class="w">        </span><span class="c1">#          This program will compute the value of  2^3 + 5^2</span>
+<span class="w">        </span><span class="c1">#</span>
 
-        <span class="c1"># Everything in the main program is stored in registers,</span>
-        <span class="c1"># so the data section doesn't have anything.</span>
-        <span class="na">.section</span> <span class="no">.data</span>
+<span class="w">        </span><span class="c1"># Everything in the main program is stored in registers,</span>
+<span class="w">        </span><span class="c1"># so the data section doesn't have anything.</span>
+<span class="w">        </span><span class="na">.section</span><span class="w"> </span><span class="no">.data</span>
 
-        <span class="na">.section</span> <span class="no">.text</span>
+<span class="w">        </span><span class="na">.section</span><span class="w"> </span><span class="no">.text</span>
 
-        <span class="na">.globl</span> <span class="no">_start</span>
+<span class="w">        </span><span class="na">.globl</span><span class="w"> </span><span class="no">_start</span>
 
 <span class="nl">_start:</span>
-        <span class="nf">pushl</span> <span class="no">$3</span>                  <span class="c1"># push second argument</span>
-        <span class="nf">pushl</span> <span class="no">$2</span>                  <span class="c1"># push first argument</span>
-        <span class="nf">call</span> <span class="no">power</span>                <span class="c1"># call the function</span>
-        <span class="nf">addl</span> <span class="no">$8</span><span class="p">,</span> <span class="nv">%esp</span>             <span class="c1"># move the stack pointer back</span>
-        <span class="nf">pushl</span> <span class="nv">%eax</span>                <span class="c1"># save the first answer before calling the next function</span>
+<span class="w">        </span><span class="nf">pushl</span><span class="w"> </span><span class="no">$3</span><span class="w">                  </span><span class="c1"># push second argument</span>
+<span class="w">        </span><span class="nf">pushl</span><span class="w"> </span><span class="no">$2</span><span class="w">                  </span><span class="c1"># push first argument</span>
+<span class="w">        </span><span class="nf">call</span><span class="w"> </span><span class="no">power</span><span class="w">                </span><span class="c1"># call the function</span>
+<span class="w">        </span><span class="nf">addl</span><span class="w"> </span><span class="no">$8</span><span class="p">,</span><span class="w"> </span><span class="nv">%esp</span><span class="w">             </span><span class="c1"># move the stack pointer back</span>
+<span class="w">        </span><span class="nf">pushl</span><span class="w"> </span><span class="nv">%eax</span><span class="w">                </span><span class="c1"># save the first answer before calling the next function</span>
 
-        <span class="nf">pushl</span> <span class="no">$2</span>                  <span class="c1"># push second argument</span>
-        <span class="nf">pushl</span> <span class="no">$5</span>                  <span class="c1"># push first argument</span>
-        <span class="nf">call</span> <span class="no">power</span>                <span class="c1"># call the function</span>
-        <span class="nf">addl</span> <span class="no">$8</span><span class="p">,</span> <span class="nv">%esp</span>             <span class="c1"># move the stack pointer back</span>
+<span class="w">        </span><span class="nf">pushl</span><span class="w"> </span><span class="no">$2</span><span class="w">                  </span><span class="c1"># push second argument</span>
+<span class="w">        </span><span class="nf">pushl</span><span class="w"> </span><span class="no">$5</span><span class="w">                  </span><span class="c1"># push first argument</span>
+<span class="w">        </span><span class="nf">call</span><span class="w"> </span><span class="no">power</span><span class="w">                </span><span class="c1"># call the function</span>
+<span class="w">        </span><span class="nf">addl</span><span class="w"> </span><span class="no">$8</span><span class="p">,</span><span class="w"> </span><span class="nv">%esp</span><span class="w">             </span><span class="c1"># move the stack pointer back</span>
 
-        <span class="nf">popl</span> <span class="nv">%ebx</span>                 <span class="c1"># The second answer is already in %eax. We saved the</span>
-                                  <span class="c1"># first answer onto the stack, so now we can just pop</span>
-                                  <span class="c1"># it out into %ebx</span>
-        <span class="nf">addl</span> <span class="nv">%eax</span><span class="p">,</span> <span class="nv">%ebx</span>           <span class="c1"># add them together, the result is in %ebx</span>
-        <span class="nf">movl</span> <span class="no">$1</span><span class="p">,</span> <span class="nv">%eax</span>             <span class="c1"># exit (%ebx is returned)</span>
-        <span class="nf">int</span> <span class="no">$0x80</span>
+<span class="w">        </span><span class="nf">popl</span><span class="w"> </span><span class="nv">%ebx</span><span class="w">                 </span><span class="c1"># The second answer is already in %eax. We saved the</span>
+<span class="w">                                  </span><span class="c1"># first answer onto the stack, so now we can just pop</span>
+<span class="w">                                  </span><span class="c1"># it out into %ebx</span>
+<span class="w">        </span><span class="nf">addl</span><span class="w"> </span><span class="nv">%eax</span><span class="p">,</span><span class="w"> </span><span class="nv">%ebx</span><span class="w">           </span><span class="c1"># add them together, the result is in %ebx</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="no">$1</span><span class="p">,</span><span class="w"> </span><span class="nv">%eax</span><span class="w">             </span><span class="c1"># exit (%ebx is returned)</span>
+<span class="w">        </span><span class="nf">int</span><span class="w"> </span><span class="no">$0x80</span>
 
-        <span class="c1"># PURPOSE: This function is used to compute the value of a number raised to a power</span>
-        <span class="c1">#</span>
-        <span class="c1"># INPUT: First argument - the base number</span>
-        <span class="c1">#        Second argumnet - the power to raise it to</span>
-        <span class="c1">#</span>
-        <span class="c1"># OUTPUT: Will give the result as a return value</span>
-        <span class="c1">#</span>
-        <span class="c1"># NOTES: The power must be 1 or greater</span>
-        <span class="c1">#</span>
-        <span class="c1"># VARIABLES:</span>
-        <span class="c1">#        %ebx - holds the base number</span>
-        <span class="c1">#        %ecx - holds the power</span>
-        <span class="c1">#        -4(%ebp) - holds the current result</span>
-        <span class="c1">#</span>
-        <span class="c1">#        %eax is used for temporary storage</span>
-        <span class="na">.type</span> <span class="no">power</span><span class="p">,</span> <span class="na">@function</span>
+<span class="w">        </span><span class="c1"># PURPOSE: This function is used to compute the value of a number raised to a power</span>
+<span class="w">        </span><span class="c1">#</span>
+<span class="w">        </span><span class="c1"># INPUT: First argument - the base number</span>
+<span class="w">        </span><span class="c1">#        Second argumnet - the power to raise it to</span>
+<span class="w">        </span><span class="c1">#</span>
+<span class="w">        </span><span class="c1"># OUTPUT: Will give the result as a return value</span>
+<span class="w">        </span><span class="c1">#</span>
+<span class="w">        </span><span class="c1"># NOTES: The power must be 1 or greater</span>
+<span class="w">        </span><span class="c1">#</span>
+<span class="w">        </span><span class="c1"># VARIABLES:</span>
+<span class="w">        </span><span class="c1">#        %ebx - holds the base number</span>
+<span class="w">        </span><span class="c1">#        %ecx - holds the power</span>
+<span class="w">        </span><span class="c1">#        -4(%ebp) - holds the current result</span>
+<span class="w">        </span><span class="c1">#</span>
+<span class="w">        </span><span class="c1">#        %eax is used for temporary storage</span>
+<span class="w">        </span><span class="na">.type</span><span class="w"> </span><span class="no">power</span><span class="p">,</span><span class="w"> </span><span class="na">@function</span>
 <span class="nl">power:</span>
-        <span class="nf">pushl</span> <span class="nv">%ebp</span>                <span class="c1"># save old base pointer</span>
-        <span class="nf">movl</span> <span class="nv">%esp</span><span class="p">,</span> <span class="nv">%ebp</span>           <span class="c1"># make stack pointer the base pointer</span>
-        <span class="nf">subl</span> <span class="no">$4</span><span class="p">,</span> <span class="nv">%esp</span>             <span class="c1"># get room for our local storage</span>
+<span class="w">        </span><span class="nf">pushl</span><span class="w"> </span><span class="nv">%ebp</span><span class="w">                </span><span class="c1"># save old base pointer</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="nv">%esp</span><span class="p">,</span><span class="w"> </span><span class="nv">%ebp</span><span class="w">           </span><span class="c1"># make stack pointer the base pointer</span>
+<span class="w">        </span><span class="nf">subl</span><span class="w"> </span><span class="no">$4</span><span class="p">,</span><span class="w"> </span><span class="nv">%esp</span><span class="w">             </span><span class="c1"># get room for our local storage</span>
 
-        <span class="nf">movl</span> <span class="mi">8</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%ebx</span>        <span class="c1"># put first argument in %eax</span>
-        <span class="nf">movl</span> <span class="mi">12</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%ecx</span>       <span class="c1"># put second argument in %ecx</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="mi">8</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span><span class="w"> </span><span class="nv">%ebx</span><span class="w">        </span><span class="c1"># put first argument in %eax</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="mi">12</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span><span class="w"> </span><span class="nv">%ecx</span><span class="w">       </span><span class="c1"># put second argument in %ecx</span>
 
-        <span class="nf">movl</span> <span class="nv">%ebx</span><span class="p">,</span> <span class="mi">-4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">)</span>       <span class="c1"># store current result</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="nv">%ebx</span><span class="p">,</span><span class="w"> </span><span class="mi">-4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">)</span><span class="w">       </span><span class="c1"># store current result</span>
 
 <span class="nl">power_loop_start:</span>
-        <span class="nf">cmpl</span> <span class="no">$1</span><span class="p">,</span> <span class="nv">%ecx</span>             <span class="c1"># if the power is 1, we are done</span>
-        <span class="nf">je</span> <span class="no">end_power</span>
-        <span class="nf">movl</span> <span class="mi">-4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%eax</span>       <span class="c1"># move the current result into %eax</span>
-        <span class="nf">imull</span> <span class="nv">%ebx</span><span class="p">,</span> <span class="nv">%eax</span>          <span class="c1"># multiply the current result by the base number</span>
-        <span class="nf">movl</span> <span class="nv">%eax</span><span class="p">,</span> <span class="mi">-4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">)</span>       <span class="c1"># store the current result</span>
+<span class="w">        </span><span class="nf">cmpl</span><span class="w"> </span><span class="no">$1</span><span class="p">,</span><span class="w"> </span><span class="nv">%ecx</span><span class="w">             </span><span class="c1"># if the power is 1, we are done</span>
+<span class="w">        </span><span class="nf">je</span><span class="w"> </span><span class="no">end_power</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="mi">-4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span><span class="w"> </span><span class="nv">%eax</span><span class="w">       </span><span class="c1"># move the current result into %eax</span>
+<span class="w">        </span><span class="nf">imull</span><span class="w"> </span><span class="nv">%ebx</span><span class="p">,</span><span class="w"> </span><span class="nv">%eax</span><span class="w">          </span><span class="c1"># multiply the current result by the base number</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="nv">%eax</span><span class="p">,</span><span class="w"> </span><span class="mi">-4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">)</span><span class="w">       </span><span class="c1"># store the current result</span>
 
-        <span class="nf">decl</span> <span class="nv">%ecx</span>                 <span class="c1"># decrease the power</span>
-        <span class="nf">jmp</span> <span class="no">power_loop_start</span>      <span class="c1"># run for the next power</span>
+<span class="w">        </span><span class="nf">decl</span><span class="w"> </span><span class="nv">%ecx</span><span class="w">                 </span><span class="c1"># decrease the power</span>
+<span class="w">        </span><span class="nf">jmp</span><span class="w"> </span><span class="no">power_loop_start</span><span class="w">      </span><span class="c1"># run for the next power</span>
 
 <span class="nl">end_power:</span>
-        <span class="nf">movl</span> <span class="mi">-4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%eax</span>       <span class="c1"># return value goes in %eax</span>
-        <span class="nf">movl</span> <span class="nv">%ebp</span><span class="p">,</span> <span class="nv">%esp</span>           <span class="c1"># restore the stack pointer</span>
-        <span class="nf">pop</span> <span class="nv">%ebp</span>                  <span class="c1"># restore the base pointer</span>
-        <span class="nf">ret</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="mi">-4</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span><span class="w"> </span><span class="nv">%eax</span><span class="w">       </span><span class="c1"># return value goes in %eax</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="nv">%ebp</span><span class="p">,</span><span class="w"> </span><span class="nv">%esp</span><span class="w">           </span><span class="c1"># restore the stack pointer</span>
+<span class="w">        </span><span class="nf">pop</span><span class="w"> </span><span class="nv">%ebp</span><span class="w">                  </span><span class="c1"># restore the base pointer</span>
+<span class="w">        </span><span class="nf">ret</span>
 </code></pre></div>
 <p>The key to understand the function call is to trace through the status of stack frame. One thing to 
 highlight as a side note is:</p>
-<div class="highlight"><pre><span></span><code><span class="na">.type</span> <span class="no">power</span><span class="p">,</span><span class="na">@function</span>
+<div class="highlight"><pre><span></span><code><span class="na">.type</span><span class="w"> </span><span class="no">power</span><span class="p">,</span><span class="na">@function</span>
 </code></pre></div>
 <p>This tells the linker that the symbol power should be treated as a function. 
 Since this program is only in one file, it would work just the same with this left out. However, it is good practice.</p>
@@ -457,56 +457,56 @@ like this:</p>
 <p><code>as --32 power.s -o power.o; 
 ld -m elf_i386 -s power.o -o power</code></p>
 </div>
-<div class="highlight"><pre><span></span><code>        <span class="c1"># PURPOSE: - Given a number, this program computes the factorial. For example,</span>
-        <span class="c1">#            the factorial of 3 is 3 * 2 * 1, or 6. The factorial of</span>
-        <span class="c1">#            4 is 4 * 3 * 2 * 1, or 24, and so on.</span>
-        <span class="c1">#</span>
-        <span class="c1"># This program shows how to call a function recursively.</span>
+<div class="highlight"><pre><span></span><code><span class="w">        </span><span class="c1"># PURPOSE: - Given a number, this program computes the factorial. For example,</span>
+<span class="w">        </span><span class="c1">#            the factorial of 3 is 3 * 2 * 1, or 6. The factorial of</span>
+<span class="w">        </span><span class="c1">#            4 is 4 * 3 * 2 * 1, or 24, and so on.</span>
+<span class="w">        </span><span class="c1">#</span>
+<span class="w">        </span><span class="c1"># This program shows how to call a function recursively.</span>
 
-        <span class="na">.section</span> <span class="no">.data</span>
+<span class="w">        </span><span class="na">.section</span><span class="w"> </span><span class="no">.data</span>
 
-        <span class="c1"># This program has no global data</span>
+<span class="w">        </span><span class="c1"># This program has no global data</span>
 
-        <span class="na">.section</span> <span class="no">.text</span>
+<span class="w">        </span><span class="na">.section</span><span class="w"> </span><span class="no">.text</span>
 
-        <span class="na">.global</span> <span class="no">_start</span>
-        <span class="na">.global</span> <span class="no">factorial</span> <span class="c1"># this is unneeded unless we want to share</span>
-                          <span class="c1"># this function among other programs</span>
+<span class="w">        </span><span class="na">.global</span><span class="w"> </span><span class="no">_start</span>
+<span class="w">        </span><span class="na">.global</span><span class="w"> </span><span class="no">factorial</span><span class="w"> </span><span class="c1"># this is unneeded unless we want to share</span>
+<span class="w">                          </span><span class="c1"># this function among other programs</span>
 
 <span class="nl">_start:</span>
-        <span class="nf">pushl</span> <span class="no">$4</span>          <span class="c1"># The factorial takes one argument - the number we want</span>
-                          <span class="c1"># a factorial of. So, it gets pushed.</span>
-        <span class="nf">call</span> <span class="no">factorial</span>    <span class="c1"># run the factorial function</span>
-        <span class="nf">addl</span> <span class="no">$4</span><span class="p">,</span> <span class="nv">%esp</span>     <span class="c1"># scrubs the parameter that was pushed on the stack</span>
-        <span class="nf">movl</span> <span class="nv">%eax</span><span class="p">,</span> <span class="nv">%ebx</span>   <span class="c1"># factorial returns the answer in %eax, but we want it</span>
-                          <span class="c1"># in %ebx to send it as our exit status</span>
-        <span class="nf">movl</span> <span class="no">$1</span><span class="p">,</span> <span class="nv">%eax</span>     <span class="c1"># call the kernel's exit function</span>
-        <span class="nf">int</span> <span class="no">$0x80</span>
+<span class="w">        </span><span class="nf">pushl</span><span class="w"> </span><span class="no">$4</span><span class="w">          </span><span class="c1"># The factorial takes one argument - the number we want</span>
+<span class="w">                          </span><span class="c1"># a factorial of. So, it gets pushed.</span>
+<span class="w">        </span><span class="nf">call</span><span class="w"> </span><span class="no">factorial</span><span class="w">    </span><span class="c1"># run the factorial function</span>
+<span class="w">        </span><span class="nf">addl</span><span class="w"> </span><span class="no">$4</span><span class="p">,</span><span class="w"> </span><span class="nv">%esp</span><span class="w">     </span><span class="c1"># scrubs the parameter that was pushed on the stack</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="nv">%eax</span><span class="p">,</span><span class="w"> </span><span class="nv">%ebx</span><span class="w">   </span><span class="c1"># factorial returns the answer in %eax, but we want it</span>
+<span class="w">                          </span><span class="c1"># in %ebx to send it as our exit status</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="no">$1</span><span class="p">,</span><span class="w"> </span><span class="nv">%eax</span><span class="w">     </span><span class="c1"># call the kernel's exit function</span>
+<span class="w">        </span><span class="nf">int</span><span class="w"> </span><span class="no">$0x80</span>
 
-        <span class="c1"># This is the actual function definition</span>
-        <span class="na">.type</span> <span class="no">factorial</span><span class="p">,</span> <span class="na">@function</span>
+<span class="w">        </span><span class="c1"># This is the actual function definition</span>
+<span class="w">        </span><span class="na">.type</span><span class="w"> </span><span class="no">factorial</span><span class="p">,</span><span class="w"> </span><span class="na">@function</span>
 <span class="nl">factorial:</span>
-        <span class="nf">pushl</span> <span class="nv">%ebp</span>         <span class="c1"># standard function stuff - we have to restore %ebp</span>
-                           <span class="c1"># to its prior state before returning, so we have to push it</span>
-        <span class="nf">movl</span>  <span class="nv">%esp</span><span class="p">,</span> <span class="nv">%ebp</span>   <span class="c1"># This is because we don't want to modify the stack pointer</span>
-                           <span class="c1"># so we use %ebp</span>
-        <span class="nf">movl</span> <span class="mi">8</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%eax</span> <span class="c1"># This moves the first argument to %eax</span>
-                           <span class="c1"># 4(%ebp) holds the return address, and 8(%ebp) holds the first parameter</span>
-        <span class="nf">cmpl</span> <span class="no">$1</span><span class="p">,</span> <span class="nv">%eax</span>      <span class="c1"># if the number is 1, this is our base case, and we simply</span>
-                           <span class="c1"># return (1 is already in %eax as the return value)</span>
-        <span class="nf">je</span> <span class="no">end_factorial</span>
-        <span class="nf">decl</span> <span class="nv">%eax</span>          <span class="c1"># otherwise, decrease the value</span>
-        <span class="nf">pushl</span> <span class="nv">%eax</span>         <span class="c1"># push it for our call to factorial</span>
-        <span class="nf">call</span> <span class="no">factorial</span>     <span class="c1"># call factorial</span>
-        <span class="nf">movl</span> <span class="mi">8</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%ebx</span> <span class="c1"># %eax has the return value, so we reload our parameter</span>
-                           <span class="c1"># into %ebx</span>
-        <span class="nf">imull</span> <span class="nv">%ebx</span><span class="p">,</span> <span class="nv">%eax</span>   <span class="c1"># multiply that by the result of the last call to factorial</span>
-                           <span class="c1"># (in %eax) the answer is stored in %eax, which is good since</span>
-                           <span class="c1"># that's where return values go.</span>
+<span class="w">        </span><span class="nf">pushl</span><span class="w"> </span><span class="nv">%ebp</span><span class="w">         </span><span class="c1"># standard function stuff - we have to restore %ebp</span>
+<span class="w">                           </span><span class="c1"># to its prior state before returning, so we have to push it</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w">  </span><span class="nv">%esp</span><span class="p">,</span><span class="w"> </span><span class="nv">%ebp</span><span class="w">   </span><span class="c1"># This is because we don't want to modify the stack pointer</span>
+<span class="w">                           </span><span class="c1"># so we use %ebp</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="mi">8</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span><span class="w"> </span><span class="nv">%eax</span><span class="w"> </span><span class="c1"># This moves the first argument to %eax</span>
+<span class="w">                           </span><span class="c1"># 4(%ebp) holds the return address, and 8(%ebp) holds the first parameter</span>
+<span class="w">        </span><span class="nf">cmpl</span><span class="w"> </span><span class="no">$1</span><span class="p">,</span><span class="w"> </span><span class="nv">%eax</span><span class="w">      </span><span class="c1"># if the number is 1, this is our base case, and we simply</span>
+<span class="w">                           </span><span class="c1"># return (1 is already in %eax as the return value)</span>
+<span class="w">        </span><span class="nf">je</span><span class="w"> </span><span class="no">end_factorial</span>
+<span class="w">        </span><span class="nf">decl</span><span class="w"> </span><span class="nv">%eax</span><span class="w">          </span><span class="c1"># otherwise, decrease the value</span>
+<span class="w">        </span><span class="nf">pushl</span><span class="w"> </span><span class="nv">%eax</span><span class="w">         </span><span class="c1"># push it for our call to factorial</span>
+<span class="w">        </span><span class="nf">call</span><span class="w"> </span><span class="no">factorial</span><span class="w">     </span><span class="c1"># call factorial</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="mi">8</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span><span class="w"> </span><span class="nv">%ebx</span><span class="w"> </span><span class="c1"># %eax has the return value, so we reload our parameter</span>
+<span class="w">                           </span><span class="c1"># into %ebx</span>
+<span class="w">        </span><span class="nf">imull</span><span class="w"> </span><span class="nv">%ebx</span><span class="p">,</span><span class="w"> </span><span class="nv">%eax</span><span class="w">   </span><span class="c1"># multiply that by the result of the last call to factorial</span>
+<span class="w">                           </span><span class="c1"># (in %eax) the answer is stored in %eax, which is good since</span>
+<span class="w">                           </span><span class="c1"># that's where return values go.</span>
 <span class="nl">end_factorial:</span>
-        <span class="nf">movl</span> <span class="nv">%ebp</span><span class="p">,</span> <span class="nv">%esp</span>    <span class="c1"># standard function return stuff - we have to restore</span>
-        <span class="nf">popl</span> <span class="nv">%ebp</span>          <span class="c1"># %ebp and %esp to where they were before the function started</span>
-        <span class="nf">ret</span>                <span class="c1"># return to the function (this pops the return value, too)</span>
+<span class="w">        </span><span class="nf">movl</span><span class="w"> </span><span class="nv">%ebp</span><span class="p">,</span><span class="w"> </span><span class="nv">%esp</span><span class="w">    </span><span class="c1"># standard function return stuff - we have to restore</span>
+<span class="w">        </span><span class="nf">popl</span><span class="w"> </span><span class="nv">%ebp</span><span class="w">          </span><span class="c1"># %ebp and %esp to where they were before the function started</span>
+<span class="w">        </span><span class="nf">ret</span><span class="w">                </span><span class="c1"># return to the function (this pops the return value, too)</span>
 </code></pre></div>
 <p>One good practice we should note is that we should always clean up our stack parameter after a function 
 call returns. In this program, we do <code>addl $4, %esp</code> immediately after we <code>call factorial</code> in our <code>_start</code>.</p>

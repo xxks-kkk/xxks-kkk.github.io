@@ -81,13 +81,13 @@
 <blockquote>
 <p>If the recursive rotuine in Section 2.4 used to computeFibonacci numbers is run for N = 50, is stack space likely to run out?Why or why not?</p>
 </blockquote>
-<div class="highlight"><pre><span></span><code><span class="nv">unsigned</span> <span class="nv">long</span>
-<span class="nv">Fib</span><span class="ss">(</span><span class="nv">int</span> <span class="nv">N</span><span class="ss">)</span>
+<div class="highlight"><pre><span></span><code><span class="nv">unsigned</span><span class="w"> </span><span class="nv">long</span>
+<span class="nv">Fib</span><span class="ss">(</span><span class="nv">int</span><span class="w"> </span><span class="nv">N</span><span class="ss">)</span>
 {
-  <span class="k">if</span> <span class="ss">(</span><span class="nv">N</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="ss">)</span>
-    <span class="k">return</span> <span class="mi">1</span><span class="c1">;</span>
-  <span class="k">else</span>
-    <span class="k">return</span> <span class="nv">Fib</span><span class="ss">(</span><span class="nv">N</span><span class="o">-</span><span class="mi">1</span><span class="ss">)</span> <span class="o">+</span> <span class="nv">Fib</span><span class="ss">(</span><span class="nv">N</span><span class="o">-</span><span class="mi">2</span><span class="ss">)</span><span class="c1">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="ss">(</span><span class="nv">N</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">1</span><span class="ss">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="c1">;</span>
+<span class="w">  </span><span class="k">else</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nv">Fib</span><span class="ss">(</span><span class="nv">N</span><span class="o">-</span><span class="mi">1</span><span class="ss">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nv">Fib</span><span class="ss">(</span><span class="nv">N</span><span class="o">-</span><span class="mi">2</span><span class="ss">)</span><span class="c1">;</span>
 }
 </code></pre></div>
 <p>Let's first do an empirical experimentation. By running <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/numCalls/numCalls.c">our test program numCalls</a>
@@ -165,10 +165,10 @@ I have no clue so far. But, maybe we can find out the space of our <code>Fib</co
 is going to take in call stack and how large the system call stack and we can compare the two
 to get some insights.</p>
 <p>We can use <code>ulimit -a</code> or <code>ulimit -s</code> to find out the size of stack that system allows:</p>
-<div class="highlight"><pre><span></span><code>$ <span class="nb">ulimit</span> -a
-... snip ...
-stack size              <span class="o">(</span>kbytes, -s<span class="o">)</span> <span class="m">10240</span>
-... snip ...
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span><span class="nb">ulimit</span><span class="w"> </span>-a
+...<span class="w"> </span>snip<span class="w"> </span>...
+stack<span class="w"> </span>size<span class="w">              </span><span class="o">(</span>kbytes,<span class="w"> </span>-s<span class="o">)</span><span class="w"> </span><span class="m">10240</span>
+...<span class="w"> </span>snip<span class="w"> </span>...
 </code></pre></div>
 <p>As you can see, the default stack size is <code>10 MB</code>. Let's see how large space our <code>Fib</code>
 is going to use on stack: as of <code>gcc 4.6</code>, there is an option <code>-fstack-usage</code> to allow

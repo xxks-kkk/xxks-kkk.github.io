@@ -82,21 +82,21 @@ We can somehow let a setup program to edit the environment variable for the user
 the whole product setup process automatically.</p>
 <p>Suppose a software relies on an environment variable <tt class="docutils literal">TEST_SOURCE</tt> and
 we don't have such an environment variable initially.</p>
-<div class="highlight"><pre><span></span>$ <span class="nb">echo</span> <span class="nv">$TEST_SOURCE</span>
+<div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$TEST_SOURCE</span>
 $
 </pre></div>
 <p>If we create a test script <tt class="docutils literal">test.sh</tt> like the following:</p>
 <div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
 
-<span class="nb">export</span> <span class="nv">TEST_SOURCE</span><span class="o">=</span>HELLO
+<span class="nb">export</span><span class="w"> </span><span class="nv">TEST_SOURCE</span><span class="o">=</span>HELLO
 </pre></div>
 <p>Then we can have two way to execute this script: either by <tt class="docutils literal">./test.sh</tt> or
 by <tt class="docutils literal">source test.sh</tt> and they two have different outcome:</p>
-<div class="highlight"><pre><span></span>$ ./test.sh
-$ <span class="nb">echo</span> <span class="nv">$TEST_SOURCE</span>
+<div class="highlight"><pre><span></span>$<span class="w"> </span>./test.sh
+$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$TEST_SOURCE</span>
 $
-$ <span class="nb">source</span> test.sh
-$ <span class="nb">echo</span> <span class="nv">$TEST_SOURCE</span>
+$<span class="w"> </span><span class="nb">source</span><span class="w"> </span>test.sh
+$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$TEST_SOURCE</span>
 HELLO
 </pre></div>
 <p>So, the conclusion is that when we execute in <tt class="docutils literal">source</tt>, we actually run program

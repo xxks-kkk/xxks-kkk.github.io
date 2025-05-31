@@ -113,10 +113,10 @@ are drawn as line segments.</li>
 graphviz layout. </li>
 </ol>
 <div class="highlight"><pre><span></span><code>{
-  node [shape=circle, color=yellow, style=filled, fillcolor=yellow];
-  x0 [label=<span class="nt">&lt;x</span><span class="err">&lt;sub</span><span class="nt">&gt;</span>0<span class="nt">&lt;/sub&gt;</span>&gt;]; 
-  a02 [label=<span class="nt">&lt;a</span><span class="err">&lt;sub</span><span class="nt">&gt;</span>0<span class="nt">&lt;/sub&gt;&lt;sup&gt;</span>(2)<span class="nt">&lt;/sup&gt;</span>&gt;]; 
-  a03 [label=<span class="nt">&lt;a</span><span class="err">&lt;sub</span><span class="nt">&gt;</span>0<span class="nt">&lt;/sub&gt;&lt;sup&gt;</span>(3)<span class="nt">&lt;/sup&gt;</span>&gt;];
+<span class="w">  </span>node<span class="w"> </span>[shape=circle,<span class="w"> </span>color=yellow,<span class="w"> </span>style=filled,<span class="w"> </span>fillcolor=yellow];
+<span class="w">  </span>x0<span class="w"> </span>[label=<span class="nt">&lt;x</span><span class="err">&lt;sub</span><span class="nt">&gt;</span>0<span class="nt">&lt;/sub&gt;</span>&gt;];<span class="w"> </span>
+<span class="w">  </span>a02<span class="w"> </span>[label=<span class="nt">&lt;a</span><span class="err">&lt;sub</span><span class="nt">&gt;</span>0<span class="nt">&lt;/sub&gt;&lt;sup&gt;</span>(2)<span class="nt">&lt;/sup&gt;</span>&gt;];<span class="w"> </span>
+<span class="w">  </span>a03<span class="w"> </span>[label=<span class="nt">&lt;a</span><span class="err">&lt;sub</span><span class="nt">&gt;</span>0<span class="nt">&lt;/sub&gt;&lt;sup&gt;</span>(3)<span class="nt">&lt;/sup&gt;</span>&gt;];
 }
 </code></pre></div>
 <ol>
@@ -129,8 +129,8 @@ how we write subscript and superscript in Graphviz.</li>
 how we can specify several nodes at the once with the same node property <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>.</li>
 </ol>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-  <span class="nf">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span>
-  <span class="n">x0</span><span class="o">-&gt;</span><span class="n">x1</span><span class="o">-&gt;</span><span class="n">x2</span><span class="o">-&gt;</span><span class="n">x3</span><span class="p">;</span>
+<span class="w">  </span><span class="nf">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span>
+<span class="w">  </span><span class="n">x0</span><span class="o">-&gt;</span><span class="n">x1</span><span class="o">-&gt;</span><span class="n">x2</span><span class="o">-&gt;</span><span class="n">x3</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 <ol>
@@ -151,9 +151,9 @@ the layers should be positioned except <code>rankdir=LR</code>, which says layer
 ordered from left to right. <code>a02-&gt;a03</code> says layer with <code>a02</code> should be lined up with 
 layer with <code>a03</code>.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="n">l0</span> <span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">plaintext</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">"layer 1 (input layer)"</span><span class="p">];</span>
+<div class="highlight"><pre><span></span><code><span class="n">l0</span><span class="w"> </span><span class="p">[</span><span class="n">shape</span><span class="o">=</span><span class="n">plaintext</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="s">"layer 1 (input layer)"</span><span class="p">];</span>
 <span class="n">l0</span><span class="o">-&gt;</span><span class="n">x0</span><span class="p">;</span>
-<span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">l0</span><span class="p">;</span><span class="n">x0</span><span class="p">};</span>
+<span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span><span class="w"> </span><span class="n">l0</span><span class="p">;</span><span class="n">x0</span><span class="p">};</span>
 </code></pre></div>
 <ol>
 <li>This code chunk is how we add label text to each layer. As you can see we use
@@ -168,9 +168,9 @@ the text to the layer 1.</li>
 not before. One small trick here is <code>tailport=e, headport=w</code>. This will let all the edges
 point to the same position.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="n">x0</span><span class="p">;</span> <span class="n">x1</span><span class="p">;</span> <span class="n">x2</span><span class="p">;</span> <span class="n">x3</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">a12</span><span class="p">;</span><span class="n">a22</span><span class="p">;</span><span class="n">a32</span><span class="p">;</span><span class="n">a42</span><span class="p">;</span><span class="n">a52</span><span class="p">};</span>
-<span class="p">{</span><span class="n">a02</span><span class="p">;</span><span class="n">a12</span><span class="p">;</span><span class="n">a22</span><span class="p">;</span><span class="n">a32</span><span class="p">;</span><span class="n">a42</span><span class="p">;</span><span class="n">a52</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">a13</span><span class="p">;</span><span class="n">a23</span><span class="p">;</span><span class="n">a33</span><span class="p">;</span><span class="n">a43</span><span class="p">;</span><span class="n">a53</span><span class="p">};</span>
-<span class="p">{</span><span class="n">a03</span><span class="p">;</span><span class="n">a13</span><span class="p">;</span><span class="n">a23</span><span class="p">;</span><span class="n">a33</span><span class="p">;</span><span class="n">a43</span><span class="p">;</span><span class="n">a53</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">O1</span><span class="p">,</span><span class="n">O2</span><span class="p">,</span><span class="n">O3</span><span class="p">,</span><span class="n">O4</span><span class="p">};</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="n">x0</span><span class="p">;</span><span class="w"> </span><span class="n">x1</span><span class="p">;</span><span class="w"> </span><span class="n">x2</span><span class="p">;</span><span class="w"> </span><span class="n">x3</span><span class="p">}</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="n">a12</span><span class="p">;</span><span class="n">a22</span><span class="p">;</span><span class="n">a32</span><span class="p">;</span><span class="n">a42</span><span class="p">;</span><span class="n">a52</span><span class="p">};</span>
+<span class="p">{</span><span class="n">a02</span><span class="p">;</span><span class="n">a12</span><span class="p">;</span><span class="n">a22</span><span class="p">;</span><span class="n">a32</span><span class="p">;</span><span class="n">a42</span><span class="p">;</span><span class="n">a52</span><span class="p">}</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="n">a13</span><span class="p">;</span><span class="n">a23</span><span class="p">;</span><span class="n">a33</span><span class="p">;</span><span class="n">a43</span><span class="p">;</span><span class="n">a53</span><span class="p">};</span>
+<span class="p">{</span><span class="n">a03</span><span class="p">;</span><span class="n">a13</span><span class="p">;</span><span class="n">a23</span><span class="p">;</span><span class="n">a33</span><span class="p">;</span><span class="n">a43</span><span class="p">;</span><span class="n">a53</span><span class="p">}</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="n">O1</span><span class="p">,</span><span class="n">O2</span><span class="p">,</span><span class="n">O3</span><span class="p">,</span><span class="n">O4</span><span class="p">};</span>
 </code></pre></div>
 <ol>
 <li>This code chunk is how we actually draw the edges. In the simple example above,
@@ -208,10 +208,10 @@ for rank="max" and rank="sink". (Note: the minimum rank is topmost or leftmost, 
 rank is bottommost or rightmost.)</p>
 </blockquote>
 <p>Let's demonstrate this description with a simple example <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>:</p>
-<div class="highlight"><pre><span></span><code><span class="n">digraph</span> <span class="n">G</span>
+<div class="highlight"><pre><span></span><code><span class="n">digraph</span><span class="w"> </span><span class="n">G</span>
 <span class="p">{</span>
-  <span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">source</span><span class="p">;</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">;}</span>
-  <span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">d</span><span class="p">;}</span>
+<span class="w">  </span><span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">source</span><span class="p">;</span><span class="w"> </span><span class="n">a</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">;}</span>
+<span class="w">  </span><span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span><span class="w"> </span><span class="n">c</span><span class="o">-&gt;</span><span class="n">d</span><span class="p">;}</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>This example gives a graph with two rows. <code>a-&gt;b</code> is above <code>c-&gt;d</code>.
@@ -222,9 +222,9 @@ minimum rank. However, <code>source</code> only allows other subgraphs of <code>
 to be on the minimum rank (we have <code>same</code> in this case).</p>
 <p><code>sink</code> and <code>max</code> works similarly. For instance, the below example gives a picture
 with <code>c-&gt;d</code> at the top and <code>a-&gt;b</code> at the bottom:</p>
-<div class="highlight"><pre><span></span><code><span class="n">digraph</span> <span class="n">G</span><span class="p">{</span>
-  <span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">sink</span><span class="p">;</span> <span class="n">a</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">;}</span>
-  <span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">d</span><span class="p">;}</span>
+<div class="highlight"><pre><span></span><code><span class="n">digraph</span><span class="w"> </span><span class="n">G</span><span class="p">{</span>
+<span class="w">  </span><span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">sink</span><span class="p">;</span><span class="w"> </span><span class="n">a</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">;}</span>
+<span class="w">  </span><span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">same</span><span class="p">;</span><span class="w"> </span><span class="n">c</span><span class="o">-&gt;</span><span class="n">d</span><span class="p">;}</span>
 <span class="p">}</span>
 </code></pre></div>
 <div class="footnote">

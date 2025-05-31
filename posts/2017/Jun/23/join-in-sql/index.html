@@ -148,12 +148,12 @@ use a cartesian product or join of columns of the same data type.</p>
 The end result of cartesian product is a relation that has all attributes from
 all the relations in the <code>from</code> clause. The following iterative process shows
 how the cartesian product of the relations in the <code>from</code> clause get generated</p>
-<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="nv">each</span> <span class="nv">tuple</span> <span class="nv">t1</span> <span class="nv">in</span> <span class="nv">relation</span> <span class="nv">r1</span>
-  <span class="k">for</span> <span class="nv">each</span> <span class="nv">tuple</span> <span class="nv">t2</span> <span class="nv">in</span> <span class="nv">relation</span> <span class="nv">r2</span>
-    . . .
-    <span class="k">for</span> <span class="nv">each</span> <span class="nv">tuple</span> <span class="nv">tm</span> <span class="nv">in</span> <span class="nv">relation</span> <span class="nv">rm</span>
-      <span class="nv">Concatenate</span> <span class="nv">t1</span>, <span class="nv">t2</span>, . . . , <span class="nv">tm</span> <span class="nv">into</span> <span class="nv">a</span> <span class="nv">single</span> <span class="nv">tuple</span> <span class="nv">t</span>
-      <span class="nv">Add</span> <span class="nv">t</span> <span class="nv">into</span> <span class="nv">the</span> <span class="nb">result</span> <span class="nv">relation</span>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="nv">each</span><span class="w"> </span><span class="nv">tuple</span><span class="w"> </span><span class="nv">t1</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">relation</span><span class="w"> </span><span class="nv">r1</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="nv">each</span><span class="w"> </span><span class="nv">tuple</span><span class="w"> </span><span class="nv">t2</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">relation</span><span class="w"> </span><span class="nv">r2</span>
+<span class="w">    </span>.<span class="w"> </span>.<span class="w"> </span>.
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nv">each</span><span class="w"> </span><span class="nv">tuple</span><span class="w"> </span><span class="nv">tm</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">relation</span><span class="w"> </span><span class="nv">rm</span>
+<span class="w">      </span><span class="nv">Concatenate</span><span class="w"> </span><span class="nv">t1</span>,<span class="w"> </span><span class="nv">t2</span>,<span class="w"> </span>.<span class="w"> </span>.<span class="w"> </span>.<span class="w"> </span>,<span class="w"> </span><span class="nv">tm</span><span class="w"> </span><span class="nv">into</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">single</span><span class="w"> </span><span class="nv">tuple</span><span class="w"> </span><span class="nv">t</span>
+<span class="w">      </span><span class="nv">Add</span><span class="w"> </span><span class="nv">t</span><span class="w"> </span><span class="nv">into</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nb">result</span><span class="w"> </span><span class="nv">relation</span>
 </code></pre></div>
 <p>Another perspective to understand cartesian product is from relation algebra cross-product
 <span class="math">\(R \times S\)</span>, which is defined as: returns a relation instance whose schema
@@ -162,28 +162,28 @@ by all the fields of <span class="math">\(S\)</span> (in the same order as they 
 <span class="math">\(R \times S\)</span> contains all tuples <span class="math">\((r,s)\)</span> (the concatenation of tuples <span class="math">\(r\)</span> and <span class="math">\(s\)</span>)
 for each pair of tuples <span class="math">\(r \in R\)</span>, <span class="math">\(s \in S\)</span>.</p>
 <p>To see a concrete example, let's consider the following SQL</p>
-<div class="highlight"><pre><span></span><code><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">teaches</span><span class="p">,</span> <span class="n">instructor</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">teaches</span><span class="p">,</span><span class="w"> </span><span class="n">instructor</span><span class="p">;</span>
 </code></pre></div>
 <p>The <em>teaches</em> and <em>instructor</em> table look like below</p>
-<div class="highlight"><pre><span></span><code>sqlite&gt; select * from teaches;
-ID|course_id|sec_id|semester|year
-10101|CS-101|1|Fall|2009
-10101|CS-315|1|Spring|2010
-10101|CS-347|1|Fall|2009
-12121|FIN-201|1|Spring|2010
-15151|MU-199|1|Spring|2010
-22222|PHY-101|1|Fall|2009
-32343|HIS-351|1|Spring|2010
-45565|CS-101|1|Spring|2010
-45565|CS-319|1|Spring|2010
-76766|BIO-101|1|Summer|2009
-76766|BIO-301|1|Summer|2010
-83821|CS-190|1|Spring|2009
-83821|CS-190|2|Spring|2009
-83821|CS-319|2|Spring|2010
-98345|EE-181|1|Spring|2009
+<div class="highlight"><pre><span></span><code>sqlite&gt; select <span class="gs">* from teaches;</span>
+<span class="gs">ID|course_id|sec_id|semester|year</span>
+<span class="gs">10101|CS-101|1|Fall|2009</span>
+<span class="gs">10101|CS-315|1|Spring|2010</span>
+<span class="gs">10101|CS-347|1|Fall|2009</span>
+<span class="gs">12121|FIN-201|1|Spring|2010</span>
+<span class="gs">15151|MU-199|1|Spring|2010</span>
+<span class="gs">22222|PHY-101|1|Fall|2009</span>
+<span class="gs">32343|HIS-351|1|Spring|2010</span>
+<span class="gs">45565|CS-101|1|Spring|2010</span>
+<span class="gs">45565|CS-319|1|Spring|2010</span>
+<span class="gs">76766|BIO-101|1|Summer|2009</span>
+<span class="gs">76766|BIO-301|1|Summer|2010</span>
+<span class="gs">83821|CS-190|1|Spring|2009</span>
+<span class="gs">83821|CS-190|2|Spring|2009</span>
+<span class="gs">83821|CS-319|2|Spring|2010</span>
+<span class="gs">98345|EE-181|1|Spring|2009</span>
 
-sqlite&gt; select * from instructor;
+<span class="gs">sqlite&gt; select *</span> from instructor;
 ID|name|dept_name|salary
 10101|Srinivasan|Comp. Sci.|65000
 12121|Wu|Finance|90000
@@ -226,9 +226,9 @@ ID|name|dept_name|salary|ID|course_id|sec_id|semester|year
 <p>The result relation has 180 rows, which exactly equal to <span class="math">\(12 \times 15\)</span>. </p>
 <p>Quite often, we use <code>where</code> clause to restrict the combinations created by the 
 cartesian product to those that are meaningful for the desired answer. For example:</p>
-<div class="highlight"><pre><span></span><code><span class="k">select</span> <span class="n">name</span><span class="p">,</span> <span class="n">course</span> <span class="n">id</span>
-<span class="k">from</span> <span class="n">instructor</span><span class="p">,</span> <span class="n">teaches</span>
-<span class="k">where</span> <span class="n">instructor</span><span class="p">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">teaches</span><span class="p">.</span><span class="n">ID</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">course</span><span class="w"> </span><span class="n">id</span>
+<span class="k">from</span><span class="w"> </span><span class="n">instructor</span><span class="p">,</span><span class="w"> </span><span class="n">teaches</span>
+<span class="k">where</span><span class="w"> </span><span class="n">instructor</span><span class="p">.</span><span class="n">ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">teaches</span><span class="p">.</span><span class="n">ID</span><span class="p">;</span>
 </code></pre></div>
 <p>In this query, we combine information from the <em>instructor</em> and <em>teaches</em> table
 and the matching condition requires <code>instructor.ID</code> to be equal to <code>teaches.ID</code>. 
@@ -280,7 +280,7 @@ The table below provides a summary of join types and join conditions</p>
 </tbody>
 </table>
 <p>Then the SQL syntax is </p>
-<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">table1</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="n">natural</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">Join</span><span class="w"> </span><span class="n">types</span><span class="p">]</span><span class="w"> </span><span class="p">[</span><span class="n">table2</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="n">on</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">using</span><span class="o">&gt;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="n">table1</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="n">natural</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">Join</span><span class="w"> </span><span class="n">types</span><span class="p">]</span><span class="w"> </span><span class="p">[</span><span class="n">table2</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="n">on</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">using</span><span class="o">&gt;</span>
 </code></pre></div>
 <h4 id="inner-join">inner join</h4>
 <h5 id="natural-join">natural join</h5>
@@ -289,7 +289,7 @@ on two relations and produces a relation as the result. Unlike the cartesian
 product of two relations, which concatenates each tuple of the first relation
 with every tuple of the second, natural join considers only those pairs of tuples
 with the same value on those attributes that appear in the schemas of both relations.</p>
-<div class="highlight"><pre><span></span><code><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">instructor</span> <span class="k">natural</span> <span class="k">join</span> <span class="n">teaches</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">instructor</span><span class="w"> </span><span class="k">natural</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">teaches</span><span class="p">;</span>
 </code></pre></div>
 <p>Consider the query above, computing <code>instructor natural join teaches</code> considers
 only those pairs of tuples where both the tuple from <code>instructor</code> and the tuple
@@ -330,8 +330,8 @@ finally, those attribute unique to the schema of the second relation.</p>
 </ol>
 <p>In addition, natural join will consider ALL the attributes that appear in the 
 schemas of both relations. Consider the following query</p>
-<div class="highlight"><pre><span></span><code><span class="k">select</span> <span class="o">*</span>
-<span class="k">from</span> <span class="n">instructor</span> <span class="k">natural</span> <span class="k">join</span> <span class="n">teaches</span> <span class="k">natural</span> <span class="k">join</span> <span class="n">course</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span>
+<span class="k">from</span><span class="w"> </span><span class="n">instructor</span><span class="w"> </span><span class="k">natural</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">teaches</span><span class="w"> </span><span class="k">natural</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">course</span><span class="p">;</span>
 </code></pre></div>
 <p><em>course</em> table looks like the following</p>
 <div class="highlight"><pre><span></span><code>sqlite&gt; select * from course;
@@ -387,8 +387,8 @@ is similar to <span class="math">\(r_1\)</span> <code>natural join</code> <span 
 even if <span class="math">\(r_1\)</span> and <span class="math">\(r_2\)</span> both have an attribute named <span class="math">\(A_3\)</span>, it is <em>not</em> required
 that <span class="math">\(t_1.A_3 = t_2.A_3\)</span>. </p>
 <p>An example query look like</p>
-<div class="highlight"><pre><span></span><code><span class="k">select</span> <span class="n">name</span><span class="p">,</span> <span class="n">title</span>
-<span class="k">from</span> <span class="p">(</span><span class="n">instructor</span> <span class="k">natural</span> <span class="k">join</span> <span class="n">teaches</span><span class="p">)</span> <span class="k">join</span> <span class="n">course</span> <span class="k">using</span> <span class="p">(</span><span class="n">course_id</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">title</span>
+<span class="k">from</span><span class="w"> </span><span class="p">(</span><span class="n">instructor</span><span class="w"> </span><span class="k">natural</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">teaches</span><span class="p">)</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">course</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="n">course_id</span><span class="p">);</span>
 </code></pre></div>
 <h5 id="join-on">join ... on</h5>
 <p>Another form of join condition is the <strong>on</strong> condition, which allows a general 
@@ -396,9 +396,9 @@ predicate over the relations being joined. The predicte is written like a <stron
 clause predicate except for the use of the keyword <strong>on</strong> rahter than <strong>where</strong>.</p>
 <p>For example, the below two queries are equivalent with each other (i.e. gives the 
 same result)</p>
-<div class="highlight"><pre><span></span><code><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">join</span> <span class="n">takes</span> <span class="k">on</span> <span class="n">student</span><span class="p">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">takes</span><span class="p">.</span><span class="n">ID</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">student</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">takes</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">student</span><span class="p">.</span><span class="n">ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">takes</span><span class="p">.</span><span class="n">ID</span><span class="p">;</span>
 
-<span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span><span class="p">,</span> <span class="n">takes</span> <span class="k">where</span> <span class="n">student</span><span class="p">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">takes</span><span class="p">.</span><span class="n">ID</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">student</span><span class="p">,</span><span class="w"> </span><span class="n">takes</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">student</span><span class="p">.</span><span class="n">ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">takes</span><span class="p">.</span><span class="n">ID</span><span class="p">;</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -420,23 +420,23 @@ like working exactly the same as <strong>where</strong> clause? The answer is</p
 <h4 id="outer-join">outer join</h4>
 <h5 id="motivation_1">Motivation</h5>
 <p>Let's consider <code>student</code> and <code>takes</code> tables look like the below</p>
-<div class="highlight"><pre><span></span><code>sqlite&gt; select * from student;
-ID|name|dept_name|tot_cred
-00128|Zhang|Comp. Sci.|102
-12345|Shankar|Comp. Sci.|32
-19991|Brandt|History|80
-23121|Chavez|Finance|110
-44553|Peltier|Physics|56
-45678|Levy|Physics|46
-54321|Williams|Comp. Sci.|54
-55739|Sanchez|Music|38
-70557|Snow|Physics|0
-76543|Brown|Comp. Sci.|58
-76653|Aoi|Elec. Eng.|60
-98765|Bourikas|Elec. Eng.|98
-98988|Tanaka|Biology|120
+<div class="highlight"><pre><span></span><code>sqlite&gt; select <span class="gs">* from student;</span>
+<span class="gs">ID|name|dept_name|tot_cred</span>
+<span class="gs">00128|Zhang|Comp. Sci.|102</span>
+<span class="gs">12345|Shankar|Comp. Sci.|32</span>
+<span class="gs">19991|Brandt|History|80</span>
+<span class="gs">23121|Chavez|Finance|110</span>
+<span class="gs">44553|Peltier|Physics|56</span>
+<span class="gs">45678|Levy|Physics|46</span>
+<span class="gs">54321|Williams|Comp. Sci.|54</span>
+<span class="gs">55739|Sanchez|Music|38</span>
+<span class="gs">70557|Snow|Physics|0</span>
+<span class="gs">76543|Brown|Comp. Sci.|58</span>
+<span class="gs">76653|Aoi|Elec. Eng.|60</span>
+<span class="gs">98765|Bourikas|Elec. Eng.|98</span>
+<span class="gs">98988|Tanaka|Biology|120</span>
 
-sqlite&gt; select * from takes;
+<span class="gs">sqlite&gt; select *</span> from takes;
 ID|course_id|sec_id|semester|year|grade
 00128|CS-101|1|Fall|2009|A
 00128|CS-347|1|Fall|2009|A-
@@ -463,8 +463,8 @@ ID|course_id|sec_id|semester|year|grade
 </code></pre></div>
 <p>Suppose we wish to display a list of all students along with the courses they have
 taken. We come up a query that looks like</p>
-<div class="highlight"><pre><span></span><code><span class="k">select</span> <span class="o">*</span>
-<span class="k">from</span> <span class="n">student</span> <span class="k">natural</span> <span class="k">join</span> <span class="n">takes</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span>
+<span class="k">from</span><span class="w"> </span><span class="n">student</span><span class="w"> </span><span class="k">natural</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">takes</span><span class="p">;</span>
 </code></pre></div>
 <p>This query actually is not right for our purpose because it will not show
 the student who takes no course. This is because his <code>ID</code> will only appear
@@ -517,8 +517,8 @@ lost in a join, by creating tuples in the result containing null values.</p>
 </li>
 </ul>
 <p>For our example, the actual query should be</p>
-<div class="highlight"><pre><span></span><code><span class="k">select</span> <span class="o">*</span> 
-<span class="k">from</span> <span class="n">student</span> <span class="k">natural</span> <span class="k">left</span> <span class="k">outer</span> <span class="k">join</span> <span class="n">takes</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span>
+<span class="k">from</span><span class="w"> </span><span class="n">student</span><span class="w"> </span><span class="k">natural</span><span class="w"> </span><span class="k">left</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">takes</span><span class="p">;</span>
 </code></pre></div>
 <p>which returns result that includes student Snow with nulls for the
 attributes that appear only in the schema of the <em>take</em> relation</p>
@@ -550,9 +550,9 @@ ID|name|dept_name|tot_cred|course_id|sec_id|semester|year|grade
 </code></pre></div>
 <p>We mention earlier that <strong>on</strong> and <strong>where</strong> behave differently
 for outer join. Let's consider the following example</p>
-<div class="highlight"><pre><span></span><code><span class="k">select</span> <span class="o">*</span>
-<span class="k">from</span> <span class="n">student</span> <span class="k">left</span> <span class="k">outer</span> <span class="k">join</span> <span class="n">takes</span> <span class="k">on</span> <span class="k">true</span>
-<span class="k">where</span> <span class="n">student</span><span class="p">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">takes</span><span class="p">.</span><span class="n">ID</span>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span>
+<span class="k">from</span><span class="w"> </span><span class="n">student</span><span class="w"> </span><span class="k">left</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">takes</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="k">true</span>
+<span class="k">where</span><span class="w"> </span><span class="n">student</span><span class="p">.</span><span class="n">ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">takes</span><span class="p">.</span><span class="n">ID</span>
 </code></pre></div>
 <p>This gives the following result <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup></p>
 <div class="highlight"><pre><span></span><code>sqlite&gt; select * from student left outer join takes where student.ID = takes.ID;
@@ -628,23 +628,23 @@ for each person in the Person table, regardless if there is an address for each 
 <p>"regardless if there is an address for each of those people" is a clear indicator
 for us to use <code>outer join</code> because we still want to keep all the person even 
 they may not appear in the "Address" table. There are several queries we can write</p>
-<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="n">Solution</span> <span class="mi">1</span>
-<span class="k">select</span> <span class="n">FirstName</span><span class="p">,</span> <span class="n">LastName</span><span class="p">,</span> <span class="n">City</span><span class="p">,</span> <span class="k">State</span> <span class="k">from</span> <span class="n">Person</span> <span class="k">natural</span> <span class="k">left</span> <span class="k">outer</span> <span class="k">join</span> <span class="n">Address</span>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="w"> </span><span class="n">Solution</span><span class="w"> </span><span class="mi">1</span>
+<span class="k">select</span><span class="w"> </span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="n">City</span><span class="p">,</span><span class="w"> </span><span class="k">State</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">Person</span><span class="w"> </span><span class="k">natural</span><span class="w"> </span><span class="k">left</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">Address</span>
 
-<span class="o">#</span> <span class="n">Solution</span> <span class="mi">2</span>
-<span class="k">select</span> <span class="n">FirstName</span><span class="p">,</span> <span class="n">LastName</span><span class="p">,</span> <span class="n">City</span><span class="p">,</span> <span class="k">State</span> <span class="k">from</span> <span class="n">Person</span> <span class="k">left</span> <span class="k">outer</span> <span class="k">join</span> <span class="n">Address</span> <span class="k">on</span> <span class="n">Person</span><span class="p">.</span><span class="n">PersonId</span> <span class="o">=</span> <span class="n">Address</span><span class="p">.</span><span class="n">PersonId</span>
+<span class="o">#</span><span class="w"> </span><span class="n">Solution</span><span class="w"> </span><span class="mi">2</span>
+<span class="k">select</span><span class="w"> </span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="n">City</span><span class="p">,</span><span class="w"> </span><span class="k">State</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">Person</span><span class="w"> </span><span class="k">left</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">Address</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">Person</span><span class="p">.</span><span class="n">PersonId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Address</span><span class="p">.</span><span class="n">PersonId</span>
 
-<span class="o">#</span> <span class="n">Solution</span> <span class="mi">3</span>
-<span class="k">select</span> <span class="n">FirstName</span><span class="p">,</span> <span class="n">LastName</span><span class="p">,</span> <span class="n">City</span><span class="p">,</span> <span class="k">State</span> <span class="k">from</span> <span class="n">Person</span> <span class="k">left</span> <span class="k">outer</span> <span class="k">join</span> <span class="n">Address</span> <span class="k">using</span> <span class="p">(</span><span class="n">PersonId</span><span class="p">)</span>
+<span class="o">#</span><span class="w"> </span><span class="n">Solution</span><span class="w"> </span><span class="mi">3</span>
+<span class="k">select</span><span class="w"> </span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="n">City</span><span class="p">,</span><span class="w"> </span><span class="k">State</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">Person</span><span class="w"> </span><span class="k">left</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">Address</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="n">PersonId</span><span class="p">)</span>
 
-<span class="o">#</span> <span class="n">Solution</span> <span class="mi">4</span>
-<span class="k">select</span> <span class="n">FirstName</span><span class="p">,</span> <span class="n">LastName</span><span class="p">,</span> <span class="n">City</span><span class="p">,</span> <span class="k">State</span> <span class="k">from</span> <span class="n">Address</span> <span class="k">right</span> <span class="k">outer</span> <span class="k">join</span> <span class="n">Person</span> <span class="k">using</span> <span class="p">(</span><span class="n">PersonId</span><span class="p">)</span>
+<span class="o">#</span><span class="w"> </span><span class="n">Solution</span><span class="w"> </span><span class="mi">4</span>
+<span class="k">select</span><span class="w"> </span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="n">City</span><span class="p">,</span><span class="w"> </span><span class="k">State</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">Address</span><span class="w"> </span><span class="k">right</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">Person</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="n">PersonId</span><span class="p">)</span>
 
-<span class="o">#</span> <span class="n">Solution</span> <span class="mi">5</span>
-<span class="k">select</span> <span class="n">FirstName</span><span class="p">,</span> <span class="n">LastName</span><span class="p">,</span> <span class="n">City</span><span class="p">,</span> <span class="k">State</span> <span class="k">from</span> <span class="n">Address</span> <span class="k">right</span> <span class="k">outer</span> <span class="k">join</span> <span class="n">Person</span> <span class="k">on</span> <span class="n">Address</span><span class="p">.</span><span class="n">PersonId</span> <span class="o">=</span> <span class="n">Person</span><span class="p">.</span><span class="n">PersonId</span>
+<span class="o">#</span><span class="w"> </span><span class="n">Solution</span><span class="w"> </span><span class="mi">5</span>
+<span class="k">select</span><span class="w"> </span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="n">City</span><span class="p">,</span><span class="w"> </span><span class="k">State</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">Address</span><span class="w"> </span><span class="k">right</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">Person</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">Address</span><span class="p">.</span><span class="n">PersonId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Person</span><span class="p">.</span><span class="n">PersonId</span>
 
-<span class="o">#</span> <span class="n">Solution</span> <span class="mi">6</span>
-<span class="k">select</span> <span class="n">FirstName</span><span class="p">,</span> <span class="n">LastName</span><span class="p">,</span> <span class="n">City</span><span class="p">,</span> <span class="k">State</span> <span class="k">from</span> <span class="n">Address</span> <span class="k">natural</span> <span class="k">right</span> <span class="k">outer</span> <span class="k">join</span> <span class="n">Person</span>
+<span class="o">#</span><span class="w"> </span><span class="n">Solution</span><span class="w"> </span><span class="mi">6</span>
+<span class="k">select</span><span class="w"> </span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="n">City</span><span class="p">,</span><span class="w"> </span><span class="k">State</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">Address</span><span class="w"> </span><span class="k">natural</span><span class="w"> </span><span class="k">right</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">Person</span>
 </code></pre></div>
 <p>We should have no trouble to understand these queries now. </p>
 <h3 id="example-two">Example Two</h3>

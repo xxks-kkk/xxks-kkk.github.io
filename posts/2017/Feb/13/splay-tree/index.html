@@ -135,11 +135,11 @@ may be different (i.e. different insert algorithm may result in different tree s
 <p>There are two ways to do this. The first way is to use "split" to split the tree based upon the insertion value. By the property of splaying, 
 we will either have the insertion value (already inside the tree) or the parent of the insertion point at the root. Then we can make our insertion 
 value as the new root and adjust the orginal tree to form the new tree. For example,  if the insertion value <code>elem</code> smaller than the root, we do</p>
-<div class="highlight"><pre><span></span><code><span class="nf">if</span> <span class="p">(</span><span class="n">elem</span> <span class="o">&lt;</span> <span class="n">T</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">elem</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="n">newT</span><span class="o">-&gt;</span><span class="kr">Right</span> <span class="o">=</span> <span class="n">T</span><span class="p">;</span>
-  <span class="n">newT</span><span class="o">-&gt;</span><span class="kr">Left</span> <span class="o">=</span> <span class="n">T</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="p">;</span> <span class="c1">// we can do this b/c the result of splaying is the parent node of where we should insert.</span>
-  <span class="n">T</span><span class="o">-&gt;</span><span class="kr">Left</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>
+<span class="w">  </span><span class="n">newT</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span>
+<span class="w">  </span><span class="n">newT</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="p">;</span><span class="w"> </span><span class="c1">// we can do this b/c the result of splaying is the parent node of where we should insert.</span>
+<span class="w">  </span><span class="n">T</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NULL</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>The code is straightforward but <code>newT-&gt;Left = T-&gt;Left</code> is worth a remark. Here, when <code>T</code> is the parent of the insertion point, 
