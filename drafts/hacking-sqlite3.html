@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-44FB4FMFCD"></script>
+        <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'G-44FB4FMFCD');
+        </script>
+        <meta charset="utf-8">
+        <title>    Hacking SQLite3
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation, Zeyuan UT-Austin, Zeyuan Texas, Zeyuan University of Texas at Austin, Zeyuan Amazon, Zeyuan Microsoft Research, Zeyuan Microsoft" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8696888278948966"
+                     crossorigin="anonymous"></script>
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's Page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's Page RSS Feed" />
+        <link href="../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href=".." style="color: black; text-decoration: none">Zeyuan Hu's Page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../research.html" style="padding: 10px">RESEARCH</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">Hacking SQLite3</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2025-06-06T22:52:00+08:00"> Jun 06, 2025</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../tag/database.html">database</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">Hacking SQLite3</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2025-06-06T22:52:00+08:00">Jun 06, 2025</time></div> -->
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#debugging-setup">Debugging Setup</a></li>
+</ul>
+</div>
+<p>This page documents my experience working with SQLite3 codebase. I'm
+using MacOS. Unless noted otherwise, I assume the command is run from
+the root of SQLite3 source repo.</p>
+<h1 id="debugging-setup">Debugging Setup</h1>
+<p>The first step is to create a debug build of SQLite3</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./configure<span class="w"> </span>--enable-all<span class="w"> </span>--enable-debug<span class="w"> </span><span class="nv">CFLAGS</span><span class="o">=</span><span class="s1">'-O0 -g'</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make
+</code></pre></div>
+<p>, which generates a debug build <code>sqlite3</code>. To use LLDB, we do the following</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>lldb<span class="w"> </span>sqlite3
+</code></pre></div>
+<p>Then, we can let SQLite3 connect to our pre-ingested database, e.g., <code>test.db</code></p>
+<div class="highlight"><pre><span></span><code>(lldb) settings set target.run-args test.db
+</code></pre></div>
+<p>Then, we set a breakpoint. The good entry function is <code>sqlite3_exec</code>,
+which is in <code>sqlite3.c</code>. Note that due to amalgamation from SQLite3,
+all the breakpoints are set on <code>sqlite3.c</code>.</p>
+<div class="highlight"><pre><span></span><code>(lldb) b sqlite3_exec
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>We can work with individual source file under "src/" to reduce
+distraction from non-relevant functions. We can easily locate the
+code from say "where.c" inside "sqlite3.c" by searching "Begin
+file where.c" and "End of wherecode.c".</p>
+</div>
+<p>Then, we start the sqlite3 process by </p>
+<div class="highlight"><pre><span></span><code>(lldb) run
+</code></pre></div>
+<p>and sqlite3 CLI wll get launched.</p>
+        </article>
+
+        <footer>
+          <!-- <p>This entry is posted in <a href="../category/2025.html">2025</a>.</p> -->
+          <!-- <a href="../donate.html" class="button">Donate</a> -->
+          <a href="https://paypal.me/zhu45?locale.x=en_US">paypal.me</a>
+        </footer>
+        
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2025 <a href="../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
