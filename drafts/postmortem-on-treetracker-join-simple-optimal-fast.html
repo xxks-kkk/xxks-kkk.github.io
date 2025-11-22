@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-44FB4FMFCD"></script>
+        <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'G-44FB4FMFCD');
+        </script>
+        <meta charset="utf-8">
+        <title>    Postmortem on TreeTracker Join: Simple, Optimal, Fast
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation, Zeyuan UT-Austin, Zeyuan Texas, Zeyuan University of Texas at Austin, Zeyuan Amazon, Zeyuan Microsoft Research, Zeyuan Microsoft" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8696888278948966"
+                     crossorigin="anonymous"></script>
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's Page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's Page RSS Feed" />
+        <link href="../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href=".." style="color: black; text-decoration: none">Zeyuan Hu's Page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../research.html" style="padding: 10px">RESEARCH</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">Postmortem on TreeTracker Join: Simple, Optimal, Fast</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2026-01-11T23:01:02+08:00"> Jan 11, 2026</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../tag/academic.html">academic</a>
+        /
+	<a href="../tag/paper.html">paper</a>
+        /
+	<a href="../tag/my-research.html">my research</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">Postmortem on TreeTracker Join: Simple, Optimal, Fast</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2026-01-11T23:01:02+08:00">Jan 11, 2026</time></div> -->
+        </header>
+        
+        <article>
+            <p>After five years of blood, sweat, and tears, <a href="https://dl.acm.org/doi/10.1145/3774325">TreeTracker
+Join</a> has finally been
+published. As a postmortem, I document some notes I took while I was
+implementing the system side of the work. Then, I conclude the post
+with some personal thoughts and a bonus content!</p>
+<h1 id="build-a-system-in-academia">Build a System in Academia</h1>
+<p>https://www.starburst.io/blog/jdbc-trino-starburst/</p>
+<ul>
+<li>Don’t use Java. People worry about “lower bound” (have to compare with existing system)</li>
+<li>what system to build (DM criticism on 弗兰克斯坦/ emulator） 1. can we afford throw-away? 2. trade-off simple design (fast development) vs. high-performance (use JDBC vs managing storage myself; system-assist algorithm design) 3. system comparison or algorithm comparison? 4. system library or system system comparing existing system is to provide a lower bound on algorithm implementation </li>
+<li>exploit leeway (no parser, optional optimization, bring down Postgres performance) no code for a missing piece means no need to optimize</li>
+<li>engineering experience:
+         1. profiling 
+         2. no stream operation
+         3. use primitive type if possible
+         4. manual column-oriented (no row)
+         5. preallocating hash table size
+         6. high-performance standard library
+         7. use integer comparison instead of string comparison (echo engineering WCOJ paper)
+         8. better JDBC (DuckDB vs Postgres)
+         9. avoid repeated object creation </li>
+</ul>
+<h1 id="departing-thoughts">Departing Thoughts</h1>
+<p>This work was initiated by my previous advisor. Publication is happy
+news but the cost was dropping out of the PhD program. The pain was
+too much, both for me and my wife. If there is any advice I could
+give: it's important to work with someone who is truly looking out for
+you and not using you as some tool that will be discarded in the long
+run; the research topic should, at best, be second on your list of
+preferences when deciding whom to work with. If there is any red flag,
+no matter how tiny it might seem, pay attention to it; try to figure
+out if that's due to some misunderstanding, and if not, run fast and
+run far!</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>I'm grateful to everyone who helped me during the difficult time in the
+past five years. I'm happy to share my personal experience working under
+my previous advisor, just as his former students helped me.</p>
+</div>
+<!-- There are indeed lots of technical and publication tricks I learned
+along the way in the past five years besides all the
+politics. However, it's too painful to revisit and share them right
+now. -->
+<p>To conclude this post, I list out all the past five submissions and
+corresponding reviews that led to the final publication of the work.</p>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>Submission</th>
+<th>Reviews</th>
+<th>Supplementary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../drafts/pods2022.pdf">PODS 2022</a></td>
+<td><a href="../drafts/pods2022-reviews.pdf">PODS2022 reviews</a></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../drafts/vldb2024.pdf">VLDB 2024</a></td>
+<td><a href="../drafts/vldb2024-reviews.pdf">VLDB2024 reviews</a></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../drafts/sigmod2024.pdf">SIGMOD 2025</a></td>
+<td><a href="../drafts/sigmod2024-reviews.pdf">SIGMOD2025 reviews</a></td>
+<td><a href="../drafts/sigmod2024-extended.pdf">SIGMOD2025-extended</a></td>
+</tr>
+<tr>
+<td><a href="../drafts/icdt2025.pdf">ICDT 2025</a></td>
+<td><a href="../drafts/icdt2025-reviews.pdf">ICDT2025 reviews</a></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../drafts/cidr2025.pdf">CIDR 2025</a></td>
+<td><a href="../drafts/cidr2025-reviews.pdf">CIDR2025 reviews</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+        </article>
+
+        <footer>
+          <!-- <p>This entry is posted in <a href="../category/2025.html">2025</a>.</p> -->
+          <!-- <a href="../donate.html" class="button">Donate</a> -->
+          <a href="https://paypal.me/zhu45?locale.x=en_US">paypal.me</a>
+        </footer>
+        
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2025 <a href="../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

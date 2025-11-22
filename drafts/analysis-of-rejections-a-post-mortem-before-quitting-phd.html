@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-44FB4FMFCD"></script>
+        <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'G-44FB4FMFCD');
+        </script>
+        <meta charset="utf-8">
+        <title>    Analysis of Rejections: A Post-Mortem before Quitting PhD
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation, Zeyuan UT-Austin, Zeyuan Texas, Zeyuan University of Texas at Austin, Zeyuan Amazon, Zeyuan Microsoft Research, Zeyuan Microsoft" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8696888278948966"
+                     crossorigin="anonymous"></script>
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's Page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's Page RSS Feed" />
+        <link href="../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href=".." style="color: black; text-decoration: none">Zeyuan Hu's Page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../research.html" style="padding: 10px">RESEARCH</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">Analysis of Rejections: A Post-Mortem before Quitting PhD</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2024-10-11T23:01:02+08:00"> Oct 11, 2024</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../tag/meta.html">meta</a>
+        /
+	<a href="../tag/academic.html">academic</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">Analysis of Rejections: A Post-Mortem before Quitting PhD</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2024-10-11T23:01:02+08:00">Oct 11, 2024</time></div> -->
+        </header>
+        
+        <article>
+            <div class="toc">
+<ul>
+<li><a href="#background-on-research">Background on Research</a></li>
+<li><a href="#analysis-of-rejections">Analysis of Rejections</a><ul>
+<li><a href="#pods-2022-submission">PODS 2022 Submission</a><ul>
+<li><a href="#historical-remarks">Historical Remarks</a></li>
+<li><a href="#analysis-of-rejections_1">Analysis of Rejections</a></li>
+</ul>
+</li>
+<li><a href="#vldb-2024-submission">VLDB 2024 Submission</a><ul>
+<li><a href="#historical-remarks_1">Historical Remarks</a></li>
+<li><a href="#analysis-of-rejections_2">Analysis of Rejections</a></li>
+</ul>
+</li>
+<li><a href="#sigmod-2025-submission">SIGMOD 2025 Submission</a><ul>
+<li><a href="#historical-remarks_2">Historical Remarks</a></li>
+<li><a href="#analysis-of-rejections_3">Analysis of Rejections</a></li>
+</ul>
+</li>
+<li><a href="#icdt-2025-submission">ICDT 2025 Submission</a><ul>
+<li><a href="#historical-remarks_3">Historical Remarks</a></li>
+<li><a href="#analysis-of-rejections_4">Analysis of Rejections</a></li>
+</ul>
+</li>
+<li><a href="#cidr-2025-submission">CIDR 2025 Submission</a><ul>
+<li><a href="#historical-remarks_4">Historical Remarks</a></li>
+<li><a href="#analysis-of-rejections_5">Analysis of Rejections</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#farewell">Farewell</a></li>
+</ul>
+</div>
+<p>Orignally, I planned this post in my head as a celebration post to celebrate the acceptance of my first paper 
+after four years of trying. In that post, I imagined that I could happily recount all the obstacles I have overcome and how I eventually reach the happy ending; just like any typical happy ending movie one could imagine. Unfortuantely, that post will probably be forever in my mind. I had a high hope on the latest <a href="https://www.cidrdb.org/cidr2025/index.html">CIDR 2025</a>
+submission. But, the paper is rejected, again. After spending four years in graduate school with 
+zero publication and five rejections of the same piece of research, I think it's time to move on.</p>
+<p>As the title suggested, I will analyze all five rejections I have recieved and reflect the lessons I have learned 
+along the way. To acheive the goal, I will first provide necessary background on the research itself so that I can have a basis on analyzing each rejection. There are five rejections in total that spans from 2021 to 2024. For each rejection, I first provide historical remarks on the submission itself, e.g., what's the key idea on the way of presenting the work and any story related. Then, I will walk through each review within each rejection and provide my understanding on each review, e.g., what the reviewers think of the work, what place I can further improve it, and so on. </p>
+<p>The research is published on arXiv with keyword "TreeTracker Join" (<a href='#hu2024treetrackerjointurningtide' id='ref-hu2024treetrackerjointurningtide-1'>Hu et al., 2024</a>). Here is a table of summary on each submission and rejection.</p>
+<table class=" table-striped table table-hover">
+<thead>
+<tr>
+<th>Submission</th>
+<th>Reviews</th>
+<th>Supplementary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../drafts/pods2022.pdf">PODS2022</a></td>
+<td><a href="../drafts/pods2022-reviews.pdf">PODS2022-reviews</a></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../drafts/vldb2024.pdf">VLDB2024</a></td>
+<td><a href="../drafts/vldb2024-reviews.pdf">VLDB2024-reviews</a></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../drafts/sigmod2024.pdf">SIGMOD2025</a></td>
+<td><a href="../drafts/sigmod2024-reviews.pdf">SIGMOD2025-reviews</a></td>
+<td><a href="../drafts/sigmod2024-extended.pdf">SIGMOD2025-extended</a></td>
+</tr>
+<tr>
+<td><a href="../drafts/icdt2025.pdf">ICDT2025</a></td>
+<td><a href="../drafts/icdt2025-reviews.pdf">ICDT2025-reviews</a></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../drafts/cidr2025.pdf">CIDR2025</a></td>
+<td><a href="../drafts/cidr2025-reviews.pdf">CIDR2025-reviews</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="background-on-research">Background on Research</h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>I will make this piece of research accessible to general audience with some background in computer science. As a result, I have to omit certain details. Some details are provided during analysis of rejections. I also prepared a <a href="#">pdf note</a>, which provides more complete picture than what is 
+described here. </p>
+</div>
+<p>This piece of research concerns join algorithm in relational database. A relational database can be thought as a collection of tables where each table has a set of columns. Rows in a table are data that the user stores. Formally, a table is a <strong>relation</strong> and columns are collectively called <strong>attributes</strong> or <strong>variables</strong>. Usually, data in relational database are queried by writing <a href="https://en.wikipedia.org/wiki/SQL">SQL</a>. Consider the following two tables shown in (a) and (b),</p>
+<p><img alt="SQL example" class="img-responsive" src="../images/rejections/sql-example.png"/></p>
+<p>Suppose we wish to find all the movies that Stephen Chow starred in. We can write a SQL query in (c). My research concerns how to implement <code>NATURAL JOIN</code> efficiently both from theory perspective and practical perspective when the number of tables to be joined are large.</p>
+<h1 id="analysis-of-rejections">Analysis of Rejections</h1>
+<h2 id="pods-2022-submission">PODS 2022 Submission</h2>
+<h3 id="historical-remarks">Historical Remarks</h3>
+<h3 id="analysis-of-rejections_1">Analysis of Rejections</h3>
+<h2 id="vldb-2024-submission">VLDB 2024 Submission</h2>
+<h3 id="historical-remarks_1">Historical Remarks</h3>
+<h3 id="analysis-of-rejections_2">Analysis of Rejections</h3>
+<h2 id="sigmod-2025-submission">SIGMOD 2025 Submission</h2>
+<h3 id="historical-remarks_2">Historical Remarks</h3>
+<h3 id="analysis-of-rejections_3">Analysis of Rejections</h3>
+<h2 id="icdt-2025-submission">ICDT 2025 Submission</h2>
+<h3 id="historical-remarks_3">Historical Remarks</h3>
+<h3 id="analysis-of-rejections_4">Analysis of Rejections</h3>
+<h2 id="cidr-2025-submission">CIDR 2025 Submission</h2>
+<h3 id="historical-remarks_4">Historical Remarks</h3>
+<h3 id="analysis-of-rejections_5">Analysis of Rejections</h3>
+<h1 id="farewell">Farewell</h1>
+<p>I know research is hard but I  didn't know my first major piece of research is this hard.</p><hr>
+<p id='hu2024treetrackerjointurningtide'>Zeyuan Hu, Yisu&nbsp;Remy Wang, and Daniel&nbsp;P. Miranker.
+<span class="bibtex-protected">TreeTracker Join: Turning the Tide When a Tuple Fails to Join</span>.
+2024.
+URL: <a href="https://arxiv.org/abs/2403.01631">https://arxiv.org/abs/2403.01631</a>, <a href="https://arxiv.org/abs/2403.01631">arXiv:2403.01631</a>. <a class="cite-backref" href="#ref-hu2024treetrackerjointurningtide-1" title="Jump back to reference 1">↩</a></p>
+
+        </article>
+
+        <footer>
+          <!-- <p>This entry is posted in <a href="../category/2024.html">2024</a>.</p> -->
+          <!-- <a href="../donate.html" class="button">Donate</a> -->
+          <a href="https://paypal.me/zhu45?locale.x=en_US">paypal.me</a>
+        </footer>
+        
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2025 <a href="../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
