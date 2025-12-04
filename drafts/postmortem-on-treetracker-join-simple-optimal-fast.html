@@ -81,6 +81,13 @@ published. As a postmortem, I document some notes I took while I was
 implementing the system side of the work. Then, I conclude the post
 with some personal thoughts and a bonus content!</p>
 <h1 id="build-a-system-in-academia">Build a System in Academia</h1>
+<p>algorithm comparison system vs. directly modified an existing system
+(e.g., DuckDB). </p>
+<p>Filter approach is popular because it is easy to be deployed in the
+actual system. TTJ in a way depends more on how join is implemented
+(with many flavors of implementation like parallel, vectorization,
+right-deep only, etc; TTJ has to be adapted to fit a specific system
+assumption, which imposes challenges to the algorithm design).</p>
 <p>https://www.starburst.io/blog/jdbc-trino-starburst/</p>
 <ul>
 <li>Don’t use Java. People worry about “lower bound” (have to compare with existing system)</li>
