@@ -179,7 +179,7 @@ reflect on some lessons I learned during the process of getting paper
 published. I list out all the past six submissions and corresponding
 reviews that led to the final publication of the work, which I may
 call back on during the reflection.</p>
-<table class="table  table-striped table-hover">
+<table class="table table-hover  table-striped">
 <thead>
 <tr>
 <th>Submission</th>
@@ -353,7 +353,7 @@ the algorithm.</p>
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Limitation of system-assisted algorithm design</p>
-<p>I found system-assisted design particularly suited for <span class="math">\(\mathsf{TTJ}\)</span>
+<p>I found system-assisted algorithm design particularly suited for <span class="math">\(\mathsf{TTJ}\)</span>
 because the problem space is discrete and structured around join
 trees. However, for continuous problems (like <a href="https://arxiv.org/pdf/2507.04485">facility placement on a real
 line</a>) where the problem input
@@ -483,7 +483,9 @@ total runtime of all the not-<span class="math">\(A\)</span> components of syste
 less or or equal to the total runtime of all the not-<span class="math">\(B\)</span>
 components of system <span class="math">\(S_2\)</span>.) Ensuring that holds requires
 significant engineering effort and it is not directly relevant to
-the innovation of algorithm <span class="math">\(A\)</span>.</p>
+the innovation of algorithm <span class="math">\(A\)</span>. A good heuristic to satisfy the "big
+if" is to make <span class="math">\(X\)</span> as small as possible through a simple,
+high-quality prototype design that avoids unnecessary components.</p>
 </div>
 <p>Once I adopted this "approximation" view on system comparison, I could see
 algorithm comparison can also be done approximately. In an ideal
@@ -546,7 +548,7 @@ system comparisons.</p>
 <p class="admonition-title">"If a thing is worth doing, it's worth doing badly"</p>
 <p>During the empirical study of <span class="math">\(\mathsf{TTJ}\)</span>, I was haunted by the
 idea that a valid system comparison required building a perfect,
-end-to-end system from scratch to beat DuckDB—-a task I estimated would
+end-to-end system from scratch to beat DuckDB--a task I estimated would
 take at least a year. However, I later learned that I didn't need a
 perfect system; a barebone "semi-system" was sufficient to demonstrate
 the algorithm's potential and fulfill the referees' requirements.</p>
