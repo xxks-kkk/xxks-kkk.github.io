@@ -1,5 +1,899 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's Page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2024-03-24T20:11:00+08:00</updated><entry><title>Looking for Collaborators</title><link href="https://zhu45.org/posts/2024/Mar/24/looking-for-collaborators/" rel="alternate"></link><published>2024-03-24T20:11:00+08:00</published><updated>2024-03-24T20:11:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2024-03-24:/posts/2024/Mar/24/looking-for-collaborators/</id><summary type="html">&lt;div class="toc"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's Page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2026-01-03T23:01:02+08:00</updated><entry><title>Postmortem on TreeTracker Join: Simple, Optimal, Fast</title><link href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/" rel="alternate"></link><published>2026-01-03T23:01:02+08:00</published><updated>2026-01-03T23:01:02+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2026-01-03:/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/</id><summary type="html">&lt;p&gt;After five years of blood, sweat, and tears, &lt;a href="https://dl.acm.org/doi/10.1145/3774325"&gt;TreeTracker Join
+(&lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;)&lt;/a&gt; has finally
+been published. The research itself is very interesting and kept me
+hooked for five years. As a postmortem, I reflect on some of what I
+learned during the process. I'm hoping this post can be useful …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After five years of blood, sweat, and tears, &lt;a href="https://dl.acm.org/doi/10.1145/3774325"&gt;TreeTracker Join
+(&lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;)&lt;/a&gt; has finally
+been published. The research itself is very interesting and kept me
+hooked for five years. As a postmortem, I reflect on some of what I
+learned during the process. I'm hoping this post can be useful to my
+fellow PhD students who are currently struggling to make progress or
+finding their work a proper home.&lt;/p&gt;
+&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#short-background-on-mathsfttj"&gt;Short background on \(\mathsf{TTJ}\)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#lessons-learned"&gt;Lessons learned&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#algorithm-design-in-the-wild"&gt;Algorithm design in the wild&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#when-talking-about-empirical-study-what-should-we-implement"&gt;When talking about empirical study, what should we implement?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#considerations-on-the-design-and-implementation-of-prototype"&gt;Considerations on the design and implementation of prototype&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#some-tips-on-java-and-software-engineering-in-general"&gt;Some tips on Java and software engineering in general&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#departure-thoughts"&gt;Departure thoughts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#acknowledgements"&gt;Acknowledgements&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h1 id="short-background-on-mathsfttj"&gt;&lt;a name="background"&gt;&lt;/a&gt;Short background on &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;&lt;/h1&gt;
+&lt;p&gt;This research concerns query processing, specifically the evaluation
+of queries that involve multiple joins, e.g., &lt;span class="math"&gt;\(R \Join S \Join T\)&lt;/span&gt; for
+relations &lt;span class="math"&gt;\(R\)&lt;/span&gt;, &lt;span class="math"&gt;\(S\)&lt;/span&gt;, and &lt;span class="math"&gt;\(T\)&lt;/span&gt;. Those queries are known as &lt;em&gt;conjunctive
+queries&lt;/em&gt;. It has been long known from database theory that evaluation
+of an important subclass of conjunctive queries called &lt;em&gt;acyclic
+conjunctive queries&lt;/em&gt; &lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2"&gt;2&lt;/a&gt;&lt;/sup&gt; can be done very efficiently using an
+algorithm called &lt;em&gt;Yannakakis's algorithm&lt;/em&gt; (&lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt;) &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt;. (There
+are many expositions on Yannakakis's algorithm such as
+&lt;a href="https://en.wikipedia.org/wiki/Yannakakis_algorithm"&gt;wikipedia&lt;/a&gt;, &lt;a href="https://remy.wang/blog/perfect-joins.html"&gt;blog
+post&lt;/a&gt;,
+&lt;a href="https://northeastern-datalab.github.io/topk-join-tutorial/slides/Anyk-Tutorial-Part2-OptimalJoins.pdf"&gt;slides&lt;/a&gt;,
+and &lt;a href="https://youtu.be/0i8xC2dimoU?si=q8qrhPUuk8jnXXbz"&gt;video&lt;/a&gt;.)
+However, the issue with this algorithm is that it is somewhat
+&lt;a href="https://en.wikipedia.org/wiki/Galactic_algorithm"&gt;galactic&lt;/a&gt;
+(theoretically optimal but empirically impractical) due to its poor
+empirical performance and awkwardness of algorithm structure. On the
+empirical performance front, the core issue of &lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt; is that
+it uses
+&lt;a href="https://en.wikipedia.org/wiki/Join_(relational_algebra)#Semijoin"&gt;semijoin&lt;/a&gt;
+to preprocess the input relations of a query so that the follow-up
+joins only generate the tuples that can be part of the final query
+result. There are two problems with semijoins:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Semijoin is really a heavy operation from empirical perspective: If
+   one implements hash-based semijoin, building hash table and probing
+   tuples against it can be quite expensive.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt; just uses too many semijoins; if your query has &lt;span class="math"&gt;\(k\)&lt;/span&gt;
+   relations for a positive integer &lt;span class="math"&gt;\(k\)&lt;/span&gt;, &lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt; uses &lt;span class="math"&gt;\(2k-2\)&lt;/span&gt;
+   semijoins. &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The structural issue of &lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt; is mostly due to its algorithmic
+ingredients that are not commonly-seen in popular database systems; it
+utilizes a data structure called &lt;em&gt;join tree&lt;/em&gt; to guide how semijoins
+and joins should be computed. Existing query systems work with &lt;em&gt;query
+plans&lt;/em&gt;. It is not obvious on how to convert a query plan to a join
+tree. (&lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; takes a stab on this issue; see Lemma 4.6 of the
+paper. For a more thorough treatment, check out this upcoming &lt;a href="https://arxiv.org/pdf/2509.14144"&gt;ICDT
+'26 paper&lt;/a&gt;.) Furthermore, adding
+extra semijoins in a query plan for a query that doesn't involve
+&lt;code&gt;EXISTS&lt;/code&gt; can confuse the user and make query optimizer
+&lt;a href="https://ieeexplore.ieee.org/document/914872"&gt;error-prone&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In the past 3-4 years, many people have taken a stab at aforementioned
+issues of &lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt; to make the algorithm practical and can be
+accessible to wide database practitioners. (&lt;a href="https://remy.wang/blog/assets/yannakakis/Yannakakis_in_Action.pdf"&gt;This upcoming ICDT '26
+paper&lt;/a&gt;
+surveys this research thrust well.)  &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; is one of those
+stabs. The unique angle that &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; brings to the table is
+that, instead of addressing the challenges following the algorithmic
+framework laid out by &lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt; such as replacing semijoins with
+Bloom filters or reducing the number of semijoins, &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; is a
+whole new algorithm that matches &lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt; runtime under data
+complexity in the worst-case scenario. There are no semijoins at all
+in &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;. Instead of preprocessing input relations and
+working with a join tree, &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; works with traditional query
+plans and the evaluation starts right away. The big plus of
+&lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; is that it is not much different (&lt;span class="math"&gt;\(\le 5\)&lt;/span&gt; lines of code
+difference) from in-memory binary hash-join &lt;span class="math"&gt;\(\mathsf{HJ}\)&lt;/span&gt;. In fact,
+&lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; does no more number of hash table lookups than
+&lt;span class="math"&gt;\(\mathsf{HJ}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Two forms of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;I should point out that during the many attempts at publishing the
+work, two forms of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; appeared. One is the form that
+eventually got published, which mostly uses &lt;code&gt;if&lt;/code&gt;, &lt;code&gt;else&lt;/code&gt;, and
+&lt;code&gt;for&lt;/code&gt; language constructs. The other one takes the &lt;a href="https://15445.courses.cs.cmu.edu/fall2021/notes/11-queryexecution1.pdf"&gt;iterator
+form&lt;/a&gt;
+consisting of &lt;code&gt;open()&lt;/code&gt;, &lt;code&gt;next()&lt;/code&gt;, and &lt;code&gt;close()&lt;/code&gt; methods. Under
+iterator form, &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; is an object in an object-oriented
+language context and the algorithmic logic of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; is
+implemented in the three methods of the iterator form. The iterator
+version of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; is only available in the &lt;a href="https://arxiv.org/pdf/2403.01631v1"&gt;arXiv preprint
+(version 1)&lt;/a&gt; (Algorithm 3.1 of the
+preprint).&lt;/p&gt;
+&lt;/div&gt;
+&lt;h1 id="lessons-learned"&gt;Lessons learned&lt;/h1&gt;
+&lt;p&gt;With the context of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; and &lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt; introduced, I
+reflect on some lessons I learned during the process of getting paper
+published. I list out all the past six submissions and corresponding
+reviews that led to the final publication of the work, which I may
+call back on during the reflection.&lt;/p&gt;
+&lt;table class="table-hover table  table-striped"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Submission&lt;/th&gt;
+&lt;th&gt;Reviews&lt;/th&gt;
+&lt;th&gt;Supplementary&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/pods2022.pdf"&gt;PODS 2022&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/pods2022-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/vldb2024.pdf"&gt;VLDB 2024&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/vldb2024-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/sigmod2024.pdf"&gt;SIGMOD 2025&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/sigmod2024-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/sigmod2024-extended.pdf"&gt;SIGMOD2025-extended&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/icdt2025.pdf"&gt;ICDT 2025&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/icdt2025-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/cidr2025.pdf"&gt;CIDR 2025&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/cidr2025-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/TODS.pdf"&gt;TODS 2025&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/TODS-review1-pub.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/TODS-revision.pdf"&gt;revision&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="algorithm-design-in-the-wild"&gt;&lt;a name="algorithm"&gt;&lt;/a&gt;Algorithm design in the wild&lt;/h2&gt;
+&lt;p&gt;This is the first time I designed an algorithm out of classroom
+setting. The task was to adapt &lt;a href="https://www.sciencedirect.com/science/article/abs/pii/0004370294900647"&gt;TreeTracker
+algorithms&lt;/a&gt;
+from constraint satisfaction problem (CSP) into relational database
+setting and the result of the adaptation has to take the iterator form
+(Algorithm 3.1 of the
+&lt;a href="https://arxiv.org/pdf/2403.01631v1"&gt;preprint&lt;/a&gt;). The difficulty of the
+task was fair and well-suited for my skillset. There are two algorithms
+in the paper TT1 and TT2. &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; is an adaption of TT1 &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4"&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;There are a few things I tried and I found them helpful in designing
+the algorithm.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Explain the original algorithm in your own words.&lt;/strong&gt;  The first
+   thing I did after reading the original TreeTracker paper was to
+   rewrite the proof of correctness and runtime analysis in my own
+   words. I found there are three benefits of doing this. First,
+   rewriting helps to fill the omitted details in the original
+   proof. Those details might take short amount of seconds to
+   reconstruct in mind but they can add a lot of delay for me to start
+   to make progress in understanding the proof if I have to do it
+   every time especially in the first few times where I haven't gained
+   much intuition about the ideas behind the proof. Second, rewriting
+   helps to gain some intuition. Since I rewrote the proof in my own
+   words, I had to ensure the correctness of proof remains
+   intact. Thus for every sentence I wrote I always asked myself if
+   there are any considerations that the authors write like this; can
+   I say the sentence differently? If so, does the sentence breaks the
+   whole proof? By answering those questions, I felt I gained more
+   intuition on the ideas behind the proof and the intuition on the
+   algorithm and its properties. Third, rewriting allows me to
+   forget. Since I had already rewritten the proof with great care in my
+   note, I had the freedom to forget those details. I usually
+   just had some high-level idea of how the proof goes in my
+   mind. Since proof is an application of some properties of the
+   proposed algorithm, the high-level idea of proof is in a way
+   captures the essence of the algorithm. If I had to remember every
+   detail of the proof, I felt there wasn't brain power for
+   understanding new things or thinking about the problem.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;"The art of doing mathematics is finding that special case that
+   contains all the germs of generality."&lt;/strong&gt; This is a quote from David
+   Hilbert. I gained a fairly deep appreciation on this quote during
+   the design of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;. My takeaway on the quote is that we
+   need to find an example that is simple enough that captures all the
+   necessary ingredients of the algorithm. Thus by having an algorithm
+   that handles this example, we obtain an algorithm that
+   automatically handles all possible inputs. In a way, the example
+   itself encodes the algorithm. In the case of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;, my
+   personal favorite simple but general example is Example 1 from &lt;a href="https://arxiv.org/pdf/2403.01631v1"&gt;the
+   arxiv preprint&lt;/a&gt;. The generality
+   is captured by the branching at relation &lt;span class="math"&gt;\(S\)&lt;/span&gt;: instead of every
+   relation in the join tree has at most one child, some relation
+   needs to have at least two children in order to capture backjumping
+   aspect of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;. If one only uses chain query, where each
+   internal node in the join tree has exactly one child, the resulting
+   &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; is not generalized enough to handle all the possible
+   inputs. Certainly, there are multiple issues with this example such
+   as it actually shows &lt;span class="math"&gt;\(\mathsf{HJ}\)&lt;/span&gt; can also be optimal, and it
+   includes deletion propagation and no-good list (See Appendix R of
+   &lt;a href="https://arxiv.org/pdf/2403.01631v3"&gt;v3 version of the preprint&lt;/a&gt;),
+   which are not necessary key ingredients of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; for the
+   proposed runtime guarantee. Nevertheless, the example is sufficient
+   enough to have the correct algorithm designed; the rest is
+   optimization of the algorithm.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Documentation to have a sense of progress.&lt;/strong&gt; Ryan O'Donnell has
+   this quote "Philosophy about how to do research: Make 1% progress
+   per day, for 100 days. Then you will solve your problem." My
+   takeaway from this is that it's very unlikely to design an
+   algorithm in one day. Design of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; roughly took me one
+   year. It would feel discouraged if I cannot visibly see my
+   progress; after all, a failed attempt is progress because the
+   failed attempt rules out a possibility and equips me with more
+   understanding of the problem. If I can rule out 100 different
+   possibilities, there is a decent chance that I can find the answer
+   to my question. With this mindset, I started to record my attempts
+   from day one in a LaTeX document and I could see my progress by
+   just adding new content to this document. I finally obtained
+   &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; after this document had grown to around 1 MiB and I felt
+   quite satisfied each day after
+   adding a page or so to this document.   &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Writing programs in algorithm design (a.k.a. system-assisted
+   algorithm design).&lt;/strong&gt; I wrote two major programs during the design
+   of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;. First, I implemented TT2 of the paper. The role
+   this program served was manifold. First, it helped me to better
+   understand the algorithm. Both algorithm description and proofs use
+   a lot of prose, which inherently inaccurate &lt;sup id="fnref:5"&gt;&lt;a class="footnote-ref" href="#fn:5"&gt;4&lt;/a&gt;&lt;/sup&gt;. To ensure I have
+   the correct understanding of the algorithm, gain some concreteness
+   feeling, and continue to build up the correct intuition, I found
+   implementing the algorithm and letting it run on a few examples
+   helped. Second, it made me appreciate the complexity of the
+   algorithm, which pushed me to aim for a simpler algorithm, which
+   led to TT1 and eventually &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;. The second major program
+   I wrote was a query instance generator where it produced a query in
+   the form of join tree and associated relation instances, which can
+   be randomly generated or manually specified. The major benefit of
+   the program was that it generated a lot of examples for me to look
+   at. Those examples were important because they quickly got me
+   jumpstarted on the design without making the task look too
+   daunting. Additionally, I would like to think algorithm as a
+   procedure to handle a class of inputs that satisfy certain
+   restriction (e.g., acyclic conjunctive queries) and the goal of the
+   algorithm is to produce desired output (e.g., the correct query
+   result). To design the algorithm, we are inside the loop of writing
+   the initial procedure, finding the procedure breaks on certain
+   inputs, patching the procedure to handle the broken inputs, and
+   repeat until the procedure can handle all the possible
+   inputs. Examples help in all aspects of this design loop: they
+   helped me to write the initial algorithm, then some examples broke
+   my algorithm, and after a patch, those examples allowed me to
+   verify that the patch can indeed work. As one can see, this loop
+   can be easily automated and that's what I did: the generator itself
+   ran my algorithm and compared algorithm output with output of
+   evaluating the same query in a third-party database like PostgreSQL
+   and I immediately got feedback on if the algorithm breaks or not.
+   Immediate feedback is crucial because it can be very messy to trace
+   through evaluation of a query using a plan consisting of iterators
+   to check if the query is evaluated correctly. I found it was better
+   to perform tracing when algorithm breaks. With the loop largely
+   automated, I could spend my energy focusing on thinking about good
+   examples that can capture all the ingredients of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;,
+   which I further discuss in the next point, and designing algorithm
+   itself.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Limitation of system-assisted algorithm design&lt;/p&gt;
+&lt;p&gt;I found system-assisted design particularly suited for &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;
+because the problem space is discrete and structured around join
+trees. However, for continuous problems (like &lt;a href="https://arxiv.org/pdf/2507.04485"&gt;facility placement on a real
+line&lt;/a&gt;) where the problem input
+space can be large, it's not very straightforward to
+apply this idea immediately. Classical methods of conjecture and refinement remain more
+effective. In such case, once I have some classification on
+the problem inputs and derive some properties of the desired
+algorithm should have, it's fairly
+natural to have the algorithm and there is no need for
+system-assisted algorithm design.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="when-talking-about-empirical-study-what-should-we-implement"&gt;When talking about empirical study, what should we implement?&lt;/h2&gt;
+&lt;p&gt;For work like &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; that simplifies an existing algorithm
+without breaking any complexity barrier (&lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt; is already an
+optimal algorithm; so what to break anyway), PODS 2022 reviews taught
+me that the best bet to get the work published within database
+community is to implement something and send it to a system conference
+like &lt;a href="https://sigmod.org/"&gt;SIGMOD&lt;/a&gt;,
+&lt;a href="https://www.vldb.org/conference.html"&gt;VLDB&lt;/a&gt;, or some journal like
+&lt;a href="https://dl.acm.org/journal/tods"&gt;TODS&lt;/a&gt;. (In broad algorithm or
+theoretical computer science community, there exist conferences like
+&lt;a href="https://www.siam.org/conferences-events/siam-conferences/sosa26/"&gt;SOSA&lt;/a&gt;
+that might solicit work like &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;. However, it's not until
+&lt;a href="https://arxiv.org/pdf/2507.04485"&gt;very recently&lt;/a&gt; I learned about how
+to write a theory paper properly; our PODS 2022 submission is unlikely
+to make the cut as a theory paper to SOSA.) A fairly natural question
+to ask next is if we implement something, what should we implement?
+From my experience, there are two types of implementations we can
+consider:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Algorithmic comparison&lt;/strong&gt; where one implements the proposed
+   algorithm and compare with existing algorithms to highlight and
+   confirm the proposed algorithm behavior indeed aligns with the
+   design and analysis. Furthermore, such comparison highlights
+   different algorithm behaviors against different kinds of inputs
+   that are usually not well-covered in traditional worst-case
+   scenario Big-Oh analysis. Examples include sections 5.3 and 5.4 of
+   our SIGMOD 2025 submission and section 6 of
+   &lt;a href="https://epubs.siam.org/doi/epdf/10.1137/1.9781611978759.10"&gt;Zip-Tries&lt;/a&gt;. (This
+   type of implementation can even motivate the design and analysis of
+   algorithms; see testimony in section 4 of &lt;a href="https://arxiv.org/pdf/2010.02116"&gt;this
+   paper&lt;/a&gt; and section 1 of &lt;a href="https://arxiv.org/pdf/1210.0481"&gt;this
+   paper&lt;/a&gt;.)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;System comparison&lt;/strong&gt; where one integrates the proposed algorithm
+   into a large system (or builds a new system from scratch with the
+   proposed algorithm) and compares the new system with an existing
+   system that serves the same purpose (e.g., query systems) to show
+   end-to-end performance advantages of the new system. Many papers
+   published in system conferences like SIGMOD, VLDB, or
+   &lt;a href="https://sigops.org/s/conferences/sosp/2026/"&gt;SOSP&lt;/a&gt; have this type
+   of implementation. It's immediate to see that system comparison can
+   be applied in a broader scope than the algorithmic comparison:
+   system comparison not only applies to the study of algorithms but
+   also to exploration of new system design ideas and
+   principles. (&lt;a href="https://web.archive.org/web/20250310064400/https://blog.xiangpeng.systems/posts/system-researchers/"&gt;This blog
+   post&lt;/a&gt;
+   gives a more detailed recount of system comparison and entailed
+   perspectives.)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I used to believe that it was sufficient to implement algorithmic
+comparison for &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;. However, reviews I received (search
+using keywords "system" or "DuckDB" on VLDB 2024, SIGMOD 2025, CIDR
+2025, and TODS 2025 reviews) put heavy premiums on the system
+comparison. The biggest confusion I had on applying system comparison
+to algorithmic work like &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; is that system comparison
+introduces lots of moving parts that may not be relevant to the
+algorithm itself and the end-to-end performance advantage of the new
+system with the proposed algorithm may not indicate the performance
+improvement is due to algorithm improvement. For example, suppose I
+have an algorithm and I integrate it into two query systems &lt;span class="math"&gt;\(S_1\)&lt;/span&gt; and
+&lt;span class="math"&gt;\(S_2\)&lt;/span&gt;. The only difference between &lt;span class="math"&gt;\(S_1\)&lt;/span&gt; and &lt;span class="math"&gt;\(S_2\)&lt;/span&gt; is that compared to
+&lt;span class="math"&gt;\(S_2\)&lt;/span&gt;, &lt;span class="math"&gt;\(S_1\)&lt;/span&gt; assumes single user scenario and doesn't implement
+session manager and worry about transactions. If empirically I show
+&lt;span class="math"&gt;\(S_1\)&lt;/span&gt; is faster than &lt;span class="math"&gt;\(S_2\)&lt;/span&gt;, can I claim that &lt;span class="math"&gt;\(S_1\)&lt;/span&gt; being faster is
+because it has a better algorithm? More generally speaking, if the
+system &lt;span class="math"&gt;\(S_1\)&lt;/span&gt; consists of &lt;span class="math"&gt;\(X\)&lt;/span&gt; components with one component being the
+proposed algorithm &lt;span class="math"&gt;\(A\)&lt;/span&gt; and system &lt;span class="math"&gt;\(S_2\)&lt;/span&gt; consists of &lt;span class="math"&gt;\(Y\)&lt;/span&gt; components
+with one component being the compared algorithm &lt;span class="math"&gt;\(B\)&lt;/span&gt;, in order to pin
+down &lt;span class="math"&gt;\(A\)&lt;/span&gt; is indeed empirically better than &lt;span class="math"&gt;\(B\)&lt;/span&gt;, I need to rule out the
+possibilities that the performance advantage is not coming from the
+rest of &lt;span class="math"&gt;\(X-1\)&lt;/span&gt; components of &lt;span class="math"&gt;\(S_1\)&lt;/span&gt;, which requires substantial
+effort. The end result of doing so effectively reduces system
+comparison to algorithm comparison. Then the question is why do we not
+doing system comparison from the beginning? With this mindset, I
+implemented a &lt;a href="https://github.com/xxks-kkk/treetracker"&gt;query system&lt;/a&gt;
+from scratch that supports both &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;, &lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt;, and
+other relevant algorithms. Every algorithm being compared such as
+&lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt; enjoys the same setup as &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; and the only
+difference in terms of code being executed is the algorithm
+itself. One of the reasons that &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; got published is
+because &lt;a href="https://remy.wang/"&gt;Remy&lt;/a&gt; came in and directed the effort of
+implementing a variation of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; in Rust that beats DuckDB
+to fullfil the requirement of system comparison. (&lt;a href="https://remy.wang/blog/duckdb.html"&gt;This blog
+post&lt;/a&gt; articulates the potential
+impact of forcing people to compare against DuckDB on database
+research and a related &lt;a href="https://arxiv.org/pdf/2504.08948"&gt;panel discussion in VLDB
+2025&lt;/a&gt; on the phenomenon of
+"reviewing process may over-index on work that must be faster than
+some baseline".)&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;The "approximation from below" perspective&lt;/p&gt;
+&lt;p&gt;The way now I reconcile and justify the need of system comparison
+on algorithmic work is to view system comparison as an approximation
+of the proposed algorithm performance from below.&lt;/p&gt;
+&lt;p&gt;The reasoning is as follows. Suppose I have a new algorithm
+&lt;span class="math"&gt;\(A\)&lt;/span&gt; and a target algorithm &lt;span class="math"&gt;\(B\)&lt;/span&gt; that I would like to compare with.
+I implement &lt;span class="math"&gt;\(A\)&lt;/span&gt; in a system &lt;span class="math"&gt;\(S_1\)&lt;/span&gt; that has &lt;span class="math"&gt;\(X\)&lt;/span&gt;
+extra components. Algorithm &lt;span class="math"&gt;\(B\)&lt;/span&gt; is built inside a system &lt;span class="math"&gt;\(S_2\)&lt;/span&gt; that 
+has &lt;span class="math"&gt;\(Y\)&lt;/span&gt; more components. Suppose &lt;span class="math"&gt;\(X &amp;lt; Y\)&lt;/span&gt; and assume all &lt;span class="math"&gt;\(X\)&lt;/span&gt;
+components and &lt;span class="math"&gt;\(Y\)&lt;/span&gt; components have the same performance.
+System &lt;span class="math"&gt;\(S_2\)&lt;/span&gt; serves as a lower bound on the performance of &lt;span class="math"&gt;\(A\)&lt;/span&gt;
+because even though it may not be conclusive that &lt;span class="math"&gt;\(S_1\)&lt;/span&gt; runs
+faster than &lt;span class="math"&gt;\(S_2\)&lt;/span&gt; indicating &lt;span class="math"&gt;\(A\)&lt;/span&gt; being better than &lt;span class="math"&gt;\(B\)&lt;/span&gt;, 
+&lt;span class="math"&gt;\(S_1\)&lt;/span&gt; slower than &lt;span class="math"&gt;\(S_2\)&lt;/span&gt; definitely indicates that &lt;span class="math"&gt;\(A\)&lt;/span&gt; does not
+offer performance advantages. In other words, there is a possibility
+that algorithm &lt;span class="math"&gt;\(B\)&lt;/span&gt; in the algorithm comparison may not
+be implemented properly, which results in the baseline being too
+low and algorithm &lt;span class="math"&gt;\(A\)&lt;/span&gt; does not yet offer a real-world advantage;
+system comparison rules out such possibility. &lt;/p&gt;
+&lt;p&gt;Certainly, it is a big "if" that all &lt;span class="math"&gt;\(X\)&lt;/span&gt; components and &lt;span class="math"&gt;\(Y\)&lt;/span&gt;
+components have the same performance. (Or generally speaking, the
+total runtime of all the not-&lt;span class="math"&gt;\(A\)&lt;/span&gt; components of system &lt;span class="math"&gt;\(S_1\)&lt;/span&gt; is
+less or or equal to the total runtime of all the not-&lt;span class="math"&gt;\(B\)&lt;/span&gt;
+components of system &lt;span class="math"&gt;\(S_2\)&lt;/span&gt;.) Ensuring that holds requires
+significant engineering effort and it is not directly relevant to
+the innovation of algorithm &lt;span class="math"&gt;\(A\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Once I adopted this "approximation" view on system comparison, I could see
+algorithm comparison can also be done approximately. In an ideal
+world, all algorithms are done in an apple-to-apple comparison fashion
+such that the only "delta" in terms of performance difference among
+algorithms is the algorithms themselves. In SIGMOD 2025 submission, I
+was instructed to do so. Since both &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; and &lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt;
+use join tree, and &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; and &lt;span class="math"&gt;\(\mathsf{HJ}\)&lt;/span&gt; use query plans,
+the most fair way was to build an optimizer that generate query plans
+and join trees such that all algorithms use the same query plans and
+the same join tree if needed. However, the issue with this empirical
+setup was that it made the water muddy meaning we need to introduce
+how optimization of join trees and generation of query plans for
+acyclic conjunctive queries are done, which can be treated in a
+separate paper. To not let the issue of query optimization distracts
+the reader, many papers (such as &lt;a href="https://www.vldb.org/pvldb/vol10/p889-zhu.pdf"&gt;Lookahead Information
+Passing&lt;/a&gt;, the published
+version of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;, and &lt;a href="https://arxiv.org/abs/2307.15255"&gt;Predicate
+Transfer&lt;/a&gt;) consider the proposed
+algorithm purely as a runtime technique, where the algorithm takes in a
+query plan that is generated from a baseline system (in the case of
+&lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;, plans are taken from SQLite and PostgreSQL) and then
+measure the empirical performance. This way we approximate the best
+possible performance of both the proposed algorithm and the baseline
+algorithm with the assumption that additional query optimization can
+unlock even better performance of respective algorithm. Then the
+comparison is done based on the proxies of both algorithms.&lt;/p&gt;
+&lt;p&gt;Sometimes the algorithm comparison can be mixed with system comparison
+because system being compared is a lower bound to the target
+algorithm. In TODS submission, we used PostgreSQL as the lower bound to
+all the implemented algorithms in the query engine namely
+&lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;, &lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt;, and &lt;span class="math"&gt;\(\mathsf{HJ}\)&lt;/span&gt;. We ensured
+&lt;span class="math"&gt;\(\mathsf{HJ}\)&lt;/span&gt; ran faster than PostgreSQL. Since &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; and
+&lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt; ran faster than &lt;span class="math"&gt;\(\mathsf{HJ}\)&lt;/span&gt; in most cases, we
+eliminated the possibility of a "straw man" implementation of baseline
+algorithms. An extra consideration on choosing PostgreSQL is that its
+architecture was mostly aligned with ours, most notably, row-oriented
+iterator-based execution model. The challenge here was that the
+community really likes DuckDB and many bad decisions described
+&lt;a href="#design"&gt;later&lt;/a&gt; on the design of the engine don't allow the engine to
+easily beat DuckDB. Eventually, we presented both algorithm comparison
+and system comparison separately with two different prototypes.&lt;/p&gt;
+&lt;!-- As a corollary, algorithm comparison can be viewed as showing --&gt;
+&lt;!-- performance advantage from the positive side by showing the "upper --&gt;
+&lt;!-- bound", i.e., how good the proposed algorithm $A$ can be. --&gt;
+&lt;p&gt;One might have this fear that system comparison involves a ton of
+work; I certainly did because I had been avoiding system comparison
+all along (The first review suggests system comparison is from VLDB
+2024, which I received in 2023). In the deep down, I didn't have this
+approximation perspective and I thought it would be a ton of work to
+do fully rigorous way given all the variables we need to control
+across multiple systems being compared. However, if all we did was to
+compare proxies of both algorithms, there is, in fact, a lot of
+leeway. I think the challenge here is to not know what are sufficient
+ingredients we need to build to carry out the system comparison; a
+more experienced person can really help a lot on this. For example, I
+didn't need to build a whole optimizer at all for both algorithm and
+system comparisons.&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;"If a thing is worth doing, it's worth doing badly"&lt;/p&gt;
+&lt;p&gt;During the empirical study of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;, I was haunted by the
+idea that a valid system comparison required building a perfect,
+end-to-end system from scratch to beat DuckDB—-a task I estimated would
+take at least a year. However, I later learned that I didn't need a
+perfect system; a barebone "semi-system" was sufficient to demonstrate
+the algorithm's potential and fulfill the referees' requirements.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="considerations-on-the-design-and-implementation-of-prototype"&gt;&lt;a name="design"&gt;&lt;/a&gt;Considerations on the design and implementation of prototype&lt;/h2&gt;
+&lt;p&gt;With algorithm in hand and some understanding of the type of
+implementations we need to provide for the empirical study, we now
+needed to decide how to design the prototype to help with empirical
+study. The decision naturally coupled with experimental design. There
+were again a few considerations on the design of the prototype, which I
+made both good and bad calls in hindsight.&lt;/p&gt;
+&lt;p&gt;The common wisdom in building a research prototype is to treat the
+prototype as "one-shot" meaning it is a software that will not get
+maintained and the main purpose that such prototype serves is to
+generate numbers for plots used in the paper &lt;sup id="fnref:3"&gt;&lt;a class="footnote-ref" href="#fn:3"&gt;5&lt;/a&gt;&lt;/sup&gt;. The biggest merit
+of this wisdom I think is the emphasis of being "agile" that prevents
+over-engineering and takes necessary shortcuts to deliver
+results. However, I think we should be careful about when and what
+shortcuts we take.&lt;/p&gt;
+&lt;p&gt;The biggest good call I made was to take a shortcut on prototype design
+but not the actual implementation. That is, I aimed for the simplest
+possible design but when it came down to the actual implementation of
+the design, I strove for production-ready engineering quality. Since
+I was going to build the query engine all by myself in a limited time,
+it's unrealistic to build a fully-fledged query engine; trade-offs
+had to be made. As a result, I aimed for the most barebone query engine
+possible. The guiding principle was that if there was no code, then
+there was no bug, and there was no performance penalty. Thus the whole
+query engine was modeled after &lt;a href="https://trino.io/"&gt;Trino&lt;/a&gt;, which I was
+fairly familiar with: the engine used JDBC to connect to some
+relational database (SQLite, PostgreSQL, and DuckDB are supported) and
+the data were pulled into the engine to perform join computation. Since
+SQLs are merely some specification of certain computations, I could
+implement the specification imperatively using a set of low-level APIs
+to specify the computation. As a result, no parser was built. The main
+code path was fairly simple: taking a specification of a join query and
+pull the data from the connected database and produce the query
+result. Such simple design enabled quick adaption of the prototype for
+unplanned empirical evaluation needs. For example, since SIGMOD 2025
+pursues an apple-to-apple comparison setup, an optimizer, that was not
+planned in the design of the prototype, had to be in-place. Since the
+design of the query engine was so simple, I could model the optimization
+of different algorithms (&lt;span class="math"&gt;\(\mathsf{YA}\)&lt;/span&gt;, &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;, &lt;span class="math"&gt;\(\mathsf{HJ}\)&lt;/span&gt;,
+and Predicate Transfer) as plugins to the engine, which could be enabled
+or disabled based on the needs. Query optimization as a plugin saved
+me a lot of headache later on in TODS submission because we switched
+back to runtime technique comparison philosophy and completely remove
+the query optimization work of algorithms. In fact, experiments done
+in SIGMOD 2025 submission but removed in the TODS submission were all
+implemented as plugins, which gave me plenty of flexibilities to cater
+various instructions. When it came to the implementation, I extensively
+used &lt;a href="https://guava.dev/releases/19.0/api/docs/com/google/common/base/Preconditions.html"&gt;checkState() or
+checkArgument()&lt;/a&gt;
+to explicitly solidify the assumption that I made on the implementation
+of the methods. Also, nontrivial methods were thoroughly tested. For
+example, all the algorithms implemented were covered by &lt;a href="https://github.com/xxks-kkk/treetracker/blob/0a22c83d838f3d4ecd0f66bb6f89b1f00da2dd0a/treeTracker/treetracker-relational/src/main/java/org/zhu45/treetracker/relational/operator/testCases/InstantiateTestCases.java#L35"&gt;the same suite
+of queries and relation
+instances&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;However, there were many bad calls I made that I wish I could done
+differently. The biggest one was to extend the database and query
+generator that facilitated the design of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; into a query
+engine for empirical study. This decision had two significant
+drawbacks that I realized later:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;The generator was written in Java for fast development. (The
+   flexibility offered by Python was too much for me; I wanted to
+   use a moderately restrictive language with native support for type
+   checking and rich ecosystem. Java was a nice language for this
+   purpose and I was quite familiar with.) However, when it came to
+   performance optimization in the late stage, Java program was not
+   easy to optimize straightforwardly. For example, all the data were
+   stored in a underlying database like DuckDB and fetched on-demand
+   using JDBC. To compare with in-memory database system, I needed to
+   make my setup as close to in-memory as possible. In Java, I needed to
+   deal with on-heap memory managed by JVM and off-heap memory if I
+   wanted to completely buffer the database instance inside the
+   memory. This was more cumbersome to deal with compared to other
+   language like Rust.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The generator used a federation database architecture where tuples
+   were fetched from an external database via JDBC. The benefit of
+   this design was that it allowed me to avoid managing storage part
+   myself and to ingest new relations easily for algorithm
+   development. Furthermore, in the case of conjunctive queries like
+   the ones in
+   &lt;a href="https://github.com/gregrahn/join-order-benchmark/blob/master/10a.sql"&gt;JOB&lt;/a&gt;,
+   all the selection predicates are pushed down to and evaulated by
+   the underlying database. Thus I could solely focus on the join
+   evaluation part of the queries. However, the design was a bad call
+   for a performance-focused prototype. By treating the data source as
+   a separate entity, I introduced a massive communication bottleneck
+   between the storage and query processing. As described in this
+   &lt;a href="https://www.starburst.io/blog/jdbc-trino-starburst/"&gt;post&lt;/a&gt;, JDBC
+   is not designed to transfer a large volume of data; it introduces
+   significant serialization and deserialization overhead. Every tuple
+   fetched requires the underlying database to serialize internal
+   binary records into a wire protocol, which the JDBC driver must
+   then deserialize into Java objects. This 'marshaling' process
+   consumes significant CPU cycles and creates memory pressure, often
+   making the communication interface—rather than the join
+   algorithm—the primary bottleneck. To mitigate the issue, I tweaked
+   &lt;a href="https://docs.oracle.com/javase/8/docs/api/java/sql/Statement.html#setFetchSize-int-"&gt;setFetchSize&lt;/a&gt;,
+   which decides how many tuples are fetched in a batch from data
+   source. However, there was a trade-off: If the value set too large,
+   then effectively one maintains two copies of the data, which run
+   into the risk of out-of-memory for JVM. For example, if the query
+   engine fetched a table of 10000 rows, the 10000 rows were cached in
+   JDBC connection. Since the engine had to map each row fetched by
+   JDBC to an internal row representation, in the worst-case scenario,
+   20000 rows are maintained inside JVM heap, which caused significant
+   memory pressure. On the other hand, if one sets the value of
+   &lt;code&gt;setFetchSize&lt;/code&gt; too small, &lt;code&gt;next()&lt;/code&gt; call on
+   &lt;a href="https://docs.oracle.com/javase/8/docs/api/java/sql/ResultSet.html"&gt;resultSet&lt;/a&gt;
+   can take long time. Furthermore, the JDBC driver implementation can
+   impact the engine performance a lot. I initially used PostgreSQL to
+   store the data. PostgreSQL JDBC driver is implemented purely &lt;a href="https://github.com/pgjdbc/pgjdbc"&gt;in
+   Java&lt;/a&gt;, which is slower than
+   DuckDB JDBC driver, which is implemented &lt;a href="https://github.com/duckdb/duckdb-java/tree/main"&gt;in
+   C++&lt;/a&gt;. The takeaway
+   from working with JDBC is that it is pretty neat for fast
+   prototyping. However, when we build a research prototype for system
+   comparison, it's probably better to use something else. One idea
+   used in the eventual TODS paper was to implement a prototype as a
+   barebone program where all the data were stored as Parquet
+   files. Then we used &lt;a href="https://pola.rs/"&gt;Polars&lt;/a&gt; to read those
+   Parquet files into memory and stored as
+   &lt;a href="https://doc.rust-lang.org/book/ch05-01-defining-structs.html"&gt;structs&lt;/a&gt;. This
+   design was very intuitive and completely removed the hassle of
+   dealing with JDBC in performance optimization.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;In hindsight, I disregarded a famous quote from Fred Brooks "In most
+projects, the first system built is barely usable ... Hence plan to
+throw one away; you will, anyhow."&lt;/p&gt;
+&lt;p&gt;Another important point is to study benchmark workload. The prototype
+was expected to run on a fixed workload and such workload was known
+beforehand, which contained rich opportunities to enable simplification
+of prototype design and implementation. For example, if any pair of
+relations joins on an integer column only, it is not wise to implement
+more generic case where two tables can join on a composite key or on a
+string column.&lt;/p&gt;
+&lt;h2 id="some-tips-on-java-and-software-engineering-in-general"&gt;Some tips on Java and software engineering in general&lt;/h2&gt;
+&lt;p&gt;The development of the prototype effectively started from day one
+given the &lt;a href="#design"&gt;decision&lt;/a&gt; of extending the query generator for the
+&lt;a href="#algorithm"&gt;purpose of algorithm design&lt;/a&gt; into a research
+prototype. However, the generator itself was not built with the
+performance-centric in mind. Therefore a huge chunk of time was spent
+optimzing the implementation so that the engine can outperforms
+various system baselines. The following tips are ones I found useful
+during the optimization process.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Profiling.&lt;/strong&gt; I think the biggest tip is to use some profiler to see
+   where the code spent time. There is a famous 90/10 rule on system
+   performance optimization, which says something like one should
+   spend 90% of the effort on 10% of the code of the system because
+   that 10% of the code makes the biggest impact on the system
+   performance. (I believe I read it somewhere on the web but I cannot
+   find the version I read; the closest one I found is from &lt;a href="https://www.cs.cmu.edu/~pattis/quotations.html"&gt;Richard
+   Pattis&lt;/a&gt;.) In
+   order to identify this 10% mission-critical code, it's inevitable
+   to use profiler. Once we start to profile the code, the rest
+   becomes easy: we just enter the loop of squashing the most
+   significant performance anomaly shown by the profiler and repeat
+   until there is absolutely nothing to be optimized. Another purpose
+   of using profiler is to generate plots like runtime breakdown
+   (e.g., Figure 7-9 in the &lt;a href="https://arxiv.org/pdf/2403.01631v1"&gt;preprint
+   (v1)&lt;/a&gt;) in empirical section of
+   the paper. Using print statement like &lt;code&gt;System.out.println&lt;/code&gt; won't
+   be precise enough as the operation of printing to screen adds
+   significant runtime overhead, which makes the breakdown of your
+   algorithm runtime inaccurate.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Replace Java Streams with Vanilla Loops.&lt;/strong&gt; I used &lt;a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"&gt;Stream
+   API&lt;/a&gt;
+   extensively in the code because of its clean look. However,
+   profiling showed that the Stream API added unnecessary abstraction
+   layers. Rewriting these as vanilla loops allowed the Just-in-Time
+   compiler to optimize the code more effectively and reduced the
+   allocation of short-lived objects.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Use primitive type if possible.&lt;/strong&gt; For example, instead of
+   &lt;code&gt;Integer&lt;/code&gt;, we use &lt;code&gt;int&lt;/code&gt;. As a concrete example, all queries in
+   &lt;a href="https://github.com/gregrahn/join-order-benchmark/tree/master"&gt;JOB&lt;/a&gt;
+   join any two relations on a single integer column. When we read
+   tuples from underlying database, we need to map those tuples into
+   our internal row representation. Naively, we can wrap each integer
+   value into &lt;code&gt;Integer&lt;/code&gt;. However, such wrapping adds significant
+   penalty: First, we need to do wrapping for each tuple and each
+   integer column (4000 wrapping operations for 1000 tuples from a
+   table of four integer columns). Second, such wrapping achieves
+   nothing because later on, when we do join, we need to extract the
+   join attribute value from the row and use it to obtain the hash
+   bucket from the hash table. During the process, the only
+   information we need is the integer value that &lt;code&gt;Integer&lt;/code&gt; object
+   contains and the wrapping doesn't add anything for this purpose.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Map out unnecessary columns.&lt;/strong&gt; As mentioned in the &lt;a href="#design"&gt;prior
+   section&lt;/a&gt;, JDBC can impose a significant performance
+   penalty. This tip is specific to query engine that maps out
+   unnecessary columns that are not used in a given query. Doing so
+   reduces the amount of tuples need to be fetched from the underlying
+   database. This performance optimization tip falls into a broad
+   category of using some query analysis to reduce the work actually
+   done during the query runtime.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Preallocate fixed-length arrays.&lt;/strong&gt; It's better to preallocate a
+   fixed length of an array that has sufficient size during the whole
+   life cycle of query evaluation. If we go with the default array
+   length, we run into the situation of constantly resizing the array,
+   which makes the performance less predictable and fragments the JVM
+   heap. In query engine, the information about the size of array we
+   need to allocate is readily available during the optimization
+   through cardinality estimation. Sometimes, we just use relation
+   size as the approximation towards true cardinality and it works
+   quite well in practice.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Use high-performance standard library.&lt;/strong&gt; Standard library is
+   sometimes too generic for performance-critical use case. I used
+   &lt;a href="https://javadoc.io/doc/it.unimi.dsi/fastutil/latest/index.html"&gt;fastutil&lt;/a&gt;
+   in the query engine for specialized data structure like &lt;code&gt;IntSet&lt;/code&gt;.
+   I found that fastutil's specialized collections avoided the
+   overhead of object pointers. Storing primitive keys in contiguous
+   memory improved CPU cache hit rates and minimized pointer chasing
+   during hash table probes. This tip also applies to the Rust
+   prototype where we used HashMap and HashSet from
+   &lt;a href="https://docs.rs/ahash/latest/ahash/index.html"&gt;ahash&lt;/a&gt; instead of
+   the standard library to implement hash tables. Further, we used
+   &lt;a href="https://docs.rs/memchr/latest/memchr/"&gt;memchr&lt;/a&gt; for string
+   predicate evaluation instead of doing it ourselves.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Use integer comparison instead of string comparison.&lt;/strong&gt; Initial
+   implementation of the query engine assumed fairly generic queries
+   as input workload. Specifically, the engine allowed two relations
+   are joined on a string column, which didn't show up in any
+   benchmark that I have run. Thus I made the adjustment of assuming
+   join only happens on a integer column (in fact, all the queries in
+   the three benchmarks I run don't even join on a composite
+   key). This assumption simplified a lot of implementation and
+   brought a significant performance improvement because string
+   comparison is a lot slower than the integer comparison. (Papers
+   like &lt;a href="https://dl.acm.org/doi/10.14778/3407790.3407797"&gt;this&lt;/a&gt;
+   exploit the performance gap between string and integer comparison;
+   see section 3.1.)  This is a good shortcut to take when building a
+   research prototype.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Use better JDBC.&lt;/strong&gt; This point is already mentioned in &lt;a href="#design"&gt;the prior
+   section&lt;/a&gt; where C++ implementation of DuckDB JDBC driver
+   has better performance than PostgreSQL JDBC driver implemented
+   purely in Java.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Avoid repeated object creation (Object Pooling).&lt;/strong&gt; When
+   &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; was implemented in an iterator form, backjumping was
+   implemented in the form of message passing. The message itself was
+   just an object to signal which relation should delete a tuple from
+   its hash table. Instead of allocating a new message object for
+   every backjump, I implemented a form of object reuse. This
+   stabilized the heap usage and prevented frequent GC pauses from
+   interrupting the query evaluation pipeline.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Optimize performance on a small workload.&lt;/strong&gt; Running all three
+    benchmarks with 120ish queries in a full-blown way takes multiple
+    days. Doing so is inefficient if our goal is to optimize our
+    prototype performance. A more ideal way to approach this is to
+    sample a few queries from the workload and optimize the
+    performance of those queries first. We can sample the queries in
+    different ways such as by the number of relations appeared in the
+    queries.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id="departure-thoughts"&gt;Departure thoughts&lt;/h1&gt;
+&lt;p&gt;Given the publication of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;, I have always been asking
+myself whether it is worthwhile spending five years pushing a work to
+publication. Is it better to work on something else that doesn't rely
+on &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; so that I can have enough material to write a
+thesis?  My answer right now is mixed. On one hand, research is all
+about confidence and I think it is absolutely crucial for the first
+research project to be successful so that a student can gain
+confidence in continue pursuing the research path. The tricky thing is
+about how to define "successful": for a senior professor who published
+3 digits number of papers, whether a paper is published or not is no
+longer relevant. However, for a PhD student that just gets started,
+successful means publication; they need to see what research is
+publishable and gain reassurance they can do research. It would
+require a strong confidence to totally not published a result and then
+continue work something that builds upon the unpublished result. From
+this perspective, I think it's absolutely worth pushing a research
+project to publication. Plus, we discovered new things along the way
+such as acyclic convolution and the importance of optimizing join tree
+for acyclic conjunctive query evaluation. On the other hand, the
+algorithm of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; was finished in Summer 2021 and it was just
+waste of time to try different things in the hope of getting the badge
+that says "this work is published". I think the takeaway from all
+years of trying is to try to do some research that is completely
+different from the field that the struggling manuscript concerns; by
+working something completely different, the risk is diversified and it
+is good for mental health.&lt;/p&gt;
+&lt;h1 id="acknowledgements"&gt;Acknowledgements&lt;/h1&gt;
+&lt;p&gt;I imagine this post serves as a sort of informal thesis. It would be a
+shame if I did not give proper thanks to the many people who helped me
+during my time at UT-Austin.&lt;/p&gt;
+&lt;p&gt;Bailu Ding, Dixin Tang, and Marcelo Arenas provided various thoughtful
+comments on the manuscript and valuable advice on how to push this
+work toward publication. Greg Plaxton has been incredibly
+understanding of my struggles and spent countless hours advising me on
+all aspects of research--from navigating the PhD program to the
+nuances of theory research. Juan Sequeda and Nathan Clement generously
+shared their perspectives and experiences regarding their own PhD
+journeys. Remy Wang was an indispensable force; he strengthened the
+work significantly and helped push it across the finish line. Finally,
+Sherry has unconditionally supported my seemingly insane endeavor to
+continue doing research after a challenging five years at UT-Austin.&lt;/p&gt;
+&lt;div class="footnote"&gt;
+&lt;hr/&gt;
+&lt;ol&gt;
+&lt;li id="fn:1"&gt;
+&lt;p&gt;People call this algorithm Yannakakis algorithm, Yannakakis'
+  algorithm, or Yannakakis's algorithm. I think grammatically
+  speaking, the most correct way is either Yannakakis's algorithm
+  or Yannakakis algorithm. &lt;a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:2"&gt;
+&lt;p&gt;Acyclic conjunctive queries are everywhere; one may argue that
+  many real life queries are in fact acyclic. See &lt;a href="https://arxiv.org/abs/2009.01769"&gt;this
+  paper&lt;/a&gt; for a survey on
+  acyclicity of many query workloads. &lt;a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:4"&gt;
+&lt;p&gt;TT1 is slower than TT2 by a factor of &lt;span class="math"&gt;\(\log n\)&lt;/span&gt; where &lt;span class="math"&gt;\(n\)&lt;/span&gt; is the
+  number of variables in a constraint network. However, TT1 is much
+  simpler than TT2 and the number of variables in a constraint network
+  is translated into the number of relations in a query, which is
+  usually considered as a constant in a complexity model called data
+  complexity where database instance is the problem input to a query
+  evaluation algorithm. &lt;a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 3 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:5"&gt;
+&lt;p&gt;For a more in-depth discussion of the limitations of prose
+proofs, see some writings
+(&lt;a href="https://lamport.azurewebsites.net/pubs/rigor.pdf"&gt;1&lt;/a&gt;,
+&lt;a href="https://lamport.azurewebsites.net/pubs/proof.pdf"&gt;2&lt;/a&gt;) by Leslie
+Lamport. &lt;a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 4 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:3"&gt;
+&lt;p&gt;My friend's PhD advisor once told him that it's sufficient to
+  have the software compile once just for the numbers; it's okay
+  that the software no longer functions once the paper is
+  published. &lt;a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 5 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="2025"></category><category term="academic"></category><category term="paper"></category><category term="my research"></category></entry><entry><title>Looking for Collaborators</title><link href="https://zhu45.org/posts/2024/Mar/24/looking-for-collaborators/" rel="alternate"></link><published>2024-03-24T20:11:00+08:00</published><updated>2024-03-24T20:11:00+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2024-03-24:/posts/2024/Mar/24/looking-for-collaborators/</id><summary type="html">&lt;div class="toc"&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#motivation"&gt;Motivation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#what-im-looking-for"&gt;What I'm looking for&lt;/a&gt;&lt;/li&gt;
@@ -4892,7 +5786,7 @@ that cause a page fault uppercase, and those that don’t lowercase):&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
 approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12"&gt;18&lt;/a&gt;&lt;/sup&gt; to avoid heavy overhead). The trace of the memory references with LRU policy shown below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -5006,7 +5900,7 @@ approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12
 &lt;/blockquote&gt;
 &lt;p&gt;FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -5120,7 +6014,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 &lt;/blockquote&gt;
 &lt;p&gt;Optimal policy means we want to replace the page that will be accessed &lt;em&gt;furthest in the future&lt;/em&gt; and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -5326,7 +6220,7 @@ which takes a queue and returns, as an unsigned integer, its address.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;One possible scenario of deadlock using &lt;code&gt;transfer()&lt;/code&gt; is illustrated below. Note that &lt;code&gt;queue1&lt;/code&gt; and &lt;code&gt;queue2&lt;/code&gt; in &lt;code&gt;transfer()&lt;/code&gt;
 are replaced with queues that they are pointing to (time increases with the row's number):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Thread1 (&lt;code&gt;transfer(q1,q2)&lt;/code&gt;)&lt;/th&gt;
@@ -5680,7 +6574,7 @@ the modification looks like below:&lt;/p&gt;
 &lt;p&gt;The question we want to answer is why doing so works?&lt;/p&gt;
 &lt;h2 id="explanation"&gt;Explanation&lt;/h2&gt;
 &lt;p&gt;We acquire key data from GDB as following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;GDB command&lt;/th&gt;
@@ -7234,7 +8128,7 @@ blocks from different clients)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;&lt;/th&gt;
@@ -8644,7 +9538,7 @@ want to &lt;a href="https://github.com/xxks-kkk/HyperPebblesDB"&gt;build somethi
 &lt;li&gt;
 &lt;p&gt;The log-structured merge trees (LSM) data structure takes advantage of high sequential bandwidth by only writing sequentially to storage. 
 Writes are batched together in memory and written to storage as a sequential log (termed an &lt;strong&gt;sstable&lt;/strong&gt;). Each sstable contains a sorted sequence of keys.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="sstable" class="img-responsive" src="https://zhu45.org/images/sstable.png"/&gt; &lt;/p&gt;
+&lt;p&gt;&lt;img alt="sstable" class="img-responsive" src="https://zhu45.org/images/sstable.png"/&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="admonition note"&gt;
@@ -8684,7 +9578,7 @@ Writes are batched together in memory and written to storage as a sequential log
 &lt;li&gt;Updating or deleting keys in LSM-based stores does not update the key in place, since all write IO is sequential. Instead, the key is inserted once again into the memtable with a higher sequence number; a delete key is inserted again with a special flag (often called a &lt;strong&gt;tombstone&lt;/strong&gt; flag). Due to the higher sequence number, the latest version of the flag will be returned by the store to the user.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id="write-amplification-root-cause"&gt;Write Amplification: Root Cause&lt;/h3&gt;
-&lt;p&gt;&lt;img alt="sstable" class="img-responsive" src="https://zhu45.org/images/lsm-root-cause.png"/&gt; &lt;/p&gt;
+&lt;p&gt;&lt;img alt="sstable" class="img-responsive" src="https://zhu45.org/images/lsm-root-cause.png"/&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;The root cause for write amplification: multiple rewrites of sstables during compaction. In other words, sstables can be rewritten multiple
@@ -8725,7 +9619,7 @@ to sstable at a level.&lt;/p&gt;
 &lt;p&gt;In FLSM compaction, the sstables of a given guard are (merge) sorted and then fragmented (partitioned), so that each child guard receives a new sstable that fits into the key range of that child guard in the next level.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="guards" class="img-responsive" src="https://zhu45.org/images/guards.png"/&gt; &lt;/p&gt;
+&lt;p&gt;&lt;img alt="guards" class="img-responsive" src="https://zhu45.org/images/guards.png"/&gt;&lt;/p&gt;
 &lt;div class="admonition note"&gt;
 &lt;p class="admonition-title"&gt;Note&lt;/p&gt;
 &lt;p&gt;Some observations about Figure 3:&lt;/p&gt;
@@ -8862,7 +9756,7 @@ This is done by &lt;em&gt;compactions&lt;/em&gt;, which merges the logs in the u
 merging sstables from level 1 to level 2). However, there is problem with the merging process as we
 need to read both logs from the upper level and lower level into memory and perform the merge. This mechanism
 naturally introduces the write amplifcation effect, which decreases the write performance.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="flsm compaction process illustration" class="img-responsive" src="https://zhu45.org/images/guard-compaction.png"/&gt; &lt;/p&gt;
+&lt;p&gt;&lt;img alt="flsm compaction process illustration" class="img-responsive" src="https://zhu45.org/images/guard-compaction.png"/&gt;&lt;/p&gt;
 &lt;p&gt;To combat write amplification, Fragmented Log-Structured Merge Trees (FLSM) and its implementation &lt;em&gt;PebblesDB&lt;/em&gt; are proposed. 
 The key idea is shown in picture above. FLSM uses &lt;em&gt;guard&lt;/em&gt;, which
 can be thought of as the key for a collection of logs. the keys in the collection of logs have to be 
@@ -9145,7 +10039,7 @@ max(# "the" in ref1, # "the" in ref2, # "the" in ref3) = max(1,4,4). &lt;/p&gt;
 &lt;p&gt;We take the geometric mean of the test corpus’ modified precision scores and then multiply the result by an exponential brevity penalty factor.
 We first compute the geometric average of the modified n-gram precisions, &lt;span class="math"&gt;\(p_n\)&lt;/span&gt;, using n-grams up to length &lt;span class="math"&gt;\(N\)&lt;/span&gt; and positive weights &lt;span class="math"&gt;\(w_n\)&lt;/span&gt; summing to one.
 Next, let &lt;span class="math"&gt;\(c\)&lt;/span&gt; be the length of the candidate translation and &lt;span class="math"&gt;\(r\)&lt;/span&gt; be the effective reference corpus length. We compute the brevity penalty BP,&lt;/p&gt;
-&lt;p&gt;&lt;img alt="BLEU calculation" class="img-responsive" src="https://zhu45.org/images/bleu-calc.png"/&gt; &lt;/p&gt;
+&lt;p&gt;&lt;img alt="BLEU calculation" class="img-responsive" src="https://zhu45.org/images/bleu-calc.png"/&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="remarks-on-bleu"&gt;Remarks on BLEU&lt;/h2&gt;
@@ -11812,7 +12706,7 @@ a very efficient algorithm in all cases. Path compression is not entirely compat
 to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., &lt;strong&gt;ranks&lt;/strong&gt;), but in theory union-by-rank is as efficient as union-by-size.&lt;/p&gt;
 &lt;p&gt;If we do analysis on smart union with path compression, the running time for any sequence of &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects makes &lt;span class="math"&gt;\(O(N + M\log^*N)\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt; accesses.&lt;/p&gt;
 &lt;p&gt;The following table summarizes the running time for &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on a set of &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects (don't forget we need to spend &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; to initialize disjoint sets):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -11843,7 +12737,7 @@ to recompute all the heights and in this case, heights stored for each tree beco
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;The running time for each operation for each algorithm is following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -12044,7 +12938,7 @@ can try to label the items from &lt;span class="math"&gt;\(1 \dots n\)&lt;/span&
 solution for &lt;span class="math"&gt;\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)&lt;/span&gt;. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;) in terms of subproblems (i.e., &lt;span class="math"&gt;\(S_i\)&lt;/span&gt;)? Let's take a look at an example:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -12134,7 +13028,7 @@ for i = 1 to n
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The running time for this algorithm is &lt;span class="math"&gt;\(O(n*W)\)&lt;/span&gt; because of the double for loop. To understand this algorithm,
 let's take a look at an example:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -12162,7 +13056,7 @@ let's take a look at an example:&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 5\)&lt;/span&gt; and with algorithm above, we essentially fill out a table like following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12231,7 +13125,7 @@ the first two for loops&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now, let's take a look at &lt;span class="math"&gt;\(B[1,1]\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(i = 1, b_i = 3, w_i = 2, w = 1\)&lt;/span&gt;, and since &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, and by our
 algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(B[0,1]\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(B[1,1] = 0\)&lt;/span&gt; and the table becomes&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12292,7 +13186,7 @@ algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, 
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;We can fill out the table like this and have&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12419,7 +13313,7 @@ defined as the greatest integer less than or equal to &lt;span class="math"&gt;\
 &lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i,w&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x_i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;that&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;associated&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i-1,w&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Let's walk through an example to better understand the algorithm idea:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -12446,7 +13340,7 @@ defined as the greatest integer less than or equal to &lt;span class="math"&gt;\
 &lt;p&gt;&lt;span class="math"&gt;\(W = 8\)&lt;/span&gt; in our example. The algorithm essentially
 tries to build fill out two tables &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; table like
 the 0-1 knapsack problem:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12514,7 +13408,7 @@ the 0-1 knapsack problem:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;and &lt;span class="math"&gt;\(x[i,w]\)&lt;/span&gt; table to keep track of the optimal
 value of &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; for each &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt;&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -12578,7 +13472,7 @@ $$&lt;/div&gt;
 &lt;p&gt;So, we fill in &lt;span class="math"&gt;\(B[1,3] = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[1,3] = 1\)&lt;/span&gt;. We can repeatedly
 doing this for other &lt;span class="math"&gt;\(i\)&lt;/span&gt;s. We can take a look at the values
 from another perspective like the tables below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[1,w]&lt;/th&gt;
@@ -12634,7 +13528,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[2,w]&lt;/th&gt;
@@ -12690,7 +13584,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[3,w]&lt;/th&gt;
@@ -12868,7 +13762,7 @@ In addition, this post belongs to part of future work mentioned in &lt;a href="h
 &lt;p&gt;Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Type&lt;/th&gt;
@@ -12976,7 +13870,7 @@ registers for later restoration, and for local variables.
 The portion of the stack allocated for a single function call is called a &lt;strong&gt;stack frame&lt;/strong&gt;. In other words,
 for each function call, new space (i.e., stack frame) is created on the stack. &lt;/p&gt;
 &lt;p&gt;The computer's stack lives at the very top addresses of memory. As the name suggests, stack is a stack
-data structure with the "top" of the stack growing from the &lt;a href="https://zhu45.org/images/heap.png"&gt;high value addresses towards low values addresses&lt;/a&gt;. 
+data structure with the "top" of the stack growing from the &lt;a href="https://zhu45.org/images/heap.png"&gt;high value addresses towards low values addresses&lt;/a&gt;.
 We use &lt;span class="math"&gt;\(\mathtt{push \text{ } S}\)&lt;/span&gt; to push the source onto stack, and we use
 &lt;span class="math"&gt;\(\mathtt{pop \text{ } D}\)&lt;/span&gt; to remove the top value from the stack and place it into a destination
 (i.e. a register or memory location). We use the stack register, &lt;span class="math"&gt;\(\mathtt{\%esp}\)&lt;/span&gt; as a pointer
@@ -13637,7 +14531,7 @@ care about the size of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; 
 &lt;p&gt;Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
 housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
 its prediction. What we should try next?&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Method&lt;/th&gt;
@@ -13713,7 +14607,7 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$&lt;/div&gt;
 &lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;component&lt;/th&gt;
@@ -14551,7 +15445,7 @@ is a graphic summary for the text above&lt;/p&gt;
 the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Join types&lt;/th&gt;
@@ -15188,7 +16082,7 @@ $$&lt;/div&gt;
 &lt;p&gt;For example, the sequence &lt;span class="math"&gt;\(1,3,4,2,1\)&lt;/span&gt; can be considered as a sequence of 
 iterated function values with &lt;span class="math"&gt;\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
 x_3 = f(4) = 2, x_4 = f(2) = 1\)&lt;/span&gt;. Let's try another representation:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover table  table-striped"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;index&lt;/th&gt;
@@ -15693,7 +16587,7 @@ to show some tricks in Graphviz to tweak the layout &lt;sup id="fnref:1"&gt;&lt;
 &lt;h2 id="draw-a-neural-network"&gt;Draw a neural network&lt;/h2&gt;
 &lt;p&gt;If you do a quick search regarding "graphviz neural network example", you'll highly
 likely see the below picture:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" class="img-responsive" src="https://zhu45.org/images/multiclass_neural_network_example.png"/&gt; &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Multiclass neural network example" class="img-responsive" src="https://zhu45.org/images/multiclass_neural_network_example.png"/&gt;&lt;/p&gt;
 &lt;p&gt;This is probably the simplest Graphviz demonstration on Neural Network. The
 code for this picture can be obtained &lt;a href="https://gist.github.com/thigm85/5760134"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;However, when I'm preparing my last post, I'm not quite satisified with the example above.
@@ -15702,7 +16596,7 @@ input, bias term, hidden units, and output units. So, I decide to draw one on my
 &lt;p&gt;Here is the &lt;a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/nn3.dot"&gt;code&lt;/a&gt;
 that generates the picture below &lt;sup id="fnref:2"&gt;&lt;a class="footnote-ref" href="#fn:2"&gt;2&lt;/a&gt;&lt;/sup&gt;. Let me briefly
 highlights some key points in the code:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" class="img-responsive" src="https://zhu45.org/images/nn2.png"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Custom neural network diagram" class="img-responsive" src="https://zhu45.org/images/nn2.png"/&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;rankdir = LR;
 splines=false;
 edge[style=invis];
@@ -15877,7 +16771,7 @@ when I was a student at college. It may feel different when we revisit old frien
 &lt;h2 id="model"&gt;Model&lt;/h2&gt;
 &lt;h3 id="representations"&gt;Representations&lt;/h3&gt;
 &lt;p&gt;Below picture shows a typical neural network (I'll use NN as a shorthand). &lt;/p&gt;
-&lt;p&gt;&lt;img alt="" class="img-responsive" src="https://zhu45.org/images/nn2.png"/&gt; &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Neural network diagram" class="img-responsive" src="https://zhu45.org/images/nn2.png"/&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(L =\)&lt;/span&gt; total number of layers in network (i.e. &lt;span class="math"&gt;\(L = 4\)&lt;/span&gt; for the above NN)&lt;/p&gt;
@@ -19859,7 +20753,7 @@ is reached. That is, you are traversing from a leaf along the path towards the r
 while removing the nodes along the path before a full node is reached. This full node
 becomes a non-full node because one of its child node is removed. At this point the
 tree will have one less leaf and one less full node.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" class="img-responsive" src="https://zhu45.org/images/maw-4-6.PNG"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="MAW problem 4.6 illustration" class="img-responsive" src="https://zhu45.org/images/maw-4-6.PNG"/&gt;&lt;/p&gt;
 &lt;p&gt;Therefore, the tree has &lt;span class="math"&gt;\(k\)&lt;/span&gt; full nodes after the nodes are removed. By the inductive
 hypothesis there are &lt;span class="math"&gt;\(k+1\)&lt;/span&gt; leaves. Add all the nodes that were removed back into the 
 tree the same way to create the original tree. We are adding one full node and 
@@ -20299,7 +21193,7 @@ equal to the height of the tree.&lt;/li&gt;
 &lt;div class="section" id="example"&gt;
 &lt;h2&gt;Example&lt;/h2&gt;
 &lt;p&gt;Let's work through MAW 4.1, 4.2, and 4.3 to get the tree terminology clear.&lt;/p&gt;
-&lt;a class="reference external image-reference" href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/tree-terminology.gv"&gt;&lt;img alt="" class="img-responsive" src="/images/tree-terminology.png"/&gt;&lt;/a&gt;
+&lt;a class="reference external image-reference" href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/tree-terminology.gv"&gt;&lt;img alt="tree terminology illustration" class="img-responsive" src="/images/tree-terminology.png"/&gt;&lt;/a&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;"A" is the &lt;em&gt;root&lt;/em&gt;&lt;/li&gt;
 &lt;li&gt;"G", "H", "I", "L", "M", "K" are the &lt;em&gt;leaves&lt;/em&gt;&lt;/li&gt;
@@ -21096,7 +21990,7 @@ For instance, suppose &lt;tt class="docutils literal"&gt;argv&lt;/tt&gt; pointin
 dereference &lt;tt class="docutils literal"&gt;argv[0]&lt;/tt&gt; to get &lt;tt class="docutils literal"&gt;x&lt;/tt&gt; and assign to &lt;tt class="docutils literal"&gt;c&lt;/tt&gt;.&lt;/p&gt;
 &lt;p&gt;We can see that the level of precedence of operators is crtical in this case. This can be seen from table on
 p.53. in K &amp;amp; R:&lt;/p&gt;
-&lt;img alt="" class="img-responsive" src="/images/precedence-operators-c.PNG"/&gt;
+&lt;img alt="precedence of operators in C" class="img-responsive" src="/images/precedence-operators-c.PNG"/&gt;
 &lt;p&gt;Let's see another example from K &amp;amp; R p. 105.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;strcpy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;{&lt;/span&gt;
@@ -22086,7 +22980,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable table-hover table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -22787,7 +23681,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable table-hover table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23020,7 +23914,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable table-hover table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23075,7 +23969,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable table-hover table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23125,7 +24019,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable table-hover table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23169,7 +24063,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable table-hover table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23228,7 +24122,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable table-hover table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23291,7 +24185,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;table class=" table-striped highlighttable table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable table-hover table  table-striped"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23682,7 +24576,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class=" table-striped docutils table table-hover"&gt;
+&lt;table border="1" class="table-hover table  table-striped docutils"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;

@@ -190,7 +190,7 @@ want to <a href="https://github.com/xxks-kkk/HyperPebblesDB">build something</a>
 <li>
 <p>The log-structured merge trees (LSM) data structure takes advantage of high sequential bandwidth by only writing sequentially to storage. 
 Writes are batched together in memory and written to storage as a sequential log (termed an <strong>sstable</strong>). Each sstable contains a sorted sequence of keys.</p>
-<p><img alt="sstable" class="img-responsive" src="../../../../../images/sstable.png"/> </p>
+<p><img alt="sstable" class="img-responsive" src="../../../../../images/sstable.png"/></p>
 </li>
 </ul>
 <div class="admonition note">
@@ -230,7 +230,7 @@ Writes are batched together in memory and written to storage as a sequential log
 <li>Updating or deleting keys in LSM-based stores does not update the key in place, since all write IO is sequential. Instead, the key is inserted once again into the memtable with a higher sequence number; a delete key is inserted again with a special flag (often called a <strong>tombstone</strong> flag). Due to the higher sequence number, the latest version of the flag will be returned by the store to the user.</li>
 </ul>
 <h3 id="write-amplification-root-cause">Write Amplification: Root Cause</h3>
-<p><img alt="sstable" class="img-responsive" src="../../../../../images/lsm-root-cause.png"/> </p>
+<p><img alt="sstable" class="img-responsive" src="../../../../../images/lsm-root-cause.png"/></p>
 <ul>
 <li>
 <p>The root cause for write amplification: multiple rewrites of sstables during compaction. In other words, sstables can be rewritten multiple
@@ -271,7 +271,7 @@ to sstable at a level.</p>
 <p>In FLSM compaction, the sstables of a given guard are (merge) sorted and then fragmented (partitioned), so that each child guard receives a new sstable that fits into the key range of that child guard in the next level.</p>
 </li>
 </ul>
-<p><img alt="guards" class="img-responsive" src="../../../../../images/guards.png"/> </p>
+<p><img alt="guards" class="img-responsive" src="../../../../../images/guards.png"/></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Some observations about Figure 3:</p>
@@ -408,7 +408,7 @@ This is done by <em>compactions</em>, which merges the logs in the upper level i
 merging sstables from level 1 to level 2). However, there is problem with the merging process as we
 need to read both logs from the upper level and lower level into memory and perform the merge. This mechanism
 naturally introduces the write amplifcation effect, which decreases the write performance.</p>
-<p><img alt="flsm compaction process illustration" class="img-responsive" src="../../../../../images/guard-compaction.png"/> </p>
+<p><img alt="flsm compaction process illustration" class="img-responsive" src="../../../../../images/guard-compaction.png"/></p>
 <p>To combat write amplification, Fragmented Log-Structured Merge Trees (FLSM) and its implementation <em>PebblesDB</em> are proposed. 
 The key idea is shown in picture above. FLSM uses <em>guard</em>, which
 can be thought of as the key for a collection of logs. the keys in the collection of logs have to be 

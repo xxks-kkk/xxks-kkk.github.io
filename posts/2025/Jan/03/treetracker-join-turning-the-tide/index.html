@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-44FB4FMFCD"></script>
+        <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'G-44FB4FMFCD');
+        </script>
+        <meta charset="utf-8">
+        <title>    TreeTracker Join: Turning the Tide
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation, Zeyuan UT-Austin, Zeyuan Texas, Zeyuan University of Texas at Austin, Zeyuan Amazon, Zeyuan Microsoft Research, Zeyuan Microsoft" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8696888278948966"
+                     crossorigin="anonymous"></script>
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's Page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's Page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's Page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../research.html" style="padding: 10px">RESEARCH</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">TreeTracker Join: Turning the Tide</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2025-01-03T00:00:00+08:00"> Jan 03, 2025</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/databases.html">databases</a>
+        /
+	<a href="../../../../../tag/joins.html">joins</a>
+        /
+	<a href="../../../../../tag/research.html">research</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">TreeTracker Join: Turning the Tide</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2025-01-03T00:00:00+08:00">Jan 03, 2025</time></div> -->
+        </header>
+        
+        <article>
+            <p>Leslie Lamport maintains <a href="https://lamport.azurewebsites.net/pubs/pubs.html?from=https://research.microsoft.com/users/lamport/pubs/pubs.html&amp;type=path">a collection of his papers</a> with some stories
+or remarks about each paper he is an author <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. I think it's a very
+nice idea to document the experience on research like that. So, to
+follow his footprints, this is the very first post on a piece of
+research that I spent five years on. I plan to write a post like this
+whenever a piece of research comes to a closure.</p>
+<div class="toc">
+<ul>
+<li><a href="#background-on-research-aka-stories">Background on Research aka. Stories</a></li>
+<li><a href="#lesson-learned">Lesson Learned</a><ul>
+<li><a href="#know-yourself">Know Yourself</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h1 id="background-on-research-aka-stories">Background on Research aka. Stories</h1>
+<p>The research is about designing a new join algorithm called <strong>TreeTracker Join
+(TTJ)</strong> [<a href='#hu2024treetrackerjointurningtide' id='ref-hu2024treetrackerjointurningtide-1'>Hu et al., 2024</a>] that is fast both in
+theory and in practice. The research starts on 10/31/2019. At that time, I was laid off from
+my gig at State Street and I reached out to <a href="https://www.cs.utexas.edu/~miranker/">Daniel
+Miranker</a>, who I TAed for two
+years at UT-Austin when I was a master student,  to see if he had any leads for jobs. During the
+initial conversations, I talked about my interests in research and
+some work I did with DB2 at IBM. He pitched me his vision on
+building a next-generation graph database, which required a mixture of
+theory and system development. Dancing between theory and practice is
+something that I have a strong interest in and I decided to do a PhD
+with him.</p>
+<!-- I felt very intrigued by the vision and -->
+<!-- wanted to do a PhD with him. -->
+<p>He gave me two papers: the <strong>full reducer</strong> paper
+[<a href='#Bernstein81usingsemi-joins' id='ref-Bernstein81usingsemi-joins-1'>Bernstein and Chiu, 1981</a>] and the <strong>TreeTracker</strong> paper
+[<a href='#bayardo1994optimal' id='ref-bayardo1994optimal-1'>BayardoJr and Miranker, 1994</a>], where <a href="https://bayardo.org/">Roberto
+Bayardo</a> and Miranker gave an alternative optimal algorithm
+for solving a class of <a href="https://en.wikipedia.org/wiki/Constraint_satisfaction_problem">constraint satisfaction problem
+(CSP)</a>
+that is acyclic. The key difference between TreeTracker and the
+piror art
+<a href="http://cse.unl.edu/~choueiry/Documents/Mohr+Henderson-AIJ1986.pdf">AC-4</a>
+is that AC-4 needs to pre-process CSP so that the resulting
+CSP can be solved efficiently (technical term on this is "without
+backtracking"). An obvious issue with any pre-processing-based
+algorithm is that if the input instance to the algorithm is not
+that bad meaning solving the problem directly can lead to the solution
+much quicker than the pre-processing itself, pre-processing is
+an overhead even though the final runtime bound is
+optimal. TreeTracker algorithm directly solves the CSP and perform
+extra steps only when it encounter failures during the solving process.</p>
+<p>It is well-known that evaluating queries involving join is effectively
+the same as solving CSP [<a href='#Kolaitis1998' id='ref-Kolaitis1998-1'>Kolaitis and Vardi, 1998</a>, <a href='#Chandra1977' id='ref-Chandra1977-1'>Chandra and Merlin, 1977</a>]. The full reducer invented
+by <a href="https://www.microsoft.com/en-us/research/people/philbe/">Phil
+Bernstein</a>
+and <a href="https://www.ie.cuhk.edu.hk/faculty/Chiu-Dah-Ming-Winston/">Dah-Ming
+W. Chiu</a> is
+effectively the same as enforcing arc-consistency
+[<a href='#russell2016artificial' id='ref-russell2016artificial-1'>Russell and Norvig, 2010</a> Chapter 6] in a CSP that is acyclic. Thus,
+any algorithm that is based on the full reducer will have some overhead
+just like AC-4. This implies that such algorithm has room for
+improvements using the TreeTracker idea; just like what it did for
+AC-4. Therefore, Miranker's idea is to translate TreeTracker from CSP into a
+join algorithm in database.</p>
+<p>When I got assigned with the task in 2019, I had no idea about what's
+the corresponding algorithm name in database that shares the same
+architecture as AC-4: first making CSP arc-consistency and then
+solving the resulting CSP. Thanks to COVID-19, everything was online in
+2020. I had the opportunity to attend the only academic conference I
+have ever been to so far, SIGMOD 2020, which was served online for
+free. In the conference, there was a nice <a href="https://northeastern-datalab.github.io/topk-join-tutorial/slides/Anyk-Tutorial-Part2-OptimalJoins.pdf">tutorial
+session</a>,
+where they brought the name <strong>Yannakakis's algorithm (YA)</strong> [<a href='#yannakakis1981algorithms' id='ref-yannakakis1981algorithms-1'>Yannakakis, 1981</a>].</p>
+<p>The laser-focused TTJ development started around 08/2020 after I
+quitted my full-time job at Amazon. The design requirement I received
+was to not only turn TreeTracker into a join algorithm but also into
+an <a href="https://15445.courses.cs.cmu.edu/fall2021/notes/11-queryexecution1.pdf">iterator
+form</a>. The
+biggest claim in Miranker's head, besides the optimality guarantee
+like YA, is "downwardly compatible". That is, unlike YA that requires
+a <a href="https://15445.courses.cs.cmu.edu/fall2022/notes/14-optimization.pdf">query
+plan</a>
+to introduce a full reducer, TTJ is just like any other binary join
+operator - there is no extra surgery towards the query plan; TTJ can
+be treated as a physical join operator implementation and directly be
+used as a drop-in replacement of any join operator. The end result of
+the iterator-form TTJ was sent to
+<a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/pods2022.pdf">PODS 2022</a> in 06/2021.</p>
+<!-- This idea was -->
+<!-- well-reflected in our first submission,  -->
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All the submissions and corresponding reviews linked in text are
+organized into a table below.</p>
+</div>
+<p>The paper is <a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/pods2022-reviews.pdf">not
+well-received</a>. People
+think in general the paper is off-topic for PODS and we need to
+provide experimental evidence to show that the potential overhead
+exists in YA no longer exists in TTJ even though both YA and TTJ have
+the same bound <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>. From theory perspective, we are optimizing some
+constants that are hidden in the usual RAM complexity model. One reviewer also accurately points out a big
+limitation of TTJ compared to YA is that it has to work on a <a href="http://www.cs.emory.edu/~cheung/Courses/554/Syllabus/5-query-opt/left-deep-trees1.html">left-deep
+plan</a>
+<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup> to have the optimality guarantee.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To fully appreciate the difference between YA and TTJ, I would
+recommend to read Example 1 in Section 1 of <a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/sigmod2024.pdf">SIGMOD 2025
+submission</a>. If you think
+iterator form of TTJ hinders your understanding of the algorithm,
+I would recommend to read Example 1.1 in Section 1 of <a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/cidr2025.pdf">CIDR 2025
+submission</a>, which presents
+TTJ algorithm in push-based model (See
+<a href="https://15721.courses.cs.cmu.edu/spring2024/slides/04-execution1.pdf">1</a>,
+<a href="https://justinjaffray.com/query-engines-push-vs.-pull/">2</a>).</p>
+</div>
+<p>After receving the rejection in 08/2021, there were a lot of debate on what
+the next steps should be. Miranker suggested I should translate TTJ
+into <a href="https://en.wikipedia.org/wiki/Datalog">Datalog</a> <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup> before he
+was away from the research to start selling his house in Austin and
+building a new house in Utah. Without a clear roadmap for the next
+steps, I decided to gather a second opinion. I first spoke with <a href="https://kexinrong.github.io/">Kexin
+Rong</a> who I knew when she visited
+UT-Austin for a job talk in 02/2021. She suggested to address
+reviewers' comments directly by providing empirical evidence of
+TTJ. The second person I spoke to is <a href="https://www.microsoft.com/en-us/research/people/badin/">Bailu
+Ding</a>, who I
+interned with at Microsoft in the summer 2022.</p>
+<!-- With my first rejection at hand, Miranker and I had a long meeting in -->
+<!-- which he suggested that I should translate TTJ into -->
+<!-- [Datalog](https://en.wikipedia.org/wiki/Datalog) [^4]. With great -->
+<!-- confusion on why we should do it instead of addressing reviewer's -->
+<!-- comments, I decided to gather a -->
+<!-- second opinion. [Kexin Rong](https://kexinrong.github.io/) gave her job talk at UT-Austin in -->
+<!-- 02/2021. I got a chance to speak with her during her virtual visit. I -->
+<!-- reached out to her. Based on PODS reviews, Kexin suggested to address -->
+<!-- reviewers' comments directly by providing empirical evidence of TTJ -->
+<!-- compared to YA. -->
+<!-- With no idea what -->
+<!-- his intention is, I decided to address reviewers' comments by -->
+<!-- providing empirical evidence of TTJ compared to YA. -->
+<!-- and no one I could speak with about the next -->
+<!-- steps, I decided to reach out to people for help.  -->
+<!-- She is the only person I knew besides Miranker who works on database -->
+<!-- research and I reached out to her. -->
+<h1 id="lesson-learned">Lesson Learned</h1>
+<h2 id="know-yourself">Know Yourself</h2>
+<p>Empirical study of TTJ is a lot harder than it looks.</p>
+<!-- idea: if you don't know how to write paper and do the -->
+<!-- experiements to get the paper in, then a senior and -->
+<!-- well-accomplished academic like Miranker is not for you. I -->
+<!-- knew a lot of people in AI already equiped such ability before -->
+<!-- entering graduate school. -->
+<!-- Orignally, I planned this post in my head as a celebration post to celebrate the acceptance of my first paper  -->
+<!-- after four years of trying. In that post, I imagined that I could happily recount all the obstacles I have overcome and how I eventually reach the happy ending; just like any typical happy ending movie one could imagine. Unfortuantely, that post will probably be forever in my mind. I had a high hope on the latest [CIDR 2025](https://www.cidrdb.org/cidr2025/index.html) -->
+<!-- submission. But, the paper is rejected, again. After spending four years in graduate school with  -->
+<!-- zero publication and five rejections of the same piece of research, I think it's time to move on. -->
+<!-- As the title suggested, I will analyze all five rejections I have recieved and reflect the lessons I have learned  -->
+<!-- along the way. To acheive the goal, I will first provide necessary background on the research itself so that I can have a basis on analyzing each rejection. There are five rejections in total that spans from 2021 to 2024. For each rejection, I first provide historical remarks on the submission itself, e.g., what's the key idea on the way of presenting the work and any story related. Then, I will walk through each review within each rejection and provide my understanding on each review, e.g., what the reviewers think of the work, what place I can further improve it, and so on.  -->
+<!-- The research is published on arXiv with keyword "TreeTracker Join" (<a href='#hu2024treetrackerjointurningtide' id='ref-hu2024treetrackerjointurningtide-2'>Hu et al., 2024</a>). Here is a table of summary on each submission and rejection. -->
+<!-- !!! note -->
+<!--     I will make this piece of research accessible to general audience with some background in computer science. As a result, I have to omit certain details. Some details are provided during analysis of rejections. I also prepared a [pdf note](#), which provides more complete picture than what is  -->
+<!--     described here.  -->
+<!-- This piece of research concerns join algorithm in relational database. A relational database can be thought as a collection of tables where each table has a set of columns. Rows in a table are data that the user stores. Formally, a table is a **relation** and columns are collectively called **attributes** or **variables**. Usually, data in relational database are queried by writing [SQL](https://en.wikipedia.org/wiki/SQL). Consider the following two tables shown in (a) and (b), -->
+<!-- ![SQL example]({static}/images/rejections/sql-example.png) -->
+<!-- Suppose we wish to find all the movies that Stephen Chow starred in. We can write a SQL query in (c). My research concerns how to implement ``NATURAL JOIN`` efficiently both from theory perspective and practical perspective when the number of tables to be joined are large. -->
+<!-- # Analysis of Rejections -->
+<!-- ## PODS 2022 Submission -->
+<!-- ### Historical Remarks -->
+<!-- ### Analysis of Rejections -->
+<!-- ## VLDB 2024 Submission -->
+<!-- ### Historical Remarks -->
+<!-- ### Analysis of Rejections -->
+<!-- ## SIGMOD 2025 Submission -->
+<!-- ### Historical Remarks -->
+<!-- ### Analysis of Rejections -->
+<!-- ## ICDT 2025 Submission -->
+<!-- ### Historical Remarks -->
+<!-- ### Analysis of Rejections -->
+<!-- ## CIDR 2025 Submission -->
+<!-- ### Historical Remarks -->
+<!-- ### Analysis of Rejections -->
+<!-- # Farewell -->
+<!-- I know research is hard but I  didn't know my first major piece of research is this hard. -->
+<div class="footnote">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>I recalled at some point on Twitter, I saw someone else also
+  did similar. If you happen to know someone does something
+  similar like Lamport, please let me know. I would like to link
+  them here as well. Thank you! <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
+</li>
+<li id="fn:2">
+<p>For database theory experts, TTJ matches YA under <a href="https://iccl.inf.tu-dresden.de/w/images/e/e1/Lecture-03-query-complexity.pdf">data
+complexity</a>. For
+the <a href="https://iccl.inf.tu-dresden.de/w/images/e/e1/Lecture-03-query-complexity.pdf">combined
+complexity</a>,
+TTJ is slower than YA by a <span class="math">\(\log\)</span> term involving input query size. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
+</li>
+<li id="fn:3">
+<p>Database system folks might call a query plan as a join tree, a
+  tree where each internal node is a join operator. However, join
+  tree in database theory and CSP means a totally different thing
+  [<a href='#Dechter2003' id='ref-Dechter2003-1'>Dechter, 2003</a> Chapter 9]. <a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">↩</a></p>
+</li>
+<li id="fn:4">
+<p>The suggestion is carried out in our <a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/icdt2025.pdf">ICDT 2025
+  submission</a>,
+  where a Datalog example is provided to capture the core idea of TTJ. <a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">↩</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%&#64;#$&#64;#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%&#64;#$&#64;#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script><hr>
+<p id='bayardo1994optimal'>Roberto&nbsp;J Bayardo&nbsp;Jr and Daniel&nbsp;P Miranker.
+<span class="bibtex-protected">An</span> <span class="bibtex-protected">Optimal</span> <span class="bibtex-protected">Backtrack</span> <span class="bibtex-protected">Algorithm</span> for <span class="bibtex-protected">Tree-Structured</span> <span class="bibtex-protected">Constraint</span> <span class="bibtex-protected">Satisfaction</span> <span class="bibtex-protected">Problems</span>.
+<em>Artificial Intelligence</em>, 71(1):159–181, 1994. <a class="cite-backref" href="#ref-bayardo1994optimal-1" title="Jump back to reference 1">↩</a></p>
+<p id='Bernstein81usingsemi-joins'>Philip&nbsp;A. Bernstein and Dah-Ming&nbsp;W. Chiu.
+<span class="bibtex-protected">U</span>sing <span class="bibtex-protected">S</span>emi-<span class="bibtex-protected">J</span>oins to <span class="bibtex-protected">S</span>olve <span class="bibtex-protected">R</span>elational <span class="bibtex-protected">Q</span>ueries.
+<em>J. ACM</em>, 28(1):25–40, January 1981.
+URL: <a href="https://doi.org/10.1145/322234.322238">https://doi.org/10.1145/322234.322238</a>, <a href="https://doi.org/10.1145/322234.322238">doi:10.1145/322234.322238</a>. <a class="cite-backref" href="#ref-Bernstein81usingsemi-joins-1" title="Jump back to reference 1">↩</a></p>
+<p id='Chandra1977'>Ashok&nbsp;K. Chandra and Philip&nbsp;M. Merlin.
+<span class="bibtex-protected">Optimal Implementation of Conjunctive Queries in Relational Data Bases</span>.
+In <em>Proceedings of the Ninth Annual ACM Symposium on Theory of Computing</em>, STOC '77, 77–90. New York, NY, USA, 1977. Association for Computing Machinery.
+URL: <a href="https://doi-org.ezproxy.lib.utexas.edu/10.1145/800105.803397">https://doi-org.ezproxy.lib.utexas.edu/10.1145/800105.803397</a>, <a href="https://doi.org/10.1145/800105.803397">doi:10.1145/800105.803397</a>. <a class="cite-backref" href="#ref-Chandra1977-1" title="Jump back to reference 1">↩</a></p>
+<p id='Dechter2003'>Rina Dechter.
+<em><span class="bibtex-protected">Constraint Processing</span></em>.
+Morgan Kaufmann, USA, 2003.
+ISBN 1-55860-890-7. <a class="cite-backref" href="#ref-Dechter2003-1" title="Jump back to reference 1">↩</a></p>
+<p id='hu2024treetrackerjointurningtide'>Zeyuan Hu, Yisu&nbsp;Remy Wang, and Daniel&nbsp;P. Miranker.
+<span class="bibtex-protected">TreeTracker Join: Turning the Tide When a Tuple Fails to Join</span>.
+2024.
+URL: <a href="https://arxiv.org/abs/2403.01631">https://arxiv.org/abs/2403.01631</a>, <a href="https://arxiv.org/abs/2403.01631">arXiv:2403.01631</a>. <a class="cite-backref" href="#ref-hu2024treetrackerjointurningtide-1" title="Jump back to reference 1">↩</a><a class="cite-backref" href="#ref-hu2024treetrackerjointurningtide-1" title="Jump back to reference 1"> <sup>1</sup> </a><a class="cite-backref" href="#ref-hu2024treetrackerjointurningtide-2" title="Jump back to reference 2"><sup>2</sup> </a></p>
+<p id='Kolaitis1998'>Phokion&nbsp;G. Kolaitis and Moshe&nbsp;Y. Vardi.
+<span class="bibtex-protected">Conjunctive-Query Containment and Constraint Satisfaction</span>.
+In <em>Proceedings of the Seventeenth ACM SIGACT-SIGMOD-SIGART Symposium on Principles of Database Systems</em>, PODS '98, 205–213. New York, NY, USA, 1998. Association for Computing Machinery.
+URL: <a href="https://doi-org.ezproxy.lib.utexas.edu/10.1145/275487.275511">https://doi-org.ezproxy.lib.utexas.edu/10.1145/275487.275511</a>, <a href="https://doi.org/10.1145/275487.275511">doi:10.1145/275487.275511</a>. <a class="cite-backref" href="#ref-Kolaitis1998-1" title="Jump back to reference 1">↩</a></p>
+<p id='russell2016artificial'>S.&nbsp;Russell and P.&nbsp;Norvig.
+<em><span class="bibtex-protected">Artificial Intelligence: A Modern Approach</span></em>.
+Series in Artificial Intelligence.
+Prentice Hall, Upper Saddle River, NJ, third edition, 2010.
+URL: <a href="http://aima.cs.berkeley.edu/">http://aima.cs.berkeley.edu/</a>. <a class="cite-backref" href="#ref-russell2016artificial-1" title="Jump back to reference 1">↩</a></p>
+<p id='yannakakis1981algorithms'>Mihalis Yannakakis.
+<span class="bibtex-protected">A</span>lgorithms for <span class="bibtex-protected">A</span>cyclic <span class="bibtex-protected">D</span>atabase <span class="bibtex-protected">S</span>chemes.
+In <em>VLDB</em>, volume&nbsp;81, 82–94. 1981. <a class="cite-backref" href="#ref-yannakakis1981algorithms-1" title="Jump back to reference 1">↩</a></p>
+
+        </article>
+
+        <footer>
+          <!-- <p>This entry is posted in <a href="../../../../../category/research.html">Research</a>.</p> -->
+          <!-- <a href="../../../../../donate.html" class="button">Donate</a> -->
+          <a href="https://paypal.me/zhu45?locale.x=en_US">paypal.me</a>
+        </footer>
+        
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2025 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>

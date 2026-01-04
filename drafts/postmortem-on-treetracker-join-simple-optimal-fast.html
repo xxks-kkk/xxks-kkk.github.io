@@ -76,10 +76,12 @@
         
         <article>
             <p>After five years of blood, sweat, and tears, <a href="https://dl.acm.org/doi/10.1145/3774325">TreeTracker
-Join</a> has finally been
-published. As a postmortem, I document some notes I took while I was
-implementing the system side of the work. Then, I conclude the post
-with some personal thoughts and a bonus content!</p>
+Join (TTJ)</a> has finally been
+published. As a postmortem, I recap some of what I learned.</p>
+<h1 id="short-background-on-ttj">Short background on TTJ</h1>
+<p>This research concerns query processing specifically the evaluation of
+queries that involve multiple joins, e.g., <span class="math">\(R \Join S \Join T\)</span> for
+relations <span class="math">\(R,S\)</span>, and <span class="math">\(T\)</span>. </p>
 <h1 id="build-a-system-in-academia">Build a System in Academia</h1>
 <p>algorithm comparison system vs. directly modified an existing system
 (e.g., DuckDB). </p>
@@ -127,7 +129,7 @@ politics. However, it's too painful to revisit and share them right
 now. -->
 <p>To conclude this post, I list out all the past five submissions and
 corresponding reviews that led to the final publication of the work.</p>
-<table class=" table-striped table table-hover">
+<table class="table-hover  table-striped table">
 <thead>
 <tr>
 <th>Submission</th>
@@ -163,6 +165,61 @@ corresponding reviews that led to the final publication of the work.</p>
 </tr>
 </tbody>
 </table>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
         </article>
 
         <footer>

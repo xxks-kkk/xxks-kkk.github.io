@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-44FB4FMFCD"></script>
+        <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'G-44FB4FMFCD');
+        </script>
+        <meta charset="utf-8">
+        <title>    Postmortem on TreeTracker Join: Simple, Optimal, Fast
+</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="This is the homepage of Zeyuan Hu" name="description">
+        <meta content="Zeyuan Hu, Zeyuan, zeyuan hu, zeyuan ibm, IBM, Zeyuan IBM, UW Madison, University of Wisconsin Madison, zeyuan wisc, zeyuan IBM, zeyuan federation, Zeyuan UT-Austin, Zeyuan Texas, Zeyuan University of Texas at Austin, Zeyuan Amazon, Zeyuan Microsoft Research, Zeyuan Microsoft" name="keywords">
+        <meta content="Zeyuan Hu" name="author">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8696888278948966"
+                     crossorigin="anonymous"></script>
+        <link href='https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Merriweather:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../../../../../theme/css/cid.css">
+        <!-- add font-awesome -->
+        <script defer src="../../../../../theme/fa-5/js/all.js"></script>
+        <link rel="stylesheet" href="../../../../../theme/academicons/css/academicons.css"/>
+        <link href="https://zhu45.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Zeyuan Hu's Page Atom Feed" />
+        <link href="https://zhu45.org/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Zeyuan Hu's Page RSS Feed" />
+        <link href="../../../../../theme/images/favicon.ico" rel="icon">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+            <div class="container">
+<header class="blog-header">
+        <h1 id="site-title"><a href="../../../../.." style="color: black; text-decoration: none">Zeyuan Hu's Page</a></h1>
+    <p></p>
+    <nav>
+            <a href="../../../../../about-me.html" style="padding: 10px">ABOUT</a>
+            <a href="../../../../../archives/index.html" style="padding: 10px">ARCHIVES</a>
+            <a href="../../../../../research.html" style="padding: 10px">RESEARCH</a>
+    </nav>
+</header>
+    <div class="post">
+      <header>
+            <h1 class="post-title">Postmortem on TreeTracker Join: Simple, Optimal, Fast</h1>
+            <div class="panel">
+                <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <time datetime="2026-01-03T23:01:02+08:00"> Jan 03, 2026</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="../../../../../tag/academic.html">academic</a>
+        /
+	<a href="../../../../../tag/paper.html">paper</a>
+        /
+	<a href="../../../../../tag/my research.html">my research</a>
+    
+</footer><!-- /.post-info -->                </div>
+            </div>
+          <!-- <div class="post-title">Postmortem on TreeTracker Join: Simple, Optimal, Fast</h1></div> -->
+          <!-- <div class="post-date"><time datetime="2026-01-03T23:01:02+08:00">Jan 03, 2026</time></div> -->
+        </header>
+        
+        <article>
+            <p>After five years of blood, sweat, and tears, <a href="https://dl.acm.org/doi/10.1145/3774325">TreeTracker Join
+(<span class="math">\(\mathsf{TTJ}\)</span>)</a> has finally
+been published. The research itself is very interesting and kept me
+hooked for five years. As a postmortem, I reflect on some of what I
+learned during the process. I'm hoping this post can be useful to my
+fellow PhD students who are currently struggling to make progress or
+finding their work a proper home.</p>
+<div class="toc">
+<ul>
+<li><a href="#short-background-on-mathsfttj">Short background on \(\mathsf{TTJ}\)</a></li>
+<li><a href="#lessons-learned">Lessons learned</a><ul>
+<li><a href="#algorithm-design-in-the-wild">Algorithm design in the wild</a></li>
+<li><a href="#when-talking-about-empirical-study-what-should-we-implement">When talking about empirical study, what should we implement?</a></li>
+<li><a href="#considerations-on-the-design-and-implementation-of-prototype">Considerations on the design and implementation of prototype</a></li>
+<li><a href="#some-tips-on-java-and-software-engineering-in-general">Some tips on Java and software engineering in general</a></li>
+</ul>
+</li>
+<li><a href="#departure-thoughts">Departure thoughts</a></li>
+<li><a href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+</div>
+<h1 id="short-background-on-mathsfttj"><a name="background"></a>Short background on <span class="math">\(\mathsf{TTJ}\)</span></h1>
+<p>This research concerns query processing, specifically the evaluation
+of queries that involve multiple joins, e.g., <span class="math">\(R \Join S \Join T\)</span> for
+relations <span class="math">\(R\)</span>, <span class="math">\(S\)</span>, and <span class="math">\(T\)</span>. Those queries are known as <em>conjunctive
+queries</em>. It has been long known from database theory that evaluation
+of an important subclass of conjunctive queries called <em>acyclic
+conjunctive queries</em> <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> can be done very efficiently using an
+algorithm called <em>Yannakakis's algorithm</em> (<span class="math">\(\mathsf{YA}\)</span>) <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. (There
+are many expositions on Yannakakis's algorithm such as
+<a href="https://en.wikipedia.org/wiki/Yannakakis_algorithm">wikipedia</a>, <a href="https://remy.wang/blog/perfect-joins.html">blog
+post</a>,
+<a href="https://northeastern-datalab.github.io/topk-join-tutorial/slides/Anyk-Tutorial-Part2-OptimalJoins.pdf">slides</a>,
+and <a href="https://youtu.be/0i8xC2dimoU?si=q8qrhPUuk8jnXXbz">video</a>.)
+However, the issue with this algorithm is that it is somewhat
+<a href="https://en.wikipedia.org/wiki/Galactic_algorithm">galactic</a>
+(theoretically optimal but empirically impractical) due to its poor
+empirical performance and awkwardness of algorithm structure. On the
+empirical performance front, the core issue of <span class="math">\(\mathsf{YA}\)</span> is that
+it uses
+<a href="https://en.wikipedia.org/wiki/Join_(relational_algebra)#Semijoin">semijoin</a>
+to preprocess the input relations of a query so that the follow-up
+joins only generate the tuples that can be part of the final query
+result. There are two problems with semijoins:</p>
+<ol>
+<li>
+<p>Semijoin is really a heavy operation from empirical perspective: If
+   one implements hash-based semijoin, building hash table and probing
+   tuples against it can be quite expensive.</p>
+</li>
+<li>
+<p><span class="math">\(\mathsf{YA}\)</span> just uses too many semijoins; if your query has <span class="math">\(k\)</span>
+   relations for a positive integer <span class="math">\(k\)</span>, <span class="math">\(\mathsf{YA}\)</span> uses <span class="math">\(2k-2\)</span>
+   semijoins. </p>
+</li>
+</ol>
+<p>The structural issue of <span class="math">\(\mathsf{YA}\)</span> is mostly due to its algorithmic
+ingredients that are not commonly-seen in popular database systems; it
+utilizes a data structure called <em>join tree</em> to guide how semijoins
+and joins should be computed. Existing query systems work with <em>query
+plans</em>. It is not obvious on how to convert a query plan to a join
+tree. (<span class="math">\(\mathsf{TTJ}\)</span> takes a stab on this issue; see Lemma 4.6 of the
+paper. For a more thorough treatment, check out this upcoming <a href="https://arxiv.org/pdf/2509.14144">ICDT
+'26 paper</a>.) Furthermore, adding
+extra semijoins in a query plan for a query that doesn't involve
+<code>EXISTS</code> can confuse the user and make query optimizer
+<a href="https://ieeexplore.ieee.org/document/914872">error-prone</a>.</p>
+<p>In the past 3-4 years, many people have taken a stab at aforementioned
+issues of <span class="math">\(\mathsf{YA}\)</span> to make the algorithm practical and can be
+accessible to wide database practitioners. (<a href="https://remy.wang/blog/assets/yannakakis/Yannakakis_in_Action.pdf">This upcoming ICDT '26
+paper</a>
+surveys this research thrust well.)  <span class="math">\(\mathsf{TTJ}\)</span> is one of those
+stabs. The unique angle that <span class="math">\(\mathsf{TTJ}\)</span> brings to the table is
+that, instead of addressing the challenges following the algorithmic
+framework laid out by <span class="math">\(\mathsf{YA}\)</span> such as replacing semijoins with
+Bloom filters or reducing the number of semijoins, <span class="math">\(\mathsf{TTJ}\)</span> is a
+whole new algorithm that matches <span class="math">\(\mathsf{YA}\)</span> runtime under data
+complexity in the worst-case scenario. There are no semijoins at all
+in <span class="math">\(\mathsf{TTJ}\)</span>. Instead of preprocessing input relations and
+working with a join tree, <span class="math">\(\mathsf{TTJ}\)</span> works with traditional query
+plans and the evaluation starts right away. The big plus of
+<span class="math">\(\mathsf{TTJ}\)</span> is that it is not much different (<span class="math">\(\le 5\)</span> lines of code
+difference) from in-memory binary hash-join <span class="math">\(\mathsf{HJ}\)</span>. In fact,
+<span class="math">\(\mathsf{TTJ}\)</span> does no more number of hash table lookups than
+<span class="math">\(\mathsf{HJ}\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Two forms of <span class="math">\(\mathsf{TTJ}\)</span></p>
+<p>I should point out that during the many attempts at publishing the
+work, two forms of <span class="math">\(\mathsf{TTJ}\)</span> appeared. One is the form that
+eventually got published, which mostly uses <code>if</code>, <code>else</code>, and
+<code>for</code> language constructs. The other one takes the <a href="https://15445.courses.cs.cmu.edu/fall2021/notes/11-queryexecution1.pdf">iterator
+form</a>
+consisting of <code>open()</code>, <code>next()</code>, and <code>close()</code> methods. Under
+iterator form, <span class="math">\(\mathsf{TTJ}\)</span> is an object in an object-oriented
+language context and the algorithmic logic of <span class="math">\(\mathsf{TTJ}\)</span> is
+implemented in the three methods of the iterator form. The iterator
+version of <span class="math">\(\mathsf{TTJ}\)</span> is only available in the <a href="https://arxiv.org/pdf/2403.01631v1">arXiv preprint
+(version 1)</a> (Algorithm 3.1 of the
+preprint).</p>
+</div>
+<h1 id="lessons-learned">Lessons learned</h1>
+<p>With the context of <span class="math">\(\mathsf{TTJ}\)</span> and <span class="math">\(\mathsf{YA}\)</span> introduced, I
+reflect on some lessons I learned during the process of getting paper
+published. I list out all the past six submissions and corresponding
+reviews that led to the final publication of the work, which I may
+call back on during the reflection.</p>
+<table class="table-hover table  table-striped">
+<thead>
+<tr>
+<th>Submission</th>
+<th>Reviews</th>
+<th>Supplementary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/pods2022.pdf">PODS 2022</a></td>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/pods2022-reviews.pdf">reviews</a></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/vldb2024.pdf">VLDB 2024</a></td>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/vldb2024-reviews.pdf">reviews</a></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/sigmod2024.pdf">SIGMOD 2025</a></td>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/sigmod2024-reviews.pdf">reviews</a></td>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/sigmod2024-extended.pdf">SIGMOD2025-extended</a></td>
+</tr>
+<tr>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/icdt2025.pdf">ICDT 2025</a></td>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/icdt2025-reviews.pdf">reviews</a></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/cidr2025.pdf">CIDR 2025</a></td>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/cidr2025-reviews.pdf">reviews</a></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/TODS.pdf">TODS 2025</a></td>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/TODS-review1-pub.pdf">reviews</a></td>
+<td><a href="../../../../../posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/TODS-revision.pdf">revision</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="algorithm-design-in-the-wild"><a name="algorithm"></a>Algorithm design in the wild</h2>
+<p>This is the first time I designed an algorithm out of classroom
+setting. The task was to adapt <a href="https://www.sciencedirect.com/science/article/abs/pii/0004370294900647">TreeTracker
+algorithms</a>
+from constraint satisfaction problem (CSP) into relational database
+setting and the result of the adaptation has to take the iterator form
+(Algorithm 3.1 of the
+<a href="https://arxiv.org/pdf/2403.01631v1">preprint</a>). The difficulty of the
+task was fair and well-suited for my skillset. There are two algorithms
+in the paper TT1 and TT2. <span class="math">\(\mathsf{TTJ}\)</span> is an adaption of TT1 <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">3</a></sup>.</p>
+<p>There are a few things I tried and I found them helpful in designing
+the algorithm.</p>
+<ol>
+<li>
+<p><strong>Explain the original algorithm in your own words.</strong>  The first
+   thing I did after reading the original TreeTracker paper was to
+   rewrite the proof of correctness and runtime analysis in my own
+   words. I found there are three benefits of doing this. First,
+   rewriting helps to fill the omitted details in the original
+   proof. Those details might take short amount of seconds to
+   reconstruct in mind but they can add a lot of delay for me to start
+   to make progress in understanding the proof if I have to do it
+   every time especially in the first few times where I haven't gained
+   much intuition about the ideas behind the proof. Second, rewriting
+   helps to gain some intuition. Since I rewrote the proof in my own
+   words, I had to ensure the correctness of proof remains
+   intact. Thus for every sentence I wrote I always asked myself if
+   there are any considerations that the authors write like this; can
+   I say the sentence differently? If so, does the sentence breaks the
+   whole proof? By answering those questions, I felt I gained more
+   intuition on the ideas behind the proof and the intuition on the
+   algorithm and its properties. Third, rewriting allows me to
+   forget. Since I had already rewritten the proof with great care in my
+   note, I had the freedom to forget those details. I usually
+   just had some high-level idea of how the proof goes in my
+   mind. Since proof is an application of some properties of the
+   proposed algorithm, the high-level idea of proof is in a way
+   captures the essence of the algorithm. If I had to remember every
+   detail of the proof, I felt there wasn't brain power for
+   understanding new things or thinking about the problem.</p>
+</li>
+<li>
+<p><strong>"The art of doing mathematics is finding that special case that
+   contains all the germs of generality."</strong> This is a quote from David
+   Hilbert. I gained a fairly deep appreciation on this quote during
+   the design of <span class="math">\(\mathsf{TTJ}\)</span>. My takeaway on the quote is that we
+   need to find an example that is simple enough that captures all the
+   necessary ingredients of the algorithm. Thus by having an algorithm
+   that handles this example, we obtain an algorithm that
+   automatically handles all possible inputs. In a way, the example
+   itself encodes the algorithm. In the case of <span class="math">\(\mathsf{TTJ}\)</span>, my
+   personal favorite simple but general example is Example 1 from <a href="https://arxiv.org/pdf/2403.01631v1">the
+   arxiv preprint</a>. The generality
+   is captured by the branching at relation <span class="math">\(S\)</span>: instead of every
+   relation in the join tree has at most one child, some relation
+   needs to have at least two children in order to capture backjumping
+   aspect of <span class="math">\(\mathsf{TTJ}\)</span>. If one only uses chain query, where each
+   internal node in the join tree has exactly one child, the resulting
+   <span class="math">\(\mathsf{TTJ}\)</span> is not generalized enough to handle all the possible
+   inputs. Certainly, there are multiple issues with this example such
+   as it actually shows <span class="math">\(\mathsf{HJ}\)</span> can also be optimal, and it
+   includes deletion propagation and no-good list (See Appendix R of
+   <a href="https://arxiv.org/pdf/2403.01631v3">v3 version of the preprint</a>),
+   which are not necessary key ingredients of <span class="math">\(\mathsf{TTJ}\)</span> for the
+   proposed runtime guarantee. Nevertheless, the example is sufficient
+   enough to have the correct algorithm designed; the rest is
+   optimization of the algorithm.</p>
+</li>
+<li>
+<p><strong>Documentation to have a sense of progress.</strong> Ryan O'Donnell has
+   this quote "Philosophy about how to do research: Make 1% progress
+   per day, for 100 days. Then you will solve your problem." My
+   takeaway from this is that it's very unlikely to design an
+   algorithm in one day. Design of <span class="math">\(\mathsf{TTJ}\)</span> roughly took me one
+   year. It would feel discouraged if I cannot visibly see my
+   progress; after all, a failed attempt is progress because the
+   failed attempt rules out a possibility and equips me with more
+   understanding of the problem. If I can rule out 100 different
+   possibilities, there is a decent chance that I can find the answer
+   to my question. With this mindset, I started to record my attempts
+   from day one in a LaTeX document and I could see my progress by
+   just adding new content to this document. I finally obtained
+   <span class="math">\(\mathsf{TTJ}\)</span> after this document had grown to around 1 MiB and I felt
+   quite satisfied each day after
+   adding a page or so to this document.   </p>
+</li>
+<li>
+<p><strong>Writing programs in algorithm design (a.k.a. system-assisted
+   algorithm design).</strong> I wrote two major programs during the design
+   of <span class="math">\(\mathsf{TTJ}\)</span>. First, I implemented TT2 of the paper. The role
+   this program served was manifold. First, it helped me to better
+   understand the algorithm. Both algorithm description and proofs use
+   a lot of prose, which inherently inaccurate <sup id="fnref:5"><a class="footnote-ref" href="#fn:5">4</a></sup>. To ensure I have
+   the correct understanding of the algorithm, gain some concreteness
+   feeling, and continue to build up the correct intuition, I found
+   implementing the algorithm and letting it run on a few examples
+   helped. Second, it made me appreciate the complexity of the
+   algorithm, which pushed me to aim for a simpler algorithm, which
+   led to TT1 and eventually <span class="math">\(\mathsf{TTJ}\)</span>. The second major program
+   I wrote was a query instance generator where it produced a query in
+   the form of join tree and associated relation instances, which can
+   be randomly generated or manually specified. The major benefit of
+   the program was that it generated a lot of examples for me to look
+   at. Those examples were important because they quickly got me
+   jumpstarted on the design without making the task look too
+   daunting. Additionally, I would like to think algorithm as a
+   procedure to handle a class of inputs that satisfy certain
+   restriction (e.g., acyclic conjunctive queries) and the goal of the
+   algorithm is to produce desired output (e.g., the correct query
+   result). To design the algorithm, we are inside the loop of writing
+   the initial procedure, finding the procedure breaks on certain
+   inputs, patching the procedure to handle the broken inputs, and
+   repeat until the procedure can handle all the possible
+   inputs. Examples help in all aspects of this design loop: they
+   helped me to write the initial algorithm, then some examples broke
+   my algorithm, and after a patch, those examples allowed me to
+   verify that the patch can indeed work. As one can see, this loop
+   can be easily automated and that's what I did: the generator itself
+   ran my algorithm and compared algorithm output with output of
+   evaluating the same query in a third-party database like PostgreSQL
+   and I immediately got feedback on if the algorithm breaks or not.
+   Immediate feedback is crucial because it can be very messy to trace
+   through evaluation of a query using a plan consisting of iterators
+   to check if the query is evaluated correctly. I found it was better
+   to perform tracing when algorithm breaks. With the loop largely
+   automated, I could spend my energy focusing on thinking about good
+   examples that can capture all the ingredients of <span class="math">\(\mathsf{TTJ}\)</span>,
+   which I further discuss in the next point, and designing algorithm
+   itself.</p>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Limitation of system-assisted algorithm design</p>
+<p>I found system-assisted design particularly suited for <span class="math">\(\mathsf{TTJ}\)</span>
+because the problem space is discrete and structured around join
+trees. However, for continuous problems (like <a href="https://arxiv.org/pdf/2507.04485">facility placement on a real
+line</a>) where the problem input
+space can be large, it's not very straightforward to
+apply this idea immediately. Classical methods of conjecture and refinement remain more
+effective. In such case, once I have some classification on
+the problem inputs and derive some properties of the desired
+algorithm should have, it's fairly
+natural to have the algorithm and there is no need for
+system-assisted algorithm design.</p>
+</div>
+<h2 id="when-talking-about-empirical-study-what-should-we-implement">When talking about empirical study, what should we implement?</h2>
+<p>For work like <span class="math">\(\mathsf{TTJ}\)</span> that simplifies an existing algorithm
+without breaking any complexity barrier (<span class="math">\(\mathsf{YA}\)</span> is already an
+optimal algorithm; so what to break anyway), PODS 2022 reviews taught
+me that the best bet to get the work published within database
+community is to implement something and send it to a system conference
+like <a href="https://sigmod.org/">SIGMOD</a>,
+<a href="https://www.vldb.org/conference.html">VLDB</a>, or some journal like
+<a href="https://dl.acm.org/journal/tods">TODS</a>. (In broad algorithm or
+theoretical computer science community, there exist conferences like
+<a href="https://www.siam.org/conferences-events/siam-conferences/sosa26/">SOSA</a>
+that might solicit work like <span class="math">\(\mathsf{TTJ}\)</span>. However, it's not until
+<a href="https://arxiv.org/pdf/2507.04485">very recently</a> I learned about how
+to write a theory paper properly; our PODS 2022 submission is unlikely
+to make the cut as a theory paper to SOSA.) A fairly natural question
+to ask next is if we implement something, what should we implement?
+From my experience, there are two types of implementations we can
+consider:</p>
+<ol>
+<li>
+<p><strong>Algorithmic comparison</strong> where one implements the proposed
+   algorithm and compare with existing algorithms to highlight and
+   confirm the proposed algorithm behavior indeed aligns with the
+   design and analysis. Furthermore, such comparison highlights
+   different algorithm behaviors against different kinds of inputs
+   that are usually not well-covered in traditional worst-case
+   scenario Big-Oh analysis. Examples include sections 5.3 and 5.4 of
+   our SIGMOD 2025 submission and section 6 of
+   <a href="https://epubs.siam.org/doi/epdf/10.1137/1.9781611978759.10">Zip-Tries</a>. (This
+   type of implementation can even motivate the design and analysis of
+   algorithms; see testimony in section 4 of <a href="https://arxiv.org/pdf/2010.02116">this
+   paper</a> and section 1 of <a href="https://arxiv.org/pdf/1210.0481">this
+   paper</a>.)</p>
+</li>
+<li>
+<p><strong>System comparison</strong> where one integrates the proposed algorithm
+   into a large system (or builds a new system from scratch with the
+   proposed algorithm) and compares the new system with an existing
+   system that serves the same purpose (e.g., query systems) to show
+   end-to-end performance advantages of the new system. Many papers
+   published in system conferences like SIGMOD, VLDB, or
+   <a href="https://sigops.org/s/conferences/sosp/2026/">SOSP</a> have this type
+   of implementation. It's immediate to see that system comparison can
+   be applied in a broader scope than the algorithmic comparison:
+   system comparison not only applies to the study of algorithms but
+   also to exploration of new system design ideas and
+   principles. (<a href="https://web.archive.org/web/20250310064400/https://blog.xiangpeng.systems/posts/system-researchers/">This blog
+   post</a>
+   gives a more detailed recount of system comparison and entailed
+   perspectives.)</p>
+</li>
+</ol>
+<p>I used to believe that it was sufficient to implement algorithmic
+comparison for <span class="math">\(\mathsf{TTJ}\)</span>. However, reviews I received (search
+using keywords "system" or "DuckDB" on VLDB 2024, SIGMOD 2025, CIDR
+2025, and TODS 2025 reviews) put heavy premiums on the system
+comparison. The biggest confusion I had on applying system comparison
+to algorithmic work like <span class="math">\(\mathsf{TTJ}\)</span> is that system comparison
+introduces lots of moving parts that may not be relevant to the
+algorithm itself and the end-to-end performance advantage of the new
+system with the proposed algorithm may not indicate the performance
+improvement is due to algorithm improvement. For example, suppose I
+have an algorithm and I integrate it into two query systems <span class="math">\(S_1\)</span> and
+<span class="math">\(S_2\)</span>. The only difference between <span class="math">\(S_1\)</span> and <span class="math">\(S_2\)</span> is that compared to
+<span class="math">\(S_2\)</span>, <span class="math">\(S_1\)</span> assumes single user scenario and doesn't implement
+session manager and worry about transactions. If empirically I show
+<span class="math">\(S_1\)</span> is faster than <span class="math">\(S_2\)</span>, can I claim that <span class="math">\(S_1\)</span> being faster is
+because it has a better algorithm? More generally speaking, if the
+system <span class="math">\(S_1\)</span> consists of <span class="math">\(X\)</span> components with one component being the
+proposed algorithm <span class="math">\(A\)</span> and system <span class="math">\(S_2\)</span> consists of <span class="math">\(Y\)</span> components
+with one component being the compared algorithm <span class="math">\(B\)</span>, in order to pin
+down <span class="math">\(A\)</span> is indeed empirically better than <span class="math">\(B\)</span>, I need to rule out the
+possibilities that the performance advantage is not coming from the
+rest of <span class="math">\(X-1\)</span> components of <span class="math">\(S_1\)</span>, which requires substantial
+effort. The end result of doing so effectively reduces system
+comparison to algorithm comparison. Then the question is why do we not
+doing system comparison from the beginning? With this mindset, I
+implemented a <a href="https://github.com/xxks-kkk/treetracker">query system</a>
+from scratch that supports both <span class="math">\(\mathsf{TTJ}\)</span>, <span class="math">\(\mathsf{YA}\)</span>, and
+other relevant algorithms. Every algorithm being compared such as
+<span class="math">\(\mathsf{YA}\)</span> enjoys the same setup as <span class="math">\(\mathsf{TTJ}\)</span> and the only
+difference in terms of code being executed is the algorithm
+itself. One of the reasons that <span class="math">\(\mathsf{TTJ}\)</span> got published is
+because <a href="https://remy.wang/">Remy</a> came in and directed the effort of
+implementing a variation of <span class="math">\(\mathsf{TTJ}\)</span> in Rust that beats DuckDB
+to fullfil the requirement of system comparison. (<a href="https://remy.wang/blog/duckdb.html">This blog
+post</a> articulates the potential
+impact of forcing people to compare against DuckDB on database
+research and a related <a href="https://arxiv.org/pdf/2504.08948">panel discussion in VLDB
+2025</a> on the phenomenon of
+"reviewing process may over-index on work that must be faster than
+some baseline".)</p>
+<div class="admonition note">
+<p class="admonition-title">The "approximation from below" perspective</p>
+<p>The way now I reconcile and justify the need of system comparison
+on algorithmic work is to view system comparison as an approximation
+of the proposed algorithm performance from below.</p>
+<p>The reasoning is as follows. Suppose I have a new algorithm
+<span class="math">\(A\)</span> and a target algorithm <span class="math">\(B\)</span> that I would like to compare with.
+I implement <span class="math">\(A\)</span> in a system <span class="math">\(S_1\)</span> that has <span class="math">\(X\)</span>
+extra components. Algorithm <span class="math">\(B\)</span> is built inside a system <span class="math">\(S_2\)</span> that 
+has <span class="math">\(Y\)</span> more components. Suppose <span class="math">\(X &lt; Y\)</span> and assume all <span class="math">\(X\)</span>
+components and <span class="math">\(Y\)</span> components have the same performance.
+System <span class="math">\(S_2\)</span> serves as a lower bound on the performance of <span class="math">\(A\)</span>
+because even though it may not be conclusive that <span class="math">\(S_1\)</span> runs
+faster than <span class="math">\(S_2\)</span> indicating <span class="math">\(A\)</span> being better than <span class="math">\(B\)</span>, 
+<span class="math">\(S_1\)</span> slower than <span class="math">\(S_2\)</span> definitely indicates that <span class="math">\(A\)</span> does not
+offer performance advantages. In other words, there is a possibility
+that algorithm <span class="math">\(B\)</span> in the algorithm comparison may not
+be implemented properly, which results in the baseline being too
+low and algorithm <span class="math">\(A\)</span> does not yet offer a real-world advantage;
+system comparison rules out such possibility. </p>
+<p>Certainly, it is a big "if" that all <span class="math">\(X\)</span> components and <span class="math">\(Y\)</span>
+components have the same performance. (Or generally speaking, the
+total runtime of all the not-<span class="math">\(A\)</span> components of system <span class="math">\(S_1\)</span> is
+less or or equal to the total runtime of all the not-<span class="math">\(B\)</span>
+components of system <span class="math">\(S_2\)</span>.) Ensuring that holds requires
+significant engineering effort and it is not directly relevant to
+the innovation of algorithm <span class="math">\(A\)</span>.</p>
+</div>
+<p>Once I adopted this "approximation" view on system comparison, I could see
+algorithm comparison can also be done approximately. In an ideal
+world, all algorithms are done in an apple-to-apple comparison fashion
+such that the only "delta" in terms of performance difference among
+algorithms is the algorithms themselves. In SIGMOD 2025 submission, I
+was instructed to do so. Since both <span class="math">\(\mathsf{TTJ}\)</span> and <span class="math">\(\mathsf{YA}\)</span>
+use join tree, and <span class="math">\(\mathsf{TTJ}\)</span> and <span class="math">\(\mathsf{HJ}\)</span> use query plans,
+the most fair way was to build an optimizer that generate query plans
+and join trees such that all algorithms use the same query plans and
+the same join tree if needed. However, the issue with this empirical
+setup was that it made the water muddy meaning we need to introduce
+how optimization of join trees and generation of query plans for
+acyclic conjunctive queries are done, which can be treated in a
+separate paper. To not let the issue of query optimization distracts
+the reader, many papers (such as <a href="https://www.vldb.org/pvldb/vol10/p889-zhu.pdf">Lookahead Information
+Passing</a>, the published
+version of <span class="math">\(\mathsf{TTJ}\)</span>, and <a href="https://arxiv.org/abs/2307.15255">Predicate
+Transfer</a>) consider the proposed
+algorithm purely as a runtime technique, where the algorithm takes in a
+query plan that is generated from a baseline system (in the case of
+<span class="math">\(\mathsf{TTJ}\)</span>, plans are taken from SQLite and PostgreSQL) and then
+measure the empirical performance. This way we approximate the best
+possible performance of both the proposed algorithm and the baseline
+algorithm with the assumption that additional query optimization can
+unlock even better performance of respective algorithm. Then the
+comparison is done based on the proxies of both algorithms.</p>
+<p>Sometimes the algorithm comparison can be mixed with system comparison
+because system being compared is a lower bound to the target
+algorithm. In TODS submission, we used PostgreSQL as the lower bound to
+all the implemented algorithms in the query engine namely
+<span class="math">\(\mathsf{TTJ}\)</span>, <span class="math">\(\mathsf{YA}\)</span>, and <span class="math">\(\mathsf{HJ}\)</span>. We ensured
+<span class="math">\(\mathsf{HJ}\)</span> ran faster than PostgreSQL. Since <span class="math">\(\mathsf{TTJ}\)</span> and
+<span class="math">\(\mathsf{YA}\)</span> ran faster than <span class="math">\(\mathsf{HJ}\)</span> in most cases, we
+eliminated the possibility of a "straw man" implementation of baseline
+algorithms. An extra consideration on choosing PostgreSQL is that its
+architecture was mostly aligned with ours, most notably, row-oriented
+iterator-based execution model. The challenge here was that the
+community really likes DuckDB and many bad decisions described
+<a href="#design">later</a> on the design of the engine don't allow the engine to
+easily beat DuckDB. Eventually, we presented both algorithm comparison
+and system comparison separately with two different prototypes.</p>
+<!-- As a corollary, algorithm comparison can be viewed as showing -->
+<!-- performance advantage from the positive side by showing the "upper -->
+<!-- bound", i.e., how good the proposed algorithm $A$ can be. -->
+<p>One might have this fear that system comparison involves a ton of
+work; I certainly did because I had been avoiding system comparison
+all along (The first review suggests system comparison is from VLDB
+2024, which I received in 2023). In the deep down, I didn't have this
+approximation perspective and I thought it would be a ton of work to
+do fully rigorous way given all the variables we need to control
+across multiple systems being compared. However, if all we did was to
+compare proxies of both algorithms, there is, in fact, a lot of
+leeway. I think the challenge here is to not know what are sufficient
+ingredients we need to build to carry out the system comparison; a
+more experienced person can really help a lot on this. For example, I
+didn't need to build a whole optimizer at all for both algorithm and
+system comparisons.</p>
+<div class="admonition note">
+<p class="admonition-title">"If a thing is worth doing, it's worth doing badly"</p>
+<p>During the empirical study of <span class="math">\(\mathsf{TTJ}\)</span>, I was haunted by the
+idea that a valid system comparison required building a perfect,
+end-to-end system from scratch to beat DuckDB—-a task I estimated would
+take at least a year. However, I later learned that I didn't need a
+perfect system; a barebone "semi-system" was sufficient to demonstrate
+the algorithm's potential and fulfill the referees' requirements.</p>
+</div>
+<h2 id="considerations-on-the-design-and-implementation-of-prototype"><a name="design"></a>Considerations on the design and implementation of prototype</h2>
+<p>With algorithm in hand and some understanding of the type of
+implementations we need to provide for the empirical study, we now
+needed to decide how to design the prototype to help with empirical
+study. The decision naturally coupled with experimental design. There
+were again a few considerations on the design of the prototype, which I
+made both good and bad calls in hindsight.</p>
+<p>The common wisdom in building a research prototype is to treat the
+prototype as "one-shot" meaning it is a software that will not get
+maintained and the main purpose that such prototype serves is to
+generate numbers for plots used in the paper <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">5</a></sup>. The biggest merit
+of this wisdom I think is the emphasis of being "agile" that prevents
+over-engineering and takes necessary shortcuts to deliver
+results. However, I think we should be careful about when and what
+shortcuts we take.</p>
+<p>The biggest good call I made was to take a shortcut on prototype design
+but not the actual implementation. That is, I aimed for the simplest
+possible design but when it came down to the actual implementation of
+the design, I strove for production-ready engineering quality. Since
+I was going to build the query engine all by myself in a limited time,
+it's unrealistic to build a fully-fledged query engine; trade-offs
+had to be made. As a result, I aimed for the most barebone query engine
+possible. The guiding principle was that if there was no code, then
+there was no bug, and there was no performance penalty. Thus the whole
+query engine was modeled after <a href="https://trino.io/">Trino</a>, which I was
+fairly familiar with: the engine used JDBC to connect to some
+relational database (SQLite, PostgreSQL, and DuckDB are supported) and
+the data were pulled into the engine to perform join computation. Since
+SQLs are merely some specification of certain computations, I could
+implement the specification imperatively using a set of low-level APIs
+to specify the computation. As a result, no parser was built. The main
+code path was fairly simple: taking a specification of a join query and
+pull the data from the connected database and produce the query
+result. Such simple design enabled quick adaption of the prototype for
+unplanned empirical evaluation needs. For example, since SIGMOD 2025
+pursues an apple-to-apple comparison setup, an optimizer, that was not
+planned in the design of the prototype, had to be in-place. Since the
+design of the query engine was so simple, I could model the optimization
+of different algorithms (<span class="math">\(\mathsf{YA}\)</span>, <span class="math">\(\mathsf{TTJ}\)</span>, <span class="math">\(\mathsf{HJ}\)</span>,
+and Predicate Transfer) as plugins to the engine, which could be enabled
+or disabled based on the needs. Query optimization as a plugin saved
+me a lot of headache later on in TODS submission because we switched
+back to runtime technique comparison philosophy and completely remove
+the query optimization work of algorithms. In fact, experiments done
+in SIGMOD 2025 submission but removed in the TODS submission were all
+implemented as plugins, which gave me plenty of flexibilities to cater
+various instructions. When it came to the implementation, I extensively
+used <a href="https://guava.dev/releases/19.0/api/docs/com/google/common/base/Preconditions.html">checkState() or
+checkArgument()</a>
+to explicitly solidify the assumption that I made on the implementation
+of the methods. Also, nontrivial methods were thoroughly tested. For
+example, all the algorithms implemented were covered by <a href="https://github.com/xxks-kkk/treetracker/blob/0a22c83d838f3d4ecd0f66bb6f89b1f00da2dd0a/treeTracker/treetracker-relational/src/main/java/org/zhu45/treetracker/relational/operator/testCases/InstantiateTestCases.java#L35">the same suite
+of queries and relation
+instances</a>.</p>
+<p>However, there were many bad calls I made that I wish I could done
+differently. The biggest one was to extend the database and query
+generator that facilitated the design of <span class="math">\(\mathsf{TTJ}\)</span> into a query
+engine for empirical study. This decision had two significant
+drawbacks that I realized later:</p>
+<ol>
+<li>
+<p>The generator was written in Java for fast development. (The
+   flexibility offered by Python was too much for me; I wanted to
+   use a moderately restrictive language with native support for type
+   checking and rich ecosystem. Java was a nice language for this
+   purpose and I was quite familiar with.) However, when it came to
+   performance optimization in the late stage, Java program was not
+   easy to optimize straightforwardly. For example, all the data were
+   stored in a underlying database like DuckDB and fetched on-demand
+   using JDBC. To compare with in-memory database system, I needed to
+   make my setup as close to in-memory as possible. In Java, I needed to
+   deal with on-heap memory managed by JVM and off-heap memory if I
+   wanted to completely buffer the database instance inside the
+   memory. This was more cumbersome to deal with compared to other
+   language like Rust.</p>
+</li>
+<li>
+<p>The generator used a federation database architecture where tuples
+   were fetched from an external database via JDBC. The benefit of
+   this design was that it allowed me to avoid managing storage part
+   myself and to ingest new relations easily for algorithm
+   development. Furthermore, in the case of conjunctive queries like
+   the ones in
+   <a href="https://github.com/gregrahn/join-order-benchmark/blob/master/10a.sql">JOB</a>,
+   all the selection predicates are pushed down to and evaulated by
+   the underlying database. Thus I could solely focus on the join
+   evaluation part of the queries. However, the design was a bad call
+   for a performance-focused prototype. By treating the data source as
+   a separate entity, I introduced a massive communication bottleneck
+   between the storage and query processing. As described in this
+   <a href="https://www.starburst.io/blog/jdbc-trino-starburst/">post</a>, JDBC
+   is not designed to transfer a large volume of data; it introduces
+   significant serialization and deserialization overhead. Every tuple
+   fetched requires the underlying database to serialize internal
+   binary records into a wire protocol, which the JDBC driver must
+   then deserialize into Java objects. This 'marshaling' process
+   consumes significant CPU cycles and creates memory pressure, often
+   making the communication interface—rather than the join
+   algorithm—the primary bottleneck. To mitigate the issue, I tweaked
+   <a href="https://docs.oracle.com/javase/8/docs/api/java/sql/Statement.html#setFetchSize-int-">setFetchSize</a>,
+   which decides how many tuples are fetched in a batch from data
+   source. However, there was a trade-off: If the value set too large,
+   then effectively one maintains two copies of the data, which run
+   into the risk of out-of-memory for JVM. For example, if the query
+   engine fetched a table of 10000 rows, the 10000 rows were cached in
+   JDBC connection. Since the engine had to map each row fetched by
+   JDBC to an internal row representation, in the worst-case scenario,
+   20000 rows are maintained inside JVM heap, which caused significant
+   memory pressure. On the other hand, if one sets the value of
+   <code>setFetchSize</code> too small, <code>next()</code> call on
+   <a href="https://docs.oracle.com/javase/8/docs/api/java/sql/ResultSet.html">resultSet</a>
+   can take long time. Furthermore, the JDBC driver implementation can
+   impact the engine performance a lot. I initially used PostgreSQL to
+   store the data. PostgreSQL JDBC driver is implemented purely <a href="https://github.com/pgjdbc/pgjdbc">in
+   Java</a>, which is slower than
+   DuckDB JDBC driver, which is implemented <a href="https://github.com/duckdb/duckdb-java/tree/main">in
+   C++</a>. The takeaway
+   from working with JDBC is that it is pretty neat for fast
+   prototyping. However, when we build a research prototype for system
+   comparison, it's probably better to use something else. One idea
+   used in the eventual TODS paper was to implement a prototype as a
+   barebone program where all the data were stored as Parquet
+   files. Then we used <a href="https://pola.rs/">Polars</a> to read those
+   Parquet files into memory and stored as
+   <a href="https://doc.rust-lang.org/book/ch05-01-defining-structs.html">structs</a>. This
+   design was very intuitive and completely removed the hassle of
+   dealing with JDBC in performance optimization.</p>
+</li>
+</ol>
+<p>In hindsight, I disregarded a famous quote from Fred Brooks "In most
+projects, the first system built is barely usable ... Hence plan to
+throw one away; you will, anyhow."</p>
+<p>Another important point is to study benchmark workload. The prototype
+was expected to run on a fixed workload and such workload was known
+beforehand, which contained rich opportunities to enable simplification
+of prototype design and implementation. For example, if any pair of
+relations joins on an integer column only, it is not wise to implement
+more generic case where two tables can join on a composite key or on a
+string column.</p>
+<h2 id="some-tips-on-java-and-software-engineering-in-general">Some tips on Java and software engineering in general</h2>
+<p>The development of the prototype effectively started from day one
+given the <a href="#design">decision</a> of extending the query generator for the
+<a href="#algorithm">purpose of algorithm design</a> into a research
+prototype. However, the generator itself was not built with the
+performance-centric in mind. Therefore a huge chunk of time was spent
+optimzing the implementation so that the engine can outperforms
+various system baselines. The following tips are ones I found useful
+during the optimization process.</p>
+<ol>
+<li>
+<p><strong>Profiling.</strong> I think the biggest tip is to use some profiler to see
+   where the code spent time. There is a famous 90/10 rule on system
+   performance optimization, which says something like one should
+   spend 90% of the effort on 10% of the code of the system because
+   that 10% of the code makes the biggest impact on the system
+   performance. (I believe I read it somewhere on the web but I cannot
+   find the version I read; the closest one I found is from <a href="https://www.cs.cmu.edu/~pattis/quotations.html">Richard
+   Pattis</a>.) In
+   order to identify this 10% mission-critical code, it's inevitable
+   to use profiler. Once we start to profile the code, the rest
+   becomes easy: we just enter the loop of squashing the most
+   significant performance anomaly shown by the profiler and repeat
+   until there is absolutely nothing to be optimized. Another purpose
+   of using profiler is to generate plots like runtime breakdown
+   (e.g., Figure 7-9 in the <a href="https://arxiv.org/pdf/2403.01631v1">preprint
+   (v1)</a>) in empirical section of
+   the paper. Using print statement like <code>System.out.println</code> won't
+   be precise enough as the operation of printing to screen adds
+   significant runtime overhead, which makes the breakdown of your
+   algorithm runtime inaccurate.</p>
+</li>
+<li>
+<p><strong>Replace Java Streams with Vanilla Loops.</strong> I used <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html">Stream
+   API</a>
+   extensively in the code because of its clean look. However,
+   profiling showed that the Stream API added unnecessary abstraction
+   layers. Rewriting these as vanilla loops allowed the Just-in-Time
+   compiler to optimize the code more effectively and reduced the
+   allocation of short-lived objects.</p>
+</li>
+<li>
+<p><strong>Use primitive type if possible.</strong> For example, instead of
+   <code>Integer</code>, we use <code>int</code>. As a concrete example, all queries in
+   <a href="https://github.com/gregrahn/join-order-benchmark/tree/master">JOB</a>
+   join any two relations on a single integer column. When we read
+   tuples from underlying database, we need to map those tuples into
+   our internal row representation. Naively, we can wrap each integer
+   value into <code>Integer</code>. However, such wrapping adds significant
+   penalty: First, we need to do wrapping for each tuple and each
+   integer column (4000 wrapping operations for 1000 tuples from a
+   table of four integer columns). Second, such wrapping achieves
+   nothing because later on, when we do join, we need to extract the
+   join attribute value from the row and use it to obtain the hash
+   bucket from the hash table. During the process, the only
+   information we need is the integer value that <code>Integer</code> object
+   contains and the wrapping doesn't add anything for this purpose.</p>
+</li>
+<li>
+<p><strong>Map out unnecessary columns.</strong> As mentioned in the <a href="#design">prior
+   section</a>, JDBC can impose a significant performance
+   penalty. This tip is specific to query engine that maps out
+   unnecessary columns that are not used in a given query. Doing so
+   reduces the amount of tuples need to be fetched from the underlying
+   database. This performance optimization tip falls into a broad
+   category of using some query analysis to reduce the work actually
+   done during the query runtime.</p>
+</li>
+<li>
+<p><strong>Preallocate fixed-length arrays.</strong> It's better to preallocate a
+   fixed length of an array that has sufficient size during the whole
+   life cycle of query evaluation. If we go with the default array
+   length, we run into the situation of constantly resizing the array,
+   which makes the performance less predictable and fragments the JVM
+   heap. In query engine, the information about the size of array we
+   need to allocate is readily available during the optimization
+   through cardinality estimation. Sometimes, we just use relation
+   size as the approximation towards true cardinality and it works
+   quite well in practice.</p>
+</li>
+<li>
+<p><strong>Use high-performance standard library.</strong> Standard library is
+   sometimes too generic for performance-critical use case. I used
+   <a href="https://javadoc.io/doc/it.unimi.dsi/fastutil/latest/index.html">fastutil</a>
+   in the query engine for specialized data structure like <code>IntSet</code>.
+   I found that fastutil's specialized collections avoided the
+   overhead of object pointers. Storing primitive keys in contiguous
+   memory improved CPU cache hit rates and minimized pointer chasing
+   during hash table probes. This tip also applies to the Rust
+   prototype where we used HashMap and HashSet from
+   <a href="https://docs.rs/ahash/latest/ahash/index.html">ahash</a> instead of
+   the standard library to implement hash tables. Further, we used
+   <a href="https://docs.rs/memchr/latest/memchr/">memchr</a> for string
+   predicate evaluation instead of doing it ourselves.</p>
+</li>
+<li>
+<p><strong>Use integer comparison instead of string comparison.</strong> Initial
+   implementation of the query engine assumed fairly generic queries
+   as input workload. Specifically, the engine allowed two relations
+   are joined on a string column, which didn't show up in any
+   benchmark that I have run. Thus I made the adjustment of assuming
+   join only happens on a integer column (in fact, all the queries in
+   the three benchmarks I run don't even join on a composite
+   key). This assumption simplified a lot of implementation and
+   brought a significant performance improvement because string
+   comparison is a lot slower than the integer comparison. (Papers
+   like <a href="https://dl.acm.org/doi/10.14778/3407790.3407797">this</a>
+   exploit the performance gap between string and integer comparison;
+   see section 3.1.)  This is a good shortcut to take when building a
+   research prototype.</p>
+</li>
+<li>
+<p><strong>Use better JDBC.</strong> This point is already mentioned in <a href="#design">the prior
+   section</a> where C++ implementation of DuckDB JDBC driver
+   has better performance than PostgreSQL JDBC driver implemented
+   purely in Java.</p>
+</li>
+<li>
+<p><strong>Avoid repeated object creation (Object Pooling).</strong> When
+   <span class="math">\(\mathsf{TTJ}\)</span> was implemented in an iterator form, backjumping was
+   implemented in the form of message passing. The message itself was
+   just an object to signal which relation should delete a tuple from
+   its hash table. Instead of allocating a new message object for
+   every backjump, I implemented a form of object reuse. This
+   stabilized the heap usage and prevented frequent GC pauses from
+   interrupting the query evaluation pipeline.</p>
+</li>
+<li>
+<p><strong>Optimize performance on a small workload.</strong> Running all three
+    benchmarks with 120ish queries in a full-blown way takes multiple
+    days. Doing so is inefficient if our goal is to optimize our
+    prototype performance. A more ideal way to approach this is to
+    sample a few queries from the workload and optimize the
+    performance of those queries first. We can sample the queries in
+    different ways such as by the number of relations appeared in the
+    queries.</p>
+</li>
+</ol>
+<h1 id="departure-thoughts">Departure thoughts</h1>
+<p>Given the publication of <span class="math">\(\mathsf{TTJ}\)</span>, I have always been asking
+myself whether it is worthwhile spending five years pushing a work to
+publication. Is it better to work on something else that doesn't rely
+on <span class="math">\(\mathsf{TTJ}\)</span> so that I can have enough material to write a
+thesis?  My answer right now is mixed. On one hand, research is all
+about confidence and I think it is absolutely crucial for the first
+research project to be successful so that a student can gain
+confidence in continue pursuing the research path. The tricky thing is
+about how to define "successful": for a senior professor who published
+3 digits number of papers, whether a paper is published or not is no
+longer relevant. However, for a PhD student that just gets started,
+successful means publication; they need to see what research is
+publishable and gain reassurance they can do research. It would
+require a strong confidence to totally not published a result and then
+continue work something that builds upon the unpublished result. From
+this perspective, I think it's absolutely worth pushing a research
+project to publication. Plus, we discovered new things along the way
+such as acyclic convolution and the importance of optimizing join tree
+for acyclic conjunctive query evaluation. On the other hand, the
+algorithm of <span class="math">\(\mathsf{TTJ}\)</span> was finished in Summer 2021 and it was just
+waste of time to try different things in the hope of getting the badge
+that says "this work is published". I think the takeaway from all
+years of trying is to try to do some research that is completely
+different from the field that the struggling manuscript concerns; by
+working something completely different, the risk is diversified and it
+is good for mental health.</p>
+<h1 id="acknowledgements">Acknowledgements</h1>
+<p>I imagine this post serves as a sort of informal thesis. It would be a
+shame if I did not give proper thanks to the many people who helped me
+during my time at UT-Austin.</p>
+<p>Bailu Ding, Dixin Tang, and Marcelo Arenas provided various thoughtful
+comments on the manuscript and valuable advice on how to push this
+work toward publication. Greg Plaxton has been incredibly
+understanding of my struggles and spent countless hours advising me on
+all aspects of research--from navigating the PhD program to the
+nuances of theory research. Juan Sequeda and Nathan Clement generously
+shared their perspectives and experiences regarding their own PhD
+journeys. Remy Wang was an indispensable force; he strengthened the
+work significantly and helped push it across the finish line. Finally,
+Sherry has unconditionally supported my seemingly insane endeavor to
+continue doing research after a challenging five years at UT-Austin.</p>
+<div class="footnote">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>People call this algorithm Yannakakis algorithm, Yannakakis'
+  algorithm, or Yannakakis's algorithm. I think grammatically
+  speaking, the most correct way is either Yannakakis's algorithm
+  or Yannakakis algorithm. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
+</li>
+<li id="fn:2">
+<p>Acyclic conjunctive queries are everywhere; one may argue that
+  many real life queries are in fact acyclic. See <a href="https://arxiv.org/abs/2009.01769">this
+  paper</a> for a survey on
+  acyclicity of many query workloads. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
+</li>
+<li id="fn:4">
+<p>TT1 is slower than TT2 by a factor of <span class="math">\(\log n\)</span> where <span class="math">\(n\)</span> is the
+  number of variables in a constraint network. However, TT1 is much
+  simpler than TT2 and the number of variables in a constraint network
+  is translated into the number of relations in a query, which is
+  usually considered as a constant in a complexity model called data
+  complexity where database instance is the problem input to a query
+  evaluation algorithm. <a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 3 in the text">↩</a></p>
+</li>
+<li id="fn:5">
+<p>For a more in-depth discussion of the limitations of prose
+proofs, see some writings
+(<a href="https://lamport.azurewebsites.net/pubs/rigor.pdf">1</a>,
+<a href="https://lamport.azurewebsites.net/pubs/proof.pdf">2</a>) by Leslie
+Lamport. <a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 4 in the text">↩</a></p>
+</li>
+<li id="fn:3">
+<p>My friend's PhD advisor once told him that it's sufficient to
+  have the software compile once just for the numbers; it's okay
+  that the software no longer functions once the paper is
+  published. <a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 5 in the text">↩</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+        </article>
+
+        <footer>
+          <!-- <p>This entry is posted in <a href="../../../../../category/2025.html">2025</a>.</p> -->
+          <!-- <a href="../../../../../donate.html" class="button">Donate</a> -->
+          <a href="https://paypal.me/zhu45?locale.x=en_US">paypal.me</a>
+        </footer>
+        
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'zhu45-org';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    </div>
+
+
+<script>
+   function topFunction() {
+       document.body.scrollTop = 0;
+       document.documentElement.scrollTop = 0;
+   }
+</script>
+
+<footer class="blog-footer">
+    <div id="copyright">
+      Copyright (c) 2015-2025 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+    </div>
+    <div id="archive">
+      <a href="javascript:topFunction();">Back to top</a>
+    </div>
+</footer>
+            </div>
+<script>
+    var _gaq=[['_setAccount','UA-37565522-2'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+    </body>
+</html>
