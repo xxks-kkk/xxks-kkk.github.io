@@ -179,7 +179,7 @@ reflect on some lessons I learned during the process of getting paper
 published. I list out all the past six submissions and corresponding
 reviews that led to the final publication of the work, which I may
 call back on during the reflection.</p>
-<table class=" table-striped table table-hover">
+<table class="table-hover  table-striped table">
 <thead>
 <tr>
 <th>Submission</th>
@@ -228,8 +228,9 @@ from constraint satisfaction problem (CSP) into relational database
 setting and the result of the adaptation has to take the iterator form
 (Algorithm 3.1 of the
 <a href="https://arxiv.org/pdf/2403.01631v1">preprint</a>). The difficulty of the
-task was fair and well-suited for my skillset. There are two algorithms
-in the paper TT1 and TT2. <span class="math">\(\mathsf{TTJ}\)</span> is an adaptation of TT1 <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">3</a></sup>.</p>
+task was fair and well-suited for my skillset. There are two
+algorithms in the paper <span class="math">\(\mathsf{TT}1\)</span> and
+<span class="math">\(\mathsf{TT}2\)</span>. <span class="math">\(\mathsf{TTJ}\)</span> is an adaptation of <span class="math">\(\mathsf{TT}1\)</span> <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">3</a></sup>.</p>
 <p>There are a few things I tried and I found them helpful in designing
 the algorithm.</p>
 <ol>
@@ -274,7 +275,7 @@ the algorithm.</p>
    personal favorite simple but general example is Example 1 from <a href="https://arxiv.org/pdf/2403.01631v1">the
    arXiv preprint</a>. The generality
    is captured by the branching at relation <span class="math">\(S\)</span>: instead of every
-   relation in the join tree has at most one child, some relation
+   relation in its join tree has at most one child, some relation
    needs to have at least two children in order to capture backjumping
    aspect of <span class="math">\(\mathsf{TTJ}\)</span>. If one only uses chain query, where each
    internal node in the join tree has exactly one child, the resulting
@@ -309,46 +310,46 @@ the algorithm.</p>
 <li>
 <p><strong>Writing programs in algorithm design (a.k.a. system-assisted
    algorithm design).</strong> I wrote two major programs during the design
-   of <span class="math">\(\mathsf{TTJ}\)</span>. First, I implemented TT2 of the paper. The role
-   this program served was manifold. First, it helped me to better
-   understand the algorithm. Both algorithm description and proofs use
-   a lot of prose, which inherently inaccurate <sup id="fnref:5"><a class="footnote-ref" href="#fn:5">4</a></sup>. To ensure I have
-   the correct understanding of the algorithm, gain some concreteness
-   feeling, and continue to build up the correct intuition, I found
+   of <span class="math">\(\mathsf{TTJ}\)</span>. First, I implemented <span class="math">\(\mathsf{TT}2\)</span> of the
+   paper. The role this program served was manifold. First, it helped
+   me to better understand the algorithm. Both the <span class="math">\(\mathsf{TT}2\)</span>
+   description and the associated proofs use a lot of prose, which is
+   inherently inaccurate <sup id="fnref:5"><a class="footnote-ref" href="#fn:5">4</a></sup>. To ensure I had the correct
+   understanding of the algorithm, gained a sense of concreteness, and
+   could continue to build up the correct intuition, I found that
    implementing the algorithm and letting it run on a few examples
    helped. Second, it made me appreciate the complexity of the
    algorithm, which pushed me to aim for a simpler algorithm, which
    led to TT1 and eventually <span class="math">\(\mathsf{TTJ}\)</span>. The second major program
    I wrote was a query instance generator where it produced a query in
-   the form of join tree and associated relation instances, which can
-   be randomly generated or manually specified. The major benefit of
-   the program was that it generated a lot of examples for me to look
-   at. Those examples were important because they quickly got me
-   jumpstarted on the design without making the task look too
-   daunting. Additionally, I would like to think algorithm as a
-   procedure to handle a class of inputs that satisfy certain
-   restriction (e.g., acyclic conjunctive queries) and the goal of the
-   algorithm is to produce desired output (e.g., the correct query
-   result). To design the algorithm, we are inside the loop of writing
-   the initial procedure, finding the procedure breaks on certain
-   inputs, patching the procedure to handle the broken inputs, and
-   repeat until the procedure can handle all the possible
-   inputs. Examples help in all aspects of this design loop: they
-   helped me to write the initial algorithm, then some examples broke
-   my algorithm, and after a patch, those examples allowed me to
-   verify that the patch can indeed work. As one can see, this loop
-   can be easily automated and that's what I did: the generator itself
-   ran my algorithm and compared algorithm output with output of
-   evaluating the same query in a third-party database like PostgreSQL
-   and I immediately got feedback on if the algorithm breaks or not.
-   Immediate feedback is crucial because it can be very messy to trace
-   through evaluation of a query using a plan consisting of iterators
-   to check if the query is evaluated correctly. I found it was better
-   to perform tracing when algorithm breaks. With the loop largely
-   automated, I could spend my energy focusing on thinking about good
-   examples that can capture all the ingredients of <span class="math">\(\mathsf{TTJ}\)</span>,
-   which I further discuss in the next point, and designing algorithm
-   itself.</p>
+   the form of a join tree and associated relation instances, which
+   could be randomly generated or manually specified. The major
+   benefit of the program was that it generated a lot of examples for
+   me to look at. Those examples were important because they quickly
+   got me jumpstarted on the design without making the task look too
+   daunting. Additionally, I think of an algorithm as a procedure to
+   handle a class of inputs that satisfy certain restriction (e.g.,
+   acyclic conjunctive queries) and the goal of the algorithm is to
+   produce the desired output (e.g., the correct query result). Thus
+   the design loop of an algorithm consists of writing the initial
+   procedure, finding where the procedure breaks on certain inputs,
+   patching the procedure to handle the broken inputs, and repeating
+   until the procedure can handle all possible inputs. Examples helped
+   in all aspects of this design loop: they helped me to write the
+   initial algorithm, then some examples broke my algorithm, and after
+   a patch, those examples allowed me to verify that the patch could
+   indeed work. As one can see, the loop can be easily automated and
+   that is what I did: the generator itself ran my algorithm and
+   compared the output with the results of evaluating the same query
+   in a third-party database like PostgreSQL. I immediately received
+   feedback on whether the algorithm broke. Immediate feedback is
+   crucial because it can be very messy to trace through the
+   evaluation of a query using a plan consisting of <span class="math">\(\mathsf{TTJ}\)</span>
+   iterators to check if <span class="math">\(\mathsf{TTJ}\)</span> worked correctly. I found it
+   was better to perform tracing when the algorithm broke. With the
+   loop largely automated, I could spend my energy focusing on
+   thinking about good examples that could capture all the ingredients
+   of <span class="math">\(\mathsf{TTJ}\)</span> and designing the algorithm itself.</p>
 </li>
 </ol>
 <div class="admonition note">
@@ -890,13 +891,14 @@ doing research after a challenging five years at UT-Austin.</p>
   acyclicity of many query workloads. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 <li id="fn:4">
-<p>TT1 is slower than TT2 by a factor of <span class="math">\(\log n\)</span> where <span class="math">\(n\)</span> is the
-  number of variables in a constraint network. However, TT1 is much
-  simpler than TT2 and the number of variables in a constraint network
-  is translated into the number of relations in a query, which is
-  usually considered as a constant in a complexity model called data
-  complexity where database instance is the problem input to a query
-  evaluation algorithm. <a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 3 in the text">↩</a></p>
+<p><span class="math">\(\mathsf{TT}1\)</span> is slower than <span class="math">\(\mathsf{TT}2\)</span> by a factor of
+  <span class="math">\(\log n\)</span> where <span class="math">\(n\)</span> is the number of variables in a constraint
+  network. However, <span class="math">\(\mathsf{TT}1\)</span> is much simpler than
+  <span class="math">\(\mathsf{TT}2\)</span> and the number of variables in a constraint
+  network is translated into the number of relations in a query,
+  which is usually considered as a constant in a complexity model
+  called data complexity where database instance is the problem
+  input to a query evaluation algorithm. <a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 3 in the text">↩</a></p>
 </li>
 <li id="fn:5">
 <p>For a more in-depth discussion of the limitations of prose
@@ -1002,7 +1004,7 @@ Lamport. <a class="footnote-backref" href="#fnref:5" title="Jump back to footno
 
 <footer class="blog-footer">
     <div id="copyright">
-      Copyright (c) 2015-2025 <a href="../../../../../about-me.html">Zeyuan Hu</a>
+      Copyright (c) 2015-2026 <a href="../../../../../about-me.html">Zeyuan Hu</a>
     </div>
     <div id="archive">
       <a href="javascript:topFunction();">Back to top</a>

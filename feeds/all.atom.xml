@@ -109,7 +109,7 @@ reflect on some lessons I learned during the process of getting paper
 published. I list out all the past six submissions and corresponding
 reviews that led to the final publication of the work, which I may
 call back on during the reflection.&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Submission&lt;/th&gt;
@@ -158,8 +158,9 @@ from constraint satisfaction problem (CSP) into relational database
 setting and the result of the adaptation has to take the iterator form
 (Algorithm 3.1 of the
 &lt;a href="https://arxiv.org/pdf/2403.01631v1"&gt;preprint&lt;/a&gt;). The difficulty of the
-task was fair and well-suited for my skillset. There are two algorithms
-in the paper TT1 and TT2. &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; is an adaptation of TT1 &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4"&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+task was fair and well-suited for my skillset. There are two
+algorithms in the paper &lt;span class="math"&gt;\(\mathsf{TT}1\)&lt;/span&gt; and
+&lt;span class="math"&gt;\(\mathsf{TT}2\)&lt;/span&gt;. &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; is an adaptation of &lt;span class="math"&gt;\(\mathsf{TT}1\)&lt;/span&gt; &lt;sup id="fnref:4"&gt;&lt;a class="footnote-ref" href="#fn:4"&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
 &lt;p&gt;There are a few things I tried and I found them helpful in designing
 the algorithm.&lt;/p&gt;
 &lt;ol&gt;
@@ -204,7 +205,7 @@ the algorithm.&lt;/p&gt;
    personal favorite simple but general example is Example 1 from &lt;a href="https://arxiv.org/pdf/2403.01631v1"&gt;the
    arXiv preprint&lt;/a&gt;. The generality
    is captured by the branching at relation &lt;span class="math"&gt;\(S\)&lt;/span&gt;: instead of every
-   relation in the join tree has at most one child, some relation
+   relation in its join tree has at most one child, some relation
    needs to have at least two children in order to capture backjumping
    aspect of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;. If one only uses chain query, where each
    internal node in the join tree has exactly one child, the resulting
@@ -239,46 +240,46 @@ the algorithm.&lt;/p&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;Writing programs in algorithm design (a.k.a. system-assisted
    algorithm design).&lt;/strong&gt; I wrote two major programs during the design
-   of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;. First, I implemented TT2 of the paper. The role
-   this program served was manifold. First, it helped me to better
-   understand the algorithm. Both algorithm description and proofs use
-   a lot of prose, which inherently inaccurate &lt;sup id="fnref:5"&gt;&lt;a class="footnote-ref" href="#fn:5"&gt;4&lt;/a&gt;&lt;/sup&gt;. To ensure I have
-   the correct understanding of the algorithm, gain some concreteness
-   feeling, and continue to build up the correct intuition, I found
+   of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;. First, I implemented &lt;span class="math"&gt;\(\mathsf{TT}2\)&lt;/span&gt; of the
+   paper. The role this program served was manifold. First, it helped
+   me to better understand the algorithm. Both the &lt;span class="math"&gt;\(\mathsf{TT}2\)&lt;/span&gt;
+   description and the associated proofs use a lot of prose, which is
+   inherently inaccurate &lt;sup id="fnref:5"&gt;&lt;a class="footnote-ref" href="#fn:5"&gt;4&lt;/a&gt;&lt;/sup&gt;. To ensure I had the correct
+   understanding of the algorithm, gained a sense of concreteness, and
+   could continue to build up the correct intuition, I found that
    implementing the algorithm and letting it run on a few examples
    helped. Second, it made me appreciate the complexity of the
    algorithm, which pushed me to aim for a simpler algorithm, which
    led to TT1 and eventually &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;. The second major program
    I wrote was a query instance generator where it produced a query in
-   the form of join tree and associated relation instances, which can
-   be randomly generated or manually specified. The major benefit of
-   the program was that it generated a lot of examples for me to look
-   at. Those examples were important because they quickly got me
-   jumpstarted on the design without making the task look too
-   daunting. Additionally, I would like to think algorithm as a
-   procedure to handle a class of inputs that satisfy certain
-   restriction (e.g., acyclic conjunctive queries) and the goal of the
-   algorithm is to produce desired output (e.g., the correct query
-   result). To design the algorithm, we are inside the loop of writing
-   the initial procedure, finding the procedure breaks on certain
-   inputs, patching the procedure to handle the broken inputs, and
-   repeat until the procedure can handle all the possible
-   inputs. Examples help in all aspects of this design loop: they
-   helped me to write the initial algorithm, then some examples broke
-   my algorithm, and after a patch, those examples allowed me to
-   verify that the patch can indeed work. As one can see, this loop
-   can be easily automated and that's what I did: the generator itself
-   ran my algorithm and compared algorithm output with output of
-   evaluating the same query in a third-party database like PostgreSQL
-   and I immediately got feedback on if the algorithm breaks or not.
-   Immediate feedback is crucial because it can be very messy to trace
-   through evaluation of a query using a plan consisting of iterators
-   to check if the query is evaluated correctly. I found it was better
-   to perform tracing when algorithm breaks. With the loop largely
-   automated, I could spend my energy focusing on thinking about good
-   examples that can capture all the ingredients of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;,
-   which I further discuss in the next point, and designing algorithm
-   itself.&lt;/p&gt;
+   the form of a join tree and associated relation instances, which
+   could be randomly generated or manually specified. The major
+   benefit of the program was that it generated a lot of examples for
+   me to look at. Those examples were important because they quickly
+   got me jumpstarted on the design without making the task look too
+   daunting. Additionally, I think of an algorithm as a procedure to
+   handle a class of inputs that satisfy certain restriction (e.g.,
+   acyclic conjunctive queries) and the goal of the algorithm is to
+   produce the desired output (e.g., the correct query result). Thus
+   the design loop of an algorithm consists of writing the initial
+   procedure, finding where the procedure breaks on certain inputs,
+   patching the procedure to handle the broken inputs, and repeating
+   until the procedure can handle all possible inputs. Examples helped
+   in all aspects of this design loop: they helped me to write the
+   initial algorithm, then some examples broke my algorithm, and after
+   a patch, those examples allowed me to verify that the patch could
+   indeed work. As one can see, the loop can be easily automated and
+   that is what I did: the generator itself ran my algorithm and
+   compared the output with the results of evaluating the same query
+   in a third-party database like PostgreSQL. I immediately received
+   feedback on whether the algorithm broke. Immediate feedback is
+   crucial because it can be very messy to trace through the
+   evaluation of a query using a plan consisting of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;
+   iterators to check if &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; worked correctly. I found it
+   was better to perform tracing when the algorithm broke. With the
+   loop largely automated, I could spend my energy focusing on
+   thinking about good examples that could capture all the ingredients
+   of &lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt; and designing the algorithm itself.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class="admonition note"&gt;
@@ -820,13 +821,14 @@ doing research after a challenging five years at UT-Austin.&lt;/p&gt;
   acyclicity of many query workloads. &lt;a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn:4"&gt;
-&lt;p&gt;TT1 is slower than TT2 by a factor of &lt;span class="math"&gt;\(\log n\)&lt;/span&gt; where &lt;span class="math"&gt;\(n\)&lt;/span&gt; is the
-  number of variables in a constraint network. However, TT1 is much
-  simpler than TT2 and the number of variables in a constraint network
-  is translated into the number of relations in a query, which is
-  usually considered as a constant in a complexity model called data
-  complexity where database instance is the problem input to a query
-  evaluation algorithm. &lt;a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 3 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\mathsf{TT}1\)&lt;/span&gt; is slower than &lt;span class="math"&gt;\(\mathsf{TT}2\)&lt;/span&gt; by a factor of
+  &lt;span class="math"&gt;\(\log n\)&lt;/span&gt; where &lt;span class="math"&gt;\(n\)&lt;/span&gt; is the number of variables in a constraint
+  network. However, &lt;span class="math"&gt;\(\mathsf{TT}1\)&lt;/span&gt; is much simpler than
+  &lt;span class="math"&gt;\(\mathsf{TT}2\)&lt;/span&gt; and the number of variables in a constraint
+  network is translated into the number of relations in a query,
+  which is usually considered as a constant in a complexity model
+  called data complexity where database instance is the problem
+  input to a query evaluation algorithm. &lt;a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 3 in the text"&gt;↩&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn:5"&gt;
 &lt;p&gt;For a more in-depth discussion of the limitations of prose
@@ -5790,7 +5792,7 @@ that cause a page fault uppercase, and those that don’t lowercase):&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
 approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12"&gt;18&lt;/a&gt;&lt;/sup&gt; to avoid heavy overhead). The trace of the memory references with LRU policy shown below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -5904,7 +5906,7 @@ approximate LRU &lt;sup id="fnref:12"&gt;&lt;a class="footnote-ref" href="#fn:12
 &lt;/blockquote&gt;
 &lt;p&gt;FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -6018,7 +6020,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 &lt;/blockquote&gt;
 &lt;p&gt;Optimal policy means we want to replace the page that will be accessed &lt;em&gt;furthest in the future&lt;/em&gt; and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Access&lt;/th&gt;
@@ -6224,7 +6226,7 @@ which takes a queue and returns, as an unsigned integer, its address.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;One possible scenario of deadlock using &lt;code&gt;transfer()&lt;/code&gt; is illustrated below. Note that &lt;code&gt;queue1&lt;/code&gt; and &lt;code&gt;queue2&lt;/code&gt; in &lt;code&gt;transfer()&lt;/code&gt;
 are replaced with queues that they are pointing to (time increases with the row's number):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Thread1 (&lt;code&gt;transfer(q1,q2)&lt;/code&gt;)&lt;/th&gt;
@@ -6578,7 +6580,7 @@ the modification looks like below:&lt;/p&gt;
 &lt;p&gt;The question we want to answer is why doing so works?&lt;/p&gt;
 &lt;h2 id="explanation"&gt;Explanation&lt;/h2&gt;
 &lt;p&gt;We acquire key data from GDB as following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;GDB command&lt;/th&gt;
@@ -8132,7 +8134,7 @@ blocks from different clients)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;&lt;/th&gt;
@@ -12710,7 +12712,7 @@ a very efficient algorithm in all cases. Path compression is not entirely compat
 to recompute all the heights and in this case, heights stored for each tree become estimated heights (i.e., &lt;strong&gt;ranks&lt;/strong&gt;), but in theory union-by-rank is as efficient as union-by-size.&lt;/p&gt;
 &lt;p&gt;If we do analysis on smart union with path compression, the running time for any sequence of &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects makes &lt;span class="math"&gt;\(O(N + M\log^*N)\)&lt;/span&gt; &lt;sup id="fnref:1"&gt;&lt;a class="footnote-ref" href="#fn:1"&gt;1&lt;/a&gt;&lt;/sup&gt; accesses.&lt;/p&gt;
 &lt;p&gt;The following table summarizes the running time for &lt;span class="math"&gt;\(M\)&lt;/span&gt; union-find operations on a set of &lt;span class="math"&gt;\(N\)&lt;/span&gt; objects (don't forget we need to spend &lt;span class="math"&gt;\(O(N)\)&lt;/span&gt; to initialize disjoint sets):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -12741,7 +12743,7 @@ to recompute all the heights and in this case, heights stored for each tree beco
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;The running time for each operation for each algorithm is following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;algorithm&lt;/th&gt;
@@ -12942,7 +12944,7 @@ can try to label the items from &lt;span class="math"&gt;\(1 \dots n\)&lt;/span&
 solution for &lt;span class="math"&gt;\(S_i = \left\lbrace \text{items labeled }  1,2,\dots, i \right\rbrace\)&lt;/span&gt;. Once
 we have a definition for the subproblem, we need to ask: can we describe the final solution
 (i.e., &lt;span class="math"&gt;\(S_n\)&lt;/span&gt;) in terms of subproblems (i.e., &lt;span class="math"&gt;\(S_i\)&lt;/span&gt;)? Let's take a look at an example:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -13032,7 +13034,7 @@ for i = 1 to n
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The running time for this algorithm is &lt;span class="math"&gt;\(O(n*W)\)&lt;/span&gt; because of the double for loop. To understand this algorithm,
 let's take a look at an example:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -13060,7 +13062,7 @@ let's take a look at an example:&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Suppose &lt;span class="math"&gt;\(W = 5\)&lt;/span&gt; and with algorithm above, we essentially fill out a table like following:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -13129,7 +13131,7 @@ the first two for loops&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now, let's take a look at &lt;span class="math"&gt;\(B[1,1]\)&lt;/span&gt;. We have &lt;span class="math"&gt;\(i = 1, b_i = 3, w_i = 2, w = 1\)&lt;/span&gt;, and since &lt;span class="math"&gt;\(w_i &amp;gt; w\)&lt;/span&gt;, and by our
 algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, which is &lt;span class="math"&gt;\(B[0,1]\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(B[1,1] = 0\)&lt;/span&gt; and the table becomes&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -13190,7 +13192,7 @@ algorithm, we have &lt;span class="math"&gt;\(B[i,w] = B[i-1,w]\)&lt;/span&gt;, 
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;We can fill out the table like this and have&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -13317,7 +13319,7 @@ defined as the greatest integer less than or equal to &lt;span class="math"&gt;\
 &lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i,w&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x_i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;that&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;associated&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;B&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i-1,w&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Let's walk through an example to better understand the algorithm idea:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Item&lt;/th&gt;
@@ -13344,7 +13346,7 @@ defined as the greatest integer less than or equal to &lt;span class="math"&gt;\
 &lt;p&gt;&lt;span class="math"&gt;\(W = 8\)&lt;/span&gt; in our example. The algorithm essentially
 tries to build fill out two tables &lt;span class="math"&gt;\(B[i,w]\)&lt;/span&gt; table like
 the 0-1 knapsack problem:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -13412,7 +13414,7 @@ the 0-1 knapsack problem:&lt;/p&gt;
 &lt;/table&gt;
 &lt;p&gt;and &lt;span class="math"&gt;\(x[i,w]\)&lt;/span&gt; table to keep track of the optimal
 value of &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; for each &lt;span class="math"&gt;\(i\)&lt;/span&gt; and &lt;span class="math"&gt;\(w\)&lt;/span&gt;&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;i \ w&lt;/th&gt;
@@ -13476,7 +13478,7 @@ $$&lt;/div&gt;
 &lt;p&gt;So, we fill in &lt;span class="math"&gt;\(B[1,3] = 4\)&lt;/span&gt; and &lt;span class="math"&gt;\(x[1,3] = 1\)&lt;/span&gt;. We can repeatedly
 doing this for other &lt;span class="math"&gt;\(i\)&lt;/span&gt;s. We can take a look at the values
 from another perspective like the tables below:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[1,w]&lt;/th&gt;
@@ -13532,7 +13534,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[2,w]&lt;/th&gt;
@@ -13588,7 +13590,7 @@ from another perspective like the tables below:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;B[3,w]&lt;/th&gt;
@@ -13766,7 +13768,7 @@ In addition, this post belongs to part of future work mentioned in &lt;a href="h
 &lt;p&gt;Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Type&lt;/th&gt;
@@ -14535,7 +14537,7 @@ care about the size of &lt;span class="math"&gt;\(J_{cv}(\theta)\)&lt;/span&gt; 
 &lt;p&gt;Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
 housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
 its prediction. What we should try next?&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Method&lt;/th&gt;
@@ -14611,7 +14613,7 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$&lt;/div&gt;
 &lt;p&gt;Then, we try to decide which part of the pipeline we should spend the most time trying to improve. &lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;component&lt;/th&gt;
@@ -15449,7 +15451,7 @@ is a graphic summary for the text above&lt;/p&gt;
 the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;Join types&lt;/th&gt;
@@ -16086,7 +16088,7 @@ $$&lt;/div&gt;
 &lt;p&gt;For example, the sequence &lt;span class="math"&gt;\(1,3,4,2,1\)&lt;/span&gt; can be considered as a sequence of 
 iterated function values with &lt;span class="math"&gt;\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
 x_3 = f(4) = 2, x_4 = f(2) = 1\)&lt;/span&gt;. Let's try another representation:&lt;/p&gt;
-&lt;table class=" table-striped table table-hover"&gt;
+&lt;table class="table-hover  table-striped table"&gt;
 &lt;thead&gt;
 &lt;tr&gt;
 &lt;th&gt;index&lt;/th&gt;
@@ -22984,7 +22986,7 @@ and &lt;a class="reference external" href="http://valgrind.org/docs/manual/mc-ma
 &lt;li&gt;Always &lt;tt class="docutils literal"&gt;free&lt;/tt&gt; the chunk allocated by &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; whenever possible.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Take &lt;tt class="docutils literal"&gt;multiply&lt;/tt&gt; function as an example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23685,7 +23687,7 @@ language itself just looks really bizzare to me.&lt;/p&gt;
 you will see that we have to work with &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt;. Pelican will use the layout
 specified in this file to generate our archive page.&lt;/p&gt;
 &lt;p&gt;For the first iteration, my &lt;tt class="docutils literal"&gt;archives.html&lt;/tt&gt; looks something like this&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23918,7 +23920,7 @@ interview.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-1"&gt;
 &lt;h3&gt;Solution 1&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -23973,7 +23975,7 @@ a list: in my case, &lt;a class="reference external" href="https://zhu45.org/pos
 &lt;/div&gt;
 &lt;p&gt;However, this solution wastes a ton of memory space and too many &lt;tt class="docutils literal"&gt;malloc&lt;/tt&gt; operations,
 which basically duplicate the data. This is the place where the algorithm can be improved.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -24023,7 +24025,7 @@ same assignments in slightly different order).&lt;/li&gt;
 &lt;/div&gt;
 &lt;div class="section" id="solution-2"&gt;
 &lt;h3&gt;Solution 2&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -24067,7 +24069,7 @@ works but is not as nice as this one. You can check it out in my
 &lt;/div&gt;
 &lt;div class="section" id="solution-3"&gt;
 &lt;h3&gt;Solution 3&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -24126,7 +24128,7 @@ is the base case where I got passed in an empty list. Since in our implementatio
 &lt;li&gt;&lt;p class="first"&gt;We use a private function mainly because we have &lt;em&gt;dummy&lt;/em&gt; node in our implementation.
 This is a special case that cannot be handled inside the recusive call. That's
 also why the first data node in the original list is passed into the helper function.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -24189,7 +24191,7 @@ use the basic list operations. What is the running time of your procedure?&lt;/b
 &lt;/div&gt;
 &lt;div class="section" id="solution"&gt;
 &lt;h2&gt;Solution&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;table class="highlighttable  table-striped table table-hover"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="table-hover highlighttable  table-striped table"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -24580,7 +24582,7 @@ emacs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="emacs-key-notation"&gt;
 &lt;h3&gt;Emacs Key Notation&lt;/h3&gt;
-&lt;table border="1" class=" table-striped table docutils table-hover"&gt;
+&lt;table border="1" class="table-hover table  table-striped docutils"&gt;
 &lt;colgroup&gt;
 &lt;col width="11%"/&gt;
 &lt;col width="89%"/&gt;
