@@ -113,7 +113,7 @@ resource management to improve performance?</p>
 <h2 id="approach">Approach</h2>
 <ul>
 <li>extensibility: application knows best what resource mangement it needs. Therefore, it should make decisions whenever possible (end-to-end argument)</li>
-<li>minimalist: kernel's job is to protect resources, not to manage them ("separate protection from resource management")</li>
+<li>minimalist: kernel’s job is to protect resources, not to manage them (“separate protection from resource management”)</li>
 <li>challenge: identify core of the abstractions for different resources</li>
 <li>Thin kernel, fat OS libraries</li>
 </ul>
@@ -192,13 +192,13 @@ resource management to improve performance?</p>
 <li>
 <p>Pros:</p>
 <ul>
-<li>low-level interface ("ideal" according to Exokernel standard)</li>
+<li>low-level interface (“ideal” according to Exokernel standard)</li>
 </ul>
 </li>
 <li>
 <p>Cons:</p>
 <ul>
-<li>"emulate" machine vs. "export" resources (e.g., need to emulate "privileged" instructions)</li>
+<li>“emulate” machine vs. “export” resources (e.g., need to emulate “privileged” instructions)</li>
 <li>Poor IPC (traditionally): machines isolated</li>
 <li>Hide resource management</li>
 </ul>
@@ -256,7 +256,7 @@ resource management to improve performance?</p>
 <li>VM replacement</li>
 <li>File System</li>
 <li>IPC</li>
-<li>...</li>
+<li>…</li>
 </ul>
 </li>
 </ul>
@@ -277,7 +277,7 @@ resource management to improve performance?</p>
 <li>
 <p>Like virtual machine: exokernel exports virtual machine but different in</p>
 <ul>
-<li>Transparency: traditional VM wants to run unmodified OS's; exokernel VM wants to support custom OS's</li>
+<li>Transparency: traditional VM wants to run unmodified OS’s; exokernel VM wants to support custom OS’s</li>
 <li>Export rather than emulate resource: libOS is aware of multiplexing</li>
 </ul>
 </li>
@@ -307,7 +307,7 @@ resource management to improve performance?</p>
 <ul>
 <li>export resources at lowest level possible with protection (e.g., disk blocks, TLB entries, etc)</li>
 <li>resource management only at level needed for protection (e.g., allocation, revocation, sharing, tracking of ownership)</li>
-<li>"abstraction (mechanism) is policy": the implementation of abstractions in library operating systems can be simpler and 
+<li>“abstraction (mechanism) is policy”: the implementation of abstractions in library operating systems can be simpler and 
   more specialized than in-kernel implementations, because library operating systems need not multiplex a resource 
   among competing applications with widely different demands</li>
 </ul>
@@ -335,7 +335,7 @@ resource management to improve performance?</p>
 </ul>
 </li>
 <li>
-<p>Challenge: secure bindings vs. Saltzer "complete mediation"</p>
+<p>Challenge: secure bindings vs. Saltzer “complete mediation”</p>
 </li>
 </ul>
 <h4 id="visible-revocation">Visible revocation</h4>
@@ -362,7 +362,7 @@ resource management to improve performance?</p>
 </ul>
 </li>
 <li>
-<p>Reposes dirty disk block (store to "swap server")</p>
+<p>Reposes dirty disk block (store to “swap server”)</p>
 </li>
 <li>ASIDs (processor addressing-context identifiers) are identified as a resource best revoked transparently because of 
   frequent revocation</li>
@@ -392,7 +392,7 @@ resource management to improve performance?</p>
 <li>Simple</li>
 <li>Generic across resources</li>
 <li>Hierarchical: using capabilities to protect resources enables applications to grant access rights to other applications
-  without kernel intervention. Applications can also use "well-known" capabilities to share resources easily</li>
+  without kernel intervention. Applications can also use “well-known” capabilities to share resources easily</li>
 </ul>
 </li>
 </ul>
@@ -405,16 +405,16 @@ resource management to improve performance?</p>
 </ul>
 <h3 id="specific-abstractions">Specific Abstractions</h3>
 <p>Many abstractions need to be implemented in exokernel: exception handler, page protection/sharing, processor scheduling,
-fork/exec, VM replacement, network protocol, file system. Here, I only list paper's discussion related to network.</p>
+fork/exec, VM replacement, network protocol, file system. Here, I only list paper’s discussion related to network.</p>
 <h4 id="network">Network</h4>
 <h5 id="multiplexing-the-network-packet-filter">Multiplexing the network: packet filter</h5>
 <ul>
 <li>Idea: load a small piece of code that examines packet and decides if it is for me</li>
 <li>Implement by downloading code into kernel: written in simple, safe language - no loops, check all mem references, etc</li>
 <li>
-<p>Problem: what if I lie and say "yes it is for me" when it isn't?</p>
+<p>Problem: what if I lie and say “yes it is for me” when it isn’t?</p>
 <ul>
-<li>Solution: "assume they don't lie"</li>
+<li>Solution: “assume they don’t lie”</li>
 <li>Claim: could use a trusted server to load these things or could check to make sure that a new filter never overlaps with an 
   old one [not like to solve the problem]</li>
 </ul>

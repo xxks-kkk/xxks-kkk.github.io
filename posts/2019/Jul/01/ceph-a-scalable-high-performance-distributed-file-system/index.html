@@ -167,7 +167,7 @@
 <li>Namespace operations:<ul>
 <li>Read operations (<code>readdir</code>, <code>stat</code>) and updates (<code>unlink</code>, <code>chmod</code>) are synchronized by MDS</li>
 <li>Optimize common metadata access pattern (<code>readdir</code> followed by <code>stat</code>) (trade coherence for performance)</li>
-<li>Offer POSIX interface extension (<code>statlite</code>) for application that don't need coherent behavior</li>
+<li>Offer POSIX interface extension (<code>statlite</code>) for application that don’t need coherent behavior</li>
 <li>Extend existing interface for performance (<code>stat</code> example)</li>
 </ul>
 </li>
@@ -225,7 +225,7 @@
 <li>Using a variant of primary-copy replication</li>
 <li>How it works:<ul>
 <li>Data is replicated in terms of PGs, each of which is mapped to an ordered list of <span class="math">\(n\)</span> OSDs (for <span class="math">\(n\)</span>-way replication)</li>
-<li>Clients send all writes to the first non-failed OSD in an object's PG (the <em>primary</em>), which assigns a new version number for the object and PG and forwards the write to any additional <em>replica</em> OSDs</li>
+<li>Clients send all writes to the first non-failed OSD in an object’s PG (the <em>primary</em>), which assigns a new version number for the object and PG and forwards the write to any additional <em>replica</em> OSDs</li>
 <li>After each replica has applied the update and responded to the primary, the primary applies the update locally and the write is acknowledged to the client</li>
 <li>Reads are directed at the primary</li>
 </ul>
@@ -241,7 +241,7 @@
 </ol>
 </li>
 <li>How it works:<ul>
-<li>The primary forwards the update to replicas, and replies with an <em>ack</em> after it is applied to all OSDs' in-memory buffer caches, allowing synchronous POSIX calls on the client to return (satisfy requirement 1)</li>
+<li>The primary forwards the update to replicas, and replies with an <em>ack</em> after it is applied to all OSDs’ in-memory buffer caches, allowing synchronous POSIX calls on the client to return (satisfy requirement 1)</li>
 <li>A final <em>commit</em> is sent when data is safely committed to disk (satisfy requirement 2)</li>
 </ul>
 </li>
@@ -273,7 +273,7 @@
 <ul>
 <li>OSD manages its local object storage with EBOFS (Extent and B-tree based Object File System)</li>
 <li>Why new file system (instead of using ext3)?<ul>
-<li>POSIX interface donesn't support atomic data and metadata update transactions</li>
+<li>POSIX interface donesn’t support atomic data and metadata update transactions</li>
 <li>High latency for journaling and synchronous writes</li>
 </ul>
 </li>

@@ -74,7 +74,7 @@
         
         <article>
             <p>This post aims to prepare myself for the upcoming <a href="http://www.cs.utexas.edu/~rossbach/380L/index.html">CS380L Advanced Operating Systems</a> offered by
-<a href="http://www.cs.utexas.edu/~rossbach/">Christopher J. Rossbach</a>. The questions are actually from his <a href="http://www.cs.utexas.edu/~rossbach/380L/hw/hw1.pdf">HW1</a> aka. "Swapping in the state from undergraduate OS".</p>
+<a href="http://www.cs.utexas.edu/~rossbach/">Christopher J. Rossbach</a>. The questions are actually from his <a href="http://www.cs.utexas.edu/~rossbach/380L/hw/hw1.pdf">HW1</a> aka. “Swapping in the state from undergraduate OS”.</p>
 <div class="toc">
 <ul>
 <li><a href="#brush-up">Brush up</a><ul>
@@ -122,13 +122,13 @@ if the page size is 4KB and we request 3KB memory, then there will be 1KB unused
 <blockquote>
 <p>Translation look-aside buffer (TLB).</p>
 </blockquote>
-<p>TLB is part of the chip's memory-management unit (MMU). It serves as a hardware cache of popular virtual-to-physical address translations
+<p>TLB is part of the chip’s memory-management unit (MMU). It serves as a hardware cache of popular virtual-to-physical address translations
 (i.e., virtual page number to physical frame number translations)<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">1</a></sup>.</p>
 <blockquote>
 <p>Interrupt.</p>
 </blockquote>
 <p>Interrupts are essentially requests for attention. In the same way, peripherals in a computer system can request the attention of the processor. The event that makes a microprocessor stop executing one routine to perform some other routine to service a request, is called an INTERRUPT<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">2</a></sup>. In other words, an  interrupt  is  an  electrical signal  that  causes  the  processor  to  stop  the  current  execution and  begin  to  execute  interrupt  handler  code.  Interrupts
-are asynchronous excpetions. Asynchronous here means "not related to instruction that just executed"<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">3</a></sup>.</p>
+are asynchronous excpetions. Asynchronous here means “not related to instruction that just executed”<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">3</a></sup>.</p>
 <blockquote>
 <p>Distributed shared memory.</p>
 </blockquote>
@@ -139,15 +139,15 @@ memories are from each node in the cluster and connected via the network (i.e., 
 </blockquote>
 <p>Stateless server means the server does not keep track of anything about what is happening at each client (e.g., server does not
 maintain which client open what file on its side). Stateful server is the opposite of the stateless server. For example, 
-server keeps track of what client accesses what files so that when the server's file copy is modified (e.g., by some other clients
+server keeps track of what client accesses what files so that when the server’s file copy is modified (e.g., by some other clients
 who also access the same file), server can inform clients to invalidate their cache of the same file.</p>
 <p>A classic stateless file system is <a href="../../../../../posts/2018/May/01/suns-network-file-system-nfs/">NFS with NFSv2 protocol</a> (<a href="http://www.sane.nl/events/sane2000/papers/pawlowski.pdf">NFSv4 protocol</a> makes NFS become a stateful server as well). <a href="../../../../../posts/2018/May/02/the-andrew-file-system-afs/">AFS</a> is a stateful file system. </p>
-<p>Not having state makes crash recovery on the server side fast: server doesn't need to recover any client-side information 
+<p>Not having state makes crash recovery on the server side fast: server doesn’t need to recover any client-side information 
 (thanks to stateless) and on server failure, clients can simply retry the request. However, with stateless, clients need
 to constantly contact server to validate their cache, which impose extra load to server. Furthermore, clients need to pass 
 extra information (e.g., file handle) when perform system calls, which impose extra overhead to clients. Having state complicates
 the crash recovery: server needs to initiate cache validation to the clients; clients also need to send out heartbeat message to
-server. However, with state, client doesn't need to constantly contact to validate its cache (wait for server's callback).</p>
+server. However, with state, client doesn’t need to constantly contact to validate its cache (wait for server’s callback).</p>
 <blockquote>
 <p>Swapping.</p>
 </blockquote>
@@ -186,7 +186,7 @@ of the drive; it is called a cylinder because of its clear resemblance to the so
 in the capabilities model, the authorities are bound to objects seeking access <sup id="fnref:17"><a class="footnote-ref" href="#fn:17">11</a></sup> (e.g., UNIX file descriptors are capabilities: authorities are 
 bounded to file descriptors, which reflect rights on objects like files or sockets <sup id="fnref:20"><a class="footnote-ref" href="#fn:20">12</a></sup>).</p>
 <p>As one can see, with the ACL model, each object has just one list, while with the capability model, each object has a whole set of different, separable capabilities. For example, in capability model, a process has different capabilities depending on the objects it tries to access.</p>
-<p><a href="http://homepage.divms.uiowa.edu/~jones/security/notes/18.shtml">This page</a> has a nice example: file "aaa" has ACL as "Alice:R/W, Bob:R, Carol:R". File "aaa" is the object being secured. "Alice" has capabilities "aaa:R/W, bbb:R, ccc:R". "Alice" as a user is the object seeking access.</p>
+<p><a href="http://homepage.divms.uiowa.edu/~jones/security/notes/18.shtml">This page</a> has a nice example: file “aaa” has ACL as “Alice:R/W, Bob:R, Carol:R”. File “aaa” is the object being secured. “Alice” has capabilities “aaa:R/W, bbb:R, ccc:R”. “Alice” as a user is the object seeking access.</p>
 <blockquote>
 <p>The  length  of  the  time  slice  is  a  parameter  to  round  robin  CPU scheduling.  What is the main problem that occurs if this length is too long?  Too short?</p>
 </blockquote>
@@ -218,7 +218,7 @@ that the physical frame size is <span class="math">\(2^d\)</span>, which is equa
 <p>The advantages of multi-level page tables are that:</p>
 <ul>
 <li>The multi-level table only allocates page-table space in proportion to the amount of address space we are using (more compact to support sparse page table)</li>
-<li>each portion of page table fits into a page makes memory management easier: we don't have to find contiguous physical memory chunk that can contain the linear page table; we can place page-table pages whereever we want in the physical memory. </li>
+<li>each portion of page table fits into a page makes memory management easier: we don’t have to find contiguous physical memory chunk that can contain the linear page table; we can place page-table pages whereever we want in the physical memory. </li>
 </ul>
 <p>The disadvantage is that additional memory accesses to look up a valid translation 
 (e.g., for 3-level page table system, we have three additional memory accesses: access Page Directory Entry 0 (PDE0), access PDE1, access PTE)<sup id="fnref:9"><a class="footnote-ref" href="#fn:9">17</a></sup>.</p>
@@ -233,7 +233,7 @@ that cause a page fault uppercase, and those that don’t lowercase):</p>
 </blockquote>
 <p>LRU stands for Least-Recently-Used, which is one of the page replacement policies (in practice, we use clock algorithm to 
 approximate LRU <sup id="fnref:12"><a class="footnote-ref" href="#fn:12">18</a></sup> to avoid heavy overhead). The trace of the memory references with LRU policy shown below:</p>
-<table class="table table-hover  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Access</th>
@@ -347,7 +347,7 @@ approximate LRU <sup id="fnref:12"><a class="footnote-ref" href="#fn:12">18</a><
 </blockquote>
 <p>FIFO means first-in, first-out: pages are placed in a queue as the order they are brought into physical memory; when
 replacement occurs, the first-in page is evicted. The similar trace of memory references with FIFO policy shown below:</p>
-<table class="table table-hover  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Access</th>
@@ -461,7 +461,7 @@ replacement occurs, the first-in page is evicted. The similar trace of memory re
 </blockquote>
 <p>Optimal policy means we want to replace the page that will be accessed <em>furthest in the future</em> and doing so will result in
 the optimal policy with fewest possible cache misses. The resulting trace with optimal policy follows:</p>
-<table class="table table-hover  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Access</th>
@@ -586,7 +586,7 @@ n “shared-nothing” workstations, where n &gt; m, on which you may compile yo
 <p>Resources limitation. We have a cluster of n workstations but we may not have fully-usage of the underlying resources (i.e., our jobs may be subject to cluster coordinator scheduling).</p>
 </li>
 <li>
-<p>File size are unequal. Suppose we have 5 files to compile: first 4 need 1s compilation time while the last one needs 10 minutes. Then, whether we perform distributed compilation or not doesn't make difference: the last file will make become bottleneck and we cannot get 5-fold speedup.</p>
+<p>File size are unequal. Suppose we have 5 files to compile: first 4 need 1s compilation time while the last one needs 10 minutes. Then, whether we perform distributed compilation or not doesn’t make difference: the last file will make become bottleneck and we cannot get 5-fold speedup.</p>
 </li>
 </ol>
 <h3 id="achieving-fast-file-reads">Achieving fast file reads</h3>
@@ -619,7 +619,7 @@ multiple disks in parallel. </p>
 </ul>
 </li>
 <li>
-<p>We can place file's inode close to file's data blocks so that during data read, we can reduce seek and rotational delay costs of HDD.</p>
+<p>We can place file’s inode close to file’s data blocks so that during data read, we can reduce seek and rotational delay costs of HDD.</p>
 <ul>
 <li>Sequential read performs well</li>
 <li>Random read performs poorly</li>
@@ -633,7 +633,7 @@ multiple disks in parallel. </p>
 </ul>
 </li>
 <li>
-<p>Build index to the most visited files (i.e., direct pointer to the files) so that we don't have to traverse internal data structure of file system (i.e., similar to TLB).</p>
+<p>Build index to the most visited files (i.e., direct pointer to the files) so that we don’t have to traverse internal data structure of file system (i.e., similar to TLB).</p>
 <ul>
 <li>Read hot data performs well </li>
 <li>Read cold data performs poorly</li>
@@ -666,8 +666,8 @@ which takes a queue and returns, as an unsigned integer, its address.</p>
 <p>(a) Explain how  using this implementation of <code>transfer()</code> can lead to deadlock</p>
 </blockquote>
 <p>One possible scenario of deadlock using <code>transfer()</code> is illustrated below. Note that <code>queue1</code> and <code>queue2</code> in <code>transfer()</code>
-are replaced with queues that they are pointing to (time increases with the row's number):</p>
-<table class="table table-hover  table-striped">
+are replaced with queues that they are pointing to (time increases with the row’s number):</p>
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Thread1 (<code>transfer(q1,q2)</code>)</th>
@@ -772,7 +772,7 @@ are replaced with queues that they are pointing to (time increases with the row'
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>It's more fine-grained than the previous approach because compared to previous approach which only one thread can touch one queue, two threads can touch
+<p>It’s more fine-grained than the previous approach because compared to previous approach which only one thread can touch one queue, two threads can touch
 on the same queue: one for enqueue and one for dequeue.</p>
 <p>Alternatively, we can do:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">transfer</span><span class="p">(</span><span class="n">Queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue1</span><span class="p">,</span><span class="w"> </span><span class="n">Queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue2</span><span class="p">)</span>
@@ -860,7 +860,7 @@ to a single flow of execution. In addition, for event-based architecture, we nee
 <p>taken from <a href="http://web.archive.org/web/20040322145339/http://members.iweb.net.au:80/~pstorr/pcbook/book2/irq.htm">Phil Storrs PC Hardware book</a> <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 <li id="fn:2">
-<p><a href="https://www.cs.utexas.edu/users/ans/classes/cs439/schedule.html">Alison's CS439 Lec 02</a> and CSAPP (2nd edition) 8.1.2 <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 3 in the text">↩</a></p>
+<p><a href="https://www.cs.utexas.edu/users/ans/classes/cs439/schedule.html">Alison’s CS439 Lec 02</a> and CSAPP (2nd edition) 8.1.2 <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 3 in the text">↩</a></p>
 </li>
 <li id="fn:15">
 <p>See <a href='#Protic:1996' id='ref-Protic:1996-1'>Protic et al., 1996</a> and <a href="https://en.wikipedia.org/wiki/Distributed_shared_memory">Wikipedia</a> <a class="footnote-backref" href="#fnref:15" title="Jump back to footnote 4 in the text">↩</a></p>
@@ -869,7 +869,7 @@ to a single flow of execution. In addition, for event-based architecture, we nee
 <p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys.pdf">Chapter 21</a> <a class="footnote-backref" href="#fnref:11" title="Jump back to footnote 5 in the text">↩</a></p>
 </li>
 <li id="fn:4">
-<p>taken from OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter 20</a>. More details found in Alison's CS439 Lec 12 "Virtual Memory: Mechanisms" <a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 6 in the text">↩</a><a class="footnote-backref" href="#fnref2:4" title="Jump back to footnote 6 in the text">↩</a></p>
+<p>taken from OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">Chapter 20</a>. More details found in Alison’s CS439 Lec 12 “Virtual Memory: Mechanisms” <a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 6 in the text">↩</a><a class="footnote-backref" href="#fnref2:4" title="Jump back to footnote 6 in the text">↩</a></p>
 </li>
 <li id="fn:13">
 <p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-disks.pdf">Chapter 37</a> <a class="footnote-backref" href="#fnref:13" title="Jump back to footnote 7 in the text">↩</a></p>
@@ -878,7 +878,7 @@ to a single flow of execution. In addition, for event-based architecture, we nee
 <p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-ffs.pdf">Figure in Chapter 41.3</a> <a class="footnote-backref" href="#fnref:14" title="Jump back to footnote 8 in the text">↩</a></p>
 </li>
 <li id="fn:10">
-<p>The term is originally defined in <a href='#Denning:1968:TCP:1476589.1476705' id='ref-Denning:1968:TCP:1476589.1476705-1'>Denning, 1968</a>. But I find <a href="https://www.computer.org/csdl/mags/co/1976/10/01647183.pdf">this article's explanation</a> is more intuitive. <a class="footnote-backref" href="#fnref:10" title="Jump back to footnote 9 in the text">↩</a></p>
+<p>The term is originally defined in <a href='#Denning:1968:TCP:1476589.1476705' id='ref-Denning:1968:TCP:1476589.1476705-1'>Denning, 1968</a>. But I find <a href="https://www.computer.org/csdl/mags/co/1976/10/01647183.pdf">this article’s explanation</a> is more intuitive. <a class="footnote-backref" href="#fnref:10" title="Jump back to footnote 9 in the text">↩</a></p>
 </li>
 <li id="fn:16">
 <p>See OSTEP <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-mechanism.pdf">Chapter 15</a> for more details. <a class="footnote-backref" href="#fnref:16" title="Jump back to footnote 10 in the text">↩</a></p>

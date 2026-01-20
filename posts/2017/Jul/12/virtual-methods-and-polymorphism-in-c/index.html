@@ -78,18 +78,18 @@
 <li><a href="#key-terms-summary">Key terms summary</a></li>
 </ul>
 </div>
-<p>Surprisingly, even I work with the product that is written majorly in C++, I don't have to deal
-with the stuff that differentiate C++ from C. However, I'm now working on a defect that
-forces me to simplify C++ objects in order to get the root cause of the problem. That's the place
+<p>Surprisingly, even I work with the product that is written majorly in C++, I don’t have to deal
+with the stuff that differentiate C++ from C. However, I’m now working on a defect that
+forces me to simplify C++ objects in order to get the root cause of the problem. That’s the place
 where I have to really need to know how exactly C++ class is structured. </p>
-<p>One question I asked myself several years ago: "What is virtual method in C++?" I believed, at that time,
+<p>One question I asked myself several years ago: “What is virtual method in C++?” I believed, at that time,
 I got the answer but I was too lazy to record it somewhere. Now, I have to pay the price by wasting my effort
-again to dig out the answer. So, I'd better save it at someplace this time and the following is just
-a simple example to partially show the answer to the question. I know C++ is a monster and I'll definitely
+again to dig out the answer. So, I’d better save it at someplace this time and the following is just
+a simple example to partially show the answer to the question. I know C++ is a monster and I’ll definitely
 need to rewrite the post some day in the future when I know more about the language. However, this answer
 is good enough for me now.</p>
 <h2 id="virtual-methods">Virtual methods</h2>
-<p>Let's consider the following code snippet: we have a base class called <code>Animal</code> and its subclass called <code>Dog</code></p>
+<p>Let’s consider the following code snippet: we have a base class called <code>Animal</code> and its subclass called <code>Dog</code></p>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 
@@ -119,7 +119,7 @@ using <code>g++ -std=c++11 a.cpp</code> and run the program and get</p>
 I'm a Dog
 </code></pre></div>
 <p>As you can see, each object calls their <code>getClass</code> method respectively.
-Now, let's add a function called <code>whatClassAreYou()</code> to our code above </p>
+Now, let’s add a function called <code>whatClassAreYou()</code> to our code above </p>
 <div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">whatClassAreYou</span><span class="p">(</span><span class="n">Animal</span><span class="w"> </span><span class="o">*</span><span class="n">animal</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">  </span><span class="n">animal</span><span class="o">-&gt;</span><span class="n">getClass</span><span class="p">();</span>
@@ -139,7 +139,7 @@ I'm an Animal
 <code>Dog</code> class object. Ideally, we want our <code>whatClassAreYou()</code> method call the right <code>getClass()</code> method depending on
 what class object we pass into. In other words, if our <code>Dog</code> class implements its own <code>getClass()</code> method, we want
 our <code>whatClassAreYou()</code> method be aware of this fact and call it instead of calling <code>getClass()</code> of our base class <code>Animal</code>.
-That's why we want to add <code>virtual</code> keyword to the <code>getClass()</code> of our base class. We are essentially telling the compiler
+That’s why we want to add <code>virtual</code> keyword to the <code>getClass()</code> of our base class. We are essentially telling the compiler
 that our base class <code>getClass()</code> method might be overridden by its subclass and be aware of this fact when some other method
 wants to call it.</p>
 <p>Now our code looks like below</p>
@@ -191,7 +191,7 @@ I'm a Dog
 I'm an Animal
 I'm a Dog
 </code></pre></div>
-<p>The reason behind this scenario is what we called <strong>polymorphism</strong>, which means "many form" in Greek. Here is how this
+<p>The reason behind this scenario is what we called <strong>polymorphism</strong>, which means “many form” in Greek. Here is how this
 concept get explained in <a href="https://www.amazon.com/Primer-5th-Stanley-B-Lippman/dp/0321714113">C++ Primer</a>:</p>
 <blockquote>
 <p>We speak of types related by inheritance as polymorphic types, 
@@ -215,7 +215,7 @@ Therefore, calls made on an object are bound at compile time to the version defi
 <p>Virtuals are resolved at run time only if the call is made through a <em>reference</em> or <em>pointer</em>. Only in these cases is it possible for 
 an object’s dynamic type to differ from its static type.</p>
 </div>
-<p>To see the final note of the above quote, let's take a look an example</p>
+<p>To see the final note of the above quote, let’s take a look an example</p>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 
@@ -267,7 +267,7 @@ I'm a Dog
 I'm an Animal
 I'm an Animal
 </code></pre></div>
-<p>As you can see, even we have virtual function in our base class, <code>whatClassAreYou2()</code> invokes only the base class's <code>getClass()</code>
+<p>As you can see, even we have virtual function in our base class, <code>whatClassAreYou2()</code> invokes only the base class’s <code>getClass()</code>
 method and ignores the subclass overrides. </p>
 <p>Aside note, you may notice that we use two ways to initialize our objects. The first way is through <code>Animal *animal = new Animal;</code>
 and the second way is through <code>Animal animal2;</code>. Initialization is quite complex in C++. These two ways are essentially the same:
@@ -287,7 +287,7 @@ is that, as stated in wikipedia:</p>
 by a function with the same signature. A pure virtual function or pure virtual method is a virtual function that
 is required to be implemented by a derived class that is not abstract.</p>
 </blockquote>
-<p>In short, virtual function can be overriden; pure virtual function must be implemented. Let's take a look a example</p>
+<p>In short, virtual function can be overriden; pure virtual function must be implemented. Let’s take a look a example</p>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 
@@ -323,7 +323,7 @@ is required to be implemented by a derived class that is not abstract.</p>
 </code></pre></div>
 <p>Here, we have a base class called <code>Car</code> and a class that derives from the <code>Car</code> class called <code>StationWagon</code>.  <code>Car</code>
 is a lot similar to our <code>Animal</code> class in the sense that both classes have methods that have keyword <code>virtual</code>. However,
-<code>Car</code> class's methods have <code>=0</code>. This is exactly how we identify <strong>pure virtual</strong>: we specify that a virtual function 
+<code>Car</code> class’s methods have <code>=0</code>. This is exactly how we identify <strong>pure virtual</strong>: we specify that a virtual function 
 is a pure virtual by writing <code>=0</code> in place of a function body (i.e., just before the semicolon that ends the declaration).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

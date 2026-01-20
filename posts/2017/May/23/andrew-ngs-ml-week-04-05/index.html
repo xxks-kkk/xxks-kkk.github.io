@@ -75,7 +75,7 @@
         </header>
         
         <article>
-            <p>Week 4 and 5 mainly talks about one important learning technique called "Neural Networks".
+            <p>Week 4 and 5 mainly talks about one important learning technique called “Neural Networks”.
 It is especially heplful when there are many features and hence, many combinations
 for the <a href="../../../../../posts/2017/May/05/andrew-ngs-ml-week-01-03/">linear or logistic regressions</a>. 
 Interestingly, I studied neural networks
@@ -100,7 +100,7 @@ when I was a student at college. It may feel different when we revisit old frien
 </div>
 <h2 id="model">Model</h2>
 <h3 id="representations">Representations</h3>
-<p>Below picture shows a typical neural network (I'll use NN as a shorthand). </p>
+<p>Below picture shows a typical neural network (I’ll use NN as a shorthand). </p>
 <p><img alt="Neural network diagram" class="img-responsive" src="../../../../../images/nn2.png"/></p>
 <ul>
 <li>
@@ -111,7 +111,7 @@ when I was a student at college. It may feel different when we revisit old frien
 (i.e., <span class="math">\(S_1 = 3\)</span>, <span class="math">\(S_2 = S_3 = 5\)</span>, <span class="math">\(S_4 = S_L = 4\)</span>)</p>
 </li>
 <li>
-<p><span class="math">\(a_i^l =\)</span> "activation" of unit <span class="math">\(i\)</span> in layer <span class="math">\(l\)</span>. In fact, input features
+<p><span class="math">\(a_i^l =\)</span> “activation” of unit <span class="math">\(i\)</span> in layer <span class="math">\(l\)</span>. In fact, input features
 <span class="math">\(x_0, x_1, x_2, x_3\)</span> can also be represented as <span class="math">\(a_0^{(1)}, a_1^{(1)}, a_1^{(2)}, a_1^{(3)}\)</span>
 respectively.</p>
 </li>
@@ -162,7 +162,7 @@ says a reasonable default is to either have <span class="math">\(1\)</span> hidd
 hidden units in every layer. Usually, the more hidden units the better. </p>
 <h4 id="2-randomly-initialize-weights">2. Randomly initialize weights</h4>
 <p>Zero initialization is considered bad for NN (i.e. <span class="math">\(\theta_{ij}^{l} = 0\)</span> for all <span class="math">\(i,j,l\)</span>) because our activation output and
-gradient will all be identical and essentially we comput one feature in this network. That's why we need to randomly 
+gradient will all be identical and essentially we comput one feature in this network. That’s why we need to randomly 
 initialize the weights for symmetry breaking. </p>
 <p>One effective strategy is to randomly select values for <span class="math">\(\theta_{ij}^{l}\)</span> uniformly in the range 
 [<span class="math">\(-\epsilon_\text{init}\)</span>,<span class="math">\(\epsilon_\text{init}\)</span>]. We can choose <span class="math">\(\epsilon_\text{init}\)</span> based upon
@@ -173,7 +173,7 @@ in the layers adjacent to <span class="math">\(\Theta^{(l)}\)</span>. Take above
 <span class="math">\(\epsilon_\text{init}\)</span> will be <span class="math">\(0.87\)</span>, which is calculated from <span class="math">\(\frac{\sqrt{6}}{\sqrt{3+5}}\)</span>. <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">1</a></sup></p>
 <h4 id="3-forward-propagation">3. Forward propagation</h4>
 <p>The next step we need to do is to use forward propagation to get <span class="math">\(h_\theta(x^{(i)})\)</span> for any <span class="math">\(x^{(i)}\)</span>.
-Let's use above NN as an example to demonstrate how forward propagation is done. There are
+Let’s use above NN as an example to demonstrate how forward propagation is done. There are
 <span class="math">\(4\)</span> output units in the output layer and thus, our <span class="math">\(h_\theta(x^{(i)})\)</span> looks like</p>
 <div class="math">$$
 h_\theta(x^{(i)}) = \begin{bmatrix}
@@ -188,7 +188,7 @@ layer, and multiply with our weights, and then apply our sigmoid function to get
 activation value for the current layer. We start with the input layer and do this 
 iteratively until we get to output layer, which its activation value will be our 
 <span class="math">\(h_\theta(x^{(i)})\)</span>.</p>
-<p>Concretely, let's first represent our input layer (with bias term) as  <span class="math">\(x\)</span> and 
+<p>Concretely, let’s first represent our input layer (with bias term) as  <span class="math">\(x\)</span> and 
 define a new variable <span class="math">\(z^{(j)}\)</span> as following:</p>
 <div class="math">$$
 \begin{align*}
@@ -233,8 +233,8 @@ new features <span class="math">\(a^{(L-1)}\)</span>, which are learned by the N
 <h4 id="4-cost-function-jtheta">4. Cost function <span class="math">\(J(\theta)\)</span></h4>
 <p>Now we need to compute the cost function <span class="math">\(J(\theta)\)</span> of the NN in order to minimize
 the classification error with the given data. Since NN shares a lot similarity with
-the logistic regression, it's no hard to imagine that the NN's cost function <span class="math">\(J(\theta)\)</span>
-shares the similar form with the logistic regression's cost function:</p>
+the logistic regression, it’s no hard to imagine that the NN’s cost function <span class="math">\(J(\theta)\)</span>
+shares the similar form with the logistic regression’s cost function:</p>
 <div class="math">$$
 J(\theta) = - \frac{1}{m} [ \sum_{i=1}^m \sum_{k=1}^K y_k^{(i)} \log h_\theta(x^{(i)})_k + 
 (1 - y_k^{(i)}) \log(1-h_\theta(x^{(i)})_k)] + \frac{\lambda}{2m} 
@@ -248,9 +248,9 @@ the equation summs over all the weights <span class="math">\(\theta_{ji}^{(l)}\)
 built-in method (i.e. <code>fminunc</code>) to minimize <span class="math">\(J(\theta)\)</span> as a function of <span class="math">\(\theta\)</span>. We use backpropagation to do this.</p>
 <p>The intuition for the backpropagation is the following: given a training example <span class="math">\((x^{(i)}, y^{(i)})\)</span>, we will
 first run forward propagation to compute all the activiations throughout the network, including the output units.
-Then, for each node <span class="math">\(j\)</span> in layer <span class="math">\(l\)</span>, we would like to compute an "error term" <span class="math">\(\delta_j^{(l)}\)</span> that measures how
-much that node was "responsible" for any errors in our output. For an output node, we can directly measure the
-difference between the network's activation and the true target value, and use that to define <span class="math">\(\delta_j^{(L)}\)</span>.
+Then, for each node <span class="math">\(j\)</span> in layer <span class="math">\(l\)</span>, we would like to compute an “error term” <span class="math">\(\delta_j^{(l)}\)</span> that measures how
+much that node was “responsible” for any errors in our output. For an output node, we can directly measure the
+difference between the network’s activation and the true target value, and use that to define <span class="math">\(\delta_j^{(L)}\)</span>.
 For the hidden units, we can compute <span class="math">\(\delta_j^{l}\)</span> based on a weighted average of the error terms of the nodes in layer
 <span class="math">\((l+1)\)</span>.</p>
 <p>Here is the algorithm in details:</p>
@@ -282,12 +282,12 @@ For the hidden units, we can compute <span class="math">\(\delta_j^{l}\)</span> 
 descent or advanced optimization method to try to minimize <span class="math">\(J(\theta)\)</span> as a function of parameters <span class="math">\(\theta\)</span> <sup id="fnref:5"><a class="footnote-ref" href="#fn:5">2</a></sup>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Notice that we don't compute <span class="math">\(\delta_{(1)}\)</span> because <span class="math">\(\delta_{(1)}\)</span> is associated with the input layer, which are
-features we observed from the training examples. So, there are no "error" involved. In addition, <span class="math">\(.\ast\)</span> means we 
+<p>Notice that we don’t compute <span class="math">\(\delta_{(1)}\)</span> because <span class="math">\(\delta_{(1)}\)</span> is associated with the input layer, which are
+features we observed from the training examples. So, there are no “error” involved. In addition, <span class="math">\(.\ast\)</span> means we 
 do element-wise multiplication in octave.</p>
 </div>
 <h2 id="implementation-details">Implementation details</h2>
-<p>Week 5's programming assignment on NN learning is the most challenging one I have met so far in this course. Initially, 
+<p>Week 5’s programming assignment on NN learning is the most challenging one I have met so far in this course. Initially, 
 I plan to go through lots of details in terms of implementation in this section. However, after I finish the model
 section above and take a look at the assignment code again, I realize that the algorithms described above reflect
 fair accurately on how the code should be written. </p>

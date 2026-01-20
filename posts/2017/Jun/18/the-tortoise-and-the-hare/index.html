@@ -75,15 +75,15 @@
         </header>
         
         <article>
-            <p>Recently, I start to work on <a href="https://github.com/xxks-kkk/shuati">leetcode's problems</a>. 
-My goal is to solve two problems per day (mission possible, right?). The problems I'm looking
+            <p>Recently, I start to work on <a href="https://github.com/xxks-kkk/shuati">leetcode’s problems</a>. 
+My goal is to solve two problems per day (mission possible, right?). The problems I’m looking
 at are <a href="https://leetcode.com/problems/linked-list-cycle-ii/">142. Linked List Cycle II</a> and 
 <a href="https://leetcode.com/problems/find-the-duplicate-number/">287. Find the Duplicate Number</a>, 
-which both can be solved by Folyd's Tortoise and Hare algorithm.</p>
+which both can be solved by Folyd’s Tortoise and Hare algorithm.</p>
 <p>This post will try to take a deeper look at the correctness of the algorithm and
 how to apply it to solve problems.</p>
 <h2 id="introduction">Introduction</h2>
-<p><a href="https://en.wikipedia.org/wiki/Cycle_detection#Floyd.27s_Tortoise_and_Hare">Floyd's Tortoise and Hare algorithm</a>
+<p><a href="https://en.wikipedia.org/wiki/Cycle_detection#Floyd.27s_Tortoise_and_Hare">Floyd’s Tortoise and Hare algorithm</a>
 is used with three purposes under the context of linked list:</p>
 <ol>
 <li>Detect whether there is a cycle in the list</li>
@@ -96,15 +96,15 @@ is used with three purposes under the context of linked list:</p>
 Hare runs twice as fas the tortoise.</li>
 <li>If there is no-cycle, then hare will reach the finish line before the tortoise.</li>
 <li>If there is a cycle, then hare will always be ahead and eventually he would
-so far ahead that he laps the tortoise. That's the place we know we have a cycle in the list.</li>
+so far ahead that he laps the tortoise. That’s the place we know we have a cycle in the list.</li>
 <li>Once we detect the cycle, we send hare back to the beginning and advance both of 
-them at the same speed until they meet again. The second meeting place, which we'll prove
+them at the same speed until they meet again. The second meeting place, which we’ll prove
 immediately, is the entry point of the cycle. </li>
 <li>Then, one of them will keep moving to finish the victory lap to find the period
 of the cycle.</li>
 </ol>
 <p>The key difference when the list has a cycle is that at some point on the track, 
-the hare will be at the same spot as the tortoise ...</p>
+the hare will be at the same spot as the tortoise …</p>
 <h2 id="proof-of-correctness">Proof of correctness</h2>
 <p>Let <span class="math">\(\mu\)</span> be the index of the start of the cycle, and let <span class="math">\(\lambda\)</span> be period of the
 cycle. Let <span class="math">\(i\)</span> be the distance (i.e number of nodes) that tortoise travels and
@@ -113,9 +113,9 @@ is the first node in the list.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The notation here is similar to the concept in physics: distance vs. displacement.
-<span class="math">\(i\)</span> is the "distance" or the number of nodes that our character (tortoise or hare)
+<span class="math">\(i\)</span> is the “distance” or the number of nodes that our character (tortoise or hare)
 has travelled since the beginning of the list and 
-<span class="math">\(x_i\)</span> is the "displacement" between the first node and the current node that our
+<span class="math">\(x_i\)</span> is the “displacement” between the first node and the current node that our
 characters are at.</p>
 </div>
 <p>The key observation for showing the correctness of the algorithm lies in 
@@ -126,7 +126,7 @@ x_{j+k\lambda} = x_j \text{ for all integers }j \ge \mu \text{ and } k \ge 0 \la
 \end{equation}
 $$</div>
 <p>This statement says that going around the loop any number of times takes you 
-back to the same places as long as you start somewhere on the loop. Let's 
+back to the same places as long as you start somewhere on the loop. Let’s 
 define the following set of notation here for future use:</p>
 <ul>
 <li><span class="math">\(y\)</span> be the displacement between <span class="math">\(x_{\mu}\)</span> and <span class="math">\(x_i\)</span></li>
@@ -149,7 +149,7 @@ $$</div>
 i = (n-m) \cdot \lambda \label {eqn:4}
 \end{equation}
 $$</div>
-<p>Let's revisit our key observation \ref{eqn:1} and set <span class="math">\(j = \mu\)</span> and <span class="math">\(k = (n-m)\)</span>, we have
+<p>Let’s revisit our key observation \ref{eqn:1} and set <span class="math">\(j = \mu\)</span> and <span class="math">\(k = (n-m)\)</span>, we have
 <span class="math">\(x_{\mu + (n-m)\lambda} = x_{\mu}\)</span>. Then, by \ref{eqn:4}, we have
 <span class="math">\(x_{\mu + i} = x_{\mu}\)</span>, which can be rewritten as <span class="math">\(x_{i+\mu} = x_{\mu}\)</span>!!! This equation
 tells us that the node at which the cycle begins (i.e <span class="math">\(x_{\mu}\)</span>) is exactly the
@@ -203,7 +203,7 @@ The code is following</p>
 </code></pre></div>
 <h3 id="287-find-the-duplicate-number">287. Find the Duplicate Number</h3>
 <p>This problem is a lot tricker than a previous one: we need identify this problem
-can also be solved by the Floyd's Tortoise and Hare algorithm, which is not obvious
+can also be solved by the Floyd’s Tortoise and Hare algorithm, which is not obvious
 at first glance</p>
 <blockquote>
 <p>Given an array nums containing <span class="math">\(n + 1\)</span> integers where each integer is 
@@ -221,8 +221,8 @@ x_0, x1 = f(x_0), x_2 = f(x_1), \dots, x_i = f(x_{i-1}), \dots
 $$</div>
 <p>For example, the sequence <span class="math">\(1,3,4,2,1\)</span> can be considered as a sequence of 
 iterated function values with <span class="math">\(x_0 = 1, x_1 = f(1) = 3, x_2 = f(3) = 4,
-x_3 = f(4) = 2, x_4 = f(2) = 1\)</span>. Let's try another representation:</p>
-<table class="table table-hover  table-striped">
+x_3 = f(4) = 2, x_4 = f(2) = 1\)</span>. Let’s try another representation:</p>
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>index</th>
@@ -275,12 +275,12 @@ this problem:</p>
 <p>This implementation slightly deviates from the algorithm description above:</p>
 <ol>
 <li>
-<p>Tortoise and hare don't start from the same place at the beginning. This doesn't
+<p>Tortoise and hare don’t start from the same place at the beginning. This doesn’t
 matter really because eventually they will be in the loop.</p>
 </li>
 <li>
 <p>We use <code>tortoise = nums[tortoise]</code> instead of <code>tortoise++</code> for advancing tortoise,
-for example. This is the place where "a sequence of iterative function values" idea
+for example. This is the place where “a sequence of iterative function values” idea
 appears. In fact, this is also how we constructed our linked list.</p>
 </li>
 <li>
@@ -296,7 +296,7 @@ and if we starts from <code>hare = nums[0]</code>, that violates our algorithm.<
 <p><span class="math">\(x_{2i} = x_i\)</span> immediately follows this statement. Then, if we let<br/>
 <span class="math">\(l\)</span> be the number of laps by which hare is ahead, then <span class="math">\(2i = i + l \cdot \lambda\)</span>
 and we have <span class="math">\(i = l\lambda\)</span>. Then we set <span class="math">\(k=l\)</span> in \ref{eqn:1} and reach the same
-conclusion. This way we don't need to define <span class="math">\(y\)</span>,<span class="math">\(m\)</span>,<span class="math">\(n\)</span>, which can make proof
+conclusion. This way we don’t need to define <span class="math">\(y\)</span>,<span class="math">\(m\)</span>,<span class="math">\(n\)</span>, which can make proof
 a little simpler notation-wise. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 </ol>

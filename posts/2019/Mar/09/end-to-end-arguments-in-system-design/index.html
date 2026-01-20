@@ -74,7 +74,7 @@
         
         <article>
             <h2 id="main-point">Main Point</h2>
-<p>The following statements provide different angles of stating the same "end-to-end argument":</p>
+<p>The following statements provide different angles of stating the same “end-to-end argument”:</p>
 <ul>
 <li>
 <p>Functions placed at low levels of a system may be redundant or of little value when compared with the cost of providing them
@@ -84,17 +84,17 @@ at that low level; low level mechanisms to support these functions are justified
 <p>Since application knows its needs the most, it is natural for system to move function upward in a layered system, closer to the application that uses the function.</p>
 </li>
 <li>
-<p>The function in question can completely and correctly be implemented only with the knowledge and help of the application standing at the end points of the communication system. Therefore, providing that questioned function as a feature of the communication system itself is not possible. (Sometimes an incomplete version of the function provided by the communication system may be useful as a performance enhancment.<a href="https://en.wikipedia.org/wiki/Worse_is_better">"Worse is better"</a>)</p>
+<p>The function in question can completely and correctly be implemented only with the knowledge and help of the application standing at the end points of the communication system. Therefore, providing that questioned function as a feature of the communication system itself is not possible. (Sometimes an incomplete version of the function provided by the communication system may be useful as a performance enhancment.<a href="https://en.wikipedia.org/wiki/Worse_is_better">“Worse is better”</a>)</p>
 </li>
 <li>
 <p>The end-to-end argument says that many functions in a communication system can only be completely and correctly implemented with the help of the application(s) at the endpoints <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup></p>
 </li>
 </ul>
 <h2 id="example-file-transfer">Example: File transfer</h2>
-<p>In the paper, a scenario about transferring file between host A and host B is used to demonstrate "end-to-end argument".</p>
+<p>In the paper, a scenario about transferring file between host A and host B is used to demonstrate “end-to-end argument”.</p>
 <p>File transfer application still needs to compare checksum on receving host with the sending host to ensure the file consistency
 and retransfer the file if the checksum differ even the underlying communication system has implemented similar mechanism to ensure no change bits in a packet or packet gets dropped. In other words, the file transfer application must provide its own retries based on an end-to-end checksum of the file. And if it does so, the extra effort expended in the communication system to provide a guarantee of reliable data transmission is only reducing the frequency of retries by the file transfer application; it has no effect on inevitablity or correctness of the outcome, since correct file transmission is assured by the end-to-end checksum and retry whether or not the data transmission system is reliable. Thus, the data communication system to go out of its way to be extraordinarily reliable does not reduce the burden on the application program to ensure reliability.</p>
-<p>Thus, low levels need not provide "perfect" reliability (e.g., communication system in this example) as the upper application still needs to implement the same functionality again to ensure correctness. However, communication system still needs to implement some mechanism to improve application performance (e.g., reduce application retries in this case). However, the point is that such mechanism needs not to be "perfect" (e.g., strive for a negligible error rate so that retries never happens). In addition, lower levels may not have enough information to "perfect" functions used by applications and the overhead introduced by such functions tax on the applications that are on the same system but never need such functionality.</p>
+<p>Thus, low levels need not provide “perfect” reliability (e.g., communication system in this example) as the upper application still needs to implement the same functionality again to ensure correctness. However, communication system still needs to implement some mechanism to improve application performance (e.g., reduce application retries in this case). However, the point is that such mechanism needs not to be “perfect” (e.g., strive for a negligible error rate so that retries never happens). In addition, lower levels may not have enough information to “perfect” functions used by applications and the overhead introduced by such functions tax on the applications that are on the same system but never need such functionality.</p>
 <p>More examples are discussed in paper: (application level) encryption, duplicate message detection, message sequencing, guaranteed message delivery, detection of crashes, and delivery receipts.</p>
 <div class="footnote">
 <hr/>

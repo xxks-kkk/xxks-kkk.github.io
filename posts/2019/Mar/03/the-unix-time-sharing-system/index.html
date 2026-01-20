@@ -165,7 +165,7 @@ as an entry in exactly one other, which is its parent)</li>
   a program as someone else)</li>
 <li>Example: when a user wants to change their password, they run the passwd command. The passwd program is owned by the 
   root account and marked as setuid, so the user is temporarily granted root access for that very limited purpose.
-  Since user id of invoker is known, it's passwd program responsibility to make sure the invoker's proper behavior.</li>
+  Since user id of invoker is known, it’s passwd program responsibility to make sure the invoker’s proper behavior.</li>
 </ul>
 </li>
 <li>
@@ -175,13 +175,13 @@ as an entry in exactly one other, which is its parent)</li>
 <p>A small integer used to identify the file in subsequent calls to read, write</p>
 </li>
 <li>
-<p>Used as a index to a system table that contains file's device, i-number, and read/write pointer</p>
+<p>Used as a index to a system table that contains file’s device, i-number, and read/write pointer</p>
 </li>
 <li>
 <p>Filter programs (e.g., <code>ls | pr -2 | opr</code>) do not know the name of input or output files</p>
 </li>
 <li>
-<p>"Handle with access rights” (that is a capability, which is an abstraction that makes protected sharing easier); it is a capability because the right can be transferred to other processes that want to access the file</p>
+<p>“Handle with access rights” (that is a capability, which is an abstraction that makes protected sharing easier); it is a capability because the right can be transferred to other processes that want to access the file</p>
 </li>
 </ul>
 </li>
@@ -200,7 +200,7 @@ as an entry in exactly one other, which is its parent)</li>
 <p>A small (nonspecial) file fits into eight or fewer blocks; in this case the addresses of the blocks themselves are stored.       For large (nonspecial) files, each of the eight device addresses may point to an indirect block of 256 addresses of blocks       constituting the file itself. These files may be as large as <span class="math">\(8 \cdot 256 \cdot 512\)</span></p>
 </li>
 <li>
-<p>... more on paper</p>
+<p>… more on paper</p>
 </li>
 </ul>
 </li>
@@ -228,7 +228,7 @@ register values, status of open files, current directory, and the like. An image
 <p>File I/O structure</p>
 <ul>
 <li>
-<p>Fork'd child shares parent's open files; have indenpendent copy of the original core image</p>
+<p>Fork’d child shares parent’s open files; have indenpendent copy of the original core image</p>
 </li>
 <li>
 <p>Pipes: not a completely general mechanism since the pipe must be set up by a common ancestor of the processes involved
@@ -266,11 +266,11 @@ register values, status of open files, current directory, and the like. An image
 <ul>
 <li>
 <p>On treating I/O devices as files advantages: (1) seems useful but high-performance implementation tend to treat
-  e.g., network I/O differently from disk. (2) seems useless ("ioctl" interface for device-specific functionality is terrible); 
+  e.g., network I/O differently from disk. (2) seems useless (“ioctl” interface for device-specific functionality is terrible); 
   (3) is compelling</p>
 </li>
 <li>
-<p>"There have been three versions of UNIX." Fred Brooks is right</p>
+<p>“There have been three versions of UNIX.” Fred Brooks is right</p>
 </li>
 <li>
 <p>I learn some new usage in UNIX (e.g., <code>pr</code> - paginates its input with dated headings; <code>ed</code> as a editor; <code>(date; ls) &gt; x</code> - 

@@ -76,7 +76,7 @@
             <p>This is the summary of <em>binary heap</em> and its generalization <em>d-heap</em> part in MAW Chapter 6.</p>
 <h2 id="motivation">Motivation</h2>
 <p>The motivation for priority queue majorly comes from the fact that not all things
-are equally weighted. I'll summarize the applications of priority queues in my
+are equally weighted. I’ll summarize the applications of priority queues in my
 end-chapter summary post. </p>
 <h2 id="concept">Concept</h2>
 <p>A binary heap is a binary tree (NOT a BST) that is:</p>
@@ -123,8 +123,8 @@ the correct place for it in the tree. This is called <em>percolate up</em> <sup 
 <h3 id="deletemin">DeleteMin</h3>
 <p>We delete and return the value at root node in this operation. Same as the insert, 
 we need to maintain the binary heap properties. </p>
-<p>By removing the root node's value, we have a "hole" at the root. We use the last
-node's value in the tree to fill in the hole. By doing this way, we maintain the 
+<p>By removing the root node’s value, we have a “hole” at the root. We use the last
+node’s value in the tree to fill in the hole. By doing this way, we maintain the 
 structure property. Now, we need to maintain the heap order property. Similar to 
 insertion, we can do a simple insertion sort-like operation to find the correct
 place for it in the tree. This is called <em>percolate down</em>.</p>
@@ -149,7 +149,7 @@ can add <span class="math">\(\delta\)</span> to current value at <span class="ma
 <p>removes the node at position <span class="math">\(P\)</span> from the heap. We can use <code>DecreaseKey</code>(P, <span class="math">\(\infty\)</span>, H)
 followed by <code>DeleteMin</code>. The running time is <span class="math">\(O(\log N)\)</span>.</p>
 <h4 id="buildheaph"><code>Buildheap(H)</code></h4>
-<p>takes as input <span class="math">\(N\)</span> keys and construct a binary heap from it. This is known as Floyd's algorithm.</p>
+<p>takes as input <span class="math">\(N\)</span> keys and construct a binary heap from it. This is known as Floyd’s algorithm.</p>
 <ul>
 <li>Place the <span class="math">\(N\)</span> keys into the tree in order. This satisfies the structure property.</li>
 <li>Then we do the following to maintain the heap order property.</li>

@@ -96,9 +96,9 @@ setup steps required by pseudocode.js and allows user to directly type <span cla
 <a href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html">directive</a> <code>pcode</code>, which is introduced
 by this extension. The pseudocode.js specific html block and javascript (js) rendering code are automatically handled by the extension.
 The rest of html generation steps, as usual, are done by sphinx-doc rendering engine.</p>
-<p>There aren't many choices when coming to write algorithms within sphinx-doc. To my best knowledge, I only able to 
+<p>There aren’t many choices when coming to write algorithms within sphinx-doc. To my best knowledge, I only able to 
 find <a href="https://sphinx-proof.readthedocs.io/en/latest/syntax.html#algorithms">sphinx-proof</a> that offers this cability.
-However, I think sphinx-proof is suitable to write simple algorithms on very high level (e.g., I haven't able to 
+However, I think sphinx-proof is suitable to write simple algorithms on very high level (e.g., I haven’t able to 
 find a way to write explicitly for loop quite nicely using this extension). Thus, I think being able to write algorithm using <span class="math">\(\LaTeX\)</span>
 is a nice add-on in this niche territory. </p>
 <h2 id="background">Background</h2>
@@ -180,7 +180,7 @@ so that sphinx-doc produces html algorithm block during the html generation.</p>
 </ul>
 </li>
 </ol>
-<p>Let's talk about each part in more details. The core concepts from sphinx-doc to our implementation are <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx-core-events">events and associated events handlers</a>.
+<p>Let’s talk about each part in more details. The core concepts from sphinx-doc to our implementation are <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx-core-events">events and associated events handlers</a>.
 Essentially, sphinx-doc will emit different events during its build phase and our extension can register associated event handlers to perform certain tasks 
 when certain events happened. </p>
 <p>The first important event is <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#event-builder-inited">builder-inited</a>. This is the time when 
@@ -192,14 +192,14 @@ In specific, we use <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>When <code>builder-inited</code> event happens, the document has been parsed yet. This means sphinx-doc 
-doesn't encounter our <code>pcode</code> directives yet. Thus, the number of algorithm blocks are unknown.
+doesn’t encounter our <code>pcode</code> directives yet. Thus, the number of algorithm blocks are unknown.
 Thus, we cannot generate render functions at this time.</p>
 </div>
-<p>There is one limitation about sphinx-doc that shapes how we handle part 2. That is, to my best knowledge, sphinx-doc doesn't provide 
+<p>There is one limitation about sphinx-doc that shapes how we handle part 2. That is, to my best knowledge, sphinx-doc doesn’t provide 
 a way to insert <code>&lt;script&gt;</code> right before <code>&lt;body&gt;</code> tag close (as stated in pseudocode.js usage guide) during the build. This means,
 all js related elements (depenendent scripts, js function calls) have to appear at the very beginning of the document. In my experiment
 with pseudocode.js, directly following example usage (i.e., <code>&lt;script&gt;</code> block with <code>renderElement</code> calls) cannot render the algorithm 
-blocks successfully. I'm no javascript expert but as suggested by multiple sources (<a href="https://stackoverflow.com/questions/38860740/alternative-for-executing-script-at-end-of-document-body">1</a>,
+blocks successfully. I’m no javascript expert but as suggested by multiple sources (<a href="https://stackoverflow.com/questions/38860740/alternative-for-executing-script-at-end-of-document-body">1</a>,
 <a href="https://stackoverflow.com/questions/436411/where-should-i-put-script-tags-in-html-markup">2</a>), I can use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event">DOMContentLoaded</a>
 to make pseudocode.js render functions work properly after the whole html document is loaded. As a result, I can put all the js elements at the 
 beginning of the html document.</p>
@@ -222,7 +222,7 @@ which contains all <code>renderElement</code> function calls. As an example, it 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>We cannot register <code>katex_autorenderer.js</code> at <code>doctree-resolved</code> event but we can do so instead at <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#event-html-page-context">html-page-context</a>. 
-That's where <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L149">install_js2_part2</a> comes from: 
+That’s where <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/208034f7b9f3241f93712d25ec037961c98d65d3/sphinxcontrib/pseudocode.py#L149">install_js2_part2</a> comes from: 
 we have to split js generation and js registration in two phases.</p>
 </div>
 <h3 id="support-references">Support References</h3>
@@ -241,7 +241,7 @@ there are two considerations on how to implement this feature:</p>
    <code>pcode</code> directives as well.</p>
 </li>
 </ol>
-<p>I use the 2nd option. To implement such feature, we need to leverage <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_enumerable_node">add_enumerable_node</a> API. To understand how to use it, let's take a closer look at how <code>:numref:</code> works with figure. 
+<p>I use the 2nd option. To implement such feature, we need to leverage <a href="https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx.application.Sphinx.add_enumerable_node">add_enumerable_node</a> API. To understand how to use it, let’s take a closer look at how <code>:numref:</code> works with figure. 
 Suppose, in <code>rst</code> document, I have </p>
 <div class="highlight"><pre><span></span><code><span class="p">..</span> <span class="nt">_l7-fig2.3:</span>
 <span class="p">..</span> <span class="ow">figure</span><span class="p">::</span> /_static/linear-programming/l7-fig2.3.png
@@ -281,7 +281,7 @@ the same as <code>pcode</code> reference numbering. As an example, suppose we ha
 </code></pre></div>
 <p>Then, it will be rendered as </p>
 <p><img alt="render of the above pcode block" class="img-responsive" src="../../../../../images/sphinxcontrib-pseudocode/dummy-algorithm.png"/></p>
-<p>The algorithm has numbering 1. Then, when we reference the algorithm via <code>:numref:`dummy-algorithm</code>, we want to have "Algorithm 1" rendered in 
+<p>The algorithm has numbering 1. Then, when we reference the algorithm via <code>:numref:`dummy-algorithm</code>, we want to have “Algorithm 1” rendered in 
 HTML as well. To do so, we extract the numeric part from id of the directive (e.g., <code>13</code> in <code>id13</code> in the figure HTML example) and use 
 <code>captionCount</code> option offered by pseudocode.js to manually set <span class="math">\(\LaTeX\)</span> numbering.</p>
 <h2 id="development-environment-setup">Development Environment Setup</h2>
@@ -292,13 +292,13 @@ and <a href="https://gitlab.com/Molcas/OpenMolcas/-/blob/master/doc/source/conf.
 Since the whole project is organized as a python package, we need to modify <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode/blob/546756083b2c2d0aa2a5dff817a9e6a472369b5a/docs/conf.py#L31">conf.py</a>
 to allow the demo docs to automatically find the extension source code but not via python package installation. </p>
 <h2 id="conclusion">Conclusion</h2>
-<p>That's all I have to say about implementing <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode">sphinxcontrib-pseudocode</a>. Hope 
+<p>That’s all I have to say about implementing <a href="https://github.com/xxks-kkk/sphinxcontrib-pseudocode">sphinxcontrib-pseudocode</a>. Hope 
 this post becomes useful when you build your own extension to sphinx-doc.</p>
 <div class="footnote">
 <hr/>
 <ol>
 <li id="fn:1">
-<p>You can also see the explanation in the <a href="https://www.sphinx-doc.org/en/master/development/tutorials/todo.html">"TODO" extension</a> 
+<p>You can also see the explanation in the <a href="https://www.sphinx-doc.org/en/master/development/tutorials/todo.html">“TODO” extension</a> 
   provided by sphinx-doc. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:2">

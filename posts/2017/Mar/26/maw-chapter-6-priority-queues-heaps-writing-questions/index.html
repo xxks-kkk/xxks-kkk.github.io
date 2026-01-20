@@ -104,9 +104,9 @@ follow binary heap property, namely each node has to have either zero or two chi
 <p>For this question, it takes seven comparisons to construct the binomial queue (with a solo binomial tree)
 and we get the following:</p>
 <p><img alt="MAW 6.7.b" class="img-responsive" src="/images/maw-6-7-b.PNG"/></p>
-<p>Then we need to restore the binary heap property because "a" node has three children.
-This can be done by the eighth compariosn between "b" and "c". If "c" is less than "b",
-then "b" is made a child of "c". Otherwise, both "c" and "d" are made children of "b".</p>
+<p>Then we need to restore the binary heap property because “a” node has three children.
+This can be done by the eighth compariosn between “b” and “c”. If “c” is less than “b”,
+then “b” is made a child of “c”. Otherwise, both “c” and “d” are made children of “b”.</p>
 <h3 id="maw-69">MAW 6.9</h3>
 <blockquote>
 <p>a. Give an algorithm to find all nodes less than some value, X, in a binary heap.
@@ -116,7 +116,7 @@ then "b" is made a child of "c". Otherwise, both "c" and "d" are made children o
 from the root of the heap. If value of the root is smaller than <span class="math">\(X\)</span>, then we output
 this value and call procedure recursively once for its left child and once for its right 
 child. If the value of a node is bigger or equal than <span class="math">\(X\)</span>, then the procedure halts
-without printing the value. We don't need to check the children by heap definition.</p>
+without printing the value. We don’t need to check the children by heap definition.</p>
 <p>The complexity of this algorithm is <span class="math">\(O(N)\)</span> in worst case, where <span class="math">\(N\)</span> is the total number
 of nodes in the heap. This happens when every node in the heap is smaller than <span class="math">\(X\)</span>, and 
 the procedure has to call each node of the heap.</p>
@@ -130,7 +130,7 @@ the procedure has to call each node of the heap.</p>
 <p>If a d-heap is stored as an array, for an entry located in position <span class="math">\(i\)</span>,
 where are the parents and children?</p>
 </blockquote>
-<p>Let's begin with children. Assume that position <span class="math">\(i\)</span> corresponds to the <span class="math">\(X\)</span>th node
+<p>Let’s begin with children. Assume that position <span class="math">\(i\)</span> corresponds to the <span class="math">\(X\)</span>th node
 of level <span class="math">\(l\)</span>. Therefore</p>
 <div class="math">$$
 i = \sum_{j=0}^{l-1}d^j+X
@@ -141,7 +141,7 @@ common ratio is <span class="math">\(d\)</span>, and that contains <span class="
 <div class="math">$$
 i = \frac{d^l-1}{d-1} + X
 $$</div>
-<p>We now calculate the position of <span class="math">\(i\)</span>'s second last child in terms of <span class="math">\(d\)</span>, <span class="math">\(l\)</span>, and
+<p>We now calculate the position of <span class="math">\(i\)</span>‘s second last child in terms of <span class="math">\(d\)</span>, <span class="math">\(l\)</span>, and
 <span class="math">\(X\)</span>. This equals <span class="math">\(i\)</span>, plus the number of nodes after <span class="math">\(i\)</span> on level <span class="math">\(l\)</span>, plus <span class="math">\(d\)</span>
 times the number of nodes before <span class="math">\(i\)</span> on level <span class="math">\(l\)</span>, plus <span class="math">\(d-1\)</span>.</p>
 <div class="math">$$
@@ -205,7 +205,7 @@ $$</div>
 <p>Merge the two leftist heaps in Figure 6.58</p>
 </blockquote>
 <p><img alt="MAW 6.16" class="img-responsive" src="/images/maw-6-16-problem.PNG"/></p>
-<p>The book doesn't do a well job on displaying the detailed steps in merging the 
+<p>The book doesn’t do a well job on displaying the detailed steps in merging the 
 leftist heap. So, I decide to use this problem as an illustration. By algorithm
 description on p. 194 and the actual algorithm implementation on p.189., there are
 two key points in the algorithm:</p>
@@ -231,7 +231,7 @@ to see the whole process of insertion.</p>
 <p>Prove that a binomial tree <span class="math">\(B_k\)</span> has binomial trees <span class="math">\(B_0, B_1, \dots, B_{k-1}\)</span>
 as children of the root.</p>
 </blockquote>
-<p>I'll try to use two ways to prove this. Both ways are by induction but one of them
+<p>I’ll try to use two ways to prove this. Both ways are by induction but one of them
 is more mathematical formula involved.</p>
 <p><em>Method 1</em></p>
 <p>Clearly the claim is true for <span class="math">\(k = 1\)</span>. Suppose it is true for all values <span class="math">\(i = 1, 2, \dots, k-1\)</span>.

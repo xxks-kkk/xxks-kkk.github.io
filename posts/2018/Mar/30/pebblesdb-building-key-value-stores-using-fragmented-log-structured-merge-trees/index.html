@@ -107,14 +107,14 @@
 <li><a href="#further-reading">Further Reading</a></li>
 </ul>
 </div>
-<p>--- 05/22/18 UPDATE ---</p>
+<p>— 05/22/18 UPDATE —</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>I write this post when I start to read system papers and even before I read through PebblesDB's code. 
+<p>I write this post when I start to read system papers and even before I read through PebblesDB’s code. 
 My system paper reading skill is lacking and I cannot fully grasp the essence of the paper back then. Please
-jump to the <a href="#remarks">Remarks</a> section for a concise summary of LSM and FLSM (PebblesDB's
+jump to the <a href="#remarks">Remarks</a> section for a concise summary of LSM and FLSM (PebblesDB’s
 data structure). The other sections are filled with unnecessary details and they are helpful only when you
-want to <a href="https://github.com/xxks-kkk/HyperPebblesDB">build something</a> based on the paper's implementation.</p>
+want to <a href="https://github.com/xxks-kkk/HyperPebblesDB">build something</a> based on the paper’s implementation.</p>
 </div>
 <h2 id="introduction">Introduction</h2>
 <ul>
@@ -195,7 +195,7 @@ Writes are batched together in memory and written to storage as a sequential log
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>A "Sorted String Table" then is exactly what it sounds like, it is a file which contains a set of arbitrary, sorted key-value pairs inside. Duplicate keys are fine, there is no need for "padding" for keys or values, and keys and values are arbitrary blobs. Read in the entire file sequentially and you have a sorted index. Optionally, if the file is very large, we can also prepend, or create a standalone <code>key:offset</code> index for fast access. That's all an SSTable is: very simple, but also a very useful way to exchange large, sorted data segments.</p>
+<p>A “Sorted String Table” then is exactly what it sounds like, it is a file which contains a set of arbitrary, sorted key-value pairs inside. Duplicate keys are fine, there is no need for “padding” for keys or values, and keys and values are arbitrary blobs. Read in the entire file sequentially and you have a sorted index. Optionally, if the file is very large, we can also prepend, or create a standalone <code>key:offset</code> index for fast access. That’s all an SSTable is: very simple, but also a very useful way to exchange large, sorted data segments.</p>
 </div>
 <ul>
 <li>
@@ -237,12 +237,12 @@ Writes are batched together in memory and written to storage as a sequential log
 times when new data is compacted into them.</p>
 <p>For example, when compaction happens from <span class="math">\(t_1\)</span> to <span class="math">\(t_2\)</span>, sstable with <code>[1,100]</code> has to be rewritten to <code>[1,10,100]</code> and
 sstable with <code>[200,400]</code> has to be rewritten as <code>[200,210,400]</code> (i.e., We have to read <code>[10,210]</code>, <code>[1,100]</code>, <code>[200,400]</code> out of levels, merge sort them, and write them back.)</p>
-<p>L0文件里面包含的key同时在L1层的多个文件（甚至全部文件）被包含，所以如果想把L0下推到L1，那么就需要将整个L0/L1文件内的key读出来重新排序写入到L1。典型情况下，L0数据量是L1的1/10，为了这么点数据量重写所有数据显然不划算。L1...Ln道理类似</p>
+<p>L0文件里面包含的key同时在L1层的多个文件（甚至全部文件）被包含，所以如果想把L0下推到L1，那么就需要将整个L0/L1文件内的key读出来重新排序写入到L1。典型情况下，L0数据量是L1的1/10，为了这么点数据量重写所有数据显然不划算。L1…Ln道理类似</p>
 </li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>放大问题的本质是一个系统对“随时全局有序"的需求有多么的强烈。所谓随时，就是任何的写入都不能导致系统无序；所谓全局，即系统内任意元单位之间都要保持有序。B-Tree系列是随时全局有序的典型代表，而Fractal tree打破了全局的约束，允许局部无序，提升了随机写能力；LSM系列进一步打破了随时的约束，允许通过后台的compaction来整理排序。在LSM这种依靠后台整理来保序的系统里面，系统对序的要求越强烈，写放大越严重。PebblesDB针对写放大提出的解决方案是弱化全局有序的约束，其将每一层进行分段，每个段称为一个guard，guard之间没有重叠的key，且每层的guard之间要求保序，但是guard内部可以无序。</p>
+<p>放大问题的本质是一个系统对“随时全局有序”的需求有多么的强烈。所谓随时，就是任何的写入都不能导致系统无序；所谓全局，即系统内任意元单位之间都要保持有序。B-Tree系列是随时全局有序的典型代表，而Fractal tree打破了全局的约束，允许局部无序，提升了随机写能力；LSM系列进一步打破了随时的约束，允许通过后台的compaction来整理排序。在LSM这种依靠后台整理来保序的系统里面，系统对序的要求越强烈，写放大越严重。PebblesDB针对写放大提出的解决方案是弱化全局有序的约束，其将每一层进行分段，每个段称为一个guard，guard之间没有重叠的key，且每层的guard之间要求保序，但是guard内部可以无序。</p>
 </div>
 <h2 id="fragmented-log-structured-merge-tree-flsm">Fragmented Log-Structured Merge Tree (FLSM)</h2>
 <ul>
@@ -250,7 +250,7 @@ sstable with <code>[200,400]</code> has to be rewritten as <code>[200,210,400]</
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Here, I'm guessing "append" really means pointer change from one node to another. Thus, the only time IO is performed when the data is first written
+<p>Here, I’m guessing “append” really means pointer change from one node to another. Thus, the only time IO is performed when the data is first written
 to sstable at a level.</p>
 </div>
 <h3 id="guards">Guards</h3>
@@ -412,7 +412,7 @@ naturally introduces the write amplifcation effect, which decreases the write pe
 <p>To combat write amplification, Fragmented Log-Structured Merge Trees (FLSM) and its implementation <em>PebblesDB</em> are proposed. 
 The key idea is shown in picture above. FLSM uses <em>guard</em>, which
 can be thought of as the key for a collection of logs. the keys in the collection of logs have to be 
-in the range between the current guard's key and the previous guard's key. During the compaction, the 
+in the range between the current guard’s key and the previous guard’s key. During the compaction, the 
 the log in the upper level is split across the guard keys in the lower level. In the example shown
 above, 10 and 80 from level 1 is split to 10 in guard 60 and 80 to guard 100 in level 2.
 As one can see, this split and append avoids reading the data from lower level (e.g., level 2), which reduces

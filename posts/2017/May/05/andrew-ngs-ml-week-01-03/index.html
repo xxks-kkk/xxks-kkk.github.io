@@ -130,7 +130,7 @@ through learning algorithms.</p>
 medical records, biology, engineering)</p>
 </li>
 <li>
-<p>Applications can't program by hand. (i.e. autonomous helicopter, 
+<p>Applications can’t program by hand. (i.e. autonomous helicopter, 
 handwriting recognition, most of NLP, CV)</p>
 </li>
 <li>
@@ -158,7 +158,7 @@ as measured by <span class="math">\(P\)</span>, improves with experience <span c
 <p>There are two general types:  Supervised learning and Unsupervised learning.</p>
 <ul>
 <li>
-<p>Supervised learning: 'right' answer given</p>
+<p>Supervised learning: ‘right’ answer given</p>
 <ul>
 <li>
 <p>Regression: predict continuous valued output</p>
@@ -178,14 +178,14 @@ as measured by <span class="math">\(P\)</span>, improves with experience <span c
 </li>
 <li>
 <p>Unsupervised learning: little or no idea what our resuls should look like. We can
-derive structure from data where we don't necessarily know the effect of the variables.</p>
+derive structure from data where we don’t necessarily know the effect of the variables.</p>
 <ul>
 <li>
 <p>Clustering: take a collection of 1,000,000 different genes, and find a way to automatically group
 these genes into groups that are somehow similar or related by different variables (i.e. lifespan, location, roles)</p>
 </li>
 <li>
-<p>Non-clustering: the "cocktail party algorithm" allows you to find structure in a 
+<p>Non-clustering: the “cocktail party algorithm” allows you to find structure in a 
 chaotic environment (i.e. identifying individual voices and music from a mesh of sounds at a cocktail party)</p>
 </li>
 <li>
@@ -241,7 +241,7 @@ descent as the derivative term of the square function will cancel out the
 \text{\}} \nonumber
 \end{align}
 $$</div>
-<p><span class="math">\(\alpha\)</span> is called learning rate, which determines "the step we take downhill" and the part afterwards decides
+<p><span class="math">\(\alpha\)</span> is called learning rate, which determines “the step we take downhill” and the part afterwards decides
 which direction we want to go (derived by taking partial derivatives against <span class="math">\(\theta_j\)</span>)<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -347,9 +347,9 @@ doing so, we can make our hypothesis simpler and less prone to overfitting.</p>
 J(\theta) = \frac{1}{2m}\Big[ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 + 
 \underbrace{\lambda \sum_{j=1}^n \theta_j^2\Big]}_\textrm{regularization term}
 $$</div>
-<p>The regularization parameter <span class="math">\(\lambda\)</span> controls the tradeoff between "fit the data well" and
-"keep parameters small to avoid overfitting".  If <span class="math">\(\lambda\)</span> is set to an extremely large
-value, then we may face "underfit" issue (i.e. all <span class="math">\(\theta_j\)</span> for <span class="math">\(j = 1, \dots, n\)</span> close to 0)<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.</p>
+<p>The regularization parameter <span class="math">\(\lambda\)</span> controls the tradeoff between “fit the data well” and
+“keep parameters small to avoid overfitting”.  If <span class="math">\(\lambda\)</span> is set to an extremely large
+value, then we may face “underfit” issue (i.e. all <span class="math">\(\theta_j\)</span> for <span class="math">\(j = 1, \dots, n\)</span> close to 0)<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.</p>
 <p>Since our cost function has changed, both gradient descent and normal equation have to adjust accordingly:</p>
 <ul>
 <li>Gradient Descent</li>
@@ -389,7 +389,7 @@ $$</div>
 $$</div>
 <p>we want <span class="math">\(\lambda &gt; 0\)</span> so that the matrix is invertible.</p>
 <h3 id="in-practice_1">In practice</h3>
-<p>Linear regression regularization implementation doesn't differ from no-regularization
+<p>Linear regression regularization implementation doesn’t differ from no-regularization
 implementation in terms of matrices implementation technique. The following code chunk
 demonstrates a way to calculate the cost function <span class="math">\(J(\theta)\)</span> and the gradients (not gradient descent):</p>
 <div class="highlight"><pre><span></span><code><span class="nt">J</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">1</span><span class="o">/(</span><span class="nt">2</span><span class="o">*</span><span class="nt">m</span><span class="o">)*(</span><span class="nt">sum</span><span class="o">((</span><span class="nt">X</span><span class="o">*</span><span class="nt">theta-y</span><span class="o">).^</span><span class="nt">2</span><span class="o">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nt">lambda</span><span class="o">/(</span><span class="nt">2</span><span class="o">*</span><span class="nt">m</span><span class="o">)*(</span><span class="nt">sum</span><span class="o">(</span><span class="nt">theta</span><span class="o">(</span><span class="nt">2</span><span class="p">:</span><span class="nd">end</span><span class="o">).^</span><span class="nt">2</span><span class="o">));</span><span class="w">         </span>
@@ -402,7 +402,7 @@ demonstrates a way to calculate the cost function <span class="math">\(J(\theta)
 <p>Logistic regression is a classification algorithm. It is better than the linear
 regression because 1) linear regression classification result is higly impacted by the
 outliers 2) linear regression result <span class="math">\(h_\theta (x)\)</span> can output value <span class="math">\(&gt;1\)</span> or <span class="math">\(&lt;0\)</span>, which
-doesn't fit with the nature of classification task.</p>
+doesn’t fit with the nature of classification task.</p>
 <p>In contrast, as we will see, logistic regression output <span class="math">\(0 \ge h_\theta (x) \le 1\)</span>, which
 can be intrepreted from probabily perspective.</p>
 <h3 id="in-theory_2">In theory</h3>
@@ -489,7 +489,7 @@ logistic regression:</p>
 <p>We may need to do feature scaling when we work with gradient descent. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:2">
-<p>We don't penalize <span class="math">\(\theta_0\)</span>. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
+<p>We don’t penalize <span class="math">\(\theta_0\)</span>. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 </ol>
 </div>

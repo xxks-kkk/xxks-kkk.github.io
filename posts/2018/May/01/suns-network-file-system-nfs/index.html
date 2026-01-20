@@ -124,7 +124,7 @@ responds back with result (Example: <a href="http://pages.cs.wisc.edu/~remzi/OST
 <p>Crash Recovery:</p>
 <ul>
 <li>goal: simple and fast server crash recovery</li>
-<li>Use a stateless Protocol (NFSv2): the server doesn't keep track of anything about what is happening at each client</li>
+<li>Use a stateless Protocol (NFSv2): the server doesn’t keep track of anything about what is happening at each client</li>
 <li>Stateful: server maintain a filedescriptor(an integer) to actual file relationship (unknown after recovery)</li>
 <li>Stateless: file handle (a unique identifier for each directory and file). <ul>
 <li>Every client RPC call needs to pass a file handle</li>
@@ -182,9 +182,9 @@ responds back with result (Example: <a href="http://pages.cs.wisc.edu/~remzi/OST
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You may think the solution to cache consistency problems look a lot like <a href="../../../../../posts/2018/Mar/07/cache-lease-consistency-invalidation/">write-back + invalidation</a>. The geenral idea is the same. However, the solution here takes client's perspective. However, the definitions in my previous
-post takes server's perspective. More formally, we call client's perspective "client-initiated consistency protocol" and
-server's perspective "server-initiated consistency protocol".</p>
+<p>You may think the solution to cache consistency problems look a lot like <a href="../../../../../posts/2018/Mar/07/cache-lease-consistency-invalidation/">write-back + invalidation</a>. The geenral idea is the same. However, the solution here takes client’s perspective. However, the definitions in my previous
+post takes server’s perspective. More formally, we call client’s perspective “client-initiated consistency protocol” and
+server’s perspective “server-initiated consistency protocol”.</p>
 </div>
 <h2 id="remarks">Remarks</h2>
 <ul>
@@ -214,7 +214,7 @@ cache polling frequency)</li>
 <h2 id="reference">Reference</h2>
 <ul>
 <li><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/dist-nfs.pdf">Sun’s Network File System (NFS)</a></li>
-<li><a href="https://www.cs.utexas.edu/users/ans/classes/cs439/schedule.html">CS439 Alison's slide "Other File Systems"</a></li>
+<li><a href="https://www.cs.utexas.edu/users/ans/classes/cs439/schedule.html">CS439 Alison’s slide “Other File Systems”</a></li>
 </ul>
         </article>
 

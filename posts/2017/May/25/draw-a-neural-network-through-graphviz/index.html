@@ -83,18 +83,18 @@ need to provide a textual descritption of the graph regarding its topological
 structure (i.e. what nodes are, how they are connected, etc) and Graphviz will
 figure out the layout of the image by itself. Usually, the generated layout works
 out well but quite often, like this <a href="https://hbfs.wordpress.com/2014/09/30/a-quick-primer-on-graphviz/">post</a>
-mentioned, can be a "finicky beast". So, I decide to share some tips I learned about
+mentioned, can be a “finicky beast”. So, I decide to share some tips I learned about
 Graphviz.</p>
-<p>Specifically, in this post, I'll demonstrate how we can draw the Neural Network shown in the 
+<p>Specifically, in this post, I’ll demonstrate how we can draw the Neural Network shown in the 
 <a href="../../../../../posts/2017/May/23/andrew-ngs-ml-week-04-05/">last post</a> and use this as an example
-to show some tricks in Graphviz to tweak the layout <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. Let's get started!</p>
+to show some tricks in Graphviz to tweak the layout <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. Let’s get started!</p>
 <h2 id="draw-a-neural-network">Draw a neural network</h2>
-<p>If you do a quick search regarding "graphviz neural network example", you'll highly
+<p>If you do a quick search regarding “graphviz neural network example”, you’ll highly
 likely see the below picture:</p>
 <p><img alt="Multiclass neural network example" class="img-responsive" src="../../../../../images/multiclass_neural_network_example.png"/></p>
 <p>This is probably the simplest Graphviz demonstration on Neural Network. The
 code for this picture can be obtained <a href="https://gist.github.com/thigm85/5760134">here</a>.</p>
-<p>However, when I'm preparing my last post, I'm not quite satisified with the example above.
+<p>However, when I’m preparing my last post, I’m not quite satisified with the example above.
 I want to clearly label all the nodes in all layers and make distinction among feature
 input, bias term, hidden units, and output units. So, I decide to draw one on my own.</p>
 <p>Here is the <a href="https://github.com/xxks-kkk/Code-for-blog/blob/master/2017/graphviz-drawings/nn3.dot">code</a>
@@ -134,10 +134,10 @@ how we can specify several nodes at the once with the same node property <sup id
 <span class="p">}</span>
 </code></pre></div>
 <ol>
-<li><code>rank=same</code> is another trick I'll talk about later. This specifies what "layer"
-(or "rank" by official term) a set of nodes belongs. You can read <a href="http://www.graphviz.org/doc/info/attrs.html#d:rank">the official doc</a> for the details.</li>
+<li><code>rank=same</code> is another trick I’ll talk about later. This specifies what “layer”
+(or “rank” by official term) a set of nodes belongs. You can read <a href="http://www.graphviz.org/doc/info/attrs.html#d:rank">the official doc</a> for the details.</li>
 <li><code>x0-&gt;...-&gt;x3</code> specifies the relative position of the four nodes. Since the graph is
-arranged from left to right (indicate by <code>rankdir = LR</code>), then the "layer" is vertical.
+arranged from left to right (indicate by <code>rankdir = LR</code>), then the “layer” is vertical.
 Then by <code>x0-&gt;...-&gt;x3</code>, the first node will be <code>x0</code>, followed by <code>x1</code>, and so on. Also,
 we have <code>edge[style=invis]</code> and this will hide the edges among these four nodes. This 
 is how we draw the NN layers.</li>
@@ -146,7 +146,7 @@ is how we draw the NN layers.</li>
 </code></pre></div>
 <ol>
 <li>This line is used to prevent tilting of the graph. As you can see, we specify
-how the nodes should be arranged in a layer but we don't much constraint on how
+how the nodes should be arranged in a layer but we don’t much constraint on how
 the layers should be positioned except <code>rankdir=LR</code>, which says layers should be 
 ordered from left to right. <code>a02-&gt;a03</code> says layer with <code>a02</code> should be lined up with 
 layer with <code>a03</code>.</li>
@@ -194,20 +194,20 @@ we use invisible nodes to take up space to keep the graph in a specific structur
 demonstrates how we can use invisible nodes and edges in combination to create 
 a fancy picture. 
 <a href="https://stackoverflow.com/questions/27091591/graphviz-dot-vertical-alignment-of-nodes">This SO post</a>
-is another example to show how to use "invisible edges" (it uses another trick called
+is another example to show how to use “invisible edges” (it uses another trick called
 <code>group</code> attribute).</p>
 <h3 id="rank-constraints">Rank constraints</h3>
 <p>If you check <a href="http://www.graphviz.org/doc/info/attrs.html#d:rank">official doc</a>,
 here is what rank does:</p>
 <blockquote>
-<p>Rank constraints on the nodes in a subgraph. If rank="same", 
-all nodes are placed on the same rank. If rank="min", all nodes are placed on the minimum rank. 
-If rank="source", all nodes are placed on the minimum rank, and the only nodes on the minimum 
-rank belong to some subgraph whose rank attribute is "source" or "min". Analogous criteria hold 
-for rank="max" and rank="sink". (Note: the minimum rank is topmost or leftmost, and the maximum 
+<p>Rank constraints on the nodes in a subgraph. If rank=”same”, 
+all nodes are placed on the same rank. If rank=”min”, all nodes are placed on the minimum rank. 
+If rank=”source”, all nodes are placed on the minimum rank, and the only nodes on the minimum 
+rank belong to some subgraph whose rank attribute is “source” or “min”. Analogous criteria hold 
+for rank=”max” and rank=”sink”. (Note: the minimum rank is topmost or leftmost, and the maximum 
 rank is bottommost or rightmost.)</p>
 </blockquote>
-<p>Let's demonstrate this description with a simple example <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>:</p>
+<p>Let’s demonstrate this description with a simple example <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>:</p>
 <div class="highlight"><pre><span></span><code><span class="n">digraph</span><span class="w"> </span><span class="n">G</span>
 <span class="p">{</span>
 <span class="w">  </span><span class="p">{</span><span class="nf">rank</span><span class="o">=</span><span class="n">source</span><span class="p">;</span><span class="w"> </span><span class="n">a</span><span class="o">-&gt;</span><span class="n">b</span><span class="p">;}</span>
@@ -215,7 +215,7 @@ rank is bottommost or rightmost.)</p>
 <span class="p">}</span>
 </code></pre></div>
 <p>This example gives a graph with two rows. <code>a-&gt;b</code> is above <code>c-&gt;d</code>.
-However, if I change <code>{rank=source; a-&gt;b;}</code> to <code>{rank=min; a-&gt;b;}</code>, we'll
+However, if I change <code>{rank=source; a-&gt;b;}</code> to <code>{rank=min; a-&gt;b;}</code>, we’ll
 end up with one row: <code>a-&gt;b</code> will be to the left of <code>c-&gt;d</code>. This is due to
 the difference between <code>min</code> and <code>source</code>: <code>min</code> allows other subgraphs in the
 minimum rank. However, <code>source</code> only allows other subgraphs of <code>min</code> or <code>source</code>

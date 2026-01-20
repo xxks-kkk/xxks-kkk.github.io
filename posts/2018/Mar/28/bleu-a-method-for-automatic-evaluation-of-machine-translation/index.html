@@ -118,8 +118,8 @@ Thus requires:</p>
 <li>
 <p>Candidate 1 is better than Candidate 2 because Candidate 1 shares many words and phrases with these three reference translations, while Candidate 2 does not.</p>
 <ul>
-<li>Candidate 1 shares "It is a guide to action" with Reference 1, "which" with Reference 2, "ensures that the military" with Reference 1, 
-"always" with References 2 and 3, "commands" with Reference 1, and finally "of the party" with Reference 2 (all ignoring capitalization). 
+<li>Candidate 1 shares “It is a guide to action” with Reference 1, “which” with Reference 2, “ensures that the military” with Reference 1, 
+“always” with References 2 and 3, “commands” with Reference 1, and finally “of the party” with Reference 2 (all ignoring capitalization). 
 In contrast, Candidate 2 exhibits far fewer matches, and their extent is less.</li>
 </ul>
 </li>
@@ -143,7 +143,7 @@ In contrast, Candidate 2 exhibits far fewer matches, and their extent is less.</
 </li>
 <li>
 <p><em>Precision</em> (# candidate translation words (unigrams) which occur in any reference translation / the total number of words in the candidate translation) 
-doesn't work: MT systems can overgenerate “reasonable” words, resulting in improbable, but high-precision, translations like Example 2.</p>
+doesn’t work: MT systems can overgenerate “reasonable” words, resulting in improbable, but high-precision, translations like Example 2.</p>
 </li>
 <li>
 <p>Intuition: a reference word should be considered exhausted after a matching candidate word is identified. We formalize this intuition as the
@@ -169,8 +169,8 @@ doesn't work: MT systems can overgenerate “reasonable” words, resulting in i
 <li>Example 2: modified unigram precision is <span class="math">\(2/7\)</span>, even though its standard unigram precision is <span class="math">\(7/7\)</span>.</li>
 <li>
 <p>Example 1: Candidate 1 achieves a modified unigram precision of <span class="math">\(17/18\)</span>; whereas Candidate 2 achieves a modified unigram precision of <span class="math">\(8/14\)</span></p>
-<p>Let's calculate <span class="math">\(17/18\)</span>. The counts shown below. For word "the", "the" appears 3 times in Candidate 1 and 4 comes from
-max(# "the" in ref1, # "the" in ref2, # "the" in ref3) = max(1,4,4). </p>
+<p>Let’s calculate <span class="math">\(17/18\)</span>. The counts shown below. For word “the”, “the” appears 3 times in Candidate 1 and 4 comes from
+max(# “the” in ref1, # “the” in ref2, # “the” in ref3) = max(1,4,4). </p>
 </li>
 </ul>
 </li>
@@ -282,7 +282,7 @@ Next, let <span class="math">\(c\)</span> be the length of the candidate transla
 <li>We may use a big test corpus with a single reference translation, provided that the translations are not all from the same translator.</li>
 <li>BLEU has shown good performance for corpus-level comparisons over which a high number of n-gram matches exist. However, at a sentence-level the
 n-gram matches for higher n rarely occur. As a result, BLEU performs poorly when comparing individual sentences.</li>
-<li><a href="https://www.cs.utexas.edu/~mooney/cs388/slides/mt.ppt">Mooney's slides on MT</a> has nice illustration of modified bigram precision
+<li><a href="https://www.cs.utexas.edu/~mooney/cs388/slides/mt.ppt">Mooney’s slides on MT</a> has nice illustration of modified bigram precision
 calculation</li>
 </ul>
 <h2 id="reference">Reference</h2>

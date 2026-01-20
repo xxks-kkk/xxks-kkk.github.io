@@ -84,7 +84,7 @@ lies right in-between BST (no balance condition) and AVL (very strict balance co
 <h2 id="concept">Concept</h2>
 <p>A splay tree is a type of balanced binary search tree. Structurally, it is identical to an ordinary binary search tree; the only difference is in the 
 algorithms for finding, inserting, and deleting entries. Specifically, splay tree is a self-adjusting tree, which the structure get organized over time
-as nodes are accessed (i.e., insert, delete, or find). This makes sense because if we don't re-structure the tree each time we access an node, then 
+as nodes are accessed (i.e., insert, delete, or find). This makes sense because if we don’t re-structure the tree each time we access an node, then 
 the amortized time bound should be <span class="math">\(O(M N)\)</span> for a sequence of <span class="math">\(M\)</span> accesses instead of <span class="math">\(O(M \log N)\)</span>.</p>
 <p>The way we restructure the tree is called <em>splaying</em>. Chapter 4 talks about bottom-up splaying algorithms. Every time a node is accessed in a splay tree,
 it is moved to the root of the tree. The amortized cost of the operation is <span class="math">\(O(\log N)\)</span>. As shown by MAW, simply moving the element to the root by
@@ -107,7 +107,7 @@ rotating it up the trees does not have this property. However, the following thr
 </code></pre></div>
 <p>In the above pictures, x is the node that was accessed (that will
 eventually be at the root of the tree).  By looking at the local
-structure of the tree defined by x, x's parent, and x's grandparent we
+structure of the tree defined by x, x’s parent, and x’s grandparent we
 decide which of three rules to follow.  We continue to
 apply the rules until x is at the root of the tree.</p>
 <div class="highlight"><pre><span></span><code>Splay(1)
@@ -128,11 +128,11 @@ apply the rules until x is at the root of the tree.</p>
 </code></pre></div>
 <h2 id="implementation-details">Implementation details</h2>
 <p>Splay tree is really a flexible data structure in the sense that there are many options to implement 
-the "splay" rules and corresponding tree operations and still have the property hold. Reference <a href="https://en.wikipedia.org/wiki/Splay_tree">wiki</a>
+the “splay” rules and corresponding tree operations and still have the property hold. Reference <a href="https://en.wikipedia.org/wiki/Splay_tree">wiki</a>
 for complete summary. Here, I only mention some of my findings. Please note that depends on how you implement your operations, the resulting tree
 may be different (i.e. different insert algorithm may result in different tree structure but there root will be the same).</p>
 <h3 id="insertion-bottom-up">Insertion (bottom-up)</h3>
-<p>There are two ways to do this. The first way is to use "split" to split the tree based upon the insertion value. By the property of splaying, 
+<p>There are two ways to do this. The first way is to use “split” to split the tree based upon the insertion value. By the property of splaying, 
 we will either have the insertion value (already inside the tree) or the parent of the insertion point at the root. Then we can make our insertion 
 value as the new root and adjust the orginal tree to form the new tree. For example,  if the insertion value <code>elem</code> smaller than the root, we do</p>
 <div class="highlight"><pre><span></span><code><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">elem</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">T</span><span class="o">-&gt;</span><span class="n">Element</span><span class="p">)</span>
@@ -143,8 +143,8 @@ value as the new root and adjust the orginal tree to form the new tree. For exam
 <span class="p">}</span>
 </code></pre></div>
 <p>The code is straightforward but <code>newT-&gt;Left = T-&gt;Left</code> is worth a remark. Here, when <code>T</code> is the parent of the insertion point, 
-we know <code>T</code>'s left subtree's values are smaller than <code>elem</code> as well. This is because 
-if there is any node <span class="math">\(x\)</span> greater than <code>elem</code> but smaller than <code>T</code>'s value, then <code>T</code> should be <span class="math">\(x\)</span> instead (by splaying), which is a contradiction.</p>
+we know <code>T</code>‘s left subtree’s values are smaller than <code>elem</code> as well. This is because 
+if there is any node <span class="math">\(x\)</span> greater than <code>elem</code> but smaller than <code>T</code>‘s value, then <code>T</code> should be <span class="math">\(x\)</span> instead (by splaying), which is a contradiction.</p>
 <p>The second way is to do BST insertion first and then splay the insertion value, which is really straightforward and easy to code. </p>
 <h2 id="deletion-bottom-up">Deletion (bottom-up)</h2>
 <p>Correspondingly there are two methods to deletion as well. The first way is to splay the to-be-deleted node. This puts the node at the root. If it is

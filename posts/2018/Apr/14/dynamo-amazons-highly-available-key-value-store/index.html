@@ -160,7 +160,7 @@ is designed for the common usage situations, average latency is a fine measureme
 </ul>
 </li>
 <li>Who (who performs the process of conflict resolution: data store or application?):<ul>
-<li>Dynamo: the application; data store implements a simple policy (i.e., "last write wins")</li>
+<li>Dynamo: the application; data store implements a simple policy (i.e., “last write wins”)</li>
 </ul>
 </li>
 </ul>
@@ -176,7 +176,7 @@ is designed for the common usage situations, average latency is a fine measureme
 </ul>
 <h2 id="design-requirement">Design Requirement</h2>
 <ul>
-<li>"Always writeable": no updates are rejected due to failures or concurrent writes</li>
+<li>“Always writeable”: no updates are rejected due to failures or concurrent writes</li>
 <li>All nodes are assumed to be trusted</li>
 <li>No support for hierarchical namespaces (a norm in many file systems) or complex relational schema</li>
 <li>Built for latency sensitvie applications: at least 99.9% of read and write operations to be performed within a few hundred milliseconds</li>
@@ -336,7 +336,7 @@ You can think about <code>Sx</code>, <code>Sy</code>, <code>Sz</code> as process
 <p>Unavailable during server failures and network partitions and durability reduced under the simplest of failure conditions</p>
 </li>
 <li>
-<p>Doesn't strict quorum membership and use "sloppy quorum":</p>
+<p>Doesn’t strict quorum membership and use “sloppy quorum”:</p>
 <p>all read and write operations are performed on the first N <em>healthy</em> nodes from the preference list, which may not always be the first N nodes encountered while walking the consistent hashing ring.</p>
 </li>
 <li>
@@ -360,7 +360,7 @@ You can think about <code>Sx</code>, <code>Sy</code>, <code>Sz</code> as process
 <li>
 <p>Use explicit command to add and remove nodes from a Dynamo Ring:</p>
 <ul>
-<li>Adv: nodes may be temporarily down and we don't have to immediately redistribute workload (i.e., think they are out of ring membership) whenever some node are uncontactable. Redistribute workload is expensive.</li>
+<li>Adv: nodes may be temporarily down and we don’t have to immediately redistribute workload (i.e., think they are out of ring membership) whenever some node are uncontactable. Redistribute workload is expensive.</li>
 </ul>
 </li>
 <li>
@@ -373,7 +373,7 @@ You can think about <code>Sx</code>, <code>Sy</code>, <code>Sz</code> as process
 </ul>
 </li>
 <li>
-<p>node A may consider node B failed if node B does not respond to node A’s messages (even if B is responsive to node C's messages)</p>
+<p>node A may consider node B failed if node B does not respond to node A’s messages (even if B is responsive to node C’s messages)</p>
 <p>Decentralized failure detection protocols use a simple gossip-style protocol that enable each node in the system to learn about the arrival (or departure) of other nodes.</p>
 </li>
 </ul>
@@ -387,8 +387,8 @@ into one.</p>
 <h2 id="reference">Reference</h2>
 <ul>
 <li><a href="https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf">Dynamo: Amazon’s Highly Available Key-value Store</a></li>
-<li><a href="http://www.puncsky.com/blog/2013/04/06/dynamo-kv-store">Tian Pan's Blog</a></li>
-<li><a href="http://www.shangzeyuan.com/static/talks/dynamo.pdf">Zeyuan's Talk on Dynamo</a></li>
+<li><a href="http://www.puncsky.com/blog/2013/04/06/dynamo-kv-store">Tian Pan’s Blog</a></li>
+<li><a href="http://www.shangzeyuan.com/static/talks/dynamo.pdf">Zeyuan’s Talk on Dynamo</a></li>
 </ul>
         </article>
 

@@ -92,7 +92,7 @@ we rehash to a smaller table?</p>
 <p>We must be careful not to rehash too often. Let <span class="math">\(p\)</span> be the threshold (fraction of table
 size) at which we rehash to a smaller table. Then, if the new table has size <span class="math">\(N\)</span>, 
 it contains <span class="math">\(2Np\)</span> elements. This table will require rehashing after either 
-<span class="math">\(2N-2Np\)</span> insertions or <span class="math">\(pN\)</span> deletions. Then, we don't want to do rehashing either 
+<span class="math">\(2N-2Np\)</span> insertions or <span class="math">\(pN\)</span> deletions. Then, we don’t want to do rehashing either 
 after a few insertion or a few deletions. A good strategy is to set <span class="math">\(2N-2Np\)</span> equals to <span class="math">\(pN\)</span>
 and we get <span class="math">\(p = \frac{2}{3}\)</span>. For instance, suppose we have a table of size 300.
 If we rehash at 200 elements, then the new table size is <span class="math">\(N = 150\)</span>, and we can do 
@@ -121,7 +121,7 @@ all elements that hash to some location will try the same collision resolution s
 an insert and for a successful search?</p>
 </blockquote>
 <p>The running time is probably similar to quadratic probing. The advantage here is that 
-the insertion can't fail unless the table is full.</p>
+the insertion can’t fail unless the table is full.</p>
 <h3 id="maw-56">MAW 5.6</h3>
 <blockquote>
 <p>What are the advantages and disadvantages of the various collision resolution strategies?</p>
@@ -134,7 +134,7 @@ factor increases because of primary clustering. </p>
 <p>Quadratic probing is only slightly more 
 difficult to implement and gives good performance in practice. An insertion can fail 
 if the table is half empty, but this is not likely. Even if it were, such an insertion 
-would be so expensive that it wouldn't matter and would almost certainly point up a 
+would be so expensive that it wouldn’t matter and would almost certainly point up a 
 weakness in the hash function. </p>
 <p>Double hashing eliminates primary and secondary clustering but the computation of a second
 hash function can be costly. </p>
@@ -142,7 +142,7 @@ hash function can be costly. </p>
 <blockquote>
 <p>Describe a procedure that avoids initializing a hash table (at the expense of memory).</p>
 </blockquote>
-<p>To each hash table slot, we can add an extra field that we'll call <code>WhereOnStack</code>, and 
+<p>To each hash table slot, we can add an extra field that we’ll call <code>WhereOnStack</code>, and 
 we can keep an extra stack. When an insertion is first performed into a slot, we push
 the address (or number) of the slot onto the stack and set the <code>WhereOnStack</code> field to point
 to the top of the stack. When we access a hash table slot, we check that <code>WhereOnStack</code>
@@ -178,7 +178,7 @@ $$</div>
 <blockquote>
 <p>b. Show that the running time is <span class="math">\(O(k+N)\)</span> plus the time spent refuting false matches.</p>
 </blockquote>
-<p>The pattern's hash value <span class="math">\(H_p\)</span> computed in <span class="math">\(O(K)\)</span> time. Then, <span class="math">\(A_1A_2\dots A_k\)</span>
+<p>The pattern’s hash value <span class="math">\(H_p\)</span> computed in <span class="math">\(O(K)\)</span> time. Then, <span class="math">\(A_1A_2\dots A_k\)</span>
 is computed in <span class="math">\(O(K)\)</span> time. Then starting with <span class="math">\(A_2A_3\dots A_{k+1}\)</span> and until
 <span class="math">\(A_{N-k+1}A_{N-k+2}\dots A_N\)</span>, each hash value is computed in <span class="math">\(O(1)\)</span> by a) above.
 Since, there are <span class="math">\(N-k+1-2+1\)</span> terms of <span class="math">\(O(1)\)</span>, then the total running time is

@@ -105,16 +105,16 @@ So, I ask myself if there is a better way
 to make the whole process automated as much as possible. Python and its famous
 <a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">beautifulsoup</a> library <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> 
 immediately come into my mind.</p>
-<p>In this post, I'll highlight some python usage appeared in the script, which costs
+<p>In this post, I’ll highlight some python usage appeared in the script, which costs
 me quite some time on googling. Please leave your comment if you find any non-pythonic 
 usage. The code script is available 
-<a href="https://github.com/xxks-kkk/shuati/blob/master/scraper.py">here</a>. I'll use
+<a href="https://github.com/xxks-kkk/shuati/blob/master/scraper.py">here</a>. I’ll use
 <a href="https://leetcode.com/problems/reverse-linked-list-ii/#/description">92. ReverseLinkedList II</a>
 leetcode page as a working example to demonstrate the python techniques.</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3.6</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 </code></pre></div>
-<p>The very first thing is "shebang". This is important for our task because
+<p>The very first thing is “shebang”. This is important for our task because
 the web page is often written in the unicode (i.e. mathematical symbols).
 This shebang will help us avoid unicode &amp; ascii madness. </p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">bs4</span><span class="w"> </span><span class="kn">import</span> <span class="n">BeautifulSoup</span>
@@ -129,9 +129,9 @@ when to use which. Here, I want to quote the explanation from
 <blockquote>
 <p>When should you use <em>from module import</em>?</p>
 <ul>
-<li>If you will be accessing attributes and methods often and don't want to type the module name over and over, use "<em>from module import</em>".</li>
-<li>If you want to selectively import some attributes and methods but not others, use "<em>from module import</em>".</li>
-<li>If the module contains attributes or functions with the same name as ones in your module, you must use "<em>import module</em>" to avoid name conflicts.</li>
+<li>If you will be accessing attributes and methods often and don’t want to type the module name over and over, use “<em>from module import</em>”.</li>
+<li>If you want to selectively import some attributes and methods but not others, use “<em>from module import</em>”.</li>
+<li>If the module contains attributes or functions with the same name as ones in your module, you must use “<em>import module</em>” to avoid name conflicts.</li>
 </ul>
 <p>The author makes extra remark: Use <em>from module import *</em> sparingly, because it makes it difficult to determine where a particular function or attribute came from, and that makes debugging and refactoring more difficult.</p>
 </blockquote>
@@ -170,7 +170,7 @@ for the question title</p>
       <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
     <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
 </code></pre></div>
-<p>As you can see, the question title ("92. Reverse Linked List II") is wrapped around
+<p>As you can see, the question title (“92. Reverse Linked List II”) is wrapped around
 by the <code>&lt;div&gt;</code> tag with class name <code>question-title</code>. </p>
 <div class="highlight"><pre><span></span><code><span class="n">title_corp</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">"div"</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">"question-title"</span><span class="p">)</span>
 <span class="n">title_raw</span> <span class="o">=</span> <span class="n">title_corp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">h3</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
@@ -184,7 +184,7 @@ problem title. So, we can directly access the content of <code>&lt;h3&gt;&lt;/h3
 <code>title_corp[0].h3.get_text()</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><code>find_all</code> returns a "ResultSet" object in beautifulSoup. This object contains
+<p><code>find_all</code> returns a “ResultSet” object in beautifulSoup. This object contains
 a set of tags that match with <code>find_all</code> function argument criteria. In our case,
 our criteria is <code>&lt;div&gt;&lt;/div&gt;</code> tag with class name <code>question-title</code>.</p>
 </div>
@@ -192,10 +192,10 @@ our criteria is <code>&lt;div&gt;&lt;/div&gt;</code> tag with class name <code>q
 Our scraper script will go into the 
 <a href="https://github.com/xxks-kkk/shuati/tree/master/leetcode">leetcode directory of the shuati repo</a>
 and create the question directory with the format 
-"[question number]-[question title in mixed case with the first letter of each internal word capitalized]"
-For example, "92. Reverse Linked List II" will lead to a directory 
+“[question number]-[question title in mixed case with the first letter of each internal word capitalized]”
+For example, “92. Reverse Linked List II” will lead to a directory 
 <code>./leetcode/92-ReverseLinkedListII</code>. The source file name is similar to the 
-directory name: <code>reverseLinkedListII.c</code>. That's what following code chunk tries to achieve</p>
+directory name: <code>reverseLinkedListII.c</code>. That’s what following code chunk tries to achieve</p>
 <div class="highlight"><pre><span></span><code>    <span class="n">title_lines</span> <span class="o">=</span> <span class="n">title_raw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
     <span class="n">title_lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">methodcaller</span><span class="p">(</span><span class="s1">'strip'</span><span class="p">),</span> <span class="n">title_lines</span><span class="p">))</span>
     <span class="n">title_rdy</span> <span class="o">=</span> <span class="n">title_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"."</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
@@ -259,8 +259,8 @@ a typical way to handle immutable <code>str</code> object, which, in our case, l
 first character case and append it back to the rest of string.</p>
 <p>The last point needs to notice is <code>line = line.replace("\r", "").replace("\n", "")</code>,
 which removes carriage return character (<code>^M</code>) and linux newline character.</p>
-<p>That's it for the leetcode scraper. This is actually the first scraper I have
-ever written. It is not as hard as I imagined. I think that's majorly because of
+<p>That’s it for the leetcode scraper. This is actually the first scraper I have
+ever written. It is not as hard as I imagined. I think that’s majorly because of
 the powerful python language and its libraries.</p>
 <div class="footnote">
 <hr/>

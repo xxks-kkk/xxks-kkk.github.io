@@ -77,13 +77,13 @@
         </header>
         
         <article>
-            <p>In this post, I'll provide a summary on the usage of <code>join</code> statement in SQL
+            <p>In this post, I’ll provide a summary on the usage of <code>join</code> statement in SQL
 and use <a href="https://leetcode.com/problems/combine-two-tables/">Leetcode 175</a> as 
 a concrete example to show several equivalent <code>join</code> statement usage.</p>
 <p>To be honest, this is my third time visiting this material. The very first time
 happened when I took DB course in college, and the second time was when I joined
-the federation team at IBM and learned about DB2. Unfortunately, I didn't keep
-my study notes well in the first two tries and I don't write SQL a lot during my
+the federation team at IBM and learned about DB2. Unfortunately, I didn’t keep
+my study notes well in the first two tries and I don’t write SQL a lot during my
 day to day work. Things, again, get rusty very quickly. This time I want to do a
 better job by, at least, saving my notes in a good place <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">1</a></sup>. </p>
 <div class="toc">
@@ -97,8 +97,8 @@ better job by, at least, saving my notes in a good place <sup id="fnref:2"><a cl
 <li><a href="#sql-perspective">SQL perspective</a><ul>
 <li><a href="#inner-join">inner join</a><ul>
 <li><a href="#natural-join">natural join</a></li>
-<li><a href="#join-using">join ... using</a></li>
-<li><a href="#join-on">join ... on</a></li>
+<li><a href="#join-using">join … using</a></li>
+<li><a href="#join-on">join … on</a></li>
 </ul>
 </li>
 <li><a href="#outer-join">outer join</a><ul>
@@ -161,7 +161,7 @@ contains all the fields of <span class="math">\(R\)</span> (in the same order as
 by all the fields of <span class="math">\(S\)</span> (in the same order as they appear in <span class="math">\(S\)</span>). The result of
 <span class="math">\(R \times S\)</span> contains all tuples <span class="math">\((r,s)\)</span> (the concatenation of tuples <span class="math">\(r\)</span> and <span class="math">\(s\)</span>)
 for each pair of tuples <span class="math">\(r \in R\)</span>, <span class="math">\(s \in S\)</span>.</p>
-<p>To see a concrete example, let's consider the following SQL</p>
+<p>To see a concrete example, let’s consider the following SQL</p>
 <div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">teaches</span><span class="p">,</span><span class="w"> </span><span class="n">instructor</span><span class="p">;</span>
 </code></pre></div>
 <p>The <em>teaches</em> and <em>instructor</em> table look like below</p>
@@ -235,7 +235,7 @@ and the matching condition requires <code>instructor.ID</code> to be equal to <c
 In fact, these are the only attributes in the two relations that have the same name. 
 <em>In general, we may often find us writing SQLs that requires all attributes with matching names to be equated in the <code>where</code> clause. This case is so common that we use <code>join</code> to save us some effort.</em></p>
 <h2 id="join">join</h2>
-<p>In this section, I'll talk about <code>join</code> from SQL perspective, and then I'll also
+<p>In this section, I’ll talk about <code>join</code> from SQL perspective, and then I’ll also
 present how <code>join</code> is actually defined in relational algebra.</p>
 <h3 id="sql-perspective">SQL perspective</h3>
 <p>There are two basic types of join: <strong>inner join</strong> and <strong>outer join</strong>. <strong>inner</strong> keyword
@@ -253,7 +253,7 @@ is a graphic summary for the text above</p>
 the join form mentioned above. Any form of join (inner, left outer,
 right outer, or full outer) can be combined with any join condition (natural, using, or on).
 The table below provides a summary of join types and join conditions</p>
-<table class="table table-hover  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Join types</th>
@@ -375,7 +375,7 @@ ID|name|dept_name|salary|course_id|sec_id|semester|year|title|credits
 83821|Brandt|Comp. Sci.|92000|CS-319|2|Spring|2010|Image Processing|3
 98345|Kim|Elec. Eng.|80000|EE-181|1|Spring|2009|Intro. to Digital Systems|3
 </code></pre></div>
-<h5 id="join-using">join ... using</h5>
+<h5 id="join-using">join … using</h5>
 <p>Automatically equate all the attributes with the same name from both schemas of 
 relations may be too strong. Quite often, we may want to do <code>natural join</code> on 
 specific subsets of the common-shared attributes. This leads to our join condition
@@ -390,7 +390,7 @@ that <span class="math">\(t_1.A_3 = t_2.A_3\)</span>. </p>
 <div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">title</span>
 <span class="k">from</span><span class="w"> </span><span class="p">(</span><span class="n">instructor</span><span class="w"> </span><span class="k">natural</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">teaches</span><span class="p">)</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">course</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="n">course_id</span><span class="p">);</span>
 </code></pre></div>
-<h5 id="join-on">join ... on</h5>
+<h5 id="join-on">join … on</h5>
 <p>Another form of join condition is the <strong>on</strong> condition, which allows a general 
 predicate over the relations being joined. The predicte is written like a <strong>where</strong>
 clause predicate except for the use of the keyword <strong>on</strong> rahter than <strong>where</strong>.</p>
@@ -403,7 +403,7 @@ same result)</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The query is almost the same as using <code>student natural join takes</code>, except that
-the "ID" columns twices in the result set. </p>
+the “ID” columns twices in the result set. </p>
 </div>
 <p>One question we may ask is why do we need this <strong>on</strong> operation if it may look
 like working exactly the same as <strong>where</strong> clause? The answer is</p>
@@ -419,7 +419,7 @@ like working exactly the same as <strong>where</strong> clause? The answer is</p
 </ol>
 <h4 id="outer-join">outer join</h4>
 <h5 id="motivation_1">Motivation</h5>
-<p>Let's consider <code>student</code> and <code>takes</code> tables look like the below</p>
+<p>Let’s consider <code>student</code> and <code>takes</code> tables look like the below</p>
 <div class="highlight"><pre><span></span><code>sqlite&gt; select <span class="gs">* from student;</span>
 <span class="gs">ID|name|dept_name|tot_cred</span>
 <span class="gs">00128|Zhang|Comp. Sci.|102</span>
@@ -498,7 +498,7 @@ ID|name|dept_name|tot_cred|course_id|sec_id|semester|year|grade
 98988|Tanaka|Biology|120|BIO-301|1|Summer|2010|
 </code></pre></div>
 <p>More generally, some tuples in either or both of the relations being joined 
-may be "lost" in this way. The <strong>outer join</strong> operation works in a manner similar
+may be “lost” in this way. The <strong>outer join</strong> operation works in a manner similar
 to the join operations we studied above, but preserve those tuples that would be
 lost in a join, by creating tuples in the result containing null values.</p>
 <h5 id="outer-join_1">outer join</h5>
@@ -549,7 +549,7 @@ ID|name|dept_name|tot_cred|course_id|sec_id|semester|year|grade
 98988|Tanaka|Biology|120|BIO-301|1|Summer|2010|
 </code></pre></div>
 <p>We mention earlier that <strong>on</strong> and <strong>where</strong> behave differently
-for outer join. Let's consider the following example</p>
+for outer join. Let’s consider the following example</p>
 <div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span>
 <span class="k">from</span><span class="w"> </span><span class="n">student</span><span class="w"> </span><span class="k">left</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">takes</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="k">true</span>
 <span class="k">where</span><span class="w"> </span><span class="n">student</span><span class="p">.</span><span class="n">ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">takes</span><span class="p">.</span><span class="n">ID</span>
@@ -614,10 +614,10 @@ name in <span class="math">\(R\)</span> and <span class="math">\(S\)</span>) (i.
 <p>Well, this is exactly the <code>natural join</code> usage.</p>
 <p>In fact, this perspective is acutally how people explain <code>join</code> to others. There
 are two excellent pages offer graphical explaination to this concept. Their links
-are attached in the "Links to resources" section.</p>
+are attached in the “Links to resources” section.</p>
 <h2 id="examples">Examples</h2>
 <h3 id="leetcode-175">Leetcode 175</h3>
-<p>Now, let's take a look at <a href="https://leetcode.com/problems/combine-two-tables/#/description">leetcode 175. Combine Two tables</a>
+<p>Now, let’s take a look at <a href="https://leetcode.com/problems/combine-two-tables/#/description">leetcode 175. Combine Two tables</a>
 for practice. </p>
 <p>The problem asks us to </p>
 <blockquote>
@@ -625,9 +625,9 @@ for practice. </p>
 (FirstName, LastName, City, State) 
 for each person in the Person table, regardless if there is an address for each of those people.</p>
 </blockquote>
-<p>"regardless if there is an address for each of those people" is a clear indicator
+<p>“regardless if there is an address for each of those people” is a clear indicator
 for us to use <code>outer join</code> because we still want to keep all the person even 
-they may not appear in the "Address" table. There are several queries we can write</p>
+they may not appear in the “Address” table. There are several queries we can write</p>
 <div class="highlight"><pre><span></span><code><span class="o">#</span><span class="w"> </span><span class="n">Solution</span><span class="w"> </span><span class="mi">1</span>
 <span class="k">select</span><span class="w"> </span><span class="n">FirstName</span><span class="p">,</span><span class="w"> </span><span class="n">LastName</span><span class="p">,</span><span class="w"> </span><span class="n">City</span><span class="p">,</span><span class="w"> </span><span class="k">State</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">Person</span><span class="w"> </span><span class="k">natural</span><span class="w"> </span><span class="k">left</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">Address</span>
 

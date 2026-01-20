@@ -76,7 +76,7 @@
         
         <article>
             <p>I actually <a href="https://www.coursera.org/account/accomplishments/verify/58VFP5LF4UXV">finished the course</a> 
-on June 25th. In this page, I'll
+on June 25th. In this page, I’ll
 summarize various advices and tips given by Prof. Andrew Ng on how to build
 a effective machine learning system.</p>
 <p>To be honest, I used to think this part of material may be not worth a post 
@@ -128,7 +128,7 @@ concepts and the concrete techniques to identify which is which. Afterwards, I w
 talk about several ways to handle the problem and highlight some key points. Lastly,
 we will take a look at some special cases when data is skewed or large.</p>
 <h2 id="diagnostics">Diagnostics</h2>
-<p><strong>Diagnostics</strong> is a test that you can run to gain insight what is or isn't working
+<p><strong>Diagnostics</strong> is a test that you can run to gain insight what is or isn’t working
 with a learning algorithm, and gain guidance as to how best to improve its performance.
 We use <strong>test set error</strong> as our basic metrics to evaulate our learning algorithm (hypothesis).</p>
 <p>We first shuffle our whole data set to eliminate the potential impact of data record
@@ -198,8 +198,8 @@ Take a look at the following three graphs</p>
 <p><img alt="overfitting example: linear regression" class="img-responsive" src="../../../../../images/overfitting.PNG"/></p>
 <p>The first graph (leftmost) shows the result of fitting our training set
 with a hypothesis: <span class="math">\(h_\theta(x) = \theta_0 + \theta_1 x\)</span>. You can see that
-the data doesn't really lie on straight line, and so the fit is not very good.
-In this case, we call the scenario <strong>underfitting</strong>, which means the model doesn't
+the data doesn’t really lie on straight line, and so the fit is not very good.
+In this case, we call the scenario <strong>underfitting</strong>, which means the model doesn’t
 capture the data structure well. Another term for this is <strong>high bias</strong>. One way
 to think of <strong>high bias</strong> is that the algorithm has strong preconception on
 what the data should be, in our case, linear. In summary, underfitting, or high bias,
@@ -207,7 +207,7 @@ is when the form of our hypothesis function <span class="math">\(h\)</span> maps
 It is usually caused by a function that is too simple or uses too few features.</p>
 <p>At the other extreme, shown by the rightmost graph, is <strong>overfitting</strong>, or <strong>high variance</strong>.
 <strong>High variance</strong> means that the function can almost fit any function: hypothesis
-<span class="math">\(h\)</span> is too general and we don't have enough data to constrain it. The overfitting or 
+<span class="math">\(h\)</span> is too general and we don’t have enough data to constrain it. The overfitting or 
 high variance is usually caused by a complicated function that creates a lot of unnecessary
 curves and angles unrelated to the data. </p>
 <p>There are a couple of ways to tackle the overfitting problem:</p>
@@ -248,7 +248,7 @@ test set error <span class="math">\(J_\text{test}(\theta)\)</span> as the metric
 <p>However, there is a problem with this scheme: we use our extra parameter <span class="math">\(d\)</span> to fit
 the test set. In other words, we choose <span class="math">\(d\)</span>, then we fit with <span class="math">\(J_\text{test}(\theta)\)</span>.
 Our estimate is likely optimistic and our model is likely do better on test set 
-than on new examples hasn't seen before. This is similar to overfitting in training set.</p>
+than on new examples hasn’t seen before. This is similar to overfitting in training set.</p>
 <p>In order to fix this problem, we introduce <strong>cross validation set</strong>. We modify
 above scheme as follows:</p>
 <ol>
@@ -315,12 +315,12 @@ fit all the data, and thus <span class="math">\(J_{train}(\theta)\)</span> incre
 much and thus <span class="math">\(J_{cv}(\theta)\)</span> tends to be high. However, as <span class="math">\(m\)</span> increases, the more data we have, the better hypothesis we can
 get and thus our hypothesis can generalize well to new examples and <span class="math">\(J_{cv}(\theta)\)</span> decreases. </p>
 <h4 id="experience-underfitting">Experience underfitting</h4>
-<p>Now, let's see what learning curves look like when we face underfitting (i.e. high bias) problem. For example, we try to fit our
+<p>Now, let’s see what learning curves look like when we face underfitting (i.e. high bias) problem. For example, we try to fit our
 data with hypothesis <span class="math">\(h_\theta(x) = \theta_0 + \theta_1x\)</span>. Now, when <span class="math">\(m\)</span> is small, our <span class="math">\(J_{train}(\theta)\)</span> will be small, and it
 will increase as <span class="math">\(m\)</span> increases. After certain point, our <span class="math">\(J_{train}(\theta)\)</span> will flat out because our hypothesis is a straight line
-and more data won't help much. On the other hand, <span class="math">\(J_{cv}(\theta)\)</span> will be high when <span class="math">\(m\)</span> small and will decrease as <span class="math">\(m\)</span> increases. 
+and more data won’t help much. On the other hand, <span class="math">\(J_{cv}(\theta)\)</span> will be high when <span class="math">\(m\)</span> small and will decrease as <span class="math">\(m\)</span> increases. 
 Similar to <span class="math">\(J_{train}(\theta)\)</span>, <span class="math">\(J_{cv}(\theta)\)</span> will quickly flat out because number of hypothesis parameter is so small and it 
-won't generalize well as data increases. In other words, when we have high bias, the performance of <span class="math">\(J_{cv}(\theta)\)</span> and <span class="math">\(J_{train}(\theta)\)</span>
+won’t generalize well as data increases. In other words, when we have high bias, the performance of <span class="math">\(J_{cv}(\theta)\)</span> and <span class="math">\(J_{train}(\theta)\)</span>
 will look a lot similar. Thus, our learning curve looks something like this:</p>
 <p><img alt="high bias learning curves" class="img-responsive" src="../../../../../images/high-bias-learning-curves.png"/></p>
 <div class="admonition note">
@@ -333,7 +333,7 @@ will look a lot similar. Thus, our learning curve looks something like this:</p>
 <p>From above graph we can get, if a learning algorithm is suffering from high bias, getting more training data will <strong>not</strong>
 (by itself) help much.</p>
 <h4 id="experience-overfitting">Experience overfitting</h4>
-<p>For overfitting (i.e. high variance) problem, let's consider a hypothesis: <span class="math">\(h_\theta(x) = \theta_0 + \theta_1x + \dots + \theta_{100}x^{100}\)</span> 
+<p>For overfitting (i.e. high variance) problem, let’s consider a hypothesis: <span class="math">\(h_\theta(x) = \theta_0 + \theta_1x + \dots + \theta_{100}x^{100}\)</span> 
 (and small <span class="math">\(\lambda\)</span>). When <span class="math">\(m\)</span> is small, <span class="math">\(J_{train}(\theta)\)</span> is small because we fit very small data size with very high degree polynomial.
 As <span class="math">\(m\)</span> increases, <span class="math">\(J_{train}(\theta)\)</span> increases but not so much because with high polynomial degree, even we cannot fit the data perfectly,
 our hypothesis is still pretty good with large data size. For <span class="math">\(J_{cv}(\theta)\)</span>, we have overfitting problem no matter the size of <span class="math">\(m\)</span>. 
@@ -359,7 +359,7 @@ care about the size of <span class="math">\(J_{cv}(\theta)\)</span> (or <span cl
 <p>Now, we can answer the question appeard in the perface section: suppose we have implemented regularized linear regression to predict
 housing prices. However, when we test our hypothesis in a new set of houses, we find that it makes unacceptablely large errors in
 its prediction. What we should try next?</p>
-<table class="table table-hover  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Method</th>
@@ -402,8 +402,8 @@ training data. </li>
 <p>Ideally, we should choose a model somewhere in between.</p>
 <h2 id="neural-network-and-overfitting">Neural Network and overfitting</h2>
 <p>Underfitting and overfitting also exist in the <a href="../../../../../posts/2017/May/23/andrew-ngs-ml-week-04-05/">neural network</a>. When
-we use "small" neural network (i.e. less hidden layers, less hidden units), we have fewer parameters and more prone
-to underfitting. In the contrast, when we use "large" neural network, it's computationally more expensive and 
+we use “small” neural network (i.e. less hidden layers, less hidden units), we have fewer parameters and more prone
+to underfitting. In the contrast, when we use “large” neural network, it’s computationally more expensive and 
 more parameters means more prone to overfitting. In this case, we use <span class="math">\(\lambda\)</span> to address the issue.</p>
 <p>We also face the similar model selection problem like we have when working with linear regression. In the neural network
 setting, that means deciding number of hidden layers we need to use in the network. Prof. Ng talks about the following
@@ -435,7 +435,7 @@ by estimating the errors due to each component. Suppose we have a image recognit
 \text{images} \Rightarrow \text{Text detection} \Rightarrow \text{character segmentation} \Rightarrow \text{character recognition}
 $$</div>
 <p>Then, we try to decide which part of the pipeline we should spend the most time trying to improve. </p>
-<table class="table table-hover  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>component</th>
@@ -461,15 +461,15 @@ $$</div>
 </tr>
 </tbody>
 </table>
-<p>Before we improve some component of the system, we have a overall system accuracy of <span class="math">\(72\%\)</span>. Now, let's
-take text detection as an example. Let's manually label where the text is and this will give <span class="math">\(100\%\)</span> accuracy
+<p>Before we improve some component of the system, we have a overall system accuracy of <span class="math">\(72\%\)</span>. Now, let’s
+take text detection as an example. Let’s manually label where the text is and this will give <span class="math">\(100\%\)</span> accuracy
 of text detection. Then, we run the rest modules, and get an overall system accuracy, which in our case is <span class="math">\(89\%\)</span>.
 We perform the similar steps for each component. Then, we calculate the gain of system accuracy. For example,
 we will get <span class="math">\(17\%\)</span> gain by working on text detection (i.e. <span class="math">\(89\% - 72\%\)</span>) and <span class="math">\(1\%\)</span> by working on character segmentation,
 and <span class="math">\(10\%\)</span> by working on character recognition. As you can see, text detection will give us the largest gain, and thus
 we should work on this componet next.  </p>
 <h2 id="other-issues">Other issues</h2>
-<p>Machine learning is interesting because there probably doesn't exist a unified way to handle different kind of data.
+<p>Machine learning is interesting because there probably doesn’t exist a unified way to handle different kind of data.
 This means for some special data, we may need to have some special approach to handle them.</p>
 <h3 id="error-metrics-for-skewed-classes-precision-recall">Error metrics for skewed classes: Precision &amp; Recall</h3>
 <h4 id="skew-classes">Skew classes</h4>
@@ -505,7 +505,7 @@ use precision and recall instead when we deal with skewed class. </p>
 <p>As you can see, we cannot maintain high precision and high recall at the same time. This kind of tradeoff is dicpted in the picture below: </p>
 <p><img alt="precision and recall tradeoff" class="img-responsive" src="../../../../../images/precision-recall-tradeoff.png"/></p>
 <h4 id="f_1-score"><span class="math">\(F_1\)</span> score</h4>
-<p>Now, we may ask if there is a way to choose our threshold value automatically. That's where <span class="math">\(F_1\)</span> score comes from. If we use <span class="math">\(P\)</span> to denote
+<p>Now, we may ask if there is a way to choose our threshold value automatically. That’s where <span class="math">\(F_1\)</span> score comes from. If we use <span class="math">\(P\)</span> to denote
 the precision and <span class="math">\(R\)</span> to denote recall, then our <span class="math">\(F_1\)</span> score is defined as follows</p>
 <div class="math">$$
 F_1 \text{ score} = 2 \frac{PR}{P+R}

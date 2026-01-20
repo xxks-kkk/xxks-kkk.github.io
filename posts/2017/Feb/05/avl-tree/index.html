@@ -94,16 +94,16 @@ what AVL tree should really look like:</p>
 <li>Update the height information of the nodes on the path from the root to the insertion point.</li>
 <li>Restores the AVL property when find the node that violates it on the road through <em>rotation</em> operations.</li>
 </ul>
-<p>There are four cases inside the insertion (see MAW p.111) and we handle "outside" cases (i.e. left-left or right-right)
-and "inside" cases (i.e. left-right or right-left) using single rotation and double rotation respectively.</p>
+<p>There are four cases inside the insertion (see MAW p.111) and we handle “outside” cases (i.e. left-left or right-right)
+and “inside” cases (i.e. left-right or right-left) using single rotation and double rotation respectively.</p>
 <p>To remember single rotation, you can pick a case, say left-left and remember its picture. (right-right is a mirror case)</p>
 <p><img alt="AVL-single-rotation-left" class="img-responsive" src="../../../../../images/AVL-single-rotation-left.PNG"/></p>
 <p>In the picture, we need to rebalance the tree at <span class="math">\(k_2\)</span>. This picture shows how we can implement <code>singleRotateWithLeft</code> routine as well.
-(Here, "left" means the inbalance is caused by the insertion into the left subtree of the inbalance node.)</p>
+(Here, “left” means the inbalance is caused by the insertion into the left subtree of the inbalance node.)</p>
 <p>Similarly, to remember double rotation, we pick a case, say right-left and remember its picture. (left-right is a mirror case)</p>
 <p><img alt="AVL-double-rotation-right" class="img-responsive" src="../../../../../images/AVL-double-rotation-right.PNG"/></p>
 <p>In the picture, we need to rebalance the tree at <span class="math">\(k_3\)</span>. The picture shows how we can implement <code>doubleRotateWithRight</code> routine as well.
-As you can see from the picture, "double rotation" is essentially the same as two "single rotation": rotate <span class="math">\(k_2\)</span> and <span class="math">\(k_1\)</span>, then <span class="math">\(k_2\)</span> and <span class="math">\(k_3\)</span>.</p>
+As you can see from the picture, “double rotation” is essentially the same as two “single rotation”: rotate <span class="math">\(k_2\)</span> and <span class="math">\(k_1\)</span>, then <span class="math">\(k_2\)</span> and <span class="math">\(k_3\)</span>.</p>
 <p>Identifying which rotation to use by strictly based upon these four cases can work but time-consuming. Here is how I think about 
 this issue from practical point of view: you may compare the insertion value with the inbalance node value to determine which node to use.
 Here is the detail steps:</p>
@@ -129,9 +129,9 @@ Here is the detail steps:</p>
 <p>There is only one difference than insertion, which is there can be more than unbalanced node needed to be taken care of when we walk
 through the deletion point to the root.</p>
 <p>There is nuance in terms of how we think about which rotation to use. In insertion, we think about in terms of insertion point. For instance,
-if the insert value is smaller than unbalanced node value, and smaller than the unbalanced node's child value, we know we are in left-left case, which is 
+if the insert value is smaller than unbalanced node value, and smaller than the unbalanced node’s child value, we know we are in left-left case, which is 
 single rotation. However, when we deal with deletion, we actually think about the height of the subtree: a left-left insertion is equivalent as 
-we make the the left subtree of unbalanced node's child taller than its right subtree. In deletion, there is no way we can use a specific element value 
+we make the the left subtree of unbalanced node’s child taller than its right subtree. In deletion, there is no way we can use a specific element value 
 to decide what rotation we should use (like insertion). Thus, we have the following code in our <code>deletion</code> routine:</p>
 <div class="highlight"><pre><span></span><code><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="kr">Left</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Height</span><span class="p">(</span><span class="n">T</span><span class="o">-&gt;</span><span class="kr">Right</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
 <span class="w">  </span><span class="p">{</span>
@@ -153,7 +153,7 @@ to decide what rotation we should use (like insertion). Thus, we have the follow
 <h2 id="properties">Properties</h2>
 <ul>
 <li>For every node of the AVL tree, <span class="math">\(|Height(left child) - Height(right child)| \le 1\)</span>.</li>
-<li>Running time for "find", "insert", "delete" is <em>guaranteed</em> to be <span class="math">\(O(\log N)\)</span>.</li>
+<li>Running time for “find”, “insert”, “delete” is <em>guaranteed</em> to be <span class="math">\(O(\log N)\)</span>.</li>
 <li>The height of AVL tree <span class="math">\(H\)</span> is at most <span class="math">\(1.44\log _2 N\)</span>. 
   (see <a href="../../../../../posts/2017/Jan/26/maw-chapter-4-tree-writing-questions/">this post</a> for the proof)</li>
 <li>For an insertion, there is <em>at most one</em> rotation (used in non-recursive insertion routine).</li>

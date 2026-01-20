@@ -107,7 +107,7 @@
 out of order. Prove that at least 1 and at most <span class="math">\(2k-1\)</span> inversions are removed.</p>
 </blockquote>
 <p>The inversion that existed between <span class="math">\(A[i]\)</span> and <span class="math">\(A[i+k]\)</span> is removed. This shows 
-at least one inversion is removed. Now let's consider <span class="math">\(A[i], A[i+1], \dots, A[i+k-1], A[i+k]\)</span>,
+at least one inversion is removed. Now let’s consider <span class="math">\(A[i], A[i+1], \dots, A[i+k-1], A[i+k]\)</span>,
 Suppose <span class="math">\(A[i]\)</span> is greater than <span class="math">\(A[i+1], \dots, A[i+k]\)</span> and <span class="math">\(A[i+k]\)</span> is smaller than
 <span class="math">\(A[i], \dots, A[i+k-1]\)</span>. In this case, by swapping <span class="math">\(A[i]\)</span> and <span class="math">\(A[i+k]\)</span>, we fix 
 <span class="math">\(2k-1\)</span> inversions (<span class="math">\(-1\)</span> is that <span class="math">\(A[i]\)</span> greater than <span class="math">\(A[i+k]\)</span> and <span class="math">\(A[i+k]\)</span> smaller
@@ -133,7 +133,7 @@ increments {1,3,7}</p>
 <blockquote>
 <p>What is the running time of Shellsort using the two-increment sequence {1,2}?</p>
 </blockquote>
-<p>The answer is <span class="math">\(\Theta(N^2)\)</span>. Let's first show the lower bound. By the conclusion
+<p>The answer is <span class="math">\(\Theta(N^2)\)</span>. Let’s first show the lower bound. By the conclusion
 of 7.3, we know that The 2-sort removes at most only three (i.e. <span class="math">\(k=2\)</span>) inversions
 at a time. In addition, a pass with increment <span class="math">\(h_k\)</span> consists of <span class="math">\(h_k\)</span> insertion sorts
 of about <span class="math">\(N/h_k\)</span> elements. Then, by theorem 7.2, we know that the algorithm 
@@ -157,7 +157,7 @@ for a constant <span class="math">\(c\)</span>, which implies <span class="math"
 <p>However, one cannot talk about shellsort without specifying the increment sequence.
 If we assume the shell sequence (i.e. <span class="math">\(N/2, N/4, \dots, 2, 1\)</span>), then the running time
 is <span class="math">\(O(N^2)\)</span> as suggested by <a href="https://www.cs.rochester.edu/~brown/172/exams/2ndmidterm_ans_13.pdf">this answer</a>,
-which I'll copy below for future reference.</p>
+which I’ll copy below for future reference.</p>
 <p>Shellsort is just a bunch of insertion sorts. For a given increment <span class="math">\(I\)</span>, there will
 be <span class="math">\(I\)</span> subarrays to sort by insertion, each of length <span class="math">\(N/I\)</span>. We know that insertion
 sort requires time <span class="math">\(O(m^2)\)</span> to sort a reverse-sorted array of length <span class="math">\(m\)</span>. Here, <span class="math">\(m\)</span>
@@ -196,7 +196,7 @@ the proof of theorem 7.4, we can have the worst case running time <span class="m
 the result looks like</p>
 <div class="highlight"><pre><span></span><code><span class="mf">879</span><span class="p">,</span><span class="w"> </span><span class="mf">811</span><span class="p">,</span><span class="w"> </span><span class="mf">572</span><span class="p">,</span><span class="w"> </span><span class="mf">434</span><span class="p">,</span><span class="w"> </span><span class="mf">543</span><span class="p">,</span><span class="w"> </span><span class="mf">123</span><span class="p">,</span><span class="w"> </span><span class="mf">142</span><span class="p">,</span><span class="w"> </span><span class="mf">65</span><span class="p">,</span><span class="w"> </span><span class="mf">111</span><span class="p">,</span><span class="w"> </span><span class="mf">242</span><span class="p">,</span><span class="w"> </span><span class="mf">453</span><span class="p">,</span><span class="w"> </span><span class="mf">102</span>
 </code></pre></div>
-<p><span class="math">\(879\)</span> is removed from the heap and placed at the end. We'll put <em>|</em> to separate the elements
+<p><span class="math">\(879\)</span> is removed from the heap and placed at the end. We’ll put <em>|</em> to separate the elements
 that are sorted and not part of the heap. <span class="math">\(102\)</span> is placed in the hole and bubbled down, obtaining</p>
 <div class="highlight"><pre><span></span><code><span class="mf">811</span><span class="p">,</span><span class="w"> </span><span class="mf">543</span><span class="p">,</span><span class="w"> </span><span class="mf">572</span><span class="p">,</span><span class="w"> </span><span class="mf">434</span><span class="p">,</span><span class="w"> </span><span class="mf">453</span><span class="p">,</span><span class="w"> </span><span class="mf">123</span><span class="p">,</span><span class="w"> </span><span class="mf">142</span><span class="p">,</span><span class="w"> </span><span class="mf">65</span><span class="p">,</span><span class="w"> </span><span class="mf">111</span><span class="p">,</span><span class="w"> </span><span class="mf">242</span><span class="p">,</span><span class="w"> </span><span class="mf">102</span><span class="p">,</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="mf">879</span>
 </code></pre></div>

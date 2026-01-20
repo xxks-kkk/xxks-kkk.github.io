@@ -171,7 +171,7 @@
 <li>
 <p>Split objects into header and data so that TxOS maintains the invariant: single writer to any object (i.e., concurrent writes must be on disjoint objects) (see Figure 2 below)</p>
 <ul>
-<li>Object header contains a pointer to object's data; transactions commit changes to an object by replacing this pointer in the header to a modified copy of data object</li>
+<li>Object header contains a pointer to object’s data; transactions commit changes to an object by replacing this pointer in the header to a modified copy of data object</li>
 <li>Header itself is never replaced by a transaction (eliminates the need to update pointers in other objects)</li>
 <li>
 <p>Pros:</p>
@@ -214,7 +214,7 @@
 <li>
 <p>Managing transaction state</p>
 <ul>
-<li>Use transaction objects to store metadata and statistics for a transaction; let kernel thread's control block pointing to it</li>
+<li>Use transaction objects to store metadata and statistics for a transaction; let kernel thread’s control block pointing to it</li>
 <li>Transaction status (<code>status</code>) is checked and updated atomically</li>
 <li>
 <p>Abort is invoked when conflict is detected during transactional system call:</p>
@@ -251,7 +251,7 @@
 <p>Abort protocol</p>
 <ol>
 <li>Release any kernel locks</li>
-<li>Iterate workset and locks each objects to remove any references to itself from the object's transactional state and then unlocks the object</li>
+<li>Iterate workset and locks each objects to remove any references to itself from the object’s transactional state and then unlocks the object</li>
 <li>Transaction frees its shadow objects and decrements the reference count on their stable counterparts</li>
 <li>Release any resources used in transaction (e.g., memory allocation)</li>
 </ol>

@@ -160,7 +160,7 @@ hard to update)</p>
 <p>Global map:</p>
 <ul>
 <li>One global map per virtual disk that specifies the tuple of servers spanned by the virtual disk</li>
-<li>immutable -&gt; new global map if change virtual disk's tuple of server / redundancy scheme</li>
+<li>immutable -&gt; new global map if change virtual disk’s tuple of server / redundancy scheme</li>
 </ul>
 </li>
 <li>
@@ -169,7 +169,7 @@ hard to update)</p>
 <li>copy-on-write to create exact copy of a virtual disk at a specified point in time</li>
 <li>Use epoch-number as version number</li>
 <li>Create a snapshot consistent with client application level requires pauseing the application</li>
-<li>Can also use "crash-consistent" snapshot and later recovered by the application-specific recovery protocol</li>
+<li>Can also use “crash-consistent” snapshot and later recovered by the application-specific recovery protocol</li>
 </ul>
 </li>
 <li>
@@ -183,7 +183,7 @@ hard to update)</p>
 <li>
 <p>Virtual disk reconfiguration (data redistribution):</p>
 <ul>
-<li>data redistribution can take hours to finish (won't compete network &amp; disk traffic with write/read serving)</li>
+<li>data redistribution can take hours to finish (won’t compete network &amp; disk traffic with write/read serving)</li>
 <li>Basic steps:<ul>
 <li>create a new global map with redundancy scheme + server mapping</li>
 <li>change all virtual disk directory entries that refer to the old global map to refer to the new one</li>
@@ -199,11 +199,11 @@ hard to update)</p>
 </ul>
 </li>
 <li>Refinement:<ul>
-<li>don't need to change server mapping for an entire virtual disk before any data is moved (-&gt; READ miss given new global map)</li>
+<li>don’t need to change server mapping for an entire virtual disk before any data is moved (-&gt; READ miss given new global map)</li>
 <li>sol:<ul>
-<li>break virtual disk's address into: old, new, fenced</li>
+<li>break virtual disk’s address into: old, new, fenced</li>
 <li>Requests to old/new use old/new global maps</li>
-<li>Use "Basic steps" for fenced only</li>
+<li>Use “Basic steps” for fenced only</li>
 <li>Once we have relocated everything in the fenced region, it becomes new region and we fence another part of the old region</li>
 </ul>
 </li>
@@ -225,7 +225,7 @@ contiguous region b/c fenced region may be heavily used)</li>
 <ul>
 <li>Use chained-declustered data access and recovery modules (chained-declustering):<ul>
 <li>Two copies of each block of data are always stored on neighboring servers<ul>
-<li>Server 1 fails, servers 0 and 2 will share server 1's real load; server 3 will not have load increase</li>
+<li>Server 1 fails, servers 0 and 2 will share server 1’s real load; server 3 will not have load increase</li>
 <li>Can offload load to a server to neighboring servers</li>
 <li>similar to consistent hashing</li>
 </ul>
@@ -266,10 +266,10 @@ since data on a given server is replicate on neighboring only)</li>
 </ul>
 </li>
 <li>
-<p>Petal's limitation:</p>
+<p>Petal’s limitation:</p>
 <ul>
 <li>High requirement to the network (use digital ATM Network)</li>
-<li>Petal's use of the virtual disk abstraction adds an additional level of overhead, and can prevent application-specific disk optimizations that rely on careful placement of data.    </li>
+<li>Petal’s use of the virtual disk abstraction adds an additional level of overhead, and can prevent application-specific disk optimizations that rely on careful placement of data.    </li>
 </ul>
 </li>
 </ul>

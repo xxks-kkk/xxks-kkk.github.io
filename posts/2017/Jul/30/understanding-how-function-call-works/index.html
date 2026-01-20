@@ -74,7 +74,7 @@
         
         <article>
             <p>Understanding assembly language is crucial for system programming. Some nasty defects of the system
-can only be solved by digging into the assembly level of the program. In this post, I'll revisit 
+can only be solved by digging into the assembly level of the program. In this post, I’ll revisit 
 call stack concept as a way to understand how function call works under the cover of high-level language.
 In addition, this post belongs to part of future work mentioned in <a href="../../../../../posts/2017/Jan/22/num-of-function-calls-in-recursive-fibonacci-routine/">my post back in January</a>.</p>
 <div class="toc">
@@ -103,7 +103,7 @@ In addition, this post belongs to part of future work mentioned in <a href="../.
 <p>Before we jump into the actual material. I want to briefly revisit the various ways for assembly language
 accessing the data in memory (i.e., addressing mode). 
 The following table is adapted from CSAPP (2nd edition):</p>
-<table class="table table-hover  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>Type</th>
@@ -153,34 +153,34 @@ The following table is adapted from CSAPP (2nd edition):</p>
 <li><span class="math">\(M[x]\)</span> refers to the value stored at memory address <span class="math">\(x\)</span></li>
 </ul>
 <h2 id="main-course">Main course</h2>
-<p>Now, let's bring our main course onto the table: understanding how function works. I'll
-first clear up some terms we will use during the explanation. Then, we'll take a look
-at the stack and understand how it supports function calls. Lastly, we'll examine
+<p>Now, let’s bring our main course onto the table: understanding how function works. I’ll
+first clear up some terms we will use during the explanation. Then, we’ll take a look
+at the stack and understand how it supports function calls. Lastly, we’ll examine
 two assembly programs and understand the whole picture of function calls.</p>
 <h3 id="some-terms">Some terms</h3>
-<p>Let's first consider what the key elements we need in order to form a function:</p>
+<p>Let’s first consider what the key elements we need in order to form a function:</p>
 <ul>
 <li>
 <p>function name</p>
-<p>A function's name is a symbol that represents the address where the function's code starts. </p>
+<p>A function’s name is a symbol that represents the address where the function’s code starts. </p>
 </li>
 <li>
 <p>function arguments</p>
-<p>A function's arguments (aka. parameters) are the data items that are explicitly given to
+<p>A function’s arguments (aka. parameters) are the data items that are explicitly given to
 the function for processing. For example, in mathematics, there is a <span class="math">\(\sin\)</span> function. If
-you were to ask a computer to find the <span class="math">\(\sin (2)\)</span>, <span class="math">\(\sin\)</span> would be the function's name, 
+you were to ask a computer to find the <span class="math">\(\sin (2)\)</span>, <span class="math">\(\sin\)</span> would be the function’s name, 
 and <span class="math">\(2\)</span> would be the argument (or parameter).</p>
 </li>
 <li>
 <p>local variables</p>
 <p>Local variables are data storage that a function uses while processing that
-is thrown away when it returns. It's knid of like a scratch pad of paper.
+is thrown away when it returns. It’s knid of like a scratch pad of paper.
 Functions get a new piece of paper every time they are activated, and they have to throw
 it away when they are finished processing. </p>
 </li>
 <li>
 <p>return address</p>
-<p>The return address is an "invisible" parameter in that it isn't directly used
+<p>The return address is an “invisible” parameter in that it isn’t directly used
 during the function. The return address is a parameter which tells the function
 where to resume executing after the function is completed. This is needed because
 functions can be called to do processing from many different parts of our program,
@@ -200,8 +200,8 @@ Most programming languages only allow a sinlge return value for function.</p>
 <p class="admonition-title">Note</p>
 <p>The way that the variables are stored and the parameters and return values
 are transferred by the computer varies from language to language. This variance
-is known as a language's <em>calling convention</em>, because it describes how functions
-expect to get and receive data when they are called. In this post, I'll 
+is known as a language’s <em>calling convention</em>, because it describes how functions
+expect to get and receive data when they are called. In this post, I’ll 
 follow C programming language calling convention.</p>
 </div>
 <h3 id="stack">Stack</h3>
@@ -210,8 +210,8 @@ properly. Machine uses the stack to pass function arguments, to store return inf
 registers for later restoration, and for local variables.
 The portion of the stack allocated for a single function call is called a <strong>stack frame</strong>. In other words,
 for each function call, new space (i.e., stack frame) is created on the stack. </p>
-<p>The computer's stack lives at the very top addresses of memory. As the name suggests, stack is a stack
-data structure with the "top" of the stack growing from the <a href="../../../../../images/heap.png">high value addresses towards low values addresses</a>.
+<p>The computer’s stack lives at the very top addresses of memory. As the name suggests, stack is a stack
+data structure with the “top” of the stack growing from the <a href="../../../../../images/heap.png">high value addresses towards low values addresses</a>.
 We use <span class="math">\(\mathtt{push \text{ } S}\)</span> to push the source onto stack, and we use
 <span class="math">\(\mathtt{pop \text{ } D}\)</span> to remove the top value from the stack and place it into a destination
 (i.e. a register or memory location). We use the stack register, <span class="math">\(\mathtt{\%esp}\)</span> as a pointer
@@ -224,11 +224,11 @@ in it. With this description, we can see that to access the value on the top of 
 removing it, we can do <code>(%esp)</code>, which is indirect addressing mode.</p>
 </div>
 <p>When we talk about function calls, what we really care about is the topmost stack frame because 
-that's the memory region that is associated with our current function calls. CSAPP (2nd edition)
+that’s the memory region that is associated with our current function calls. CSAPP (2nd edition)
 has a nice picture about what the whole stack looks like:</p>
 <p><img alt="stack frame structure" class="img-responsive" src="../../../../../images/stack-frame-structure.png"/></p>
-<p>If some texts (i.e. "Saved %ebp") or layout (i.e. the order of arguments) don't make sense to you,
-don't worry. I'll talk about them immediately.</p>
+<p>If some texts (i.e. “Saved %ebp”) or layout (i.e. the order of arguments) don’t make sense to you,
+don’t worry. I’ll talk about them immediately.</p>
 <h4 id="calling-a-function">Calling a function</h4>
 <p>Before executing a function, a program pushes all of the parameters for the function
 onto the stack in the reverse order that they are documented. Then the program
@@ -244,9 +244,9 @@ the stack.</li>
 <p>When you call a function, you should assume that everything currently
 in your registers will be wiped out. The only register that is guaranteed
 to be left with the value it started with is <span class="math">\(\mathtt{\%ebp}\)</span> (why? see
-"Writing a function" section below). Thus, if there are registers
+“Writing a function” section below). Thus, if there are registers
 you want to save before calling a function, you need to save them
-by pushing them on the stack before pushing the function's parameters.</p>
+by pushing them on the stack before pushing the function’s parameters.</p>
 </div>
 <p>So, at the time the function starts, the stack looks like this:</p>
 <div class="highlight"><pre><span></span><code><span class="nx">Argument</span><span class="w"> </span><span class="nx">N</span>
@@ -271,10 +271,10 @@ variables.The stack frame is delimited by two pointers: <span class="math">\(\ma
 to the bottom of the stack frame and <span class="math">\(\mathtt{\%esp}\)</span> serves as the pointer pointing to the 
 top of the stack frame. As pointed out earlier, each function call has its own stack frame.
 Once the current function (i.e. callee) is done, we need to resume the execution of the caller function. 
-This means that we need to restore the caller's base pointer register <span class="math">\(\mathtt{\%ebp}\)</span> when
+This means that we need to restore the caller’s base pointer register <span class="math">\(\mathtt{\%ebp}\)</span> when
 we are done with callee function. Thus, we need to save the current base pointer register, 
-which is the caller's for the future caller stack frame restoration.</p>
-<p>Once we are done with saving the caller's <span class="math">\(\mathtt{\%ebp}\)</span>, we can now setup current stack frame's
+which is the caller’s for the future caller stack frame restoration.</p>
+<p>Once we are done with saving the caller’s <span class="math">\(\mathtt{\%ebp}\)</span>, we can now setup current stack frame’s
 <span class="math">\(\mathtt{\%ebp}\)</span> by doing <code>movl %esp %ebp</code>. The reason for this is that we can now be 
 able to access the function parameters that are pushed earlier onto the stack by caller function
 as fixed indexes from the base pointer. We cannot use stack pointer directly for accessing
@@ -303,7 +303,7 @@ caller may need these values for its future computations. </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Save registers step is not mandatory. If your caller function (or higher-level functions)
-don't use all these callee-save registers, you are free to skip this step.</p>
+don’t use all these callee-save registers, you are free to skip this step.</p>
 </div>
 <ul>
 <li>local variables</li>
@@ -319,7 +319,7 @@ down two words to serve the space:</p>
 more efficient to allocate this space all at once at the beginning of the function. This way,
 we are free of worring about clobbering them with pushes that we may make for next function calls
 (i.e. push arguments and return address for the function calls contained inside the current
-function, which all happens in "Argument build area" in the above picture).</p>
+function, which all happens in “Argument build area” in the above picture).</p>
 <p>Suppose we save <span class="math">\(\mathtt{\%ebx}\)</span> (i.e. callee-save register),
 and with our two words for local storage, our stack now looks like this:</p>
 <div class="highlight"><pre><span></span><code><span class="n">Argument</span><span class="w"> </span><span class="n">N</span><span class="w">      </span><span class="o">&lt;---</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="mi">4</span><span class="p">(</span><span class="nf">%ebp</span><span class="p">)</span>
@@ -348,12 +348,12 @@ and puts the stack frame of the caller back into effect)</li>
 which pops whatever value is at the top of the stack, and sets the instruction pointer %\mathtt{\%eip}$
 to that value.</li>
 </ol>
-<p>The reason we have to restore the caller's base pointer register before calling <code>ret</code> is due to the
+<p>The reason we have to restore the caller’s base pointer register before calling <code>ret</code> is due to the
 structure of our current stack frame: in our current stack frame, the return address is not
 at the top of the stack. Therefore, in order to make the return address to be the top of the stack frame,
 we need to move the stack pointer <span class="math">\(\mathtt{\%esp}\)</span> to the current stack frame base pointer <span class="math">\(\mathtt{\%ebp}\)</span>
-and restore the caller's frame pointer first. Then, the return address will be the top of the stack.
-Since we need to perform caller's frame pointer restoration anyway, everything just works out.</p>
+and restore the caller’s frame pointer first. Then, the return address will be the top of the stack.
+Since we need to perform caller’s frame pointer restoration anyway, everything just works out.</p>
 <p>Thus, to return from the function you have to do the following:</p>
 <div class="highlight"><pre><span></span><code><span class="nf">movl</span><span class="w"> </span><span class="nv">%ebp</span><span class="p">,</span><span class="w"> </span><span class="nv">%esp</span><span class="w"> </span><span class="c1"># Set stack pointer back to the beginning of the frame</span>
 <span class="nf">popl</span><span class="w"> </span><span class="nv">%ebp</span><span class="w">       </span><span class="c1"># Restore the caller's base pointer and now stack pointer pointing to Return address</span>
@@ -361,7 +361,7 @@ Since we need to perform caller's frame pointer restoration anyway, everything j
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The step 2 and 3 are unecessary if we don't save any registers at all. The reason we do step 2
+<p>The step 2 and 3 are unecessary if we don’t save any registers at all. The reason we do step 2
 is that we need to move the stack pointer pointing to the saved registers. If there are
 no saved registers, the step 4 can achieve the same effect as step 3 because
 after you move the stack pointer back, future stack pushes will likely overwrite everything you
@@ -512,7 +512,7 @@ ld -m elf_i386 -s power.o -o power</code></p>
 call returns. In this program, we do <code>addl $4, %esp</code> immediately after we <code>call factorial</code> in our <code>_start</code>.</p>
 <h2 id="future-works">Future works</h2>
 <ul>
-<li>For this post, I assume we work with x86 32-bit processor. It's interesting to further
+<li>For this post, I assume we work with x86 32-bit processor. It’s interesting to further
 investigate how the things changed for the 64-bit world.</li>
 </ul>
 <h2 id="links-to-resources">Links to resources</h2>
@@ -522,7 +522,7 @@ investigate how the things changed for the 64-bit world.</li>
 <li><a href="https://www.csee.umbc.edu/~cpatel2/links/310/nasm/gdb_help.shtml">Using gdb for Assembly Language Debugging</a></li>
 <li><a href="https://cs.brown.edu/courses/cs033/docs/guides/x64_cheatsheet.pdf">x64 Cheat Sheet - Brown CS 33</a></li>
 <li><a href="http://savannah.spinellicreations.com/pgubook/ProgrammingGroundUp-1-0-booksize.pdf">Programming from the Ground Up</a> Chapter 3,4</li>
-<li><a href="https://www.amazon.com/Computer-Systems-Programmers-Perspective-2nd/dp/0136108040">Computer Systems: A Programmer's Perspective (CSAPP) (2nd Edition)</a> Section 3.7</li>
+<li><a href="https://www.amazon.com/Computer-Systems-Programmers-Perspective-2nd/dp/0136108040">Computer Systems: A Programmer’s Perspective (CSAPP) (2nd Edition)</a> Section 3.7</li>
 </ol>
 <div class="footnote">
 <hr/>

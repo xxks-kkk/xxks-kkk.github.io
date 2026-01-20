@@ -130,10 +130,10 @@ we have <code>isEnd = true</code>.</li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Please note that <code>isEnd = true</code> doesn't indicate that we are at leaf node of the trie. The boolean only indicates
-whether we have reached the end of some string. In Figure 1, the end nodes of "wa" and "wax" are connected with each other.
-If we require that there is no common prefix for the string (e.g. strings in the dataset don't share the common prefix),
-we then don't need <code>isEnd</code> boolean variable.</p>
+<p>Please note that <code>isEnd = true</code> doesn’t indicate that we are at leaf node of the trie. The boolean only indicates
+whether we have reached the end of some string. In Figure 1, the end nodes of “wa” and “wax” are connected with each other.
+If we require that there is no common prefix for the string (e.g. strings in the dataset don’t share the common prefix),
+we then don’t need <code>isEnd</code> boolean variable.</p>
 </div>
 <ul>
 <li>
@@ -143,14 +143,14 @@ we then don't need <code>isEnd</code> boolean variable.</p>
 <p>We insert a key by searching into the trie. We start from the root and search a link, which corresponds to the first key character. There are two cases :</p>
 <ul>
 <li>A link exists. Then we move down the tree following the link to the next child level. The algorithm continues with searching for the next key character.</li>
-<li>A link does not exist. Then we create a new node and link it with the parent's link matching the current key character. We repeat this step until we encounter the last character of the key, then we mark the current node as an end node and the algorithm finishes.</li>
+<li>A link does not exist. Then we create a new node and link it with the parent’s link matching the current key character. We repeat this step until we encounter the last character of the key, then we mark the current node as an end node and the algorithm finishes.</li>
 </ul>
 </li>
 <li>
 <p>Time complexity: <span class="math">\(O(m)\)</span> (In each iteration of the algorithm, we either examine or create a node in the trie till we reach the end of the key. This takes only <span class="math">\(m\)</span> operations.)</p>
 </li>
 <li>
-<p>Space complexity: <span class="math">\(O(m)\)</span> (In the worst case newly inserted key doesn't share a prefix with the the keys already inserted in the trie. We have to add <span class="math">\(m\)</span> new nodes, which takes us <span class="math">\(O(m)\)</span> space.)</p>
+<p>Space complexity: <span class="math">\(O(m)\)</span> (In the worst case newly inserted key doesn’t share a prefix with the the keys already inserted in the trie. We have to add <span class="math">\(m\)</span> new nodes, which takes us <span class="math">\(O(m)\)</span> space.)</p>
 </li>
 </ul>
 </li>
@@ -180,7 +180,7 @@ we then don't need <code>isEnd</code> boolean variable.</p>
 </li>
 <li>
 <p>Search for a key prefix in a trie:</p>
-<p>The approach is very similar to the one we used for searching a key in a trie. We traverse the trie from the root, till there are no characters left in key prefix or it is impossible to continue the path in the trie with the current key character. The only difference with the mentioned above search for a key algorithm is that when we come to an end of the key prefix, we always return true. We don't need to consider the <code>isEnd</code> mark of the current trie node, because we are searching for a prefix of a key, not for a whole key.</p>
+<p>The approach is very similar to the one we used for searching a key in a trie. We traverse the trie from the root, till there are no characters left in key prefix or it is impossible to continue the path in the trie with the current key character. The only difference with the mentioned above search for a key algorithm is that when we come to an end of the key prefix, we always return true. We don’t need to consider the <code>isEnd</code> mark of the current trie node, because we are searching for a prefix of a key, not for a whole key.</p>
 <ul>
 <li>
 <p>Time complexity: <span class="math">\(O(m)\)</span></p>

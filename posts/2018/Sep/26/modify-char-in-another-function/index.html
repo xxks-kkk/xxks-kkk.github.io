@@ -120,7 +120,7 @@ the modification looks like below:</p>
 <p>The question we want to answer is why doing so works?</p>
 <h2 id="explanation">Explanation</h2>
 <p>We acquire key data from GDB as following:</p>
-<table class="table table-hover  table-striped">
+<table class=" table-striped table table-hover">
 <thead>
 <tr>
 <th>GDB command</th>
@@ -163,7 +163,7 @@ In our case, <code>&amp;s</code> is <code>0x7fff5fbff340</code>. Since <code>s</
 a value. In our case, the memory address in <code>s</code> is <code>0x7fff5fbff360</code>, which contains <code>""</code> (note that <code>""</code>
 value is undefined. It could be any value).</p>
 <p>We pass <code>&amp;s</code> into the function because inside the function, if we modify the content on the address <code>0x7fff5fbff340</code> (i.e. represented by <code>&amp;s</code>),
-we can still reference <code>0x7fff5fbff340</code> once the function exits. It's because we can still access <code>s</code>, and <code>s</code> and <code>0x7fff5fbff340</code> are the same thing.
+we can still reference <code>0x7fff5fbff340</code> once the function exits. It’s because we can still access <code>s</code>, and <code>s</code> and <code>0x7fff5fbff340</code> are the same thing.
 Whatever change made to the content on <code>0x7fff5fbff340</code> will be accessible by <code>s</code> as well. 
 Since <code>s</code> has type <code>char*</code>, then naturally <code>&amp;s</code> corresponds with type <code>char**</code>. Another way of understanding
 <code>char**</code> is that we want to change the value of the passed in argument and C, by default, pass the argument
@@ -174,13 +174,13 @@ with the function and back to <code>main</code>, since <code>s</code> is the ali
 is accomplished.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>One thought I had when I finished this post was <a href="https://stackoverflow.com/questions/52508492/why-cant-i-pass-the-pointer-instead-of-the-pointer-to-pointer-to-function">why can't I pass <code>s</code> instead of <code>&amp;s</code></a> because if <code>s</code> contains some address
+<p>One thought I had when I finished this post was <a href="https://stackoverflow.com/questions/52508492/why-cant-i-pass-the-pointer-instead-of-the-pointer-to-pointer-to-function">why can’t I pass <code>s</code> instead of <code>&amp;s</code></a> because if <code>s</code> contains some address
 (say <code>0xab</code>) and we modify the content on that address (<code>0xab</code>) to be <code>"Hello World!"</code>. Since <code>s</code> contains It seems that there is another option we can use. 
 However, <a href="https://stackoverflow.com/questions/52508492/why-cant-i-pass-the-pointer-instead-of-the-pointer-to-pointer-to-function">as pointed out by others</a>, the problem is that <code>s</code> is uninitialized: whatever we do with the address contained in
 <code>s</code> is undefined behavior. Undefined behavior means there is no predictability of the program: anything can happen. Thus, even we can print out the string, we still consider doing so wrong.</p>
 </div>
 <p>Hope this short writeup helps!</p>
-<p>--- 10/15/19 UPDATE ---</p>
+<p>— 10/15/19 UPDATE —</p>
 <p>Addtional perspective to understand why <code>&amp;s</code> works: a pointer is just a regular variable that holds some memory address of 
 another variable. Now, we want to instead of holding the memory address of some random content (e.g., <code>0x7fff5fbff360</code>), hold 
 the memory address of string <code>"Hello World!"</code> (e.g., <code>0x100000f8e</code>). A natural choice is to pass in the memory address of the variable that we want to modify the value it holds, which in this case is <code>&amp;s</code>.</p>

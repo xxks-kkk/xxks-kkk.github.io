@@ -93,11 +93,11 @@
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>O. Tatebe, <a href="http://www.hpcs.cs.tsukuba.ac.jp/~tatebe/lecture/h23/dsys/dsd-tutorial.html">"Introduction to Distributed System Design"</a></p>
+<p>O. Tatebe, <a href="http://www.hpcs.cs.tsukuba.ac.jp/~tatebe/lecture/h23/dsys/dsd-tutorial.html">“Introduction to Distributed System Design”</a></p>
 </div>
 <h2 id="the-basics">The Basics</h2>
 <h3 id="what-is-a-distributed-system">What is a distributed system?</h3>
-<p>Here is a "cascading" definition of a distributed system:</p>
+<p>Here is a “cascading” definition of a distributed system:</p>
 <ul>
 <li>A <strong>program</strong>: is the code you write.</li>
 <li>A <strong>process</strong>: is what you get when you run it.</li>
@@ -121,12 +121,12 @@
 <li><strong>Highly Available</strong>: It can restore operations, permitting it to resume providing services even when some components have failed.</li>
 <li><strong>Recoverable</strong>: Failed components can restart themselves and rejoin the system, after the cause of failure has been repaired.</li>
 <li><strong>Consistent</strong>: The system can coordinate actions by multiple components often in the presence of concurrency and failure. This underlies the ability of a distributed system to act like a non-distributed system.</li>
-<li><strong>Scalable</strong>: It can operate correctly even as some aspect of the system is scaled to a larger size. For example, we might increase the size of the network on which the system is running. This increases the frequency of network outages and could degrade a "non-scalable" system. Similarly, we might increase the number of users or servers, or overall load on the system. In a scalable system, this should not have a significant effect.</li>
+<li><strong>Scalable</strong>: It can operate correctly even as some aspect of the system is scaled to a larger size. For example, we might increase the size of the network on which the system is running. This increases the frequency of network outages and could degrade a “non-scalable” system. Similarly, we might increase the number of users or servers, or overall load on the system. In a scalable system, this should not have a significant effect.</li>
 <li><strong>Predictable Performance</strong>: The ability to provide desired responsiveness in a timely manner.</li>
 <li><strong>Secure</strong>: The system authenticates access to data and services.</li>
 </ul>
 <h3 id="category-of-failures-in-a-distributed-system">Category of failures in a distributed system</h3>
-<p>When you design distributed systems, you have to say, "Failure happens all the time." So when you design, you design for failure. It is your number one concern. 
+<p>When you design distributed systems, you have to say, “Failure happens all the time.” So when you design, you design for failure. It is your number one concern. 
 Failures fall into two obvious categories: hardware and software.</p>
 <ul>
 <li>Hardware failures: today, problems are most often associated with connections and mechanical devices, i.e., network failures and drive failures.</li>
@@ -142,7 +142,7 @@ Failures fall into two obvious categories: hardware and software.</p>
 One reason for this is the difficulty programmers have in obtaining a coherent and comprehensive view of the interactions of concurrent processes.</p>
 <p>The types of failures that can occur in a distributed system:</p>
 <ul>
-<li><strong>Halting failures</strong>: A component simply stops. There is no way to detect the failure except by timeout: it either stops sending "I'm alive" (heartbeat) messages or fails to respond to requests. Your computer freezing is a halting failure.</li>
+<li><strong>Halting failures</strong>: A component simply stops. There is no way to detect the failure except by timeout: it either stops sending “I’m alive” (heartbeat) messages or fails to respond to requests. Your computer freezing is a halting failure.</li>
 <li><strong>Fail-stop</strong>: A halting failure with some kind of notification to other components. A network file server telling its clients it is about to go down is a fail-stop.</li>
 <li><strong>Omission failures</strong>: Failure to send/receive messages primarily due to lack of buffering space, which causes a message to be discarded with no notification to either the sender or receiver. This can happen when routers become overloaded.</li>
 <li><strong>Network failures</strong>: A network link breaks.</li>
@@ -151,13 +151,13 @@ One reason for this is the difficulty programmers have in obtaining a coherent a
 <li><strong>Byzantine failures</strong>: This captures several types of faulty behaviors including data corruption or loss, failures caused by malicious programs, etc.</li>
 </ul>
 <p>To design for failure, we must be careful to not make any assumptions about the reliability of the components of a system. Everyone, when they first build a 
-distributed system, makes the following eight assumptions, which are referred as "8 Fallacies":</p>
+distributed system, makes the following eight assumptions, which are referred as “8 Fallacies”:</p>
 <ul>
 <li>The network is reliable.</li>
 <li>Latency is zero.</li>
 <li>Bandwidth is infinite.</li>
 <li>The network is secure.</li>
-<li>Topology doesn't change.</li>
+<li>Topology doesn’t change.</li>
 <li>There is one administrator.</li>
 <li>Transport cost is zero.</li>
 <li>The network is homogeneous. </li>
@@ -166,7 +166,7 @@ distributed system, makes the following eight assumptions, which are referred as
 <p class="admonition-title">Note</p>
 <ul>
 <li><strong>Latency</strong>: the time between initiating a request for data and the beginning of the actual data transfer.</li>
-<li><strong>Bandwidth</strong>: A measure of the capacity of a communications channel. The higher a channel's bandwidth, the more information it can carry.</li>
+<li><strong>Bandwidth</strong>: A measure of the capacity of a communications channel. The higher a channel’s bandwidth, the more information it can carry.</li>
 <li><strong>Topology</strong>: The different configurations that can be adopted in building networks, such as a ring, bus, star or meshed.</li>
 <li><strong>Homogeneous network</strong>: A network running a single network protocol.</li>
 </ul>
@@ -221,14 +221,14 @@ validating a cached data item before using it. If a cache is actively refreshed 
 <p><strong>Application Layer</strong> : The application layer is used by most programs that require network communication. Data is passed down from the program in an application-specific format to the next layer, then encapsulated into a transport layer protocol. Examples of applications are HTTP, FTP or Telnet.</p>
 </li>
 <li>
-<p><strong>Transport Layer</strong> : The transport layer's responsibilities include end-to-end message transfer independent of the underlying network, along with error control, fragmentation and flow control. End-to-end message transmission at the transport layer can be categorized as either__connection-oriented (TCP)<strong> or 
+<p><strong>Transport Layer</strong> : The transport layer’s responsibilities include end-to-end message transfer independent of the underlying network, along with error control, fragmentation and flow control. End-to-end message transmission at the transport layer can be categorized as either__connection-oriented (TCP)<strong> or 
 __connectionless (UDP)</strong>: </p>
 <ul>
 <li>
-<p>TCP is the more sophisticated of the two protocols, providing reliable delivery. First, TCP ensures that the receiving computer is ready to accept data. It uses a three-packet handshake in which both the sender and receiver agree that they are ready to communicate. Second, TCP makes sure that data gets to its destination. If the receiver doesn't acknowledge a particular packet, TCP automatically retransmits the packet typically three times. If necessary, TCP can also split large packets into smaller ones so that data can travel reliably between source and destination. TCP drops duplicate packets and rearranges packets that arrive out of sequence.</p>
+<p>TCP is the more sophisticated of the two protocols, providing reliable delivery. First, TCP ensures that the receiving computer is ready to accept data. It uses a three-packet handshake in which both the sender and receiver agree that they are ready to communicate. Second, TCP makes sure that data gets to its destination. If the receiver doesn’t acknowledge a particular packet, TCP automatically retransmits the packet typically three times. If necessary, TCP can also split large packets into smaller ones so that data can travel reliably between source and destination. TCP drops duplicate packets and rearranges packets that arrive out of sequence.</p>
 </li>
 <li>
-<p>UDP is similar to TCP in that it is a protocol for sending and receiving packets across a network, but with two major differences. First, it is connectionless. This means that one program can send off a load of packets to another, but that's the end of their relationship. The second might send some back to the first and the first might send some more, but there's never a solid connection. UDP is also different from TCP in that it doesn't provide any sort of guarantee that the receiver will receive the packets that are sent in the right order. All that is guaranteed is the packet's contents. This means it's a lot faster, because there's no extra overhead for error-checking above the packet level. For this reason, games often use this protocol. In a game, if one packet for updating a screen position goes missing, the player will just jerk a little. The other packets will simply update the position, and the missing packet - although making the movement a little rougher - won't change anything.</p>
+<p>UDP is similar to TCP in that it is a protocol for sending and receiving packets across a network, but with two major differences. First, it is connectionless. This means that one program can send off a load of packets to another, but that’s the end of their relationship. The second might send some back to the first and the first might send some more, but there’s never a solid connection. UDP is also different from TCP in that it doesn’t provide any sort of guarantee that the receiver will receive the packets that are sent in the right order. All that is guaranteed is the packet’s contents. This means it’s a lot faster, because there’s no extra overhead for error-checking above the packet level. For this reason, games often use this protocol. In a game, if one packet for updating a screen position goes missing, the player will just jerk a little. The other packets will simply update the position, and the missing packet - although making the movement a little rougher - won’t change anything.</p>
 </li>
 </ul>
 </li>
@@ -257,17 +257,17 @@ __connectionless (UDP)</strong>: </p>
 <li>Develops the client program</li>
 <li>Develops the server program</li>
 </ul>
-<p>The communication protocol is created by stubs generated by a protocol compiler. A <strong>stub</strong> is a routine that doesn't actually do much other than declare itself and the parameters it accepts. The stub contains just enough code to allow it to be compiled and linked.</p>
+<p>The communication protocol is created by stubs generated by a protocol compiler. A <strong>stub</strong> is a routine that doesn’t actually do much other than declare itself and the parameters it accepts. The stub contains just enough code to allow it to be compiled and linked.</p>
 <p>The client and server programs must communicate via the procedures and data types specified in the protocol. The server side registers the procedures that may be called by the client and receives and returns data required for processing. The client side calls the remote procedure, passes any required data and receives the returned data.</p>
 <p>Thus, an RPC application uses classes generated by the stub generator to execute an RPC and wait for it to finish. The programmer needs to supply classes on the server side that provide the logic for handling an RPC request.</p>
 <p>RPC introduces a set of error cases that are not present in local procedure programming. For example, a binding error can occur when a server is not running when the client is started. Version mismatches occur if a client was compiled against one version of a server, but the server has now been updated to a newer version. A timeout can result from a server crash, network problem, or a problem on a client computer.</p>
 <p>Some RPC applications view these types of errors as unrecoverable. Fault-tolerant systems, however, have alternate sources for critical services and fail-over from a primary server to a backup server.</p>
-<p>A challenging error-handling case occurs when a client needs to know the outcome of a request in order to take the next step, after failure of a server. This can sometimes result in incorrect actions and results. For example, suppose a client process requests a ticket-selling server to check for a seat in the orchestra section of Carnegie Hall. If it's available, the server records the request and the sale. But the request fails by timing out. Was the seat available and the sale recorded? Even if there is a backup server to which the request can be re-issued, there is a risk that the client will be sold two tickets, which is an expensive mistake in Carnegie Hall.</p>
+<p>A challenging error-handling case occurs when a client needs to know the outcome of a request in order to take the next step, after failure of a server. This can sometimes result in incorrect actions and results. For example, suppose a client process requests a ticket-selling server to check for a seat in the orchestra section of Carnegie Hall. If it’s available, the server records the request and the sale. But the request fails by timing out. Was the seat available and the sale recorded? Even if there is a backup server to which the request can be re-issued, there is a risk that the client will be sold two tickets, which is an expensive mistake in Carnegie Hall.</p>
 <p>Here are some common error conditions that need to be handled:</p>
 <ul>
 <li>
 <p><strong>Network data loss resulting in retransmit</strong> </p>
-<p>Often, a system tries to achieve 'at most once' transmission tries. In the worst case, if duplicate transmissions occur, we try to minimize any damage done by the data being received multiple time.</p>
+<p>Often, a system tries to achieve ‘at most once’ transmission tries. In the worst case, if duplicate transmissions occur, we try to minimize any damage done by the data being received multiple time.</p>
 </li>
 <li>
 <p><strong>Server process crashes during RPC operation</strong> </p>
@@ -281,7 +281,7 @@ __connectionless (UDP)</strong>: </p>
 <h2 id="distributed-design-principles">Distributed Design Principles</h2>
 <ul>
 <li>
-<p>As Ken Arnold says: "You have to design distributed systems with the expectation of failure." Avoid making assumptions that any component in the system is in a particular state. A classic error scenario is for a process to send data to a process running on a second machine. The process on the first machine receives some data back and processes it, and then sends the results back to the second machine assuming it is ready to receive. Any number of things could have failed in the interim and the sending process must anticipate these possible failures.</p>
+<p>As Ken Arnold says: “You have to design distributed systems with the expectation of failure.” Avoid making assumptions that any component in the system is in a particular state. A classic error scenario is for a process to send data to a process running on a second machine. The process on the first machine receives some data back and processes it, and then sends the results back to the second machine assuming it is ready to receive. Any number of things could have failed in the interim and the sending process must anticipate these possible failures.</p>
 </li>
 <li>
 <p>Explicitly define failure scenarios and identify how likely each one might occur. Make sure your code is thoroughly covered for the most likely ones.</p>
@@ -296,10 +296,10 @@ __connectionless (UDP)</strong>: </p>
 <p>Latency is the time between initiating a request for data and the beginning of the actual data transfer. Minimizing latency sometimes comes down to a question of whether you should make many little calls/data transfers or one big call/data transfer. The way to make this decision is to experiment. Do small tests to identify the best compromise.</p>
 </li>
 <li>
-<p>Don't assume that data sent across a network (or even sent from disk to disk in a rack) is the same data when it arrives. If you must be sure, do checksums or validity checks on data to verify that the data has not changed.</p>
+<p>Don’t assume that data sent across a network (or even sent from disk to disk in a rack) is the same data when it arrives. If you must be sure, do checksums or validity checks on data to verify that the data has not changed.</p>
 </li>
 <li>
-<p>Caches and replication strategies are methods for dealing with state across components. We try to minimize stateful components in distributed systems, but it's challenging. State is something held in one place on behalf of a process that is in another place, something that cannot be reconstructed by any other component. If it can be reconstructed it's a cache. Caches can be helpful in mitigating the risks of maintaining state across components. But cached data can become stale, so there may need to be a policy for validating a cached data item before using it. If a process stores information that can't be reconstructed, then problems arise. One possible question is, "Are you now a single point of failure?" I have to talk to you now - I can't talk to anyone else. So what happens if you go down? To deal with this issue, you could be replicated. Replication strategies are also useful in mitigating the risks of maintaining state. But there are challenges here too: What if I talk to one replicant and modify some data, then I talk to another? Is that modification guaranteed to have already arrived at the other? What happens if the network gets partitioned and the replicants can't talk to each other? Can anybody proceed? There are a set of tradeoffs in deciding how and where to maintain state, and when to use caches and replication. It's more difficult to run small tests in these scenarios because of the overhead in setting up the different mechanisms.</p>
+<p>Caches and replication strategies are methods for dealing with state across components. We try to minimize stateful components in distributed systems, but it’s challenging. State is something held in one place on behalf of a process that is in another place, something that cannot be reconstructed by any other component. If it can be reconstructed it’s a cache. Caches can be helpful in mitigating the risks of maintaining state across components. But cached data can become stale, so there may need to be a policy for validating a cached data item before using it. If a process stores information that can’t be reconstructed, then problems arise. One possible question is, “Are you now a single point of failure?” I have to talk to you now - I can’t talk to anyone else. So what happens if you go down? To deal with this issue, you could be replicated. Replication strategies are also useful in mitigating the risks of maintaining state. But there are challenges here too: What if I talk to one replicant and modify some data, then I talk to another? Is that modification guaranteed to have already arrived at the other? What happens if the network gets partitioned and the replicants can’t talk to each other? Can anybody proceed? There are a set of tradeoffs in deciding how and where to maintain state, and when to use caches and replication. It’s more difficult to run small tests in these scenarios because of the overhead in setting up the different mechanisms.</p>
 </li>
 <li>
 <p>Be sensitive to speed and performance. Take time to determine which parts of your system can have a significant impact on performance: Where are the bottlenecks and why? Devise small tests you can do to evaluate alternatives. Profile and measure to learn more. Talk to your colleagues about these alternatives and your results, and decide on the best solution.</p>
@@ -308,7 +308,7 @@ __connectionless (UDP)</strong>: </p>
 <p>Acks are expensive and tend to be avoided in distributed systems wherever possible.</p>
 </li>
 <li>
-<p>Retransmission is costly. It's important to experiment so you can tune the delay that prompts a retransmission to be optimal.</p>
+<p>Retransmission is costly. It’s important to experiment so you can tune the delay that prompts a retransmission to be optimal.</p>
 </li>
 </ul>
         </article>

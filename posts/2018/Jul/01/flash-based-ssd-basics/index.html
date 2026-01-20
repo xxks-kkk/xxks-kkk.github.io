@@ -157,7 +157,7 @@ of a large number of cells. </li>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>We use <span class="math">\(\texttt{INVALID}\)</span>, <span class="math">\(\texttt{ERASED}\)</span>, and <span class="math">\(\texttt{VALID}\)</span>
-to represents three states of a page. One should note that write to a page with state <span class="math">\(\texttt{E}\)</span> doesn't cause the entire block to be erased.
+to represents three states of a page. One should note that write to a page with state <span class="math">\(\texttt{E}\)</span> doesn’t cause the entire block to be erased.
 However, to write to a page with state <span class="math">\(\texttt{V}\)</span>, the device requires
 the whole block to be erased.</p>
 </div>
@@ -241,7 +241,7 @@ to the the next free spot in the currently-being-written-to block.</p>
 </li>
 <li>
 <p>Write: the SSD finds a location for the write, usually just picking
-the next free page; it then programs that page with the block's contents, and records the logical-to-physical mapping in its mapping
+the next free page; it then programs that page with the block’s contents, and records the logical-to-physical mapping in its mapping
 table.</p>
 </li>
 <li>
@@ -285,8 +285,8 @@ reconstruct the mapping table in memory.</li>
 <ul>
 <li>Garbage: old versions of data around the drive that takes up the space<ul>
 <li>Ex: immediately follow the picture above, we write(100) with
-content "c1". The original "a1" is no longer needed, which is considered as garbage. We need to reclaim the physical page that
-"a1" takes.</li>
+content “c1”. The original “a1” is no longer needed, which is considered as garbage. We need to reclaim the physical page that
+“a1” takes.</li>
 </ul>
 </li>
 <li>Garbage collection: the process of finding garbage blocks and
@@ -314,8 +314,8 @@ one record per block. Doing so will reduce the size of mapping table by a factor
 <li>Read: The read of a logical block address is shown in picture below. The whole read process greatly mimics the virtual address translation. The mapping table plays a role as the page table in the virtual memory system (map virtual pages to physical frames).</li>
 <li>Write: if the client writes to logical block 2002 with content <span class="math">\(c'\)</span>,
 since by the current mapping, we try to overwrite the physical page with new content, FTL has to perform erase. FTL will read in 2000, 2001, and 2003 and then write out all four
-logical blocks in a new location (e.g. physical pages 08,09,10,11 with values a, b, c', d), updating the mapping table accordingly and
-erase the original block. We can transfer the a,b,c',d back to the original block but that will involve another set of writes, which are
+logical blocks in a new location (e.g. physical pages 08,09,10,11 with values a, b, c’, d), updating the mapping table accordingly and
+erase the original block. We can transfer the a,b,c’,d back to the original block but that will involve another set of writes, which are
 expensive compared with updating the mapping table record.</li>
 <li>Disadvantage: performance decrease for the writes smaller than
 the physical block size of the device (If the writes equal to
@@ -330,7 +330,7 @@ into new location.)</li>
 <li>Hybrid Mapping<ul>
 <li>Combine the page-level mapping (enable flexible writing) + block-level mapping (reduce mapping costs)</li>
 <li>FTL structure is shown in the picture below.</li>
-<li>One big challenge in the hyprid mapping FTL is the "compaction", which means we have to move the contents from
+<li>One big challenge in the hyprid mapping FTL is the “compaction”, which means we have to move the contents from
 log blocks referred by the log table into the physical blocks referred by the data table. The motivation is that
 we want to keep the size of log table small (i.e. reduce mapping costs). There are three ways
 we can perform depends on the contents of the blocks: <strong>switch merge</strong>, <strong>partial merge</strong>, <strong>full merge</strong> shown
@@ -342,9 +342,9 @@ in the picture below.</li>
 <p><img alt="merge in hybrid mapping FTL" class="img-responsive" src="/images/merge-in-hybrid-mapping.png"/></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>"compaction" isn't a term used in the chapter. I use the term as a way to indicate the whole moving log block
+<p>“compaction” isn’t a term used in the chapter. I use the term as a way to indicate the whole moving log block
 process greatly mimics how the compaction works in the <a href="../../../../../posts/2018/Mar/30/pebblesdb-building-key-value-stores-using-fragmented-log-structured-merge-trees/">Log-structured merge (LSM) tree</a>.
-Log blocks can be thought of as "memtable" in the LSM-based key-value store. In addition, when we look for a 
+Log blocks can be thought of as “memtable” in the LSM-based key-value store. In addition, when we look for a 
 particular logical block, the FTL will first consult the log table; if the logical block’s location is not found there, 
 the FTL will then consult the data table to find its location and then access the requested data. Also, we need to periodically
 scan the log table and corresponding log blocks to form blocks pointed by only one block pointer. All these behaviors

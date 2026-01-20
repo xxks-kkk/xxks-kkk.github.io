@@ -99,7 +99,7 @@ but how can we adapt such interface to GPU application needs while maintaining g
 <ul>
 <li>GPUs are multicore processors</li>
 <li>Each core called multiprocessor (MP), features a wide SIMD vector unit, which a hardware scheduler multiplexes between multiple execution contexts</li>
-<li>Thread: a GPU's basic sequential unit of execution (higher execution units: warps, threadblock, kernel)</li>
+<li>Thread: a GPU’s basic sequential unit of execution (higher execution units: warps, threadblock, kernel)</li>
 </ul>
 <p><img alt="GPU execution hierarchy" class="img-responsive" src="../../../../../images/gpu-execution.png"/></p>
 </li>
@@ -114,8 +114,8 @@ but how can we adapt such interface to GPU application needs while maintaining g
 <p>Architecture:</p>
 <p><img alt="GPUfs architecture" class="img-responsive" src="../../../../../images/gpufs-arch.png"/></p>
 <ul>
-<li>GPU programs can access the host's file system via a GPUfs library linked into the application's GPU code</li>
-<li>GPUfs library works with the host OS on the CPU to coordinate the file system's namespace and data</li>
+<li>GPU programs can access the host’s file system via a GPUfs library linked into the application’s GPU code</li>
+<li>GPUfs library works with the host OS on the CPU to coordinate the file system’s namespace and data</li>
 </ul>
 </li>
 <li>
@@ -168,7 +168,7 @@ but how can we adapt such interface to GPU application needs while maintaining g
 <li>No guarantee to map the entire requested file region</li>
 <li>No guarantee on mapping at a particular address (<code>MMAP_FIXED</code> unsupport)</li>
 <li>No guarantee returns the requested permission (ask read may return read/write)</li>
-<li>Benefits: allow GPUfs to give the application pointers directly into GPU-local buffer cache pages, residing the same address space as the application's GPU code</li>
+<li>Benefits: allow GPUfs to give the application pointers directly into GPU-local buffer cache pages, residing the same address space as the application’s GPU code</li>
 </ul>
 </li>
 </ul>
@@ -180,7 +180,7 @@ but how can we adapt such interface to GPU application needs while maintaining g
 <li>
 <p>Top layer:</p>
 <ul>
-<li>Runs in the context of the application's GPU kernels and maintains its data structures in GPU memory</li>
+<li>Runs in the context of the application’s GPU kernels and maintains its data structures in GPU memory</li>
 <li>Implements the GPUfs API, tracks open file state, and implements buffer cache and paging</li>
 </ul>
 </li>
@@ -195,7 +195,7 @@ but how can we adapt such interface to GPU application needs while maintaining g
 <li>
 <p>Consistency layer:</p>
 <ul>
-<li>OS kernel module running on the host CPU, which manages consistency between the host OS's CPU buffer cache and the GPU buffer caches</li>
+<li>OS kernel module running on the host CPU, which manages consistency between the host OS’s CPU buffer cache and the GPU buffer caches</li>
 </ul>
 </li>
 </ul>

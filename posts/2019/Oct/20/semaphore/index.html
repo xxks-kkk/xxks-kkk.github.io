@@ -75,10 +75,10 @@
         </header>
         
         <article>
-            <p>Concurrency is a big topic that I'm planning to write about more for the upcoming days. In this post, I'll cover
-the concept "semaphore", a very important concept when we talk about synchronization. I'll walk through concept and 
+            <p>Concurrency is a big topic that I’m planning to write about more for the upcoming days. In this post, I’ll cover
+the concept “semaphore”, a very important concept when we talk about synchronization. I’ll walk through concept and 
 offer an implementation of semaphore in C++ with a working example. 
-Lastly, I'll apply <a href="https://tour.golang.org/concurrency/2">golang's channel concept</a> to help us better understand semaphore.</p>
+Lastly, I’ll apply <a href="https://tour.golang.org/concurrency/2">golang’s channel concept</a> to help us better understand semaphore.</p>
 <div class="toc">
 <ul>
 <li><a href="#why-semaphore">Why Semaphore?</a></li>
@@ -95,7 +95,7 @@ in the ordering shown above and talks about the missions that each concurrency p
 is some rules of thumb I like to use when work with those concepts in practice:</p>
 <ul>
 <li>
-<p>Semaphore replaces "everything": I can use semaphore to work both as lock to protect shared data across multiple threads (i.e., threads can access data but only one at a time) and as condition variable <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> to order the events (e.g., ordering the access of shared data; ordering the execution of threads).</p>
+<p>Semaphore replaces “everything”: I can use semaphore to work both as lock to protect shared data across multiple threads (i.e., threads can access data but only one at a time) and as condition variable <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> to order the events (e.g., ordering the access of shared data; ordering the execution of threads).</p>
 </li>
 <li>
 <p>Mutex is just a easeir tool to use under lock scenario. In other words, we can use semaphore as the lock but implements semaphore itself requires more LOC than mutex (i.e., if we only need lock, use mutex).</p>
@@ -106,13 +106,13 @@ is some rules of thumb I like to use when work with those concepts in practice:<
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>I find how we understand those three concepts implicitly ill shaped by C, which is the default language used in undergraduate OS course. For example, C POSIX has a nice "<a href="https://pubs.opengroup.org/onlinepubs/7908799/xsh/semaphore.h.html">semaphore.h</a>" inteface that allows user to use semaphore <a href="http://www.csc.villanova.edu/~mdamian/threads/posixsem.html">directly</a>. Such existence of interface makes one to direct use <code>semaphore.h</code> for using semaphore and <a href="https://pubs.opengroup.org/onlinepubs/7908799/xsh/pthread.h.html">pthread.h</a> for condition variable and mutex. The consequence of such usage is that one can easily think that if they are using condition variable + mutex, they are using condition variable instead of semaphore on conceptual level. This is wrong! What they are really doing is to first construct semaphore using condition variable + mutex and then using semaphore to achieve the desired goal. The only difference between their usage and using semaphore directly is the lack of semaphore as an object abstraction. From this angle, I think C++ with LLVM compiler on Mac does a much better job by <a href="https://stackoverflow.com/questions/27736618/why-are-sem-init-sem-getvalue-sem-destroy-deprecated-on-mac-os-x-and-w">deprecating POSIX semaphore.h C library</a>. This forces me to use standard <a href="https://en.cppreference.com/w/cpp/thread/mutex">mutex</a> and <a href="https://en.cppreference.com/w/cpp/thread/condition_variable">condition variable</a> to implement semaphore first before using it (also makes the code much more portable), which helps me to discover this sublte relationship among three concepts that is masked out in OS and C world. However, I'm not stating that all the condition variable + mutex usage will be equivalent to semaphore but semaphore can achieve the same purpose as condition variable with cleaner encapsulation.</p>
+<p>I find how we understand those three concepts implicitly ill shaped by C, which is the default language used in undergraduate OS course. For example, C POSIX has a nice “<a href="https://pubs.opengroup.org/onlinepubs/7908799/xsh/semaphore.h.html">semaphore.h</a>” inteface that allows user to use semaphore <a href="http://www.csc.villanova.edu/~mdamian/threads/posixsem.html">directly</a>. Such existence of interface makes one to direct use <code>semaphore.h</code> for using semaphore and <a href="https://pubs.opengroup.org/onlinepubs/7908799/xsh/pthread.h.html">pthread.h</a> for condition variable and mutex. The consequence of such usage is that one can easily think that if they are using condition variable + mutex, they are using condition variable instead of semaphore on conceptual level. This is wrong! What they are really doing is to first construct semaphore using condition variable + mutex and then using semaphore to achieve the desired goal. The only difference between their usage and using semaphore directly is the lack of semaphore as an object abstraction. From this angle, I think C++ with LLVM compiler on Mac does a much better job by <a href="https://stackoverflow.com/questions/27736618/why-are-sem-init-sem-getvalue-sem-destroy-deprecated-on-mac-os-x-and-w">deprecating POSIX semaphore.h C library</a>. This forces me to use standard <a href="https://en.cppreference.com/w/cpp/thread/mutex">mutex</a> and <a href="https://en.cppreference.com/w/cpp/thread/condition_variable">condition variable</a> to implement semaphore first before using it (also makes the code much more portable), which helps me to discover this sublte relationship among three concepts that is masked out in OS and C world. However, I’m not stating that all the condition variable + mutex usage will be equivalent to semaphore but semaphore can achieve the same purpose as condition variable with cleaner encapsulation.</p>
 </div>
 <p>Hopefully, by now, I can convince you why we need semaphore: it is such a indispensable tool in the pocket when we want to deal with commonly-seen concurrency situation: used as the lock to protect shared variable; used as ordering mechanism to facilitate threads execution order and concurrent event ordering.</p>
 <h2 id="concept-and-implementation">Concept and Implementation</h2>
-<p>Before we jump into semaphore, let's revisit mutex and condition variable concepts first because we will leverage those two concepts in our C++ implementation. Mutex is used to allow many threads to acess the same variable but only do so one at a time. It is a
+<p>Before we jump into semaphore, let’s revisit mutex and condition variable concepts first because we will leverage those two concepts in our C++ implementation. Mutex is used to allow many threads to acess the same variable but only do so one at a time. It is a
 useful tool to avoid data race: a situation where two threads acess the same variable concurrently and at least one of the access is a write (e.g., Alice deposits $200 into bank with initial balance is 0; Bob deposits $100 to the same account and the final balance can be $200 <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>). Whenever a thread wants to modify a shared variable, it needs to acquire mutex first and release the mutex after the modification. Condition variable is used to put one thread to sleep until the condition the thread is waiting for comes true. A condition variable is an explicit queue that threads can put themselves on when some state of execution (i.e., some condition) is not as desired (by <strong>waiting</strong> on the condition); some other thread, when it changes said state, can then wake one (or more) of those waiting threads and thus allow them to continue (by <strong>signaling</strong> on the condition).</p>
-<p>A semaphore is an object with an integer value that we can manipulate with an increment-value method (let's denote such method as <code>post()</code>) and a decrement-value method (let's denote such method as <code>wait()</code>). Then, the semantics of semaphore is defined by
+<p>A semaphore is an object with an integer value that we can manipulate with an increment-value method (let’s denote such method as <code>post()</code>) and a decrement-value method (let’s denote such method as <code>wait()</code>). Then, the semantics of semaphore is defined by
 the functionality of <code>post()</code> and <code>wait()</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -130,7 +130,7 @@ the functionality of <code>post()</code> and <code>wait()</code>.</p>
 </code></pre></div>
 <p>Here is the pseudo code for the semaphore implementation:</p>
 <p><img alt="semaphore pseudo code" class="img-responsive" src="../../../../../images/semaphore.png"/></p>
-<p>Now, let's implement semaphore in C++ with the semantics stated above.</p>
+<p>Now, let’s implement semaphore in C++ with the semantics stated above.</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Semaphore</span>
 <span class="p">{</span>
 <span class="k">private</span><span class="o">:</span>
@@ -234,8 +234,8 @@ status on <code>mutex</code> on destruction and <code>std::unqiue_lock</code> de
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="example">Example</h2>
-<p>As one can probably see, semaphore doesn't offer much freedom when come to how much we can customize it. The only thing that can be set by the user
-is the initial integer value of the semaphore (e.g., <code>avail</code>). In fact, that's the beauty of the semaphore: we can achieve various purposes with semaphore by initalizing it with different values. For exmaple, we can intialize the semaphore with value <code>1</code> to make the semaphore work like a lock (such semaphore is called <strong>binary semaphore</strong>):</p>
+<p>As one can probably see, semaphore doesn’t offer much freedom when come to how much we can customize it. The only thing that can be set by the user
+is the initial integer value of the semaphore (e.g., <code>avail</code>). In fact, that’s the beauty of the semaphore: we can achieve various purposes with semaphore by initalizing it with different values. For exmaple, we can intialize the semaphore with value <code>1</code> to make the semaphore work like a lock (such semaphore is called <strong>binary semaphore</strong>):</p>
 <div class="highlight"><pre><span></span><code><span class="n">Semaphore</span><span class="w"> </span><span class="nf">lk</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 <span class="kt">int</span><span class="w"> </span><span class="n">balance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="c1">// deposit called by multiple threads to update balance</span>
@@ -246,8 +246,8 @@ is the initial integer value of the semaphore (e.g., <code>avail</code>). In fac
 <span class="p">}</span>
 </code></pre></div>
 <p>Here is an intuitive description to understand semaphore based on this deposit example: Suppose there are five people want to withdraw money
-from the bank. Semaphore works like a key hanging on the bank door. Since the semaphore value is intialized with one, there is only one key hang on the door. The first person arrives at the bank is able to grab the key, open the door, and withdraw money. The rest four people have to wait in line for the key. Once the first person finishes the withdrawing, he puts the key back to the door and pat the next person's shoulder and tells her the key is available and she can go in. Now, the second person checks the key is indeed hang on the door and now she can grab it to withdraw. The whole process repeats for the rest three person waiting in the line. This describes the five threads with one semaphore situation. </p>
-<p>We can also set semaphore value properly to order the threads execution. Consider the <a href="https://leetcode.com/problems/print-in-order/">Leetcode Problem: 1114. Print In Order</a> where we pass the same object <code>Foo</code> into three threads and let them calling appropriate print methods to print "first", "second", and "third" in such ordering without restricting which thread is assigned to print which word. For detailed example, see the problem description. The following implementation shows how we can use semaphore implementation shown above to achieve such ordering purpose: always print "first", "second", and "third" in order:</p>
+from the bank. Semaphore works like a key hanging on the bank door. Since the semaphore value is intialized with one, there is only one key hang on the door. The first person arrives at the bank is able to grab the key, open the door, and withdraw money. The rest four people have to wait in line for the key. Once the first person finishes the withdrawing, he puts the key back to the door and pat the next person’s shoulder and tells her the key is available and she can go in. Now, the second person checks the key is indeed hang on the door and now she can grab it to withdraw. The whole process repeats for the rest three person waiting in the line. This describes the five threads with one semaphore situation. </p>
+<p>We can also set semaphore value properly to order the threads execution. Consider the <a href="https://leetcode.com/problems/print-in-order/">Leetcode Problem: 1114. Print In Order</a> where we pass the same object <code>Foo</code> into three threads and let them calling appropriate print methods to print “first”, “second”, and “third” in such ordering without restricting which thread is assigned to print which word. For detailed example, see the problem description. The following implementation shows how we can use semaphore implementation shown above to achieve such ordering purpose: always print “first”, “second”, and “third” in order:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Foo</span>
 <span class="p">{</span>
 <span class="w">  </span><span class="n">Semaphore</span><span class="w"> </span><span class="n">firstJobDone</span><span class="p">;</span>
@@ -277,7 +277,7 @@ from the bank. Semaphore works like a key hanging on the bank door. Since the se
 </code></pre></div>
 <p>Both <code>firstJobDone</code> and <code>secondJobDone</code> have semaphore value of <code>0</code> when the <code>Foo</code> class is constructed. 
 Both <code>second()</code> and <code>third()</code> will call <code>wait()</code> method on respective semaphore; unless <code>post()</code> is called before <code>wait()</code>, 
-the value of semaphore will be 0, which will put threads calling <code>second()</code> and <code>third()</code> pause waiting on respective semaphore. Since <code>first()</code> doesn't call <code>wait()</code> initially, <code>first()</code> will be executed first. Then, <code>firstJobDone.post()</code> will be called, which will bring <code>fristJobDone</code> semaphore value to 1 and wake up the thread that wait on the semaphore: in this case, it's the thread calling <code>second()</code>. Since <code>secondJobDone</code> semaphore value is still 0, thread calling <code>third()</code> will continue to pause until thread with <code>second()</code> done the work and increment the semaphore value. The complete implementation with test can be seen <a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/1114-PrintInOrder/printInOrder.cc">here</a>. Note that semaphore implementation used is abstracted in <a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/cppinclude/mysemaphore.h">mysemaphore.h</a> with implementation <a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/cppinclude/mysemaphore.cc">here</a>. Note that for this specific question, we initialize semaphores in the <code>Foo</code> class. This is ok in this situation as there will be only one <code>Foo</code> object exists. However, a more common case is to intialize semaphores globally.</p>
+the value of semaphore will be 0, which will put threads calling <code>second()</code> and <code>third()</code> pause waiting on respective semaphore. Since <code>first()</code> doesn’t call <code>wait()</code> initially, <code>first()</code> will be executed first. Then, <code>firstJobDone.post()</code> will be called, which will bring <code>fristJobDone</code> semaphore value to 1 and wake up the thread that wait on the semaphore: in this case, it’s the thread calling <code>second()</code>. Since <code>secondJobDone</code> semaphore value is still 0, thread calling <code>third()</code> will continue to pause until thread with <code>second()</code> done the work and increment the semaphore value. The complete implementation with test can be seen <a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/1114-PrintInOrder/printInOrder.cc">here</a>. Note that semaphore implementation used is abstracted in <a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/cppinclude/mysemaphore.h">mysemaphore.h</a> with implementation <a href="https://github.com/xxks-kkk/shuati/blob/master/leetcode/cppinclude/mysemaphore.cc">here</a>. Note that for this specific question, we initialize semaphores in the <code>Foo</code> class. This is ok in this situation as there will be only one <code>Foo</code> object exists. However, a more common case is to intialize semaphores globally.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Probably one may have noticed that the semantics of semaphore implementation has been slightly different than the
@@ -287,10 +287,10 @@ invariant in the semantics definition instead of the actual implementation is to
 We certainly can modify the implementation to make it follow the invariant: we switch type of <code>avail</code> from <code>size_t</code>
 to <code>int</code> and change the wait condition from <code>avail &gt; 0</code> to <code>avail &gt;= 0</code>. The complete modified implementation can
 be seen <a href="https://github.com/xxks-kkk/shuati/pull/158">here</a>. Note that to use this version of implementation in the 
-"print in order" example above, we need to intialize both semaphores to <code>-1</code> instead of <code>0</code>.</p>
+“print in order” example above, we need to intialize both semaphores to <code>-1</code> instead of <code>0</code>.</p>
 </div>
 <h2 id="glimpse-from-golang">Glimpse from Golang</h2>
-<p>Recently, I learned about Golang for the work. The idea of using channel, the concept based on <a href="https://en.wikipedia.org/wiki/Communicating_sequential_processes">communicating sequential process (CSP)</a>, as the fundamental concurrency primitive really opens my mind (I've seen the idea in Python and Rust but Golang abuses the concept heavily). Such novel construction naturally brings new angle to re-examine the old concept: semaphore. The following examples are taken from <a href="https://www.goodreads.com/book/show/25080953-the-go-programming-language">The Go Programming Language</a> with page number 241, 250, and 262.</p>
+<p>Recently, I learned about Golang for the work. The idea of using channel, the concept based on <a href="https://en.wikipedia.org/wiki/Communicating_sequential_processes">communicating sequential process (CSP)</a>, as the fundamental concurrency primitive really opens my mind (I’ve seen the idea in Python and Rust but Golang abuses the concept heavily). Such novel construction naturally brings new angle to re-examine the old concept: semaphore. The following examples are taken from <a href="https://www.goodreads.com/book/show/25080953-the-go-programming-language">The Go Programming Language</a> with page number 241, 250, and 262.</p>
 <p>The purpose of semaphore can be seen from limit parallelism: for example, no more than 20 concurrent calls to open a file. From
 the golang world, we can use a buffered channel of capacity <span class="math">\(n\)</span> to construct the semaphore (or <em>counting semaphore</em> if we want to be specific). Recall that a buffered channel has a queue of elements with the maximum queue size <span class="math">\(n\)</span> (i.e., capacity). A send operation on a buffered channel inserts an element at the back of the queue, and a receive operation removes an element from the front. Then the goroutine is blocked under the following conditions:</p>
 <ul>
@@ -321,8 +321,8 @@ from the channel. Receiving a value creates a new vacant slot that potentially a
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">list</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>If we compare this Go's implementation with our C++ one, we can see that <code>tokens &lt;- struct{}{}</code> works like <code>wait()</code>: if we 
-cannot send value to the channel, we wait until the channel has some vacant spot. <code>&lt;-tokens</code> works like <code>post()</code>: we're done and thus release token so that another goroutine can do the work. To generalize this implementation, we normally can:</p>
+<p>If we compare this Go’s implementation with our C++ one, we can see that <code>tokens &lt;- struct{}{}</code> works like <code>wait()</code>: if we 
+cannot send value to the channel, we wait until the channel has some vacant spot. <code>&lt;-tokens</code> works like <code>post()</code>: we’re done and thus release token so that another goroutine can do the work. To generalize this implementation, we normally can:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// 20 is the intialized semaphore value</span>
 <span class="kd">var</span><span class="w"> </span><span class="nx">semaphore</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span><span class="w"> </span><span class="kd">struct</span><span class="p">{},</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span>
 
@@ -360,23 +360,23 @@ combo for each kind of situation. Certainly, there will be case using conditon v
 <hr/>
 <ol>
 <li id="fn:1">
-<p>The similarity of semaphore and condition variable is suggested by the origin of condition variable idea: Dijkstra's use of "<a href="http://www.cs.utexas.edu/users/EWD/ewd01xx/EWD123.PDF">private semaphore</a>". <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
+<p>The similarity of semaphore and condition variable is suggested by the origin of condition variable idea: Dijkstra’s use of “<a href="http://www.cs.utexas.edu/users/EWD/ewd01xx/EWD123.PDF">private semaphore</a>”. <a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">↩</a></p>
 </li>
 <li id="fn:2">
 <p>Think about why this can happen. If it is not clear, see <a href="https://www.goodreads.com/book/show/25080953-the-go-programming-language">The Go Programming Language book p.259</a>. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
 <li id="fn:4">
-<p>"Always hold the lock while signaling" is one important tip for concurrency correctness mentioned in <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf">OSTEP</a>. There is 4th step that release lock is omitted here because it is automatically taken 
+<p>“Always hold the lock while signaling” is one important tip for concurrency correctness mentioned in <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf">OSTEP</a>. There is 4th step that release lock is omitted here because it is automatically taken 
 care of by the destructor of <code>std::lock_guard</code>. <a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 3 in the text">↩</a></p>
 </li>
 <li id="fn:6">
 <p>Inside <code>condition_variable::wait</code>, unlocking the lock, blocking the current executing thread, and adding it to the list of threads waiting on <code>*this</code> are executed atomically. <a class="footnote-backref" href="#fnref:6" title="Jump back to footnote 4 in the text">↩</a></p>
 </li>
 <li id="fn:3">
-<p>That's why we always use <code>while</code> instead of <code>if</code> when deciding whether to wait on the condition. In classroom, we normally learned the practice from the difference between Mesa semantics and Hoare semantics. See <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf">OSTEP</a> for more details. <a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 5 in the text">↩</a></p>
+<p>That’s why we always use <code>while</code> instead of <code>if</code> when deciding whether to wait on the condition. In classroom, we normally learned the practice from the difference between Mesa semantics and Hoare semantics. See <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf">OSTEP</a> for more details. <a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 5 in the text">↩</a></p>
 </li>
 <li id="fn:5">
-<p>The invariant is stated in one of <a href="https://klevas.mif.vu.lt/~liutauras/books/Dijkstra%20-%20The%20structure%20of%20the%20THE%20multiprogramming%20system.pdf">Dijkstra's papers</a>. <a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 6 in the text">↩</a></p>
+<p>The invariant is stated in one of <a href="https://klevas.mif.vu.lt/~liutauras/books/Dijkstra%20-%20The%20structure%20of%20the%20THE%20multiprogramming%20system.pdf">Dijkstra’s papers</a>. <a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 6 in the text">↩</a></p>
 </li>
 </ol>
 </div>

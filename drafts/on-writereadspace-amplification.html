@@ -82,11 +82,11 @@
 <li><a href="#reference">Reference</a></li>
 </ul>
 </div>
-<p>In this post I'll try my best to explain three concepts <em>read amplification</em>, <em>write amplification</em>,
-and <em>space amplification</em> from both theoretical and practical point of view. I'm new to storage area
+<p>In this post I’ll try my best to explain three concepts <em>read amplification</em>, <em>write amplification</em>,
+and <em>space amplification</em> from both theoretical and practical point of view. I’m new to storage area
 and the post will inevitably have holes. Please help to patch if you find one.</p>
 <h2 id="definition">Definition</h2>
-<p>We borrow the definitions from paper <a href="https://stratos.seas.harvard.edu/files/stratos/files/rum.pdf">"Designing Access Methods: The RUM Conjecture"</a> <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>:</p>
+<p>We borrow the definitions from paper <a href="https://stratos.seas.harvard.edu/files/stratos/files/rum.pdf">“Designing Access Methods: The RUM Conjecture”</a> <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>:</p>
 <p>We define two types of data that appears in the storage system (i.e., data management system): <em>base data</em> and <em>auxiliary data</em>.</p>
 <ul>
 <li><em>base data</em>: the main data stored in the system that we want to read or update.</li>
@@ -94,7 +94,7 @@ and the post will inevitably have holes. Please help to patch if you find one.</
 </ul>
 <p>For example, in a LSM-based key-value store, the key and its corresponding value are <em>base data</em>, and bloom filters that are used to improve read performance
 is the <em>auxiliary data</em> (guards in PebblesDB is also <em>auxiliary data</em>). For a <span class="math">\(B^+-\)</span>tree, the tree structure is the <em>auxiliary data</em> and the data pointed by the 
-leaves of the tree is the <em>base data</em>. Now. let's take a look at the all three amplifications:</p>
+leaves of the tree is the <em>base data</em>. Now. let’s take a look at the all three amplifications:</p>
 <ul>
 <li>
 <p><strong>Read Amplification</strong> (Read Overhead): the ratio between the total amount of data read including auxiliary and base data, divided by
@@ -114,7 +114,7 @@ amount of update to the base data only. In other words, write amplification is t
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>To see the difference between write amplification and the space amplification, let's consider a simple example. Consider memtable in LSM, when we
+<p>To see the difference between write amplification and the space amplification, let’s consider a simple example. Consider memtable in LSM, when we
 add new key-value pair, we append them to the end of the memtable. Here, the write amplification is 1. However, since we never update the key in-place
 in LSM, we have space amplification greater than 1. For example, we append {2:3} pair first and then we update key 2 with value 4 {2:4}. In memtable,
 we only need to have {2:4} ideally but now we store both {2:3} and {2:4}. Thus, space amplification is 2 in this case. Same argument can be applied
@@ -128,7 +128,7 @@ space amplification are 1.</p>
 <ul>
 <li><a href="https://stratos.seas.harvard.edu/files/stratos/files/rum.pdf">Designing Access Methods: The RUM Conjecture</a>, <a href="http://daslab.seas.harvard.edu/rum-conjecture/">website</a></li>
 <li><a href="https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide">RocksDB Tuning Guide</a></li>
-<li>Mark Callaghan's talk at Highload <a href="https://www.youtube.com/watch?v=6QfCCe-vgko">video</a>, <a href="https://www.slideshare.net/profyclub_ru/mark-calla">slides</a></li>
+<li>Mark Callaghan’s talk at Highload <a href="https://www.youtube.com/watch?v=6QfCCe-vgko">video</a>, <a href="https://www.slideshare.net/profyclub_ru/mark-calla">slides</a></li>
 <li><a href="https://www.ristret.com/s/gnd4yr/brief_history_log_structured_merge_trees">A Brief History of Log Structured Merge Trees</a></li>
 </ul>
 <div class="footnote">

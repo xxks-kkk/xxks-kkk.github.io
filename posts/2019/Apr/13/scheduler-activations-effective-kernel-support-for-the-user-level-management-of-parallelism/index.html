@@ -78,8 +78,8 @@
 <li><a href="#problem">Problem</a></li>
 <li><a href="#background">Background</a><ul>
 <li><a href="#theme-for-supporting-concurrent-and-parallel-programming">Theme for supporting concurrent and parallel programming</a></li>
-<li><a href="#heavyweight-process-model">"Heavyweight" Process Model</a></li>
-<li><a href="#lightweight-user-level-threads">"Lightweight" User-level Threads</a></li>
+<li><a href="#heavyweight-process-model">“Heavyweight” Process Model</a></li>
+<li><a href="#lightweight-user-level-threads">“Lightweight” User-level Threads</a></li>
 <li><a href="#kernel-threads">Kernel Threads</a></li>
 <li><a href="#user-level-threads-multiplexed-on-kernel-threads">User-level threads multiplexed on kernel threads</a></li>
 </ul>
@@ -93,7 +93,7 @@
 <li>
 <p>User-level library</p>
 <ul>
-<li>Management in application's address space</li>
+<li>Management in application’s address space</li>
 <li>High performance and very flexible</li>
 <li>Lack functionality</li>
 </ul>
@@ -118,7 +118,7 @@ combines the functionality of kernel threads with the performance and flexibilit
 <li>Fast context switch</li>
 <li>High processor utilization</li>
 </ul>
-<h3 id="heavyweight-process-model">"Heavyweight" Process Model</h3>
+<h3 id="heavyweight-process-model">“Heavyweight” Process Model</h3>
 <p><img alt="process model" class="img-responsive" src="../../../../../images/process-model.png"/></p>
 <ul>
 <li>
@@ -136,7 +136,7 @@ combines the functionality of kernel threads with the performance and flexibilit
 </ul>
 </li>
 </ul>
-<h3 id="lightweight-user-level-threads">"Lightweight" User-level Threads</h3>
+<h3 id="lightweight-user-level-threads">“Lightweight” User-level Threads</h3>
 <p><img alt="user-level thread" class="img-responsive" src="../../../../../images/user-level-thread.png"/></p>
 <ul>
 <li>
@@ -153,7 +153,7 @@ combines the functionality of kernel threads with the performance and flexibilit
 <ul>
 <li>Unnecessary blocking: A blocking system call, I/O, page faults, and multiprogramming block all threads (i.e., lack of functionality)</li>
 <li>System scheduler unaware of user thread priorities</li>
-<li>Processor under-utilization (i.e., Hard to run as many threads as CPUs) because: Don't know how many CPUs; Don't know when a thread blocks</li>
+<li>Processor under-utilization (i.e., Hard to run as many threads as CPUs) because: Don’t know how many CPUs; Don’t know when a thread blocks</li>
 </ul>
 </li>
 </ul>
@@ -177,7 +177,7 @@ combines the functionality of kernel threads with the performance and flexibilit
 <li>
 <p>Cons:</p>
 <ul>
-<li>Adds many user/kernel crossings (i.e., low performance) (e.g., thread switch, create, exit, lock, signal, wait, ...)<ul>
+<li>Adds many user/kernel crossings (i.e., low performance) (e.g., thread switch, create, exit, lock, signal, wait, …)<ul>
 <li>Typically 10x-30x slower than user threads</li>
 </ul>
 </li>
@@ -197,15 +197,15 @@ combines the functionality of kernel threads with the performance and flexibilit
 <ul>
 <li>Different apps have different needs (thread priorities, etc)</li>
 <li>Insufficient visibility between the kernel and user thread library<ul>
-<li>Kernel doesn't know best thread to run</li>
-<li>Kernel doesn't know about user-level locks, priority inversion (preempt while in critical section): too much info changing too quickly to notify kernel</li>
+<li>Kernel doesn’t know best thread to run</li>
+<li>Kernel doesn’t know about user-level locks, priority inversion (preempt while in critical section): too much info changing too quickly to notify kernel</li>
 <li>kernel events (preemption, I/O) invisible to user library (user thread blocks, then kernel thread serving it also blocks)</li>
 </ul>
 </li>
 <li>Kernel threads are scheduled obliviously w.r.t user-level thread library</li>
 <li>Hard to keep same number of kthreads as CPUs<ul>
 <li>Neither kernel nor user knows how many runnable threads</li>
-<li>User doesn't even know number of CPUs available</li>
+<li>User doesn’t even know number of CPUs available</li>
 </ul>
 </li>
 <li>Can have deadlock</li>
@@ -259,7 +259,7 @@ advantages of layering, abstraction, and virtualization.</p>
 <ul>
 <li>Multi-threaded programs given an address space (as usual)</li>
 <li>Facilitate flow of key information between user space and kernel space</li>
-<li>Kernel explicitly "vectors" kernel events to the user-level thread via SA</li>
+<li>Kernel explicitly “vectors” kernel events to the user-level thread via SA</li>
 <li>Extended kernel interface for processor allocation-related events<ul>
 <li>User-level thread library notifies the kernel about events</li>
 <li>Kernel uses the SA itself to do the same</li>
@@ -298,7 +298,7 @@ advantages of layering, abstraction, and virtualization.</p>
 <li>
 <p>On program start:</p>
 <ul>
-<li>New SA is created, assigned a processor and "upcalled" (fixed entry point)</li>
+<li>New SA is created, assigned a processor and “upcalled” (fixed entry point)</li>
 <li>User-level thread scheduler initializes and runs on this SA</li>
 </ul>
 </li>
@@ -325,7 +325,7 @@ advantages of layering, abstraction, and virtualization.</p>
 <p>Responsibility division between kernel and application address space:</p>
 <ul>
 <li>Processor allocation (the allocation of processors to address space) is done by the kernel.</li>
-<li>Thread scheduling (the assignment of an address space's threads to its processors) is done by each address space.</li>
+<li>Thread scheduling (the assignment of an address space’s threads to its processors) is done by each address space.</li>
 <li>The kernel notifies the address space thread scheduler of every event affecting the address space.</li>
 <li>The address space notifies the kernel of the subset of user-level events that can affect processor allocation decisions.</li>
 </ul>
@@ -348,7 +348,7 @@ advantages of layering, abstraction, and virtualization.</p>
 <li>
 <p>Problem: threads preempted while holding a lock, which can lead to deadlock</p>
 <ul>
-<li>User-level thread holds lock on the program's ready list</li>
+<li>User-level thread holds lock on the program’s ready list</li>
 <li>Gets preempted</li>
 <li>Thread scheduler tries put that thread in the ready list on SA upcall</li>
 </ul>
@@ -366,7 +366,7 @@ advantages of layering, abstraction, and virtualization.</p>
 <p>Others</p>
 <ul>
 <li>Page faults must be handled carefully: the kernel must notify the program of a page fault only when the page fault is serviced</li>
-<li>User-level thread after blocking might still execute in kernel (e.g., I/O completing): the kernel notifies the user-level only after the user thread is in a "safe" point</li>
+<li>User-level thread after blocking might still execute in kernel (e.g., I/O completing): the kernel notifies the user-level only after the user thread is in a “safe” point</li>
 <li>Every SA needs a processor to do the up-call on: at time T3 of I/O image, when I/O completes, kernel must notify the user-level thread of the event via SA, and this notification requires a processor</li>
 <li>Application free to build any concurrency model on SAs</li>
 </ul>

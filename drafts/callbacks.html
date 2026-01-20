@@ -71,7 +71,7 @@
         </header>
         
         <article>
-            <p>In this post, I present two examples: one from functional programming and one from state machine to illustrate "callbacks" concept.</p>
+            <p>In this post, I present two examples: one from functional programming and one from state machine to illustrate “callbacks” concept.</p>
 <div class="toc">
 <ul>
 <li><a href="#overview">Overview</a></li>
@@ -79,9 +79,9 @@
 </ul>
 </div>
 <h2 id="overview">Overview</h2>
-<p>Callbacks terminology often appears in the following scenario: some library provides a set of API functions that allow user to pass in their own procedures so that when "events" occur, those procedures will be 
-executed. In other words, the user first register their interest in hearing about events by providing a set of procedures to the library. When "events" occur, the library will inform those registered users through 
-procedures provided by users themselves. Those procedures are called "callbacks" - functions that get called when the event occurs. </p>
+<p>Callbacks terminology often appears in the following scenario: some library provides a set of API functions that allow user to pass in their own procedures so that when “events” occur, those procedures will be 
+executed. In other words, the user first register their interest in hearing about events by providing a set of procedures to the library. When “events” occur, the library will inform those registered users through 
+procedures provided by users themselves. Those procedures are called “callbacks” - functions that get called when the event occurs. </p>
 <p>One of usages is shown in the figure below in which database library provides an API <code>execOnDBWhen(fn, event)</code>: <code>fn</code> will be executed on database when <code>event</code> happens. 
 Client A register a function called <code>notifyClient</code> to the database library and asks the library to execute this function (i.e., notify the client) when some other clients update the 
 database. Shortly after client A registration, client B sends an update request to the database. Since client A registered a callback <code>notifyClient</code>, database library almost immediately 
@@ -92,7 +92,7 @@ that the function has finished its work. As one may sense, this is usually assoc
 An example figure is shown below. In the example, <code>funA</code> calls <code>funB</code> with a callback called <code>notifyFunA</code>. Then, <code>funA</code> continues its execution. Now, when <code>funB</code> finish its execution
 (indicated by the rectangle) <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, <code>notifyFunA</code> is invoked, which is used to inform <code>funA</code> that its callee <code>funB</code> has done its work.</p>
 <p><img alt="callback example usage 2" class="img-responsive" src="../images/callbacks2.png"/></p>
-<p>In the following sections, I present several concrete examples to further illustrate "callbacks" concept in action.</p>
+<p>In the following sections, I present several concrete examples to further illustrate “callbacks” concept in action.</p>
 <h2 id="callbacks-as-a-closure-idiom">Callbacks as a Closure Idiom</h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

@@ -83,7 +83,7 @@
 </div>
 <h2 id="problem">Problem</h2>
 <p>Provide a high performance resource-managed virtual machine monitor (VMM) that provides performance guarantees to concurrent
-execution of multiple operating systems: "hosting up to 100 virtual machine in- stances simultaneously on a modern server"</p>
+execution of multiple operating systems: “hosting up to 100 virtual machine in- stances simultaneously on a modern server”</p>
 <h2 id="background">Background</h2>
 <ul>
 <li>Big picture</li>
@@ -107,7 +107,7 @@ execution of multiple operating systems: "hosting up to 100 virtual machine in- 
 <li>
 <p>Full virtualization is slow:</p>
 <ul>
-<li>VMWare's ESX Server dynamically rewrites portions of the hosted machine code to insert traps whenever VMM intervention
+<li>VMWare’s ESX Server dynamically rewrites portions of the hosted machine code to insert traps whenever VMM intervention
 might be required. This applies to entire guest OS as all non-trapping privileged instructions must be caught and handled.</li>
 <li>ESX Server maintains shadow page table and to maintain consistency with virtual tables, it traps every update.</li>
 </ul>
@@ -119,7 +119,7 @@ might be required. This applies to entire guest OS as all non-trapping privilege
 <li>
 <p>Paravirtualization: idealized machine, efficient to virtualize</p>
 <ul>
-<li>More efficient than "full" virtualization</li>
+<li>More efficient than “full” virtualization</li>
 <li>Cost: need to modify OS</li>
 </ul>
 </li>
@@ -132,7 +132,7 @@ hypervisor</p>
 <ul>
 <li>X86 supports 4 privilege levels: Without Xen, 0 for OS, and 3 for applications; Xen downgrades OS to level 1, and it runs 
 level 0</li>
-<li>Syscall and page-fault handlers: registered to Xen; "fast handlers" most exceptions, don't invole Xen</li>
+<li>Syscall and page-fault handlers: registered to Xen; “fast handlers” most exceptions, don’t invole Xen</li>
 </ul>
 </li>
 <li>
@@ -140,7 +140,7 @@ level 0</li>
 <ul>
 <li>Run VMM at ring 0, OS at ring 1 (app stays at ring 3)</li>
 <li>System calls vector directly to guest OS without VMM involvement. Validate handler at install time.</li>
-<li>Page fault handler doesn't read <code>cr2</code> to get faulting address, put it in stack frame. VMM must execute to read <code>cr2</code></li>
+<li>Page fault handler doesn’t read <code>cr2</code> to get faulting address, put it in stack frame. VMM must execute to read <code>cr2</code></li>
 <li>Mappings validated when page tables written (same as exokernel)</li>
 <li>Updates to page table are batched and validated in bulk. Avoiding interrupt-like updates is an important technique.</li>
 <li>Type and reference count for each physical frame (PD, PT, LDT, GDT, RW)</li>

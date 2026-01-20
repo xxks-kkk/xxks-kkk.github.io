@@ -184,15 +184,15 @@ is the same as the non-faulting sequential execution of the entire program:</p>
 </ul>
 </li>
 <li>
-<p>Handle "straggler":</p>
+<p>Handle “straggler”:</p>
 <ul>
-<li>"Straggler": a machine that takes an unusually long time to complete one of the last few map or reduce tasks in the computation.</li>
+<li>“Straggler”: a machine that takes an unusually long time to complete one of the last few map or reduce tasks in the computation.</li>
 <li>When a MapReduce operation is close to completion, the master schedules backup executions of the remaining <em>in-progress</em> tasks. The task is marked as completed whenever either the primary or the backup execution completes. </li>
 </ul>
 </li>
 <li>
 <p>Locality: schedule map tasks to the machines where the replicas of the input data is stored (input data can read locally
-and consume no network bandwidth). This is saying of "push program to the data node".</p>
+and consume no network bandwidth). This is saying of “push program to the data node”.</p>
 </li>
 <li>
 <p>Refinements:</p>
@@ -216,15 +216,15 @@ the output file.</p>
 </ul>
 <h2 id="remarks">Remarks</h2>
 <ul>
-<li>Re-execution to provide fault tolearance is a commonly-seen technique (used in Spark as well) in "Big-data" paper</li>
-<li>Spawn multiple same tasks to handle "straggler" problem is also common</li>
+<li>Re-execution to provide fault tolearance is a commonly-seen technique (used in Spark as well) in “Big-data” paper</li>
+<li>Spawn multiple same tasks to handle “straggler” problem is also common</li>
 <li>Locality is a nice trick to use to reduce bandwidth usage</li>
-<li><a href="https://youtu.be/DJFKl_5JTnA?t=27m57s">Stonebraker's video on database research</a> mentions that MapReduce is no longer used
-in Google. We as researcher should play critical on the papers produced by "whales" and not treat them as the golden standard
+<li><a href="https://youtu.be/DJFKl_5JTnA?t=27m57s">Stonebraker’s video on database research</a> mentions that MapReduce is no longer used
+in Google. We as researcher should play critical on the papers produced by “whales” and not treat them as the golden standard
 (we do because we lose connection to industry). Totally different topic.</li>
-<li>I don't think MapReduce is a database work. I feel it just some framework that allows Google to get their job done
-(If you think about Jeff Dean's major focus is on programming languages not database). Unlike database, the framework is hard to generalize.</li>
-<li>Spot Remzi's papers in the reference section. Neat!</li>
+<li>I don’t think MapReduce is a database work. I feel it just some framework that allows Google to get their job done
+(If you think about Jeff Dean’s major focus is on programming languages not database). Unlike database, the framework is hard to generalize.</li>
+<li>Spot Remzi’s papers in the reference section. Neat!</li>
 </ul>
 <h2 id="reference">Reference</h2>
 <ul>

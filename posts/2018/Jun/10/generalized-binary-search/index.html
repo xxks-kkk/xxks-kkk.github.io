@@ -88,7 +88,7 @@
 to solve the binary search problem on the very first try. In this post, we further elaborate the binary
 search idea and introduce how we can use predicate + main theorem to solve more generalized binary search problem.</p>
 <h2 id="example">Example</h2>
-<p>Let's consider an example, which utilizes the generalized idea of binary search mentioned in <a href="https://www.topcoder.com/community/data-science/data-science-tutorials/binary-search/">TopCoder's article</a>. The problem we look at is 
+<p>Let’s consider an example, which utilizes the generalized idea of binary search mentioned in <a href="https://www.topcoder.com/community/data-science/data-science-tutorials/binary-search/">TopCoder’s article</a>. The problem we look at is 
 <a href="https://leetcode.com/problems/find-k-closest-elements/description/">Leetcode 658. Find K Closest Elements</a>: 
 Let <span class="math">\(A\)</span> be a sorted array of <span class="math">\(N\)</span> values. We want to find the index <span class="math">\(j\)</span> such that the elements <span class="math">\(A_j,A_{j+1},\dots,A_{j+k−1}\)</span> 
 have the <span class="math">\(k\)</span> closest values to the given target value <span class="math">\(T\)</span>. </p>
@@ -101,10 +101,10 @@ with index smaller than <span class="math">\(i\)</span> because given the ascend
 smaller than <code>X</code>. By the same reasoning, if the answer is no, we discard the second half. We make some observations here:</p>
 <ul>
 <li>As you may have noticed, predicate is exactly what we check in the if-statement (e.g. <code>X &gt; A[i]</code>).</li>
-<li>If <code>X &lt; A[i]</code>, then for any <span class="math">\(y &gt; i\)</span>, we have <code>X &lt; A[y]</code>, which exactly matches the main theorem and that's how we can discard
+<li>If <code>X &lt; A[i]</code>, then for any <span class="math">\(y &gt; i\)</span>, we have <code>X &lt; A[y]</code>, which exactly matches the main theorem and that’s how we can discard
 the second half of the array (i.e., search space).</li>
 </ul>
-<p>Now, let's consider our example. What does it mean a selected subrange is optimal (i.e., <span class="math">\(k\)</span> closest values to <span class="math">\(T\)</span>)? That means
+<p>Now, let’s consider our example. What does it mean a selected subrange is optimal (i.e., <span class="math">\(k\)</span> closest values to <span class="math">\(T\)</span>)? That means
 that we can neither move the subrange to the right (<span class="math">\(|A_{j+k} - T| &gt; |A_j - T|\)</span>) nor move the subrange to the left 
 (<span class="math">\(|A_{j+k-1} - T| &gt; |A_{j-1} - T|\)</span>). In details, since the subrange includes <span class="math">\(k\)</span> closest values to <span class="math">\(T\)</span> and by moving it to right,
 we exclude <span class="math">\(A_{j}\)</span> and include <span class="math">\(A_{j+k}\)</span>. Since the selected subrange is optimal, we must have <span class="math">\(|A_{j+k} - T| &gt; |A_j - T|\)</span>.
@@ -112,7 +112,7 @@ Thus, we can formalize our predicate as: for a given index <span class="math">\(
 we need for binary search is the invariant. From the question description we can see that the key to this question is finding
 <span class="math">\(j\)</span>. Thus, our invariant is: the index of the first number that is among the k closest values for the given target <span class="math">\(T\)</span> 
 (i.e., <span class="math">\(j\)</span>) is in <span class="math">\([\text{left}, \text{right}]\)</span>.</p>
-<p>Now, we have to show that <em>main theorem</em> holds given our predicate formalization. Let's discuss this point
+<p>Now, we have to show that <em>main theorem</em> holds given our predicate formalization. Let’s discuss this point
 in details:</p>
 <ul>
 <li>
@@ -147,7 +147,7 @@ we can discard the second half of the array.</li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The reason we have <span class="math">\(0 \le d \le k\)</span> is that in the extreme case, we have <span class="math">\(j = N - k\)</span> (otherwise, we won't have <span class="math">\(k\)</span> elements)
+<p>The reason we have <span class="math">\(0 \le d \le k\)</span> is that in the extreme case, we have <span class="math">\(j = N - k\)</span> (otherwise, we won’t have <span class="math">\(k\)</span> elements)
 and it is unnecessary to have <span class="math">\(d\)</span> goes beyond <span class="math">\(k\)</span>.</p>
 </div>
 <ul>
@@ -180,7 +180,7 @@ we have <span class="math">\(|A_{i-1} - T| &gt; |A_{i+k-1} - T|\)</span>, which 
 </li>
 </ul>
 <p>Once we verify the predicate satisifies the <em>main theorem</em>, the only thing we left is to build the connection between the
-invariant and predicate, and make sure the invariant holds during the loop execution. Let's first list out the code:</p>
+invariant and predicate, and make sure the invariant holds during the loop execution. Let’s first list out the code:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="w"> </span><span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
 <span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">findClosestElements</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">arr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -209,7 +209,7 @@ is because whenever there is a tie, the smaller elements are always preferred. C
 T = 3\)</span>. Then, both <code>[1,2,3,4]</code> and <code>[2,3,4,5]</code> are the closest <span class="math">\(k\)</span> elements to the <span class="math">\(T\)</span> and sum of the elements to <span class="math">\(T\)</span> distance
 are the same, which is a tie. In this case, we prefer <code>[1,2,3,4]</code>. If we strictly follow the predicate, we end up with
 <code>[2,3,4,5]</code>. Switching <span class="math">\(|A_{j+k} - T| &gt; |A_j - T|\)</span> to <span class="math">\(|A_{j+k} - T| \ge |A_j - T|\)</span> still maintains the invariant in the loop
-because when <span class="math">\(|A_{j+k} - T| = |A_j - T|\)</span>, shifting the subrange to the right doesn't give any improvement and by set <code>right</code>
+because when <span class="math">\(|A_{j+k} - T| = |A_j - T|\)</span>, shifting the subrange to the right doesn’t give any improvement and by set <code>right</code>
 to mid, we still ensure that the optimal <span class="math">\(j\)</span> falls inside <span class="math">\([\text{left}, \text{right}]\)</span>.</p>
 </div>
 <p><span class="math">\(|A_{j+k} - T| &gt; |A_j - T|\)</span> means we cannot move the subrange to the right to obtain the optimal subrange. We also show that
@@ -224,13 +224,13 @@ move subrange (indicating by <span class="math">\(j\)</span> or <code>mid</code>
 <p class="admonition-title">Note</p>
 <p>The above code is theoretically correct but it has fundamentally implementation issue: <code>mid</code> can be 0,
 which will lead to index out of bound error in <code>else if (fabs(x - arr[mid-1]) &gt; fabs(x - arr[mid+k-1]))</code>.
-C++ doesn't enforce index out of bound error (i.e., <em>undefined behavior</em>) and the above code can run
+C++ doesn’t enforce index out of bound error (i.e., <em>undefined behavior</em>) and the above code can run
 successfully for certain complier on certain platform (leetcode obvious can). However, issue will happen
 if you directly translate the above logic to another language. A safe way to do is to replace the <code>else if</code>
 statement with <code>else if ((mid &gt;0 &amp;&amp; fabs(x - arr[mid-1]) &gt; fabs(x - arr[mid+k-1])) || fabs(x - arr[mid]) &gt; fabs(arr[mid+k] - x))</code>,
 which you can see is redundant and can be optimized. This is exactly what we are going to do next.</p>
 </div>
-<p>One thing to note that <code>while(left &lt; right)</code> means we haven't found the optimal <span class="math">\(j\)</span> yet, which implies that we have to
+<p>One thing to note that <code>while(left &lt; right)</code> means we haven’t found the optimal <span class="math">\(j\)</span> yet, which implies that we have to
 either move the subrange to left or move the subrange to right. This provides us the further opportunity to optimize the above
 code:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="w"> </span><span class="p">{</span>
@@ -259,7 +259,7 @@ as we state in the previous paragraph, since we are still in the <code>while</co
 In other words, there is no such case that both conditions are false and we are still in the loop. Thus, we can get rid of 
 one of the conditions and use <code>else</code> instead. Another way of thinking is that we do nothing if both conditions are failed
 and thus this third do-nothing case can be combined with the second <code>else if (fabs(x - arr[mid-1]) &gt; fabs(x - arr[mid+k-1]))</code> condition to form a <code>else</code> statement.</p>
-<p>There is another optimization code proposal I find online, which I don't think it is correct:</p>
+<p>There is another optimization code proposal I find online, which I don’t think it is correct:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="w"> </span><span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
 <span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">findClosestElements</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">arr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -294,10 +294,10 @@ is in fact induction: we use <span class="math">\(d\)</span> to show inequalitie
 the induction and show <span class="math">\(p(j+1)\)</span> holds given <span class="math">\(p(j)\)</span> is correct (we actually do <span class="math">\(p(j+d)\)</span> holds given <span class="math">\(p(j)\)</span> is correct). Another point 
 we should point out that we can derive the invariant
 from predicate: we try to find the index of the first number that is among the k closest values for the given target <span class="math">\(T\)</span>. This is 
-the exact same number that will <strong>first</strong> give "yes" response to our predicate.</p>
+the exact same number that will <strong>first</strong> give “yes” response to our predicate.</p>
 <h2 id="reference">Reference</h2>
 <ul>
-<li><a href="https://www.topcoder.com/community/data-science/data-science-tutorials/binary-search/">TopCoder's post</a></li>
+<li><a href="https://www.topcoder.com/community/data-science/data-science-tutorials/binary-search/">TopCoder’s post</a></li>
 <li><a href="https://cs.stackexchange.com/questions/77364/searching-a-sorted-array-to-find-the-k-closest-values-to-a-target-value-t?rq=1">Stackexchange post: Searching a sorted array to find the k closest values to a target value T</a></li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {

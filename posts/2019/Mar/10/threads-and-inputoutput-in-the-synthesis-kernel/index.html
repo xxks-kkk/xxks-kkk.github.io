@@ -118,11 +118,11 @@ instruction in each context-switch-out procedure of the preceding thread points 
 follow thread.</p>
 </li>
 <li>
-<p>"Executable data structures": embed code in data structures to avoid data 
+<p>“Executable data structures”: embed code in data structures to avoid data 
 structure traversals and to specialize code for each object (e.g., put context switch code inside of thread control block)</p>
 </li>
 <li>
-<p>Context switch steps: Timer interrup vectored directly to current thread's <code>sw_out</code>; <code>sw_out</code> calls (directly) next thread's 
+<p>Context switch steps: Timer interrup vectored directly to current thread’s <code>sw_out</code>; <code>sw_out</code> calls (directly) next thread’s 
 <code>sw_in</code> or <code>sw_in_mmu</code>:</p>
 <ul>
 <li>interrupt vectored to <code>sw_out</code></li>
@@ -157,7 +157,7 @@ structure traversals and to specialize code for each object (e.g., put context s
 in the semester (the flow is great).</li>
 <li>Many details in the paper are omit: scheduling, interrupt handling, details of lock-free queues (SP-SC, MP-MC,etc)</li>
 <li>
-<p>Lots of cool techniques that are worth investigation in its own rights and they are "field openers"</p>
+<p>Lots of cool techniques that are worth investigation in its own rights and they are “field openers”</p>
 <ul>
 <li>Code synthesis (JIT compiler, super-optimizers)</li>
 <li>Code isolation (Privatization)</li>

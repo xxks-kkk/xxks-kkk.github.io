@@ -93,12 +93,12 @@ as each guest OS also has its own resource manager and how to ensure performance
 <h2 id="background">Background</h2>
 <ul>
 <li>
-<p>VMWare ESX Server runs on bare hardware (compared with VMM runs on a control OS like KVM); In "control OS" approach, here is the workflow of reading a file from an application in VM:</p>
+<p>VMWare ESX Server runs on bare hardware (compared with VMM runs on a control OS like KVM); In “control OS” approach, here is the workflow of reading a file from an application in VM:</p>
 <ul>
 <li>an application read from a file (in VM)</li>
 <li>OS translates request into a read from block device (in VM)</li>
 <li>VMM translates that to a read from a file from host OS (in VMM)</li>
-<li>host OS translates request to a read from the machine's block device (in control OS)</li>
+<li>host OS translates request to a read from the machine’s block device (in control OS)</li>
 </ul>
 </li>
 <li>
@@ -117,7 +117,7 @@ paging device just to write out to the virtual paging device.</li>
 <p>terms:</p>
 <ul>
 <li>machine address: actual hardware memory</li>
-<li>"physical" address: software abstraction used to provide illusion of hardware memory to a virtual machine</li>
+<li>“physical” address: software abstraction used to provide illusion of hardware memory to a virtual machine</li>
 <li>shadow page table: virtual-to-machine page mappings</li>
 <li>overcommitment: the total size configured for all running virtual machines exceeds the total amount of actual machine memory</li>
 </ul>
@@ -135,7 +135,7 @@ paging device just to write out to the virtual paging device.</li>
 </ul>
 </li>
 <li>
-<p>If ESX wants to reclaim memory, it instructs the driver to "inflate" by allocating pinned physical pages within VM and the memory pressure in guest OS force the guest OS to free memory</p>
+<p>If ESX wants to reclaim memory, it instructs the driver to “inflate” by allocating pinned physical pages within VM and the memory pressure in guest OS force the guest OS to free memory</p>
 </li>
 <li>
 <p>pinned physical pages used by balloon are told to ESX so that ESX can reclaim corresponding machine pages
@@ -151,7 +151,7 @@ paging device just to write out to the virtual paging device.</li>
 <p>Problems:</p>
 <ul>
 <li>Might not be able to reclaim memory fast enough</li>
-<li>Guest OS might refuse memory allocation request or limit the driver's ability to allocate memory</li>
+<li>Guest OS might refuse memory allocation request or limit the driver’s ability to allocate memory</li>
 </ul>
 </li>
 <li>
@@ -159,7 +159,7 @@ paging device just to write out to the virtual paging device.</li>
 </li>
 </ul>
 <h3 id="content-based-page-sharing">Content-based Page Sharing</h3>
-<p>Able to share a page without modification to guest OS (compared to Disco's approach)</p>
+<p>Able to share a page without modification to guest OS (compared to Disco’s approach)</p>
 <p><img alt="content-based page sharing" class="img-responsive" src="../../../../../images/esx-content-sharing.png"/></p>
 <ul>
 <li>Hash every page, store hashes in a hash table</li>
@@ -190,9 +190,9 @@ it is, share page.</li>
 <li>
 <p>I/O Page remapping:</p>
 <ul>
-<li>overcommitment may lead to problem that guest OS may address machine page that doesn't exist (e.g., DMA on 32-bit access pages above 4GB boundary ("high" memory))</li>
-<li>fix: keep track of "hotness" of pages in high memory and when the I/O refernce count of such pages exceed certain threshold,
-they are remapped to low memory. May remap low memory pages to high memory pages to get more space for "hotness" remapping</li>
+<li>overcommitment may lead to problem that guest OS may address machine page that doesn’t exist (e.g., DMA on 32-bit access pages above 4GB boundary (“high” memory))</li>
+<li>fix: keep track of “hotness” of pages in high memory and when the I/O refernce count of such pages exceed certain threshold,
+they are remapped to low memory. May remap low memory pages to high memory pages to get more space for “hotness” remapping</li>
 </ul>
 </li>
 </ul>

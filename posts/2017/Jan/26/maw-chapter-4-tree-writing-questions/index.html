@@ -101,10 +101,10 @@ representing children.</p>
 <p><strong>Proof:</strong>
 For a binary tree with <span class="math">\(N\)</span> nodes, there are two types of edges (pointers): </p>
 <ol>
-<li>edges that are doesn't exist (<code>NULL</code> pointers).</li>
+<li>edges that are doesn’t exist (<code>NULL</code> pointers).</li>
 <li>edges that exist to connect nodes (not <code>NULL</code> pointers).</li>
 </ol>
-<p>Let's first calculate the number of pointers in total, regardless whether the pointer
+<p>Let’s first calculate the number of pointers in total, regardless whether the pointer
 is <code>NULL</code> or not. Since each node has <span class="math">\(2\)</span> outgoing pointers, 
 there are <span class="math">\(2N\)</span> pointers in total. Next, we need to calculate the number of edges that actuall
 exist. Since each edge connects some node to its parent, and every node except 
@@ -116,7 +116,7 @@ pointer from its parent. So, we have <span class="math">\(N-1\)</span> edges exi
 <p>Show that the maximum number of nodes in a binary tree of height <span class="math">\(H\)</span> is <span class="math">\(2^{H+1}-1\)</span>.</p>
 </blockquote>
 <p><strong>Proof:</strong> 
-Let's prove this by induction.</p>
+Let’s prove this by induction.</p>
 <p><em>Base case:</em> <span class="math">\(H = 0\)</span>. A binary tree of height <span class="math">\(0\)</span> has only one node, root. <span class="math">\(2^{H+1}-1\)</span> equals
 one for <span class="math">\(H = 0\)</span>. Therefore ture for <span class="math">\(H = 0\)</span>.</p>
 <p><em>Inductive Hypothesis:</em> Assume that the maximum number of nodes in a binary tree of height <span class="math">\(H\)</span> is
@@ -141,10 +141,10 @@ $$</div>
 <p>A <em>full node</em> is a node with two children. Prove that the number of full nodes
 plus one is equal to the number of leaves in a nonempty binary tree.</p>
 </blockquote>
-<p>Let's use two methods to prove this question.</p>
+<p>Let’s use two methods to prove this question.</p>
 <p><em>Method 1:</em></p>
 <p><strong>Proof:</strong>
-Let's use the following notation for our proof:</p>
+Let’s use the following notation for our proof:</p>
 <div class="math">$$
 \begin{eqnarray*}
 N &amp; = &amp; \text{number of nodes in a nonempty binary tree} \\
@@ -165,14 +165,14 @@ F + 1 &amp; = &amp; L
 $$</div>
 <p><em>Method 2:</em></p>
 <p><strong>Proof:</strong>
-Let's prove by induction. If there are <span class="math">\(N\)</span> full nodes in a non-empty binary tree
+Let’s prove by induction. If there are <span class="math">\(N\)</span> full nodes in a non-empty binary tree
 then there are <span class="math">\(N+1\)</span> leaves.</p>
 <p><em>Base case:</em> <span class="math">\(N = 0\)</span> This is ture because the tree has one node and the root is 
 a leaf.</p>
 <p><em>Inductive hypothesis:</em> Suppose the theorem holds for <span class="math">\(N = 1, 2, ..., k\)</span>. Then we 
 want to show that if there are <span class="math">\(k+1\)</span> full nodes in a non-empty binary tree then there 
 are <span class="math">\(k+2\)</span> leaves. Pick a leaf node and keep removing its parent recursively 
-(i.e., remove its parent and then parent's parent and so on) until a full node
+(i.e., remove its parent and then parent’s parent and so on) until a full node
 is reached. That is, you are traversing from a leaf along the path towards the root,
 while removing the nodes along the path before a full node is reached. This full node
 becomes a non-full node because one of its child node is removed. At this point the
@@ -189,7 +189,7 @@ one leaf node. Therefore, we have <span class="math">\(k+1\)</span> full nodes w
 and determine when the quality is true.</p>
 </blockquote>
 <p><strong>Proof:</strong>
-Let's prove this by induction. </p>
+Let’s prove this by induction. </p>
 <p><em>Base case:</em> when <span class="math">\(M = 1\)</span>, there is one node: the root is a leaf wit depth zero. Then
 the sum is one, and claim holds.</p>
 <p><em>Inductive hypothesis:</em> Suppose the theorem is true for all trees with at most <span class="math">\(k\)</span> nodes.
@@ -212,7 +212,7 @@ is contradiction to the equality.</p>
 <a href="https://en.wikipedia.org/wiki/Kraft%E2%80%93McMillan_inequality">Kraft–McMillan inequality</a>,
 which is one of fundamental theorem in Information theory. I find 
 <a href="https://www.youtube.com/playlist?list=PLE125425EC837021F">this youtube playlist about information theory</a>
-is really good as an intro to the field because it doesn't make the material look 
+is really good as an intro to the field because it doesn’t make the material look 
 very daunting and super technical,
 which some 
 <a href="http://circuit.ucsd.edu/~yhk/ece154c-spr16/pdfs/LectureNotes01.pdf">lecture note</a>
@@ -225,7 +225,7 @@ which some
 <p>This question can be restated like the following: suppose that we insert <span class="math">\(n\)</span> distinct elements into an 
 initially empty tree. Assuming that the <span class="math">\(n!\)</span> permutations are equally likely to occur, then show that
 the average height of the tree is <span class="math">\(O(\log N)\)</span>.</p>
-<p>Before we dive into the proof, let's think about how we can construct a random binary search tree.
+<p>Before we dive into the proof, let’s think about how we can construct a random binary search tree.
 We construct a tree <span class="math">\(T\)</span> by inserting in order randomly selected <span class="math">\(n\)</span> distinct elements into an 
 initially empty tree. Here the actual values of the elements do not matter. What matters is the position
 of the inserted element in the <span class="math">\(n\)</span> elements. Thus, we construct a random binary search tree as the following:</p>
@@ -242,9 +242,9 @@ height of a randomly built binary search tree on <span class="math">\(n\)</span>
 h_{n} = 1 + max(h_{i-1}, h_{n-i}) \label{eqn:1}
 \end{equation}
 $$</div>
-<p>Now, let's define <span class="math">\(Y_{n} = 2^{h_n}\)</span>. If we can show 
+<p>Now, let’s define <span class="math">\(Y_{n} = 2^{h_n}\)</span>. If we can show 
 that <span class="math">\(E[Y_n]\)</span> is polynomial in <span class="math">\(n\)</span>, we then have <span class="math">\(E[h_n] = O(\log n)\)</span>. Again, <span class="math">\(Y_n\)</span> 
-depends on <span class="math">\(i\)</span> not <span class="math">\(n\)</span>. Let's represent \ref{eqn:1} in terms of <span class="math">\(Y_n\)</span>:</p>
+depends on <span class="math">\(i\)</span> not <span class="math">\(n\)</span>. Let’s represent \ref{eqn:1} in terms of <span class="math">\(Y_n\)</span>:</p>
 <div class="math">$$
 \begin{eqnarray*}
 h_{n} &amp;=&amp; 1 + max(h_{i-1}, h_{n-i}) \\
@@ -254,7 +254,7 @@ h_{n} &amp;=&amp; 1 + max(h_{i-1}, h_{n-i}) \\
 Y_n     &amp;=&amp; 2 \cdot max(Y_{i-1}, Y_{n-i}) 
 \end{eqnarray*}
 $$</div>
-<p>Now, let's calculate <span class="math">\(E[Y_n]\)</span>. Here, <span class="math">\(I=i\)</span> means we pick <span class="math">\(i_{th}\)</span> element as our 
+<p>Now, let’s calculate <span class="math">\(E[Y_n]\)</span>. Here, <span class="math">\(I=i\)</span> means we pick <span class="math">\(i_{th}\)</span> element as our 
 first element inserting into the empty tree.Since, we pick the first insertion element equally
 likely, then <span class="math">\(P(I=i) = \frac{1}{n}\)</span>.</p>
 <div class="math">$$
@@ -285,7 +285,7 @@ E[Y_n] &amp;\le&amp; \frac{1}{4}\dbinom{n+3}{3} \\
        &amp;=&amp; O(n^3)
 \end{eqnarray*}
 $$</div>
-<p>Then, we use <em>Jensen's inequality</em>, which states that <span class="math">\(f(E[X]) \le E[f(X)]\)</span> provided
+<p>Then, we use <em>Jensen’s inequality</em>, which states that <span class="math">\(f(E[X]) \le E[f(X)]\)</span> provided
 the expectations exist and are finite, and f(x) is convex. Let this <span class="math">\(X\)</span> be <span class="math">\(h_n\)</span> and
 <span class="math">\(f(x) = 2^x\)</span>, then <span class="math">\(E[f(X)] = E[Y_n]\)</span>. So, we have</p>
 <div class="math">$$
@@ -296,9 +296,9 @@ $$</div>
 <p>By taking the log of both sides, we have <span class="math">\(E[h_n] = O(\log n)\)</span></p>
 <p><strong>Remarks:</strong></p>
 <ul>
-<li>Let's first prove <span class="math">\(\sum_{i=0}^{n-1}\dbinom{i+3}{3} = \dbinom{n+3}{4}\)</span></li>
+<li>Let’s first prove <span class="math">\(\sum_{i=0}^{n-1}\dbinom{i+3}{3} = \dbinom{n+3}{4}\)</span></li>
 </ul>
-<p><strong>Proof:</strong> Use <em>Pascal's identity:</em> <span class="math">\(\dbinom{n}{k} = \dbinom{n-1}{k-1} + \dbinom{n-1}{k}\)</span>
+<p><strong>Proof:</strong> Use <em>Pascal’s identity:</em> <span class="math">\(\dbinom{n}{k} = \dbinom{n-1}{k-1} + \dbinom{n-1}{k}\)</span>
 Also using the simple identity <span class="math">\(\dbinom{4}{4} = 1 = \dbinom{3}{3}\)</span>. We have:</p>
 <div class="math">$$
 \begin{eqnarray*}
@@ -311,7 +311,7 @@ Also using the simple identity <span class="math">\(\dbinom{4}{4} = 1 = \dbinom{
 \end{eqnarray*}
 $$</div>
 <ul>
-<li>Let's prove <span class="math">\(E[Y_n] \le \frac{1}{4}\dbinom{n+3}{3}\)</span> by induction.</li>
+<li>Let’s prove <span class="math">\(E[Y_n] \le \frac{1}{4}\dbinom{n+3}{3}\)</span> by induction.</li>
 </ul>
 <p><strong>Proof:</strong> <em>Base case:</em> <span class="math">\(n=1\)</span>. </p>
 <div class="math">$$
@@ -342,7 +342,7 @@ define <span class="math">\(E[Y_n]\)</span>. The note defines an indicator rando
 <span class="math">\(Z_{n,i} = I\{I=i\}\)</span>, where <span class="math">\(I=i\)</span> means we pick <span class="math">\(i_{th}\)</span> element as our 
 first element inserting into the empty tree. Since, we pick the first insertion 
 element equally likely, then <span class="math">\(P(I=i) = \frac{1}{n}\)</span>, and thus, <span class="math">\(E[Z_{n,i}] = \frac{1}{n}\)</span> by <span class="math">\(E[I_A] = P(A)\)</span>. Then, he defines <span class="math">\(Y_n = \sum_{i=1}^nZ_{n,i} \cdot (2 \cdot max(Y_{i-1}, Y_{n-i}))\)</span> because only one <span class="math">\(Z_{n,i}\)</span> can be <span class="math">\(1\)</span> and all others are <span class="math">\(0\)</span>. It seems right but when he calculates the <span class="math">\(E[Y_n]\)</span>, he states that
-<span class="math">\(Z_{n,i}\)</span> is independent of <span class="math">\(Y_{i-1}\)</span> and <span class="math">\(Y_{n-i}\)</span>. However, I don't think so as 
+<span class="math">\(Z_{n,i}\)</span> is independent of <span class="math">\(Y_{i-1}\)</span> and <span class="math">\(Y_{n-i}\)</span>. However, I don’t think so as 
 the height of the tree <span class="math">\(h_n\)</span>, which <span class="math">\(Y_n\)</span> is constructed from 
 depends on which element we pick first. I tend to think about <span class="math">\(E[Y_n]\)</span> as 
 expectation of the conditional expectation.</p>
@@ -353,11 +353,11 @@ expectation of the conditional expectation.</p>
 b. What is the minimum number of nodes in an AVL tree of height 15? </p>
 </blockquote>
 <p>The minimum number of nodes in an AVL tree of height <span class="math">\(H\)</span>, <span class="math">\(S(H) = S(H-1) + S(H-2) + 1 \quad (H \ge 2)\)</span> with <span class="math">\(S(0) = 1\)</span> and <span class="math">\(S(1) = 2\)</span>.
-It's a linear nonhomogeneous recurrence relation with constant coefficients. Let's first find 
+It’s a linear nonhomogeneous recurrence relation with constant coefficients. Let’s first find 
 out the general solution for corresponding homogeneous recurrence relation <span class="math">\(S(H) = S(H-1) + S(H-2)\)</span> first.
 The characteristic equation is <span class="math">\(x^2 - x - 1 = 0\)</span> and the roots are <span class="math">\(\frac{1+\sqrt 5}{2}\)</span> and <span class="math">\(\frac{1-\sqrt 5}{2}\)</span>.
 So, we have <span class="math">\(S(H) = c_1\Big(\frac{1+\sqrt 5}{2}\Big)^H + c_2\Big(\frac{1-\sqrt 5}{2}\Big)^H\)</span>.</p>
-<p>Now, for a particular solution to the recurrence relation, let's guess <span class="math">\(S(H) = r \quad \text{for some constant } r\)</span>.
+<p>Now, for a particular solution to the recurrence relation, let’s guess <span class="math">\(S(H) = r \quad \text{for some constant } r\)</span>.
 This solution has to satisfy the recurrence relation as well. Thus, </p>
 <div class="math">$$
 \begin{equation*}
@@ -399,7 +399,7 @@ we have <span class="math">\(\log _\phi N \ge H\)</span>, which is <span class="
 is perfectly balanced <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</p>
 </blockquote>
 <p><strong>Proof:</strong>
-Let's use induction on <span class="math">\(k\)</span> to prove the following statement:</p>
+Let’s use induction on <span class="math">\(k\)</span> to prove the following statement:</p>
 <p>The result of inserting any increasing sequence of <span class="math">\(2^k - 1\)</span> numbers into an 
   initially empty AVL tree results in a perfectly balanced tree of height 
   <span class="math">\(k-1\)</span>.</p>
@@ -446,14 +446,14 @@ May need to double check.</p>
 the resulting tree consists of a chain of left children.</p>
 </blockquote>
 <p><strong>Proof:</strong>
-Let's prove by induction. Let <span class="math">\(N\)</span> denote the number of nodes in a splay tree.</p>
+Let’s prove by induction. Let <span class="math">\(N\)</span> denote the number of nodes in a splay tree.</p>
 <p><em>Base case:</em> When <span class="math">\(N = 1\)</span>, the claim holds.</p>
 <p><em>Inductive hypothesis:</em> all nodes <span class="math">\(1, \dots, N\)</span> in a splay tree are accessed in sequential
 order, the resulting tree consists of a chain of left children. We want to show that 
 this holds for <span class="math">\(N+1\)</span>. Once we access first <span class="math">\(N\)</span> nodes, there are only one
 position for <span class="math">\(N+1\)</span> node: the right child of the root. The rest of positions are impossible because if the 
 <span class="math">\(N+1\)</span> node is the right child of any node between the left most node and the root of the resulting tree,
-then by BST, <span class="math">\(N+1\)</span> node's value is smaller than root's value and bigger than left most node's value.
+then by BST, <span class="math">\(N+1\)</span> node’s value is smaller than root’s value and bigger than left most node’s value.
 This violates the induction hypothesis because we are no longer access a splay tree in sequential order.
 Now we simply swap the right child of the root with root and we get a chain of left children. </p>
 <h3 id="maw-443">MAW 4.43</h3>
@@ -463,12 +463,12 @@ search tree <span class="math">\(T_2\)</span> (with the same keys).
 b. Give an algorithm to perform this transformation using <span class="math">\(O(N\log N)\)</span> rotations on average.
 c. Show that this transformation can be done with <span class="math">\(O(N)\)</span> rotations, worst-case.</p>
 </blockquote>
-<p>Let's first work through an example shown in the picture below. We transform the tree in the top-left 
+<p>Let’s first work through an example shown in the picture below. We transform the tree in the top-left 
 of the picture to the tree in the top-right of the picture through several steps linked by single arrows.</p>
 <p><img alt="maw-4-43" class="img-responsive" src="/images/maw-4-43.jpg" style="width: 700px;"/></p>
 <p>As you can see, the strategy here is that we do preorder processing. We compare the root <span class="math">\(T_1\)</span> with the root
 <span class="math">\(T_2\)</span>. If they are equal, then we move on to the left and right subtrees of <span class="math">\(T_1\)</span> and do the processing 
-recursively. However, if they are not equal, we find the <span class="math">\(T_2\)</span>'s root value <span class="math">\(x\)</span> in <span class="math">\(T_1\)</span> and rotate it to the
+recursively. However, if they are not equal, we find the <span class="math">\(T_2\)</span>‘s root value <span class="math">\(x\)</span> in <span class="math">\(T_1\)</span> and rotate it to the
 root of <span class="math">\(T_1\)</span>. Then, we do the recursive processing for the left and right subtrees of <span class="math">\(T_1\)</span>. This algorithm
 takes <span class="math">\(O(N\log N)\)</span> on average because find <span class="math">\(x\)</span> takes <span class="math">\(O(\log N)\)</span> time and AVL rotations also take <span class="math">\(O(\log N)\)</span> time. 
 Since we could do <span class="math">\(N\)</span> rotations, then the result follows. However, a BST can be degenerated and in that case, we have 

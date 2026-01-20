@@ -201,8 +201,8 @@ represent it as <code>[0,1]</code>.</p>
 if there is a path from <span class="math">\(v_i\)</span> to <span class="math">\(v_j\)</span>, then <span class="math">\(v_j\)</span> appears
 after <span class="math">\(v_i\)</span> in the ordering.</li>
 <li>Def 2: A topological ordering of a DAG <span class="math">\(G\)</span> is a labeling <span class="math">\(f\)</span> of 
-<span class="math">\(G\)</span>'s nodes such that:<ul>
-<li>The <span class="math">\(f(v)\)</span>'s are the set <span class="math">\({1,2, \dots, n}\)</span></li>
+<span class="math">\(G\)</span>‘s nodes such that:<ul>
+<li>The <span class="math">\(f(v)\)</span>‘s are the set <span class="math">\({1,2, \dots, n}\)</span></li>
 <li><span class="math">\((u,v) \in G \implies f(u) &lt; f(v)\)</span></li>
 </ul>
 </li>
@@ -234,7 +234,7 @@ if there is no directed cycle in the graph, we can compute topological sort in l
 <ul>
 <li>
 <p>Every directed acyclic graph has a sink vertex</p>
-<p>Suppose the DAG doesn't have a sink vertex, that means every single vertex has at least one outgoing arc. We can start with arbitrary
+<p>Suppose the DAG doesn’t have a sink vertex, that means every single vertex has at least one outgoing arc. We can start with arbitrary
 vertex and follow its outgoing arc to the next vertex. Since there is no sink vertex in our graph, we can repeatedly follow the outgoing
 arc of the vertex. Suppose there are <span class="math">\(N\)</span> nodes in the graph and by following edges for <span class="math">\(N\)</span> times, we reach the <span class="math">\(N+1\)</span>th vertex. Since among
 the <span class="math">\(N+1\)</span> nodes, there are only <span class="math">\(N\)</span> distinct nodes. By the pigeonhole principle, we must have visted some vertex twice. By following the
@@ -252,8 +252,8 @@ of the graph to the final position because otherwise there is going to be an out
 outgoing arc points to will be assigned a lower position, which violates the topological ordering (i.e. edge goes backward). 
 In our procedure, when a node <span class="math">\(v\)</span> is assigned to position <span class="math">\(i\)</span>, that means we only have <span class="math">\(i\)</span> nodes remaining and <span class="math">\(v\)</span> is the sink vertex. 
 This implies that all of outgoing arcs and the corresponding nodes are deleted and assigned higher positions. So for every vertex, 
-by the time it actually gets assigned a position, it's a sink and it only has incoming arcs from the as yet unsigned vertices. 
-It's outgoing arcs all go forward to vertices that were already assigned higher positions, and got deleted previously from the graph. </p>
+by the time it actually gets assigned a position, it’s a sink and it only has incoming arcs from the as yet unsigned vertices. 
+It’s outgoing arcs all go forward to vertices that were already assigned higher positions, and got deleted previously from the graph. </p>
 </li>
 </ul>
 <p>To implement the procedure above, we use the DFS:</p>
@@ -262,7 +262,7 @@ It's outgoing arcs all go forward to vertices that were already assigned higher 
 <ul>
 <li>
 <p>We set <span class="math">\(f(s) = \text{current_label}\)</span> right before we about to pop the call stack. At that point, for every edge <span class="math">\((s,v)\)</span>, there is no such
-<span class="math">\(v\)</span> that we haven't explored. That means there are no outgoing edges, which indicate that <span class="math">\(s\)</span> is a sink and thus we can assign it a labeling.</p>
+<span class="math">\(v\)</span> that we haven’t explored. That means there are no outgoing edges, which indicate that <span class="math">\(s\)</span> is a sink and thus we can assign it a labeling.</p>
 </li>
 <li>
 <p>Running time: <span class="math">\(O(|E|+|V|)\)</span> (we only visit each vertex in the graph once and we look at each edge once as well)</p>
@@ -289,7 +289,7 @@ with outdegree = 0), we find the source vertex (i.e. the vertex with indegree = 
 <ul>
 <li>
 <p>In the basic version, we pick a source vertex of <span class="math">\(G\)</span> each time and assign the label. Inevitably, we will compute all the indegree of all nodes in
-the graph to find the source vertices. However, not all nodes' indegrees will be updated. To save this duplicate calculation, we use a queue (box).</p>
+the graph to find the source vertices. However, not all nodes’ indegrees will be updated. To save this duplicate calculation, we use a queue (box).</p>
 </li>
 <li>
 <p>Running time: <span class="math">\(O(|E|+|V|)\)</span> (We visit each edge once and for each node, we visit twice: compute the inital indegree; assign the labeling)</p>
@@ -305,9 +305,9 @@ order (i.e. start from <span class="math">\(n\)</span> and until <span class="ma
 (i.e. start from <span class="math">\(1\)</span> and until <span class="math">\(n\)</span>).</p>
 <h2 id="reference">Reference</h2>
 <ul>
-<li>"Data Structures and Algorithm Analysis in C++, 4th Edition" by Mark A. Weiss (we use
+<li>“Data Structures and Algorithm Analysis in C++, 4th Edition” by Mark A. Weiss (we use
 <em>MAW (cpp)</em> for short in the future)</li>
-<li>"Elements of Programming Interviews: The Insiders' Guide" by Adnan Aziz,
+<li>“Elements of Programming Interviews: The Insiders’ Guide” by Adnan Aziz,
 Tsung-Hsien Lee, and Amit Prakash, p.342 - 346 (we use <em>ATA</em> for short in the future)</li>
 <li><a href="https://www.coursera.org/learn/algorithms-graphs-data-structures/lecture/yeKm7/topological-sort">Topological Sort on Coursera</a></li>
 </ul>

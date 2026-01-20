@@ -108,7 +108,7 @@ DRAM to its full potential:</p>
 <li>High throughput: 1M ops/sec/server</li>
 <li>High durability and availability</li>
 </ul>
-<p>This paper focuses on the "high durability and availability". Replicating all data (x3) in DRAM fix
+<p>This paper focuses on the “high durability and availability”. Replicating all data (x3) in DRAM fix
 some availability issue but triple the cost and energy usage of the system. Thus, RAMCloud only 
 stores a single copy of data in DRAM, which brings the problem of availability: what happens when server
 crashes? RAMCloud’s solution to the availability problem is fast crash recovery. Then the problem 
@@ -181,7 +181,7 @@ becomes how to recover from crash within 1s~2s for 64GB or more DRAM data?</p>
 <li>No disk I/O during write requests</li>
 <li>Master’s memory also log-structured</li>
 <li>Log cleaning ~ generational garbage collection</li>
-<li>master's log is divided into 8MB segments</li>
+<li>master’s log is divided into 8MB segments</li>
 <li>Hash table is used for quickly lookup object in log</li>
 </ul>
 </li>
@@ -215,8 +215,8 @@ in memory is thought to be interesting by Vijay.</p>
 </ul>
 </li>
 <li>
-<p>Each mater computes the strategy to form partitions and upload the strategy to coordinator as <em>will</em>. Coordinator follows crashed master's will to 
-divide crashed master's data into partitions and assign the recoverying work to recovery masters (see section 3.5.3)</p>
+<p>Each mater computes the strategy to form partitions and upload the strategy to coordinator as <em>will</em>. Coordinator follows crashed master’s will to 
+divide crashed master’s data into partitions and assign the recoverying work to recovery masters (see section 3.5.3)</p>
 </li>
 </ul>
 <p><img alt="log distribution" class="img-responsive" src="/images/log-distribution.png"/></p>
@@ -248,13 +248,13 @@ distributed uniformly across backups, which mirrors chunking the data evenly in 
 each recovery master only done part of the whole need-to-be-recovered data, which reminds me of Reduce phase. Even Prof. John Ousterhout in the <a href="https://www.youtube.com/watch?v=lcUvU3b5co8">video</a> thinks that MapReduce almost solve their problem. </p>
 <p><img alt="map reduce" class="img-responsive" src="/images/mapreduce.png"/></p>
 <p>This finding is quite atonishing to me because <a href="https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf">MapReduce paper</a>
-comes out in 2004 and RAMCloud comes out in 2011. If we take a slightly different angle to look at prior work, we may find something new. That's provoking for
+comes out in 2004 and RAMCloud comes out in 2011. If we take a slightly different angle to look at prior work, we may find something new. That’s provoking for
 me in terms of research.</p>
 <h2 id="reference">Reference</h2>
 <ul>
 <li><a href="https://web.stanford.edu/~ouster/cgi-bin/papers/ramcloud-recovery.pdf">Fast Crash Recovery in RAMCloud</a>, <a href="https://ramcloud.atlassian.net/wiki/spaces/RAM/pages/6848659/RAMCloud+Presentations">slides</a>, <a href="https://www.youtube.com/watch?v=lcUvU3b5co8">video on paper</a>,
 <a href="https://www.youtube.com/channel/UCqnEwnxxNoHwCwY5W5kfGVA/videos">videos on details of paper</a>. </li>
-<li><a href="http://www.puncsky.com/blog/2012/12/13/fast-crash-recovery-in-ramcloud/">Tian Pan's Blog on RAMCloud</a></li>
+<li><a href="http://www.puncsky.com/blog/2012/12/13/fast-crash-recovery-in-ramcloud/">Tian Pan’s Blog on RAMCloud</a></li>
 <li><a href="https://ongardie.net/var/blurbs/pubs/ramcloud-tocs15.pdf">The RAMCloud Storage System</a></li>
 </ul>
 <div class="footnote">

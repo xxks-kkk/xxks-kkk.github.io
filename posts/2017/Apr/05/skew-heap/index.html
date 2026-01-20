@@ -76,16 +76,16 @@
             <p>This is the summary of <em>skew heap</em> part in MAW Chapter 6.</p>
 <h2 id="motivation">Motivation</h2>
 <p>Like the relation between splay trees and AVL trees, we want to have 
-<span class="math">\(O(\log N)\)</span> amortized cost per operation. In addition, we don't want
+<span class="math">\(O(\log N)\)</span> amortized cost per operation. In addition, we don’t want
 to have any auxiliary information stored at the nodes. In other words,
 we want to trade strict <span class="math">\(O(\log N)\)</span> operation for less space we need 
 to use for the data structure. In this case,
 like splay trees to AVL trees, we have Skew heaps to leftist heaps.</p>
 <h2 id="concept">Concept</h2>
 <p>Skew heaps are binary trees with heap order, but there is no structural constraint
-on these trees. This means that we don't need the binary tree to be complete 
+on these trees. This means that we don’t need the binary tree to be complete 
 (i.e. binary heap) or left heavy (i.e. leftist heap).</p>
-<p>In addition, we don't store <span class="math">\(Npl\)</span> information in the node.</p>
+<p>In addition, we don’t store <span class="math">\(Npl\)</span> information in the node.</p>
 <h2 id="properties">Properties</h2>
 <ul>
 <li>A perfectly balanced tree forms if the keys <span class="math">\(1\)</span> to <span class="math">\(2^k-1\)</span> are inserted in order
@@ -99,7 +99,7 @@ if they do not. However, for skew heaps, the swap is unconditional. In other wor
 we <strong>always</strong> swap the left &amp; right subtrees at each step of merge. </p>
 <p>In the below example, we want to merge two skew heaps <span class="math">\(H_1\)</span> and <span class="math">\(H_2\)</span>:</p>
 <p><img alt="skew heap 01" class="img-responsive" src="/images/skew-heap-01.PNG" style="width: 700px;"/></p>
-<p>Then, we get the following result of merging <span class="math">\(H_2\)</span> with <span class="math">\(H_1\)</span>'s right subheap:</p>
+<p>Then, we get the following result of merging <span class="math">\(H_2\)</span> with <span class="math">\(H_1\)</span>‘s right subheap:</p>
 <p><img alt="skew heap 02" class="img-responsive" src="/images/skew-heap-02.PNG" style="width: 700px;"/></p>
 <p>and this is the final merge result:</p>
 <p><img alt="skew heap 03" class="img-responsive" src="/images/skew-heap-03.PNG" style="width: 700px;"/></p>
