@@ -179,7 +179,7 @@ reflect on some lessons I learned during the process of getting paper
 published. I list out all the past six submissions and corresponding
 reviews that led to the final publication of the work, which I may
 call back on during the reflection.</p>
-<table class="table-hover table  table-striped">
+<table class=" table-striped table-hover table">
 <thead>
 <tr>
 <th>Submission</th>
@@ -222,14 +222,17 @@ call back on during the reflection.</p>
 </table>
 <h2 id="algorithm-design-in-the-wild"><a name="algorithm"></a>Algorithm design in the wild</h2>
 <p>This is the first time I designed an algorithm out of classroom
-setting. The task was to adapt <a href="https://www.sciencedirect.com/science/article/abs/pii/0004370294900647">a TreeTracker
-algorithm</a>
+setting. The task was to adapt <a href="https://www.sciencedirect.com/science/article/abs/pii/0004370294900647">TreeTracker
+algorithms</a>
 from constraint satisfaction problem (CSP) into relational database
 setting and the result of the adaptation has to take the iterator form
 (Algorithm 3.1 of the
 <a href="https://arxiv.org/pdf/2403.01631v1">preprint</a>). The difficulty of the
-task was fair and well-suited for my skillset. There are a few things
-I tried and I found them helpful in designing the algorithm.</p>
+task was fair and well-suited for my skillset. There are two
+algorithms in the paper <span class="math">\(\mathsf{TT}1\)</span> and
+<span class="math">\(\mathsf{TT}2\)</span>. <span class="math">\(\mathsf{TTJ}\)</span> is an adaptation of <span class="math">\(\mathsf{TT}1\)</span> <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">3</a></sup>.</p>
+<p>There are a few things I tried and I found them helpful in designing
+the algorithm.</p>
 <ol>
 <li>
 <p><strong>Explain the original algorithm in your own words.</strong>  The first
@@ -311,7 +314,7 @@ I tried and I found them helpful in designing the algorithm.</p>
    paper. The role this program served was manifold. First, it helped
    me to better understand the algorithm. Both the <span class="math">\(\mathsf{TT}2\)</span>
    description and the associated proofs use a lot of prose, which is
-   inherently inaccurate <sup id="fnref:5"><a class="footnote-ref" href="#fn:5">3</a></sup>. To ensure I had the correct
+   inherently inaccurate <sup id="fnref:5"><a class="footnote-ref" href="#fn:5">4</a></sup>. To ensure I had the correct
    understanding of the algorithm, gained a sense of concreteness, and
    could continue to build up the correct intuition, I found that
    implementing the algorithm and letting it run on a few examples
@@ -409,7 +412,7 @@ consider:</p>
    published in system conferences like SIGMOD, VLDB, or
    <a href="https://sigops.org/s/conferences/sosp/2026/">SOSP</a> have this type
    of implementation. It’s clear that the system comparison applies to
-   a broader scope than the algorithmic comparison: system comparison
+   a broader scope than the algorithm comparison: system comparison
    not only applies to the study of algorithms but also to exploration
    of new system design ideas and principles. (<a href="https://web.archive.org/web/20250310064400/https://blog.xiangpeng.systems/posts/system-researchers/">This blog
    post</a>
@@ -480,7 +483,7 @@ system comparison rules out such possibility. </p>
 <p>Certainly, it is a big “if” that all <span class="math">\(X\)</span> components and <span class="math">\(Y\)</span>
 components have the same performance. (Or generally speaking, the
 total runtime of all the not-<span class="math">\(A\)</span> components of system <span class="math">\(S_1\)</span> is
-less than or or equal to the total runtime of all the not-<span class="math">\(B\)</span>
+less than or equal to the total runtime of all the not-<span class="math">\(B\)</span>
 components of system <span class="math">\(S_2\)</span>.) Ensuring that holds requires
 significant engineering effort and it is not directly relevant to
 the innovation of algorithm <span class="math">\(A\)</span>. A good heuristic to satisfy the “big
@@ -563,7 +566,7 @@ prototype–areas where I made both good and bad calls in hindsight.</p>
 <p>The common wisdom in building a research prototype is to treat the
 prototype as “one-shot” meaning it is a software that will not get
 maintained and the main purpose that such prototype serves is to
-generate numbers for plots used in the paper <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">4</a></sup>. The biggest merit
+generate numbers for plots used in the paper <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">5</a></sup>. The biggest merit
 of this wisdom I think is the emphasis of being “agile” that prevents
 over-engineering and takes necessary shortcuts to deliver
 results. However, I think we should be careful about when and what
@@ -889,18 +892,28 @@ doing research after a challenging five years at UT-Austin.</p>
   paper</a> for a survey on
   acyclicity of many query workloads. <a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">↩</a></p>
 </li>
+<li id="fn:4">
+<p><span class="math">\(\mathsf{TT}1\)</span> is slower than <span class="math">\(\mathsf{TT}2\)</span> by a factor of
+  <span class="math">\(\log n\)</span> where <span class="math">\(n\)</span> is the number of variables in a dual
+  constraint graph. However, <span class="math">\(\mathsf{TT}1\)</span> is much simpler than
+  <span class="math">\(\mathsf{TT}2\)</span> and the number of variables in a constraint
+  network is translated into the number of relations in a query,
+  which is considered as a constant in a complexity model called
+  data complexity where database instance is the problem input to
+  a query evaluation algorithm. <a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 3 in the text">↩</a></p>
+</li>
 <li id="fn:5">
 <p>For a more in-depth discussion of the limitations of prose
 proofs, see some writings
 (<a href="https://lamport.azurewebsites.net/pubs/rigor.pdf">1</a>,
 <a href="https://lamport.azurewebsites.net/pubs/proof.pdf">2</a>) by Leslie
-Lamport. <a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 3 in the text">↩</a></p>
+Lamport. <a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 4 in the text">↩</a></p>
 </li>
 <li id="fn:3">
 <p>My friend’s PhD advisor once told him that it’s sufficient to
   have the software compile once just for the numbers; it’s okay
   that the software no longer functions once the paper is
-  published. <a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 4 in the text">↩</a></p>
+  published. <a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 5 in the text">↩</a></p>
 </li>
 </ol>
 </div>
