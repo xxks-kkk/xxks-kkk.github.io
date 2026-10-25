@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's Page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2026-01-03T23:01:02+08:00</updated><entry><title>Postmortem on TreeTracker Join: Simple, Optimal, Fast</title><link href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/" rel="alternate"></link><published>2026-01-03T23:01:02+08:00</published><updated>2026-01-03T23:01:02+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2026-01-03:/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/</id><summary type="html">&lt;p&gt;After five years of blood, sweat, and tears, &lt;a href="https://dl.acm.org/doi/10.1145/3774325"&gt;TreeTracker Join
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Zeyuan Hu's Page</title><link href="https://zhu45.org/" rel="alternate"></link><link href="https://zhu45.org/feeds/all.atom.xml" rel="self"></link><id>https://zhu45.org/</id><updated>2026-01-03T23:01:02+08:00</updated><entry><title>From Theory to Implementation: The Algorithm Design Journey Behind TreeTracker Join</title><link href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/" rel="alternate"></link><published>2026-01-03T23:01:02+08:00</published><updated>2026-01-03T23:01:02+08:00</updated><author><name>Zeyuan Hu</name></author><id>tag:zhu45.org,2026-01-03:/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/</id><summary type="html">&lt;p&gt;After five years of blood, sweat, and tears, &lt;a href="https://dl.acm.org/doi/10.1145/3774325"&gt;TreeTracker Join
 (&lt;span class="math"&gt;\(\mathsf{TTJ}\)&lt;/span&gt;)&lt;/a&gt; has finally
 been published. The research itself is very interesting and kept me
 hooked for five years. As a postmortem, I reflect on some of what I
@@ -119,34 +119,34 @@ call back on during the reflection.&lt;/p&gt;
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/pods2022.pdf"&gt;PODS 2022&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/pods2022-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/pods2022.pdf"&gt;PODS 2022&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/pods2022-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
 &lt;td&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/vldb2024.pdf"&gt;VLDB 2024&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/vldb2024-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/vldb2024.pdf"&gt;VLDB 2024&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/vldb2024-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
 &lt;td&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/sigmod2024.pdf"&gt;SIGMOD 2025&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/sigmod2024-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/sigmod2024-extended.pdf"&gt;SIGMOD2025-extended&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/sigmod2024.pdf"&gt;SIGMOD 2025&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/sigmod2024-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/sigmod2024-extended.pdf"&gt;SIGMOD2025-extended&lt;/a&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/icdt2025.pdf"&gt;ICDT 2025&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/icdt2025-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/icdt2025.pdf"&gt;ICDT 2025&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/icdt2025-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
 &lt;td&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/cidr2025.pdf"&gt;CIDR 2025&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/cidr2025-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/cidr2025.pdf"&gt;CIDR 2025&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/cidr2025-reviews.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
 &lt;td&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/TODS.pdf"&gt;TODS 2025&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/TODS-review1-pub.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/postmortem-on-treetracker-join-simple-optimal-fast/TODS-revision.pdf"&gt;revision&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/TODS.pdf"&gt;TODS 2025&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/TODS-review1-pub.pdf"&gt;reviews&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;&lt;a href="https://zhu45.org/posts/2026/Jan/03/from-theory-to-implementation-the-algorithm-design-journey-behind-treetracker-join/TODS-revision.pdf"&gt;revision&lt;/a&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
